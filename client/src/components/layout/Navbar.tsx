@@ -1,10 +1,13 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Search, Menu, User, X } from "lucide-react";
+import { ShoppingBag, Search, Menu, User, X, LogOut } from "lucide-react";
 import { useCart } from "@/store/use-cart";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useAuthModal } from "@/hooks/useAuthModal";
+import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
@@ -15,6 +18,26 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartItemsCount = useCart((state) => state.getTotolItems());
+  const { isAuthModalOpen, openAuthModal, closeAuthModal } = useAuthModal();
+  const { user, isLoading, logout } = useAuth();
+ 
+  const handleProfileClick = () => {
+    console.log('🔥 Profile button clicked - User:', user);
+    if (!user) {
+      console.log('🔓 Opening auth modal...');
+      openAuthModal(); // ✨ Open the beautiful modal
+    } else {
+      console.log('👤 Redirecting to profile...');
+      window.location.href = '/profile';
+    }
+  };
+
+  const handleLogout = async () => {
+    console.log('🚪 Logging out...');
+    await logout();
+    // Optionally redirect to home after logout
+    window.location.href = '/';
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -38,7 +61,7 @@ export default function Navbar() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
           isScrolled ? "glass shadow-sm py-3" : "bg-transparent py-5"
         )}
       >
@@ -57,7 +80,7 @@ export default function Navbar() {
               href="/" 
               className="flex items-center gap-2 text-2xl font-display font-bold text-foreground hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-primary-foreground shadow-sm">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-primary-foreground shadow-sm">
                 PM
               </div>
               <span>Planet Mini</span>
@@ -70,15 +93,15 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-semibold transition-colors hover:text-primary relative group",
-                    location === link.href ? "text-primary" : "text-muted-foreground"
+                    "text-sm font-semibold transition-colors hover:text-blue-500 relative group",
+                    location === link.href ? "text-blue-500" : "text-muted-foreground"
                   )}
                 >
                   {link.label}
                   {location === link.href && (
                     <motion.div
                       layoutId="nav-indicator"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary rounded-full"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-500 rounded-full"
                     />
                   )}
                 </Link>
@@ -87,25 +110,35 @@ export default function Navbar() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 sm:gap-4">
-              <button className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full transition-all">
+              <button className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all">
                 <Search className="w-5 h-5" />
               </button>
-              <Link
-                href="/profile"
-                className="hidden sm:flex p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full transition-all"
+              <button
+                onClick={handleProfileClick}
+                className="hidden sm:flex p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all items-center gap-2"
               >
                 <User className="w-5 h-5" />
-              </Link>
+                {!user && <span className="text-sm font-medium">Login</span>}
+              </button>
+              {user && (
+                <button
+                  onClick={handleLogout}
+                  className="hidden sm:flex p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-all items-center gap-2"
+                >
+                  <LogOut className="w-5 h-5" />
+                  <span className="text-sm font-medium">Logout</span>
+                </button>
+              )}
               <Link
                 href="/cart"
-                className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-full transition-all relative"
+                className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all relative"
               >
                 <ShoppingBag className="w-5 h-5" />
                 {cartItemsCount > 0 && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-0 right-0 w-4 h-4 bg-primary text-primary-foreground rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-background"
+                    className="absolute top-0 right-0 w-4 h-4 bg-blue-500 text-primary-foreground rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-background"
                   >
                     {cartItemsCount}
                   </motion.div>
@@ -151,25 +184,49 @@ export default function Navbar() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
                       "text-lg font-semibold py-3 px-4 rounded-xl transition-colors",
-                      location === link.href ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-muted"
+                      location === link.href ? "bg-blue-50 text-blue-500" : "text-muted-foreground hover:bg-muted"
                     )}
                   >
                     {link.label}
                   </Link>
                 ))}
                 <div className="h-px bg-border my-4" />
-                <Link
-                  href="/profile"
-                  onClick={() => setMobileMenuOpen(false)}
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleProfileClick();
+                  }}
                   className="text-lg font-semibold py-3 px-4 rounded-xl text-muted-foreground hover:bg-muted transition-colors flex items-center gap-3"
                 >
-                  <User className="w-5 h-5" /> Account
-                </Link>
+                  {user ? (
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                      <User className="w-3 h-3 text-white" />
+                    </div>
+                  ) : (
+                    <>
+                      <User className="w-5 h-5" />
+                      <span className="text-sm font-medium">Login</span>
+                    </>
+                  )}
+                  Account
+                </button>
+                {user && (
+                  <button
+                    onClick={handleLogout}
+                    className="hidden sm:flex p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-all items-center gap-2"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="text-sm font-medium">Logout</span>
+                  </button>
+                )}
               </nav>
             </motion.div>
           </>
         )}
       </AnimatePresence>
+      
+      {/* Google Auth Modal */}
+      <GoogleAuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
     </>
   );
 }

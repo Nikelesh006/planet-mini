@@ -1,8 +1,13 @@
+import 'dotenv/config';  // Load .env variables FIRST
 import express, { type Request, Response, NextFunction } from "express";
+import cookieParser from "cookie-parser";
+import passport from "passport";
 import { registerRoutes } from "./routes";
+import authRoutes from "./routes/auth";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import dotenv from "dotenv";
+import { connectDB } from "./db";
 
 dotenv.config();
 
@@ -24,6 +29,12 @@ app.use(
 );
 
 app.use(express.urlencoded({ extended: false }));
+
+// Add cookie-parser for auth cookies - use regular cookies (not signed)
+app.use(cookieParser());
+
+// Initialize passport
+app.use(passport.initialize());
 
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
@@ -63,7 +74,11 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Register auth routes first (before other routes)
+  app.use("/api/auth", authRoutes);
+  
   await registerRoutes(httpServer, app);
+  await connectDB();
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
