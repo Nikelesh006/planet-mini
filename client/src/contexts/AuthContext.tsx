@@ -1,75 +1,62 @@
-'use client';
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 
-interface User {
+type User = {
   id: string;
-  name: string;
   email: string;
-  avatar?: string;
-}
+  name?: string;
+  image?: string;
+};
 
-interface AuthContextType {
+type AuthContextType = {
   user: User | null;
-  login: (user: User) => void;
-  logout: () => void;
   isLoading: boolean;
-}
+  refetch: () => void;
+};
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  isLoading: true,
+  refetch: () => {},
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Check if user is logged in on mount
-    checkAuthStatus();
-  }, []);
-
-  const checkAuthStatus = async () => {
+  const fetchSession = async () => {
     try {
-      // Replace with actual auth check
-      const response = await fetch('/api/auth/me');
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
+      const res = await fetch("/api/auth/session", {
+        credentials: "include",
+      });
+      if (!res.ok) {
+        setUser(null);
+      } else {
+        const data = await res.json();
+        setUser(data.user || null);
       }
-    } catch (error) {
-      // User not logged in
+    } catch {
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const login = (userData: User) => {
-    setUser(userData);
+  const refetch = () => {
+    setIsLoading(true);
+    fetchSession();
   };
 
-  const logout = async () => {
-    try {
-      // Call logout API to clear server-side session
-      await fetch('/api/auth/logout', { method: 'POST' });
-      // Clear client-side user state
-      setUser(null);
-      console.log('✅ User logged out successfully');
-      // Redirect to home page
-      window.location.href = '/';
-    } catch (error) {
-      console.error('❌ Logout error:', error);
-    }
-  };
+  useEffect(() => {
+    fetchSession();
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, isLoading, refetch }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
 export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return useContext(AuthContext);
 }

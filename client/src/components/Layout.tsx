@@ -1,4 +1,4 @@
-import { Header } from "./Header";
+import Navbar from "./layout/Navbar";
 import Footer from "./layout/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
@@ -8,7 +8,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50">
-      <Header />
+      <Navbar />
       <AnimatePresence mode="wait">
         <motion.main
           key={location}

@@ -1,6 +1,6 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Shield, Sparkles, User } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useEffect } from 'react';
 
 interface GoogleAuthModalProps {
@@ -10,14 +10,11 @@ interface GoogleAuthModalProps {
 
 export default function GoogleAuthModal({ isOpen, onClose }: GoogleAuthModalProps) {
   useEffect(() => {
-    console.log('🎭 GoogleAuthModal: isOpen changed to:', isOpen);
-    
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
 
     if (isOpen) {
-      console.log('🎭 GoogleAuthModal: Setting up modal');
       document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
     }
@@ -88,7 +85,7 @@ export default function GoogleAuthModal({ isOpen, onClose }: GoogleAuthModalProp
                       Welcome to Planet Mini
                     </h2>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Continue with Google to access your profile, orders & wishlist
+                      Sign in to access your profile, orders & wishlist
                     </p>
                   </div>
 
@@ -109,32 +106,6 @@ export default function GoogleAuthModal({ isOpen, onClose }: GoogleAuthModalProp
                       Continue with Google
                     </span>
                   </button>
-
-                  {/* Optional text */}
-                  <div className="mt-6 text-center">
-                    <p className="text-sm text-gray-500 flex items-center justify-center gap-2">
-                      <Shield className="w-4 h-4" />
-                      No account? We'll create one for you ✨
-                    </p>
-                  </div>
-
-                  {/* Trust indicators */}
-                  <div className="mt-8 pt-6 border-t border-gray-100">
-                    <div className="flex items-center justify-center gap-6 text-xs text-gray-400">
-                      <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 bg-green-500 rounded-full" />
-                        <span>Secure</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                        <span>Fast</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <div className="w-2 h-2 bg-purple-500 rounded-full" />
-                        <span>Free</span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </motion.div>

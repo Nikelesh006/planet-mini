@@ -1,13 +1,13 @@
-import 'dotenv/config';  // Load .env variables FIRST
+import "dotenv/config"; // Load .env variables FIRST
 import express, { type Request, Response, NextFunction } from "express";
-import cookieParser from "cookie-parser";
-import passport from "passport";
 import { registerRoutes } from "./routes";
-import authRoutes from "./routes/auth";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import dotenv from "dotenv";
 import { connectDB } from "./db";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -30,12 +30,12 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
-// Add cookie-parser for auth cookies - use regular cookies (not signed)
+// CORS + cookies
+app.use(cors({ origin: "http://localhost:5002", credentials: true }));
 app.use(cookieParser());
 
-// Initialize passport
-app.use(passport.initialize());
 
+// Simple logger you already had
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -47,6 +47,7 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
+// API log middleware
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -73,10 +74,124 @@ app.use((req, res, next) => {
   next();
 });
 
+// ---------- GOOGLE OAUTH ROUTES ----------
+
+// GET /api/auth/google → redirect to Google OAuth
+app.get("/api/auth/google", (req: Request, res: Response) => {
+  const clientId = process.env.GOOGLE_CLIENT_ID as string;
+  const redirectUri = encodeURIComponent(
+    "http://localhost:5002/api/auth/google/callback",
+  );
+  const scope = encodeURIComponent("email profile");
+
+  const googleAuthUrl =
+    `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}` +
+    `&redirect_uri=${redirectUri}` +
+    `&response_type=code` +
+    `&scope=${scope}` +
+    `&access_type=offline` +
+    `&prompt=consent`;
+
+  return res.redirect(googleAuthUrl);
+});
+
+// GET /api/auth/google/callback → exchange code, set JWT cookie, redirect home
+app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
+  const code = req.query.code as string | undefined;
+  if (!code) {
+    return res.redirect("http://localhost:5002?error=missing_code");
+  }
+
+  try {
+    // Exchange code for tokens
+    const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: process.env.GOOGLE_CLIENT_ID as string,
+        client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
+        code,
+        grant_type: "authorization_code",
+        redirect_uri: "http://localhost:5002/api/auth/google/callback",
+      }),
+    });
+
+    const tokenJson = await tokenRes.json();
+    if (tokenJson.error) {
+      console.error("Google token error:", tokenJson.error);
+      return res.redirect("http://localhost:5002?error=token_error");
+    }
+
+    // Get user info
+    const userRes = await fetch(
+      "https://www.googleapis.com/oauth2/v2/userinfo",
+      {
+        headers: {
+          Authorization: `Bearer ${tokenJson.access_token}`,
+        },
+      },
+    );
+    const user = await userRes.json();
+
+    // Create our own JWT
+    const payload = {
+      id: user.id || `google-${user.email}`,
+      email: user.email,
+      name: user.name || user.given_name,
+      avatar: user.picture,
+    };
+
+    const jwtToken = jwt.sign(payload, process.env.JWT_SECRET as string, {
+      expiresIn: "24h",
+    });
+
+    // Set cookie
+    res.cookie("jwt", jwtToken, {
+      httpOnly: true,
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    return res.redirect("http://localhost:5002/");
+  } catch (err) {
+    console.error("Google callback error:", err);
+    return res.redirect("http://localhost:5002?error=auth_failed");
+  }
+});
+
+// GET /api/auth/session → verify JWT and return user
+app.get("/api/auth/session", (req: Request, res: Response) => {
+  const token = req.cookies?.jwt;
+  if (!token) {
+    return res.status(401).json({ user: null });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
+    return res.json({
+      user: {
+        id: decoded.id,
+        email: decoded.email,
+        name: decoded.name,
+        image: decoded.avatar,
+      },
+    });
+  } catch (err) {
+    res.clearCookie("jwt");
+    return res.status(401).json({ user: null });
+  }
+});
+
+// POST /api/auth/logout → clear cookie
+app.post("/api/auth/logout", (req: Request, res: Response) => {
+  res.clearCookie("jwt");
+  return res.json({ success: true });
+});
+
+// ---------- EXISTING BOOTSTRAP FLOW ----------
+
+
 (async () => {
-  // Register auth routes first (before other routes)
-  app.use("/api/auth", authRoutes);
-  
   await registerRoutes(httpServer, app);
   await connectDB();
 
@@ -93,9 +208,6 @@ app.use((req, res, next) => {
     return res.status(status).json({ message });
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (process.env.NODE_ENV === "production") {
     serveStatic(app);
   } else {
@@ -103,10 +215,9 @@ app.use((req, res, next) => {
     await setupVite(httpServer, app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // (You already call connectDB above; this second call is redundant, but left as-is per your code)
+  await connectDB();
+
   const port = parseInt(process.env.PORT || "5002", 10);
   httpServer.listen(
     {

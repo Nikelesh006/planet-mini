@@ -1,13 +1,13 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Search, Menu, User, X, LogOut } from "lucide-react";
+import { ShoppingBag, Search, Menu, User, X } from "lucide-react";
 import { useCart } from "@/store/use-cart";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useAuth } from "@/contexts/AuthContext";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
-import { useAuth } from "@/contexts/AuthContext";
 
 function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
@@ -18,25 +18,15 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const cartItemsCount = useCart((state) => state.getTotolItems());
+  const { user, isLoading } = useAuth();
   const { isAuthModalOpen, openAuthModal, closeAuthModal } = useAuthModal();
-  const { user, isLoading, logout } = useAuth();
  
   const handleProfileClick = () => {
-    console.log('🔥 Profile button clicked - User:', user);
-    if (!user) {
-      console.log('🔓 Opening auth modal...');
-      openAuthModal(); // ✨ Open the beautiful modal
-    } else {
-      console.log('👤 Redirecting to profile...');
-      window.location.href = '/profile';
+    if (!user && !isLoading) {
+      openAuthModal(); // Open Google login modal
+    } else if (user) {
+      window.location.href = '/profile'; // Navigate to profile when logged in
     }
-  };
-
-  const handleLogout = async () => {
-    console.log('🚪 Logging out...');
-    await logout();
-    // Optionally redirect to home after logout
-    window.location.href = '/';
   };
 
   useEffect(() => {
@@ -117,18 +107,25 @@ export default function Navbar() {
                 onClick={handleProfileClick}
                 className="hidden sm:flex p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all items-center gap-2"
               >
-                <User className="w-5 h-5" />
-                {!user && <span className="text-sm font-medium">Login</span>}
+                {isLoading ? (
+                  <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
+                ) : user ? (
+                  user.image ? (
+                    <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+                  ) : (
+                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">
+                        {user.name?.charAt(0) || 'U'}
+                      </span>
+                    </div>
+                  )
+                ) : (
+                  <User className="w-5 h-5" />
+                )}
+                <span className="text-sm font-medium">
+                  {isLoading ? '' : user ? user.name || 'Profile' : 'Profile'}
+                </span>
               </button>
-              {user && (
-                <button
-                  onClick={handleLogout}
-                  className="hidden sm:flex p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-all items-center gap-2"
-                >
-                  <LogOut className="w-5 h-5" />
-                  <span className="text-sm font-medium">Logout</span>
-                </button>
-              )}
               <Link
                 href="/cart"
                 className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all relative"
@@ -198,27 +195,25 @@ export default function Navbar() {
                   }}
                   className="text-lg font-semibold py-3 px-4 rounded-xl text-muted-foreground hover:bg-muted transition-colors flex items-center gap-3"
                 >
-                  {user ? (
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                      <User className="w-3 h-3 text-white" />
-                    </div>
+                  {isLoading ? (
+                    <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
+                  ) : user ? (
+                    user.image ? (
+                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">
+                          {user.name?.charAt(0) || 'U'}
+                        </span>
+                      </div>
+                    )
                   ) : (
-                    <>
-                      <User className="w-5 h-5" />
-                      <span className="text-sm font-medium">Login</span>
-                    </>
+                    <User className="w-5 h-5" />
                   )}
-                  Account
+                  <span className="text-sm font-medium">
+                    {isLoading ? '' : user ? user.name || 'Profile' : 'Profile'}
+                  </span>
                 </button>
-                {user && (
-                  <button
-                    onClick={handleLogout}
-                    className="hidden sm:flex p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-all items-center gap-2"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    <span className="text-sm font-medium">Logout</span>
-                  </button>
-                )}
               </nav>
             </motion.div>
           </>
