@@ -47,175 +47,81 @@ export default function Home() {
     }
   ];
 
-  const shopByStyle = [
-    { 
-      name: "Onesies", 
-      description: "Comfortable and adorable onesies for everyday wear",
-      icon: "👶", 
-      href: "/shop/style?val=onesies",
-      image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=400",
-      productCount: 24
-    },
-    { 
-      name: "Sleepwear", 
-      description: "Cozy sleepwear for peaceful nights",
-      icon: "🌙", 
-      href: "/shop/style?val=sleepwear",
-      image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?auto=format&fit=crop&q=80&w=400",
-      productCount: 18
-    },
-    { 
-      name: "Cute Outfits", 
-      description: "Stylish outfits for special occasions",
-      icon: "👗", 
-      href: "/shop/style?val=outfits",
-      image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&q=80&w=400",
-      productCount: 32
-    }
-  ];
+  
+    
+    
+    
+  
 
-  const babyCareEssentials = [
-    { 
-      name: "Bath Towels & Robes", 
-      description: "Soft and absorbent bath essentials",
-      icon: "🛁", 
-      href: "/shop/care?val=bath",
-      image: "https://images.unsplash.com/photo-1559418306-036f0072cfa1?auto=format&fit=crop&q=80&w=400",
-      productCount: 15
-    },
-    { 
-      name: "Bath Toys", 
-      description: "Fun toys for bath time",
-      icon: "🦆", 
-      href: "/shop/care?val=toys",
-      image: "https://images.unsplash.com/photo-1628148782352-8705a67978d3?auto=format&fit=crop&q=80&w=400",
-      productCount: 22
-    },
-    { 
-      name: "Skincare Products", 
-      description: "Gentle care for delicate skin",
-      icon: "🧴", 
-      href: "/shop/care?val=skincare",
-      image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?auto=format&fit=crop&q=80&w=400",
-      productCount: 18
-    },
-    { 
-      name: "Bibs & Burp Cloths", 
-      description: "Essential feeding accessories",
-      icon: "🧷", 
-      href: "/shop/care?val=bibs",
-      image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=400",
-      productCount: 25
-    }
-  ];
-
-  const superSaverOffers = [
-    { 
-      name: "3-Pack Onesies", 
-      description: "Essential onesies pack for everyday comfort",
-      icon: "👕", 
-      href: "/shop/offers?val=onesies-pack",
-      image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=400",
-      productCount: 12,
-      badge: "33% OFF"
-    },
-    { 
-      name: "3-Pack Jablas", 
-      description: "Traditional baby wear set",
-      icon: "🧥", 
-      href: "/shop/offers?val=jablas-pack",
-      image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&q=80&w=400",
-      productCount: 8,
-      badge: "27% OFF"
-    },
-    { 
-      name: "3-Pack Diapers", 
-      description: "Ultra-absorbent diapers for all-day protection",
-      icon: "🚀", 
-      href: "/shop/offers?val=diapers-pack",
-      image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?auto=format&fit=crop&q=80&w=400",
-      productCount: 15,
-      badge: "BEST OFFER"
-    },
-    { 
-      name: "5-Pack Nappies", 
-      description: "Soft and gentle nappies for sensitive skin",
-      icon: "📦", 
-      href: "/shop/offers?val=nappies-pack",
-      image: "https://images.unsplash.com/photo-1541697960113-1ca22342bd6d?auto=format&fit=crop&q=80&w=400",
-      productCount: 10,
-      badge: "38% OFF"
-    }
-  ];
+  
+  
+     
+    
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50 space-y-16">
-      {/* Hero Section with 8:3 Banner */}
-      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-blue-50 space-y-16">
+      {/* Hero Section */}
+      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
         <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-100/70 via-blue-100/60 to-pink-100/50 backdrop-blur-sm border border-white/20 shadow-xl">
-          <div className="relative w-full" style={{ paddingBottom: '37.5%' }}>
-            <img 
-              src="/banner-hero.jpg" 
-              alt="Hero Banner" 
-              className="absolute inset-0 w-full h-full object-cover rounded-[2.5rem]"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/20 rounded-[2.5rem]"></div>
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4 sm:px-6 lg:px-8">
-              <motion.h1 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-4xl md:text-6xl lg:text-7xl font-bold text-center mb-6"
+          <div className="absolute inset-0 bg-gradient-to-r from-pink-100/30 via-blue-100/20 to-pink-100/30"></div>
+          <div className="relative z-10 p-8 lg:p-16 text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent mb-6"
+            >
+              Welcome to Planet Mini
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-8"
+            >
+              Adorable & Comfortable Baby Wear for Every Little Star
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+              className="flex flex-col sm:flex-row gap-4 justify-center"
+            >
+              <Link 
+                href="/shop"
+                className="group relative inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 text-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden ripple-button"
               >
-                Welcome to Planet Mini
-              </motion.h1>
-              <motion.p 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-lg md:text-xl text-center max-w-3xl mx-auto mb-8"
+                <span className="relative z-10">Shop Boys Collection</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+              <Link 
+                href="/shop"
+                className="group relative inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 text-white px-8 py-4 text-lg font-semibold hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden ripple-button"
               >
-                Adorable & Comfortable Baby Wear
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="flex flex-col sm:flex-row gap-4 justify-center"
-              >
-                <Link 
-                  href="/shop"
-                  className="inline-flex items-center justify-center rounded-xl bg-white text-gray-900 px-8 py-4 text-lg font-semibold hover:bg-gray-100 transition-colors"
-                >
-                  Shop Now
-                </Link>
-              </motion.div>
-            </div>
+                <span className="relative z-10">Shop Girls Collection</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>
 
       {/* Shop by Style Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-100/70 via-blue-100/60 to-pink-100/50 backdrop-blur-sm border border-white/20 p-8 lg:p-16 shadow-xl">
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-12"
           >
+            <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent mb-4">Shop by Style</h2>
+            <p className="text-gray-600 text-lg">Discover our latest collection of stylish baby wear</p>
+            <div className="flex justify-center gap-2 mt-4">
+              <div className="w-12 h-1 bg-pink-500 rounded-full"></div>
+              <div className="w-12 h-1 bg-blue-500 rounded-full"></div>
+              <div className="w-12 h-1 bg-pink-500 rounded-full"></div>
+            </div>
           </motion.div>
-          
-          {/* Category Cards */}
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {shopByStyle.map((category) => (
-              <CategoryCard key={category.name} {...category} />
-            ))}
-          </div>
-          
-          {/* Dynamic Products */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-center mb-4">Shop by Style Products</h2>
-            <p className="text-center text-gray-600 mb-8">Discover our latest collection of stylish baby wear</p>
-          </div>
           
           {!shopByStyleLoading && shopByStyleProducts && shopByStyleProducts.length > 0 && (
             <ProductGrid 
@@ -230,7 +136,7 @@ export default function Home() {
               <p className="text-gray-500 mb-6">Start by adding some products to showcase here!</p>
               <Link 
                 href="/admin/add-product"
-                className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <span>Add First Product</span>
               </Link>
@@ -238,7 +144,7 @@ export default function Home() {
           )}
           {shopByStyleLoading && (
             <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             </div>
           )}
         </div>
@@ -291,12 +197,7 @@ export default function Home() {
           >
           </motion.div>
           
-          {/* Category Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {babyCareEssentials.map((category) => (
-              <CategoryCard key={category.name} {...category} />
-            ))}
-          </div>
+          
           
           {/* Dynamic Products */}
           <div className="mb-8">
@@ -335,12 +236,7 @@ export default function Home() {
           >
           </motion.div>
           
-          {/* Category Cards */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            {superSaverOffers.map((offer) => (
-              <CategoryCard key={offer.name} {...offer} />
-            ))}
-          </div>
+          
           
           {/* Dynamic Products */}
           <div className="mb-8">
