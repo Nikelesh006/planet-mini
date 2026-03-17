@@ -38,15 +38,15 @@ export default function Shop() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-blue-50">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white/30 backdrop-blur-md border border-white/20 shadow-xl">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-blue-100/50 via-white/30 to-pink-100/50 backdrop-blur-md border border-white/20 shadow-xl">
           <div className="p-8 lg:p-16 text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-bold text-primary mb-6"
+              className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent mb-6"
             >
               Shop All Categories
             </motion.h1>
@@ -73,7 +73,7 @@ export default function Shop() {
               transition={{ delay: categoryIndex * 0.1 }}
             >
               <div className="flex items-center justify-center mb-8">
-                <h2 className="text-3xl font-bold text-primary flex items-center gap-3">
+                <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent flex items-center gap-3">
                   {category.title === "Super Saver Offers" && <span className="text-4xl">🎁</span>}
                   {category.title !== "Super Saver Offers" && <span className="text-4xl">✨</span>}
                   {category.title}
@@ -82,26 +82,28 @@ export default function Shop() {
                 </h2>
               </div>
               
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-6">
                 {category.items.map((item, itemIndex) => (
                   <motion.div
                     key={item.name}
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ delay: (categoryIndex * 0.1) + (itemIndex * 0.05) }}
-                    className="group"
+                    className="group h-[380px]"
                   >
                     <Link href={item.href} className="block">
-                      <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 hover:bg-white/30 transition-all duration-300 p-6 text-center">
+                      <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-white to-blue-50/30 backdrop-blur-sm border border-blue-100/50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-pink-50 transition-all duration-300 p-6 text-center h-full flex flex-col justify-between hover:shadow-xl hover:scale-105">
                         {item.badge && (
-                          <div className="absolute top-4 right-4 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg pulse-element">
                             {item.badge}
                           </div>
                         )}
-                        <div className="text-4xl mb-4">{item.icon}</div>
-                        <h3 className="text-lg font-semibold text-primary mb-2">{item.name}</h3>
-                        <p className="text-sm text-muted-foreground mb-4">{item.count} products</p>
-                        <div className="inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all">
+                        <div className="text-4xl mb-4 flex items-center justify-center h-20">
+                          {item.icon}
+                        </div>
+                        <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-2">{item.name}</h3>
+                        <p className="text-sm text-gray-600 mb-4">{item.count} products</p>
+                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:from-blue-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                           Shop Now
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

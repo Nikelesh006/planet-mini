@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Heart, ShoppingBag } from "lucide-react";
+import { Heart, ShoppingBag, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { useStore } from "@/store/use-store";
 import { useCart } from "@/contexts/CartContext";
@@ -52,13 +52,13 @@ export function ProductCard({ product, index }: ProductCardProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: index * 0.1 }}
-        className="group relative flex flex-col cursor-pointer"
+        className="group relative flex flex-col cursor-pointer h-[380px]"
       >
-        <div className="relative aspect-[4/5] mb-4 bg-muted/30 rounded-3xl overflow-hidden border-2 border-transparent group-hover:border-primary/30 transition-all duration-300">
+        <div className="relative aspect-[4/5] mb-4 bg-muted/30 rounded-3xl overflow-hidden border-2 border-transparent group-hover:border-primary/30 transition-all duration-300 flex-shrink-0 flex items-center justify-center">
           <img
             src={product.image}
             alt={product.name}
-            className="object-cover w-full h-full transform transition-transform duration-700 group-hover:scale-105"
+            className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-700 group-hover:scale-105"
           />
           
           {/* Badges */}
@@ -98,18 +98,36 @@ export function ProductCard({ product, index }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="px-2 flex flex-col gap-1">
+        <div className="px-2 flex flex-col gap-1 flex-1 overflow-hidden">
           <h3 className="font-display font-medium text-lg text-foreground truncate hover:text-primary transition-colors">
             {product.name}
           </h3>
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-primary-foreground">₹{Number(product.price).toFixed(2)}</span>
-            {product.originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                ₹{Number(product.originalPrice).toFixed(2)}
-              </span>
-            )}
+            <span className="font-semibold text-primary-foreground">₹{Number(product.price || 0).toFixed(2)}</span>
+            <span className="text-sm text-muted-foreground line-through">
+              ₹{Number(product.originalPrice || product.price || 0).toFixed(2)}
+            </span>
           </div>
+          {/* Rating */}
+          {product.rating && (
+            <div className="flex items-center gap-2 mt-auto pt-2 pb-2">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star 
+                    key={i} 
+                    className={`w-3 h-3 ${
+                      i < Math.floor(product.rating) 
+                        ? 'text-yellow-400 fill-current' 
+                        : 'text-gray-300'
+                    }`} 
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-gray-500">
+                ({product.reviews || 0})
+              </span>
+            </div>
+          )}
         </div>
       </motion.div>
     </Link>

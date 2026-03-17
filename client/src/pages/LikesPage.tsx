@@ -54,22 +54,22 @@ export default function LikesPage() {
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-6">
             {likedProducts.map((product, index) => (
               <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300"
+                className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 h-[380px] flex flex-col"
               >
                 {/* Product Image */}
-                <div className="aspect-square relative overflow-hidden bg-gray-50">
+                <div className="aspect-square relative overflow-hidden bg-gray-50 flex items-center justify-center">
                   <Link href={`/products/${product.slug}`}>
                     <img 
                       src={product.image} 
                       alt={product.name} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-500"
                     />
                   </Link>
                   
@@ -90,7 +90,7 @@ export default function LikesPage() {
                 </div>
 
                 {/* Product Info */}
-                <div className="p-4">
+                <div className="p-4 flex-1 flex flex-col justify-between">
                   {/* Category */}
                   <div className="mb-2">
                     <span className="text-xs text-gray-500 uppercase tracking-wide">

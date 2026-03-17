@@ -6,6 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
 import { LikeProvider } from "@/contexts/LikeContext";
+import { useEffect } from "react";
+import animations from "./utils/animations";
+import "./styles/animations.css";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -65,6 +68,18 @@ function Router() {
 }
 
 function App() {
+  useEffect(() => {
+    // Initialize animations when component mounts
+    animations.init();
+    
+    // Apply gender-themed background to body
+    document.body.classList.add('gender-pattern');
+    
+    return () => {
+      document.body.classList.remove('gender-pattern');
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

@@ -111,9 +111,9 @@ export default function AdminDashboard() {
   // Mock data for demonstration
   const stats = [
     { label: "Total Orders", value: "1,234", change: "+12%", icon: ShoppingCart, color: "from-blue-500 to-blue-600" },
-    { label: "Total Revenue", value: "₹45,678", change: "+23%", icon: DollarSign, color: "from-green-500 to-green-600" },
+    { label: "Total Revenue", value: "₹45,678", change: "+23%", icon: DollarSign, color: "from-pink-500 to-pink-600" },
     { label: "Total Customers", value: "892", change: "+8%", icon: Users, color: "from-purple-500 to-purple-600" },
-    { label: "Total Products", value: "156", change: "+5%", icon: Package, color: "from-orange-500 to-orange-600" }
+    { label: "Total Products", value: "156", change: "+5%", icon: Package, color: "from-blue-500 to-pink-600" }
   ];
 
   const recentOrders = [
@@ -131,20 +131,20 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-blue-50">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
+      <div className="bg-gradient-to-r from-blue-100/90 via-white/50 to-pink-100/90 backdrop-blur-lg shadow-lg border-b border-blue-100/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <Link href="/" className="flex items-center gap-2 text-xl font-bold text-primary">
-                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
-                  PM
+              <Link href="/" className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
+                  <span className="text-sm font-bold">PM</span>
                 </div>
                 <span>Planet Mini</span>
               </Link>
-              <div className="h-8 w-px bg-gray-300"></div>
-              <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
+              <div className="h-8 w-px bg-gradient-to-b from-blue-200 to-pink-200"></div>
+              <h1 className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">Admin Dashboard</h1>
             </div>
             <div className="flex items-center gap-4">
               <button className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">

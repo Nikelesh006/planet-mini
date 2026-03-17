@@ -85,26 +85,26 @@ export default function Search() {
         </motion.div>
 
         {/* Search Results */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-6">
           {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
             <motion.div
               key={item}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: item * 0.1 }}
-              className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 group"
+              className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300 group h-[380px] flex flex-col"
             >
-              <div className="aspect-square relative">
+              <div className="aspect-square relative flex items-center justify-center">
                 <img 
                   src={`https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=300&h=300&random=${item}`}
                   alt="Product" 
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-500"
                 />
                 <div className="absolute top-3 right-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                   -20%
                 </div>
               </div>
-              <div className="p-4">
+              <div className="p-4 flex-1 flex flex-col justify-between">
                 <h3 className="font-semibold text-gray-900 mb-2">Baby Onesie</h3>
                 <p className="text-sm text-gray-600 mb-3">Soft and comfortable for everyday wear</p>
                 <div className="flex items-center justify-between">

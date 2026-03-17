@@ -57,7 +57,9 @@ export default function Navbar() {
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
-          isScrolled ? "glass shadow-sm py-3" : "bg-transparent py-5"
+          isScrolled 
+            ? "bg-gradient-to-r from-pink-100/90 via-blue-100/90 to-pink-100/90 backdrop-blur-lg shadow-lg border-b border-pink-100/50 py-3" 
+            : "bg-transparent py-5"
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -73,48 +75,46 @@ export default function Navbar() {
             {/* Logo */}
             <Link 
               href="/" 
-              className="flex items-center gap-2 text-2xl font-display font-bold text-foreground hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 text-2xl font-display font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-primary-foreground shadow-sm">
-                PM
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 via-blue-500 to-pink-500 flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
+                <span className="text-sm font-bold">PM</span>
               </div>
-              <span>Planet Mini</span>
+              <span className="font-bold">Planet Mini</span>
             </Link>
 
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-8">
-              {navLinks.map((link) => (
+              {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-semibold transition-colors hover:text-blue-500 relative group",
-                    location === link.href ? "text-blue-500" : "text-muted-foreground"
+                    "text-sm font-semibold transition-all duration-500 ease-out relative group px-4 py-2 rounded-lg transform hover:scale-105",
+                    location === link.href 
+                      ? index % 2 === 0
+                        ? "text-white bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg" 
+                        : "text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg"
+                      : "text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-pink-500 hover:to-blue-500"
                   )}
                 >
                   {link.label}
-                  {location === link.href && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-blue-500 rounded-full"
-                    />
-                  )}
                 </Link>
               ))}
             </nav>
 
             {/* Actions */}
             <div className="flex items-center gap-2 sm:gap-4">
-              <button className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all">
+              <button className="group p-2 text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-pink-500 hover:to-blue-500 rounded-full transition-all duration-300 transform hover:scale-110">
                 <Search className="w-5 h-5" />
               </button>
-              <button className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-all">
+              <button className="group p-2 text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500 rounded-full transition-all duration-300 transform hover:scale-110">
                 <Link href="/likes" className="block relative">
                   {likedProducts.length > 0 && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 text-primary-foreground rounded-full text-[8px] font-bold flex items-center justify-center border-2 border-background"
+                      className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-blue-500 to-pink-600 text-white rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-lg"
                     >
                       {likedProducts.length > 9 ? '9+' : likedProducts.length}
                     </motion.div>
@@ -122,10 +122,10 @@ export default function Navbar() {
                   <Heart 
                     className={`w-5 h-5 transition-colors ${
                       location === '/likes' 
-                        ? 'text-red-500 fill-current' 
+                        ? 'text-white fill-current' 
                         : likedProducts.some(p => p.id === 1) // Sample product ID - you can make this dynamic
-                          ? 'text-red-500 fill-current' 
-                          : 'text-muted-foreground'
+                          ? 'text-pink-500 fill-current' 
+                          : 'text-gray-600'
                     }`} 
                   />
                 </Link>
@@ -192,10 +192,10 @@ export default function Navbar() {
               className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm bg-card shadow-2xl p-6 lg:hidden flex flex-col"
             >
               <div className="flex items-center justify-between mb-8">
-                <span className="text-xl font-display font-bold">Menu</span>
+                <span className="text-xl font-display font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">Menu</span>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 bg-muted rounded-full text-muted-foreground hover:text-foreground transition-colors"
+                  className="p-2 bg-gradient-to-r from-blue-100 to-pink-100 rounded-full text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500 transition-all duration-300"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -207,8 +207,10 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
-                      "text-lg font-semibold py-3 px-4 rounded-xl transition-colors",
-                      location === link.href ? "bg-blue-50 text-blue-500" : "text-muted-foreground hover:bg-muted"
+                      "text-lg font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105",
+                      location === link.href 
+                        ? "text-white bg-gradient-to-r from-blue-500 to-pink-500 shadow-lg" 
+                        : "text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500"
                     )}
                   >
                     {link.label}
@@ -220,7 +222,7 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                     handleProfileClick();
                   }}
-                  className="text-lg font-semibold py-3 px-4 rounded-xl text-muted-foreground hover:bg-muted transition-colors flex items-center gap-3"
+                  className="text-lg font-semibold py-3 px-4 rounded-xl text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500 transition-all duration-300 transform hover:scale-105 flex items-center gap-3"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
