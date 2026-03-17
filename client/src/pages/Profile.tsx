@@ -1,16 +1,19 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { useState } from "react";
-import { Loader2, User, Settings, ShoppingBag, Heart, Package, LogOut, Edit, Camera, MapPin, Phone, Mail, Calendar, Plus, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Loader2, User, Settings, ShoppingBag, Heart, Package, LogOut, Edit, Camera, MapPin, Phone, Mail, Calendar, Plus, Trash2, AlertCircle } from "lucide-react";
 import { useProfile, useUpdateProfile, useAddBabyInfo } from "../hooks/useProfile";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [showAddBaby, setShowAddBaby] = useState(false);
   const [babyForm, setBabyForm] = useState({ name: '', age: 0, gender: '' });
   
-  // Mock userId - replace with actual user authentication
-  const userId = "507f1f77bcf86cd799439011";
+  // Get authenticated Google user
+  const { user: authUser, isLoading: authLoading, logout } = useAuth();
+  
+  const userId = authUser?.id || '';
   
   const { data: profile, isLoading, error } = useProfile(userId);
   const updateProfile = useUpdateProfile(userId);
@@ -20,6 +23,7 @@ export default function Profile() {
     try {
       await updateProfile.mutateAsync(formData);
       setIsEditing(false);
+      console.log("Profile updated successfully");
     } catch (error) {
       console.error('Failed to update profile:', error);
     }
@@ -37,7 +41,17 @@ export default function Profile() {
     }
   };
 
-  if (isLoading) return (
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // Redirect to home page after logout
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  if (isLoading || authLoading) return (
     <div className="min-h-screen flex items-center justify-center">
       <Loader2 className="w-8 h-8 animate-spin" />
     </div>
@@ -51,9 +65,11 @@ export default function Profile() {
 
   const displayName = profile?.firstName && profile?.lastName 
     ? `${profile.firstName} ${profile.lastName}` 
-    : "John Doe";
+    : authUser?.name || "User";
+
+  const displayEmail = profile?.email || authUser?.email || "user@example.com";
     
-  const initials = displayName.split(' ').map(n => n[0]).join('').toUpperCase();
+  const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase();
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -88,7 +104,7 @@ export default function Profile() {
                 </div>
                 <div className="flex-1">
                   <h3 className="text-xl font-semibold text-gray-900 mb-1">{displayName}</h3>
-                  <p className="text-gray-600 mb-3">{profile?.email || 'john.doe@example.com'}</p>
+                  <p className="text-gray-600 mb-3">{displayEmail}</p>
                   <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-4 h-4" />
@@ -110,14 +126,14 @@ export default function Profile() {
                     <input
                       type="text"
                       placeholder="First Name"
-                      defaultValue={profile?.firstName || ''}
+                      defaultValue={authUser?.name?.split(' ')[0] || profile?.firstName || ''}
                       className="p-2 border rounded-lg"
                       id="firstName"
                     />
                     <input
                       type="text"
                       placeholder="Last Name"
-                      defaultValue={profile?.lastName || ''}
+                      defaultValue={authUser?.name?.split(' ').slice(1).join(' ') || profile?.lastName || ''}
                       className="p-2 border rounded-lg"
                       id="lastName"
                     />
@@ -131,7 +147,7 @@ export default function Profile() {
                     <input
                       type="email"
                       placeholder="Email"
-                      defaultValue={profile?.email || ''}
+                      defaultValue={authUser?.email || profile?.email || ''}
                       className="p-2 border rounded-lg"
                       id="email"
                     />
@@ -180,11 +196,20 @@ export default function Profile() {
                           pincode: (document.getElementById('pincode') as HTMLInputElement)?.value,
                         }
                       };
+                      console.log('Frontend sending data:', formData);
                       handleSaveProfile(formData);
                     }}
-                    className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+                    disabled={updateProfile.isPending}
+                    className="mt-4 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   >
-                    Save Changes
+                    {updateProfile.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      "Save Changes"
+                    )}
                   </button>
                 </div>
               )}
@@ -198,7 +223,7 @@ export default function Profile() {
                     <Mail className="w-5 h-5 text-gray-400" />
                     <div>
                       <p className="text-sm text-gray-600">Email</p>
-                      <p className="font-medium text-gray-900">{profile?.email || 'john.doe@example.com'}</p>
+                      <p className="font-medium text-gray-900">{displayEmail}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
@@ -424,7 +449,7 @@ export default function Profile() {
                   <Heart className="w-5 h-5 text-gray-600" />
                   <span className="text-gray-700 font-medium">View Wishlist</span>
                 </Link>
-                <button className="w-full flex items-center gap-3 p-4 bg-red-50 rounded-xl hover:bg-red-100 transition-colors text-left">
+                <button onClick={handleLogout} className="w-full flex items-center gap-3 p-4 bg-red-50 rounded-xl hover:bg-red-100 transition-colors text-left">
                   <LogOut className="w-5 h-5 text-red-500" />
                   <span className="text-red-600 font-medium">Sign Out</span>
                 </button>

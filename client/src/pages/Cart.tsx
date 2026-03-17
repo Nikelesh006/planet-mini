@@ -37,7 +37,7 @@ export default function Cart() {
                       <h3 className="font-semibold text-gray-900">Baby Onesie</h3>
                       <p className="text-sm text-gray-600">Size: 6-12 months | Color: Pink</p>
                       <div className="flex items-center justify-between mt-2">
-                        <span className="text-lg font-bold text-primary">$24.99</span>
+                        <span className="text-lg font-bold text-primary">₹24.99</span>
                         <button className="text-red-500 hover:text-red-700 transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -75,15 +75,15 @@ export default function Cart() {
               <div className="border-t pt-6">
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600">Subtotal</span>
-                  <span className="font-semibold">$74.97</span>
+                  <span className="font-semibold">₹74.97</span>
                 </div>
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600">Shipping</span>
-                  <span className="font-semibold">$5.00</span>
+                  <span className="font-semibold">₹5.00</span>
                 </div>
                 <div className="flex justify-between mb-4">
                   <span className="text-lg font-bold text-gray-900">Total</span>
-                  <span className="text-lg font-bold text-primary">$79.97</span>
+                  <span className="text-lg font-bold text-primary">₹79.97</span>
                 </div>
                 
                 <Link 

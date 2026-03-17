@@ -1,14 +1,17 @@
 'use client';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
-import { useEffect } from 'react';
+import { X, UserPlus, LogIn } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 interface GoogleAuthModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialMode?: 'signin' | 'signup';
 }
 
-export default function GoogleAuthModal({ isOpen, onClose }: GoogleAuthModalProps) {
+export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin' }: GoogleAuthModalProps) {
+  const [mode, setMode] = useState<'signin' | 'signup'>(initialMode);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -25,7 +28,11 @@ export default function GoogleAuthModal({ isOpen, onClose }: GoogleAuthModalProp
     };
   }, [isOpen, onClose]);
 
-  const handleGoogleSignIn = () => {
+  useEffect(() => {
+    setMode(initialMode);
+  }, [initialMode]);
+
+  const handleGoogleAuth = () => {
     window.location.href = '/api/auth/google';
   };
 
@@ -82,16 +89,45 @@ export default function GoogleAuthModal({ isOpen, onClose }: GoogleAuthModalProp
                       <span className="text-white font-bold text-xl">PM</span>
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                      Welcome to Planet Mini
+                      {mode === 'signin' ? 'Welcome Back' : 'Join Planet Mini'}
                     </h2>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Sign in to access your profile, orders & wishlist
+                      {mode === 'signin' 
+                        ? 'Sign in to access your profile, orders & wishlist'
+                        : 'Create your account to start shopping and save your favorites'
+                      }
                     </p>
                   </div>
 
-                  {/* Google Sign In Button */}
+                  {/* Mode Toggle */}
+                  <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+                    <button
+                      onClick={() => setMode('signin')}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-sm transition-all ${
+                        mode === 'signin'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      <LogIn className="w-4 h-4" />
+                      Sign In
+                    </button>
+                    <button
+                      onClick={() => setMode('signup')}
+                      className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-sm transition-all ${
+                        mode === 'signup'
+                          ? 'bg-white text-blue-600 shadow-sm'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      <UserPlus className="w-4 h-4" />
+                      Sign Up
+                    </button>
+                  </div>
+
+                  {/* Google Auth Button */}
                   <button
-                    onClick={handleGoogleSignIn}
+                    onClick={handleGoogleAuth}
                     className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 group"
                   >
                     {/* Google Logo */}
@@ -103,9 +139,25 @@ export default function GoogleAuthModal({ isOpen, onClose }: GoogleAuthModalProp
                     </svg>
                     
                     <span className="text-gray-700 font-medium text-base">
-                      Continue with Google
+                      {mode === 'signin' ? 'Sign in with Google' : 'Sign up with Google'}
                     </span>
                   </button>
+
+                  {/* Helper Text */}
+                  <div className="mt-6 text-center">
+                    <p className="text-xs text-gray-500">
+                      {mode === 'signin' 
+                        ? "New to Planet Mini? "
+                        : "Already have an account? "
+                      }
+                      <button
+                        onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+                        className="text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        {mode === 'signin' ? 'Sign up' : 'Sign in'}
+                      </button>
+                    </p>
+                  </div>
                 </div>
               </div>
             </motion.div>

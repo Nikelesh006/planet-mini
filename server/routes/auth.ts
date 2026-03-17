@@ -3,6 +3,7 @@ import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import jwt from 'jsonwebtoken';
+import Profile from '../models/Profile';  // ✅ Import Profile model
 
 const router = express.Router();
 
@@ -65,7 +66,7 @@ router.get("/google",
 
 router.get("/google/callback",
   passport.authenticate("google", { session: false, failureRedirect: "/" }),
-  (req: any, res: any) => {
+  async (req: any, res: any) => {
     const user = req.user as any;
     console.log('🔥 Google callback - User:', user);
     
@@ -74,6 +75,36 @@ router.get("/google/callback",
       process.env.JWT_SECRET!,
       { expiresIn: "24h" }
     );
+
+    // ✅ STORE GOOGLE USER IN DATABASE
+    try {
+      const nameParts = user.name.split(' ');
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      const profile = await Profile.findOneAndUpdate(
+        { userId: user.id }, // Use Google ID as unique identifier
+        {
+          userId: user.id,
+          firstName,
+          lastName,
+          email: user.email,
+          joined: new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+        },
+        { upsert: true, new: true } // Create if doesn't exist, update if exists
+      );
+
+      console.log('✅ Google user stored in database:', {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        profileId: profile._id
+      });
+
+    } catch (error) {
+      console.error('❌ Failed to save Google user to database:', error);
+      // Don't block login if profile save fails
+    }
 
     // Set httpOnly JWT cookie
     res.cookie("auth_token", token, {
@@ -96,6 +127,15 @@ router.get("/me",
   (req: any, res: any) => {
     console.log('/api/auth/me - User:', req.user);
     res.json(req.user);
+  }
+);
+
+// Get current session (for useAuth hook)
+router.get("/session", 
+  passport.authenticate("jwt", { session: false }),
+  (req: any, res: any) => {
+    console.log('/api/auth/session - User:', req.user);
+    res.json({ user: req.user });
   }
 );
 

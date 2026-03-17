@@ -108,8 +108,8 @@ export default function ShopOffers() {
                     {/* Pricing */}
                     <div className="mb-3">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-lg font-bold">${offer.salePrice}</span>
-                        <span className="text-sm line-through text-white/70">${offer.originalPrice}</span>
+                        <span className="text-lg font-bold">₹{offer.salePrice}</span>
+                        <span className="text-sm line-through text-white/70">₹{offer.originalPrice}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-xs bg-green-500 text-white px-2 py-1 rounded-full">

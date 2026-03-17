@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Button } from "@/components/Button";
 import { ProductCard } from "@/components/ProductCard";
-import { useProducts } from "@/hooks/use-products";
+import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useSuperSaverProducts, useFeaturedProducts } from "@/hooks/useProducts";
 import { motion } from "framer-motion";
 import Slider from "@/components/Slider";
 import CategoryCard from "@/components/CategoryCard";
@@ -10,6 +10,15 @@ import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift } 
 
 export default function Home() {
   const { data: products, isLoading } = useProducts();
+  const { data: styleProducts, isLoading: styleLoading } = useStyleProducts();
+  const { data: homeProducts, isLoading: homeLoading } = useHomeProducts();
+  
+  // Specific hooks for each section
+  const { data: shopByStyleProducts, isLoading: shopByStyleLoading } = useShopByStyleProducts();
+  const { data: latestStyleProducts, isLoading: latestStyleLoading } = useLatestStyleProducts();
+  const { data: babyCareProducts, isLoading: babyCareLoading } = useBabyCareProducts();
+  const { data: superSaverProducts, isLoading: superSaverLoading } = useSuperSaverProducts();
+  const { data: featuredProducts, isLoading: featuredLoading } = useFeaturedProducts();
 
   const sliderSlides = [
     {
@@ -62,33 +71,6 @@ export default function Home() {
       href: "/shop/style?val=outfits",
       image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&q=80&w=400",
       productCount: 32
-    }
-  ];
-
-  const shopByAge = [
-    { 
-      name: "0-6 Months", 
-      description: "Essentials for newborns and infants",
-      icon: "🍼", 
-      href: "/shop/age?val=0-6",
-      image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=400",
-      productCount: 36
-    },
-    { 
-      name: "6-12 Months", 
-      description: "Clothing for growing babies",
-      icon: "🧸", 
-      href: "/shop/age?val=6-12",
-      image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?auto=format&fit=crop&q=80&w=400",
-      productCount: 42
-    },
-    { 
-      name: "1-2 Years", 
-      description: "Outfits for toddlers and little walkers",
-      icon: "🎈", 
-      href: "/shop/age?val=1-2",
-      image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&q=80&w=400",
-      productCount: 28
     }
   ];
 
@@ -220,21 +202,49 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
-              <Sparkles className="w-8 h-8 text-primary" />
-              Shop by Style
-              <Sparkles className="w-8 h-8 text-primary" />
-            </h2>
           </motion.div>
-          <div className="grid md:grid-cols-3 gap-8">
+          
+          {/* Category Cards */}
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
             {shopByStyle.map((category) => (
               <CategoryCard key={category.name} {...category} />
             ))}
           </div>
+          
+          {/* Dynamic Products */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-center mb-4">Shop by Style Products</h2>
+            <p className="text-center text-gray-600 mb-8">Discover our latest collection of stylish baby wear</p>
+          </div>
+          
+          {!shopByStyleLoading && shopByStyleProducts && shopByStyleProducts.length > 0 && (
+            <ProductGrid 
+              products={shopByStyleProducts.slice(0, 6)} 
+              title=""
+            />
+          )}
+          {!shopByStyleLoading && (!shopByStyleProducts || shopByStyleProducts.length === 0) && (
+            <div className="text-center py-12">
+              <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Products Available</h3>
+              <p className="text-gray-500 mb-6">Start by adding some products to showcase here!</p>
+              <Link 
+                href="/admin/add-product"
+                className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                <span>Add First Product</span>
+              </Link>
+            </div>
+          )}
+          {shopByStyleLoading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Shop by Age Section */}
+      {/* Latest Style Products Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
           <motion.div 
@@ -242,17 +252,32 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
-              <Sparkles className="w-8 h-8 text-primary" />
-              Shop by Age
-              <Sparkles className="w-8 h-8 text-primary" />
-            </h2>
           </motion.div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {shopByAge.map((category) => (
-              <CategoryCard key={category.name} {...category} />
-            ))}
+          
+          {/* Dynamic Products */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-center mb-4">Latest Style Products</h2>
+            <p className="text-center text-gray-600 mb-8">Check out our newest arrivals and trending styles</p>
           </div>
+          
+          {!latestStyleLoading && latestStyleProducts && latestStyleProducts.length > 0 && (
+            <ProductGrid 
+              products={latestStyleProducts.slice(0, 8)} 
+              title=""
+            />
+          )}
+          {!latestStyleLoading && (!latestStyleProducts || latestStyleProducts.length === 0) && (
+            <div className="text-center py-12">
+              <Shirt className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Latest Styles</h3>
+              <p className="text-gray-500">Add your latest products to showcase here!</p>
+            </div>
+          )}
+          {latestStyleLoading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -264,17 +289,39 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
-              <Sparkles className="w-8 h-8 text-primary" />
-              Baby Care Essentials
-              <Sparkles className="w-8 h-8 text-primary" />
-            </h2>
           </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          {/* Category Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {babyCareEssentials.map((category) => (
               <CategoryCard key={category.name} {...category} />
             ))}
           </div>
+          
+          {/* Dynamic Products */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-center mb-4">Baby Care Essentials</h2>
+            <p className="text-center text-gray-600 mb-8">Everything you need for your baby's daily care routine</p>
+          </div>
+          
+          {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
+            <ProductGrid 
+              products={babyCareProducts.slice(0, 4)} 
+              title=""
+            />
+          )}
+          {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
+            <div className="text-center py-12">
+              <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Baby Care Products</h3>
+              <p className="text-gray-500">Add baby care essentials to showcase here!</p>
+            </div>
+          )}
+          {babyCareLoading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -286,28 +333,67 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
-              <Gift className="w-8 h-8 text-primary" />
-              Super Saver Offers
-              <Gift className="w-8 h-8 text-primary" />
-            </h2>
           </motion.div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          {/* Category Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
             {superSaverOffers.map((offer) => (
               <CategoryCard key={offer.name} {...offer} />
             ))}
           </div>
+          
+          {/* Dynamic Products */}
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-center mb-4">Super Saver Offers</h2>
+            <p className="text-center text-gray-600 mb-8">Amazing deals and discounts on your favorite baby products</p>
+          </div>
+          
+          {!superSaverLoading && superSaverProducts && superSaverProducts.length > 0 && (
+            <ProductGrid 
+              products={superSaverProducts.slice(0, 6)} 
+              title=""
+            />
+          )}
+          {!superSaverLoading && (!superSaverProducts || superSaverProducts.length === 0) && (
+            <div className="text-center py-12">
+              <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Special Offers</h3>
+              <p className="text-gray-500">Add special offers and deals to showcase here!</p>
+            </div>
+          )}
+          {superSaverLoading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Featured Products Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
-          {!isLoading && products && products.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-center mb-4">Featured Products</h2>
+            <p className="text-center text-gray-600 mb-8">Handpicked favorites and customer top-rated items</p>
+          </div>
+          
+          {!featuredLoading && featuredProducts && featuredProducts.length > 0 && (
             <ProductGrid 
-              products={products.slice(0, 8)} 
-              title="Featured Products"
+              products={featuredProducts.slice(0, 8)} 
+              title=""
             />
+          )}
+          {!featuredLoading && (!featuredProducts || featuredProducts.length === 0) && (
+            <div className="text-center py-12">
+              <Star className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Featured Products</h3>
+              <p className="text-gray-500">Add featured products to showcase here!</p>
+            </div>
+          )}
+          {featuredLoading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
           )}
         </div>
       </section>

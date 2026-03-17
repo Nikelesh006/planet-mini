@@ -1,6 +1,13 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Building, Home, Truck } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Building, Home, Truck, ChevronDown, ChevronUp, HelpCircle, Package, Shield, CreditCard, RefreshCw } from "lucide-react";
+
+interface FAQItem {
+  question: string;
+  answer: string;
+  category: string;
+  icon: any;
+}
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -9,6 +16,55 @@ export default function Contact() {
     subject: '',
     message: ''
   });
+
+  const [expandedItems, setExpandedItems] = useState<number[]>([]);
+
+  const faqData: FAQItem[] = [
+    {
+      question: "What materials are used in your baby clothes?",
+      answer: "We use only the softest, safest materials for your baby's delicate skin. Our clothes are made from 100% organic cotton, bamboo fabric, and other hypoallergenic materials that are free from harmful chemicals and dyes.",
+      category: "products",
+      icon: Package
+    },
+    {
+      question: "How do I choose the right size for my baby?",
+      answer: "We offer a comprehensive size guide on each product page. Our sizes are based on both age and weight ranges. If you're between sizes, we recommend sizing up for longer wear.",
+      category: "products",
+      icon: Package
+    },
+    {
+      question: "What are your shipping options and costs?",
+      answer: "We offer Standard Shipping (5-7 days), Express Shipping (2-3 days), and Next Day Delivery. Shipping costs vary by location. Free shipping is available on orders over $50. We also ship internationally to 15+ countries.",
+      category: "shipping",
+      icon: Truck
+    },
+    {
+      question: "What payment methods do you accept?",
+      answer: "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, Google Pay, and Buy Now Pay Later options like Klarna. All transactions are secure and encrypted.",
+      category: "payment",
+      icon: CreditCard
+    },
+    {
+      question: "What is your return policy?",
+      answer: "We offer a 30-day return policy for unused items in original packaging. Simply contact our customer service to initiate a return. Refunds are processed within 5-7 business days. Exchanges for different sizes are always free!",
+      category: "returns",
+      icon: RefreshCw
+    }
+  ];
+
+  const categories = [
+    { id: "all", name: "All Questions", icon: HelpCircle, count: faqData.length },
+    { id: "products", name: "Products", icon: Package, count: faqData.filter(item => item.category === "products").length },
+    { id: "shipping", name: "Shipping", icon: Truck, count: faqData.filter(item => item.category === "shipping").length },
+    { id: "payment", name: "Payment", icon: CreditCard, count: faqData.filter(item => item.category === "payment").length },
+    { id: "returns", name: "Returns", icon: RefreshCw, count: faqData.filter(item => item.category === "returns").length }
+  ];
+
+  const [activeCategory, setActiveCategory] = useState("all");
+
+  const filteredFAQs = activeCategory === "all" 
+    ? faqData 
+    : faqData.filter(item => item.category === activeCategory);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +77,14 @@ export default function Contact() {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const toggleExpanded = (index: number) => {
+    setExpandedItems(prev => 
+      prev.includes(index) 
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
   };
 
   return (
@@ -225,6 +289,122 @@ export default function Contact() {
                   </button>
                 </div>
               </form>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Category Sidebar */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-1"
+          >
+            <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-24">
+              <h2 className="text-xl font-bold text-gray-900 mb-6">Categories</h2>
+              <div className="space-y-2">
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => setActiveCategory(category.id)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
+                      activeCategory === category.id
+                        ? "bg-primary text-white"
+                        : "text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    <category.icon className="w-5 h-5" />
+                    <div className="flex-1">
+                      <div className="font-medium">{category.name}</div>
+                      <div className={`text-sm ${activeCategory === category.id ? "text-white/80" : "text-gray-500"}`}>
+                        {category.count} questions
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+
+          {/* FAQ Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="lg:col-span-3"
+          >
+            <div className="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-center mb-12"
+              >
+                <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                  Find quick answers to common questions about our products and services.
+                </p>
+              </motion.div>
+
+              <div className="space-y-4">
+                {filteredFAQs.map((faq, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-gray-50 rounded-xl overflow-hidden"
+                  >
+                    <button
+                      onClick={() => toggleExpanded(index)}
+                      className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                          <faq.icon className="w-5 h-5 text-primary" />
+                        </div>
+                        <h3 className="font-semibold text-gray-900">{faq.question}</h3>
+                      </div>
+                      {expandedItems.includes(index) ? (
+                        <ChevronUp className="w-5 h-5 text-gray-400" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-400" />
+                      )}
+                    </button>
+                    {expandedItems.includes(index) && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="px-6 pb-4"
+                      >
+                        <div className="pl-14 text-gray-600 leading-relaxed">
+                          {faq.answer}
+                        </div>
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                className="mt-12 text-center"
+              >
+                <p className="text-gray-600 mb-4">
+                  Still have questions? Our customer service team is here to help!
+                </p>
+                <a 
+                  href="mailto:hello@planetmini.com" 
+                  className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  Contact Support
+                </a>
+              </motion.div>
             </div>
           </motion.div>
         </div>

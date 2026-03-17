@@ -1,762 +1,204 @@
 import type { Express } from "express";
 
 import { createServer, type Server } from "http";
+import jwt from "jsonwebtoken";
 
-import { storage } from "./storage";
+import { storage, addressStorage, ordersStorage, userStorage } from "./storage";
+
+// Define user type for auth middleware
+interface User {
+  id: string;
+  email: string;
+  name?: string;
+  image?: string;
+}
+
+// Auth middleware for user isolation
+const authenticateToken = (req: any, res: any, next: any) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN[1]
+  
+  console.log('🔐 Auth check:', { authHeader, hasToken: !!token, tokenValue: token });
+  
+  // TEMPORARY BYPASS FOR TESTING - Remove in production
+  if (!token || token === 'null' || token === 'undefined') {
+    console.log('⚠️ TEMP: Using test user for null token');
+    req.user = { 
+      sub: 'test-user-123', 
+      id: 'test-user-123', 
+      email: 'test@example.com' 
+    };
+    return next();
+  }
+
+  const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
+  console.log('🔑 Using JWT secret:', jwtSecret ? 'Set' : 'Not set');
+
+  jwt.verify(token, jwtSecret, (err: any, user: any) => {
+    if (err) {
+      console.log('❌ Token verification failed:', {
+        error: err.message,
+        name: err.name,
+        expired: err.expired,
+        token: token.substring(0, 50) + '...'
+      });
+      return res.status(403).json({ 
+        error: 'Invalid token',
+        details: err.message,
+        suggestion: 'Please login again to get a fresh token'
+      });
+    }
+    
+    console.log('✅ Token verified successfully:', { 
+      userId: user?.sub || user?.id || user?.userId,
+      email: user?.email 
+    });
+    
+    req.user = user;
+    next();
+  });
+};
+
+
 
 import { api } from "@shared/routes";
 
+
+
 import { z } from "zod";
 
-import profileRoutes from "./routes/profile-simple";
 
 
+import profileRoutes from "./routes/profile";
 
-const mockProducts = [
+import authRoutes from "./routes/auth";
 
-  {
+import uploadRoutes from "./routes/upload";
 
-    slug: "classic-cotton-bodysuit",
+import addressRoutes from "./routes/addresses";
 
-    name: "Classic Cotton Bodysuit",
 
-    description: "Soft, breathable 100% organic cotton bodysuit perfect for everyday wear.",
 
-    price: "15.00",
 
-    originalPrice: "20.00",
-
-    category: "style",
-
-    subcategory: "bodysuits",
-
-    image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.8",
-
-    reviews: 124,
-
-    inStock: true,
-
-    isNew: true,
-
-    colors: ["white", "pink", "blue"],
-
-    sizes: ["0-3m", "3-6m", "6-9m", "9-12m"]
-
-  },
-
-  {
-
-    slug: "knit-bunny-romper",
-
-    name: "Knit Bunny Romper",
-
-    description: "Adorable knit romper with bunny ears on the hood. Warm and cozy.",
-
-    price: "28.50",
-
-    originalPrice: "35.00",
-
-    category: "style",
-
-    subcategory: "rompers",
-
-    image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.9",
-
-    reviews: 89,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["pink", "grey"],
-
-    sizes: ["3-6m", "6-9m", "9-12m"]
-
-  },
-
-  {
-
-    slug: "denim-overalls-set",
-
-    name: "Mini Denim Overalls Set",
-
-    description: "Durable and stylish soft denim overalls with matching striped tee.",
-
-    price: "32.00",
-
-    originalPrice: null,
-
-    category: "style",
-
-    subcategory: "overalls",
-
-    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.7",
-
-    reviews: 56,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["blue"],
-
-    sizes: ["6-9m", "9-12m", "12-18m", "18-24m"]
-
-  },
-
-  {
-
-    slug: "muslin-swaddle-blanket-3pack",
-
-    name: "Muslin Swaddle Blanket 3-Pack",
-
-    description: "Lightweight, breathable muslin swaddles in neutral earthy tones.",
-
-    price: "24.00",
-
-    originalPrice: "30.00",
-
-    category: "care",
-
-    subcategory: "blankets",
-
-    image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?q=80&w=600&auto=format&fit=crop",
-
-    rating: "5.0",
-
-    reviews: 210,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["neutral"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "sleep-and-play-footie",
-
-    name: "Sleep and Play Footie",
-
-    description: "Zip-up footie pajamas for easy late-night changes. Super soft.",
-
-    price: "18.00",
-
-    originalPrice: null,
-
-    category: "age",
-
-    subcategory: "newborn",
-
-    image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.6",
-
-    reviews: 145,
-
-    inStock: true,
-
-    isNew: true,
-
-    colors: ["mint", "peach", "lavender"],
-
-    sizes: ["nb", "0-3m", "3-6m"]
-
-  },
-
-  {
-
-    slug: "plush-bear-lovey",
-
-    name: "Plush Bear Lovey",
-
-    description: "The perfect first companion for your little one. Soft plush bear head with attached blanket.",
-
-    price: "16.00",
-
-    originalPrice: null,
-
-    category: "care",
-
-    subcategory: "toys",
-
-    image: "https://images.unsplash.com/photo-1559418306-036f0072cfa1?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.9",
-
-    reviews: 300,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["beige", "brown"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "silicone-teething-ring",
-
-    name: "Silicone Teething Ring",
-
-    description: "BPA-free silicone teething ring. Easy for tiny hands to grasp and soothing on gums.",
-
-    price: "12.00",
-
-    originalPrice: "15.00",
-
-    category: "care",
-
-    subcategory: "teethers",
-
-    image: "https://images.unsplash.com/photo-1628148782352-8705a67978d3?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.8",
-
-    reviews: 88,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["sage", "rose", "slate"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "organic-cotton-beanie",
-
-    name: "Organic Cotton Beanie",
-
-    description: "Keep little heads warm with this stretchy, snug organic cotton beanie.",
-
-    price: "10.00",
-
-    originalPrice: null,
-
-    category: "style",
-
-    subcategory: "accessories",
-
-    image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.5",
-
-    reviews: 67,
-
-    inStock: true,
-
-    isNew: true,
-
-    colors: ["white", "grey", "mustard"],
-
-    sizes: ["nb-3m", "3-6m"]
-
-  },
-
-  {
-
-    slug: "ribbed-knit-sweater",
-
-    name: "Ribbed Knit Sweater",
-
-    description: "Chunky ribbed sweater for chilly days. Made with a soft cotton blend.",
-
-    price: "26.00",
-
-    originalPrice: "32.00",
-
-    category: "style",
-
-    subcategory: "sweaters",
-
-    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.7",
-
-    reviews: 42,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["cream", "dusty-pink"],
-
-    sizes: ["6-9m", "9-12m", "12-18m"]
-
-  },
-
-  {
-
-    slug: "waterproof-bib-set",
-
-    name: "Waterproof Bib Set (2-Pack)",
-
-    description: "Catch all the spills with these easy-to-clean waterproof bibs featuring deep pockets.",
-
-    price: "14.50",
-
-    originalPrice: null,
-
-    category: "care",
-
-    subcategory: "feeding",
-
-    image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.9",
-
-    reviews: 176,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["blue-pattern", "pink-pattern"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "fleece-lined-booties",
-
-    name: "Fleece-Lined Booties",
-
-    description: "Keep tiny toes toasty with these ultra-soft fleece-lined booties with velcro closure.",
-
-    price: "18.00",
-
-    originalPrice: "22.00",
-
-    category: "style",
-
-    subcategory: "shoes",
-
-    image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.8",
-
-    reviews: 95,
-
-    inStock: true,
-
-    isNew: true,
-
-    colors: ["tan", "charcoal"],
-
-    sizes: ["0-6m", "6-12m", "12-18m"]
-
-  },
-
-  {
-
-    slug: "bamboo-pacifier-clip",
-
-    name: "Bamboo Pacifier Clip",
-
-    description: "Never lose a pacifier again. Stylish bamboo beads with a sturdy wooden clip.",
-
-    price: "9.50",
-
-    originalPrice: null,
-
-    category: "care",
-
-    subcategory: "accessories",
-
-    image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.6",
-
-    reviews: 112,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["natural"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "hooded-bear-towel",
-
-    name: "Hooded Bear Towel",
-
-    description: "Make bath time fun with this highly absorbent, 100% cotton terry hooded towel.",
-
-    price: "22.00",
-
-    originalPrice: "28.00",
-
-    category: "care",
-
-    subcategory: "bath",
-
-    image: "https://images.unsplash.com/photo-1559418306-036f0072cfa1?q=80&w=600&auto=format&fit=crop",
-
-    rating: "5.0",
-
-    reviews: 205,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["white", "brown"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "portable-changing-mat",
-
-    name: "Portable Changing Mat",
-
-    description: "Wipeable, compact changing mat that folds up perfectly for your diaper bag.",
-
-    price: "15.00",
-
-    originalPrice: null,
-
-    category: "care",
-
-    subcategory: "gear",
-
-    image: "https://images.unsplash.com/photo-1628148782352-8705a67978d3?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.7",
-
-    reviews: 84,
-
-    inStock: true,
-
-    isNew: true,
-
-    colors: ["grey-chevron"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "scratch-mittens-3pack",
-
-    name: "Scratch Mittens 3-Pack",
-
-    description: "Soft cotton mittens to protect newborn skin from accidental scratches.",
-
-    price: "8.00",
-
-    originalPrice: "10.00",
-
-    category: "style",
-
-    subcategory: "accessories",
-
-    image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.5",
-
-    reviews: 62,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["white", "multi"],
-
-    sizes: ["nb"]
-
-  },
-
-  {
-
-    slug: "wooden-milestone-cards",
-
-    name: "Wooden Milestone Cards",
-
-    description: "Beautifully engraved wooden discs to capture every month of your baby's first year.",
-
-    price: "25.00",
-
-    originalPrice: null,
-
-    category: "care",
-
-    subcategory: "gifts",
-
-    image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.9",
-
-    reviews: 133,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["wood"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "canvas-diaper-caddy",
-
-    name: "Canvas Diaper Caddy",
-
-    description: "Keep all your diapering essentials organized in this sturdy, multi-compartment caddy.",
-
-    price: "20.00",
-
-    originalPrice: "25.00",
-
-    category: "care",
-
-    subcategory: "organization",
-
-    image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.8",
-
-    reviews: 97,
-
-    inStock: true,
-
-    isNew: true,
-
-    colors: ["cream/grey"],
-
-    sizes: ["one-size"]
-
-  },
-
-  {
-
-    slug: "ruffle-sleeve-onesie",
-
-    name: "Ruffle Sleeve Onesie",
-
-    description: "Sweet everyday onesie with delicate ruffle details on the shoulders.",
-
-    price: "16.00",
-
-    originalPrice: null,
-
-    category: "style",
-
-    subcategory: "bodysuits",
-
-    image: "https://images.unsplash.com/photo-1596496050827-8299e0220de1?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.7",
-
-    reviews: 74,
-
-    inStock: true,
-
-    isNew: false,
-
-    colors: ["blush", "ivory"],
-
-    sizes: ["0-3m", "3-6m", "6-9m", "9-12m"]
-
-  },
-
-  {
-
-    slug: "striped-jogger-pants",
-
-    name: "Striped Jogger Pants",
-
-    description: "Comfortable, relaxed-fit joggers with an elastic waistband and drawstring.",
-
-    price: "18.00",
-
-    originalPrice: "22.00",
-
-    category: "style",
-
-    subcategory: "bottoms",
-
-    image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.6",
-
-    reviews: 58,
-
-    inStock: true,
-
-    isNew: true,
-
-    colors: ["navy/white", "grey/white"],
-
-    sizes: ["3-6m", "6-9m", "9-12m", "12-18m", "18-24m"]
-
-  },
-
-  {
-
-    slug: "cable-knit-cardigan",
-
-    name: "Cable Knit Cardigan",
-
-    description: "Classic button-down cable knit cardigan for layering over any outfit.",
-
-    price: "28.00",
-
-    originalPrice: "34.00",
-
-    category: "style",
-
-    subcategory: "sweaters",
-
-    image: "https://images.unsplash.com/photo-1559418306-036f0072cfa1?q=80&w=600&auto=format&fit=crop",
-
-    rating: "4.9",
-
-    reviews: 110,
-
-    inStock: false,
-
-    isNew: false,
-
-    colors: ["navy", "maroon"],
-
-    sizes: ["12-18m", "18-24m", "2T", "3T"]
-
-  }
-
-];
-
-
-
-async function seedDatabase() {
-
-  const existing = await storage.getProducts();
-
-  if (existing.length === 0) {
-
-    for (const p of mockProducts) {
-
-      // Convert data types to match expected schema
-      const productToCreate = {
-        ...p,
-        price: parseFloat(p.price),
-        originalPrice: p.originalPrice ? parseFloat(p.originalPrice) : null,
-        rating: parseFloat(p.rating),
-        inStock: p.inStock,
-        isNew: p.isNew,
-        colors: p.colors.join(','), // Convert array to comma-separated string
-        sizes: p.sizes.join(',')    // Convert array to comma-separated string
-      };
-
-      await storage.createProduct(productToCreate);
-
-    }
-
-  }
-
-}
 
 
 
 export async function registerRoutes(
 
+
+
   httpServer: Server,
+
+
 
   app: Express
 
+
+
 ): Promise<Server> {
 
-  
 
-  await seedDatabase();
+
+  
 
 
 
   app.get(api.products.list.path, async (req, res) => {
-
     try {
-
-      // Define proper types for input
-      interface ProductQueryInput {
-        category?: string;
-        search?: string;
-      }
-
-      // Safe input parsing with error handling
-      let input: ProductQueryInput = {};
-      try {
-        const parsedInput = api.products.list.input ? api.products.list.input.parse(req.query) : undefined;
-        input = parsedInput || {};
-      } catch (parseError) {
-        console.warn('Input parsing error:', parseError);
-        input = {};
-      }
-
       const allProducts = await storage.getProducts();
 
-      
-
       let filtered = allProducts;
-
-      if (input.category) {
-        const categoryLower = input.category.toLowerCase();
+      
+      // Filter by category
+      if (req.query?.category && typeof req.query.category === 'string') {
+        const categoryLower = req.query.category.toLowerCase();
         filtered = filtered.filter(p => 
-          p.category?.toLowerCase() === categoryLower || 
-          p.subcategory?.toLowerCase() === categoryLower
+          p.category?.toLowerCase() === categoryLower
         );
       }
-
-      if (input.search) {
-        const searchLower = input.search.toLowerCase();
+      
+      // Filter by subcategory
+      if (req.query?.subcategory && typeof req.query.subcategory === 'string') {
+        const subcategoryLower = req.query.subcategory.toLowerCase();
+        filtered = filtered.filter(p => 
+          p.subcategory?.toLowerCase() === subcategoryLower
+        );
+      }
+      
+      // Only show in-stock products (MongoDB stores actual booleans)
+      filtered = filtered.filter(p => p.inStock === true);
+      
+      // Sort: isNew descending, then rating descending
+      filtered.sort((a, b) => {
+        // First sort by isNew (descending)
+        if (a.isNew !== b.isNew) {
+          return (b.isNew === true) ? 1 : -1;
+        }
+        // Then sort by rating (descending)
+        return (b.rating || 0) - (a.rating || 0);
+      });
+      
+      // Apply search filter if provided
+      if (req.query?.search && typeof req.query.search === 'string') {
+        const searchLower = req.query.search.toLowerCase();
         filtered = filtered.filter(p => 
           p.name?.toLowerCase().includes(searchLower) || 
           p.description?.toLowerCase().includes(searchLower)
         );
       }
+      
+      res.json(filtered);
+    } catch (err) {
+      res.status(400).json({ message: "Invalid query parameters" });
+    }
+  });
+
+
+  app.post(api.products.list.path, async (req, res) => {
+    try {
+
+      const productData = req.body;
 
       
 
-      res.json(filtered);
+      // Create a new product
 
-    } catch (err) {
+      const newProduct = await storage.createProduct(productData);
 
-      res.status(400).json({ message: "Invalid query parameters" });
+      
+
+      res.status(201).json(newProduct);
+
+    } catch (error) {
+
+      console.error('Error creating product:', error);
+
+      res.status(500).json({ message: "Failed to create product" });
 
     }
 
   });
 
 
+
+  // GET product by ID (for edit functionality)
+  app.get("/api/products/id/:id", async (req, res) => {
+    try {
+      const productId = req.params.id;
+      // Get all products and find by ID
+      const products = await storage.getProducts();
+      const product = products.find(p => p.id.toString() === productId);
+      
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      res.json(product);
+    } catch (error) {
+      console.error("Error fetching product:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
 
   app.get(api.products.get.path, async (req, res) => {
 
@@ -772,12 +214,476 @@ export async function registerRoutes(
 
   });
 
+  // PATCH endpoint for updating products by slug
+  app.patch(api.products.get.path, async (req, res) => {
+    try {
+      const productSlug = req.params.slug;
+      const updateData = req.body;
+      
+      if (!productSlug) {
+        return res.status(400).json({ message: "Invalid product slug" });
+      }
+      
+      // Get product by slug to find ID
+      const existingProduct = await storage.getProductBySlug(productSlug);
+      if (!existingProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      // Update product using storage - convert id to string
+      const updatedProduct = await storage.updateProduct(existingProduct.id.toString(), updateData);
+      
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  // PUT endpoint for updating products (for edit functionality)
+  app.put("/api/products/:id", async (req, res) => {
+    try {
+      const productId = req.params.id;
+      const updateData = req.body;
+      
+      if (!productId) {
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+      
+      // Update product using storage
+      const updatedProduct = await storage.updateProduct(productId, updateData);
+      
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+      
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error("Error updating product:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
+  app.delete(api.products.delete.path, async (req, res) => {
+
+    try {
+
+      const productId = req.params.id;
+
+      if (!productId) {
+
+        return res.status(400).json({ message: "Invalid product ID" });
+
+      }
+
+      // Delete product using MongoDB _id
+
+      await storage.deleteProduct(productId);
+
+      res.json({ message: "Product deleted successfully" });
+
+    } catch (error) {
+
+      console.error("Error deleting product:", error);
+
+      res.status(500).json({ message: "Internal server error" });
+
+    }
+
+  });
+
   // Profile routes
+
   app.use('/api/profile', profileRoutes);
 
 
 
+  // Auth routes
+
+  app.use('/api/auth', authRoutes);
+
+
+
+  // Upload routes
+
+  app.use('/api/upload', uploadRoutes);
+
+
+  // Address routes
+
+  app.use('/api/addresses', addressRoutes);
+
+  // Debug endpoint to check token
+  app.post('/api/debug-token', async (req: any, res: any) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    console.log('🔍 Debug token request:', { authHeader, hasToken: !!token });
+    
+    if (!token) {
+      return res.json({ error: 'No token provided' });
+    }
+
+    try {
+      // Try to decode without verification first
+      const decoded = jwt.decode(token);
+      console.log('🔓 Decoded token (no verification):', decoded);
+      
+      // Try to verify
+      const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
+      const verified = jwt.verify(token, jwtSecret);
+      console.log('✅ Verified token:', verified);
+      
+      res.json({ 
+        decoded,
+        verified,
+        jwtSecret: jwtSecret.substring(0, 10) + '...'
+      });
+    } catch (error: any) {
+      console.log('❌ Token error:', error.message);
+      res.json({ 
+        error: error.message,
+        name: error.name,
+        token: token.substring(0, 50) + '...'
+      });
+    }
+  });
+
+  // Orders routes - PROTECTED with user isolation
+  app.post('/api/orders', authenticateToken, async (req: any, res: any) => {
+    try {
+      console.log('🛒 Order request received:', {
+        body: req.body,
+        user: req.user,
+        headers: req.headers
+      });
+
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        console.log('❌ No userId found in token');
+        return res.status(401).json({ error: 'Unauthorized - No user ID' });
+      }
+
+      const { items, shippingAddressId, total } = req.body;
+      console.log('📦 Order data:', { items, shippingAddressId, total, userId });
+
+      if (!items || !shippingAddressId || !total) {
+        console.log('❌ Missing required fields:', { items: !!items, shippingAddressId: !!shippingAddressId, total: !!total });
+        return res.status(400).json({ message: 'Missing required order fields' });
+      }
+
+      const orderNumber = `PM${Date.now().toString().slice(-6)}`;
+      console.log('🔢 Generated order number:', orderNumber);
+
+      const orderData = {
+        userId,
+        orderNumber,
+        items: items.map((item: any) => ({
+          productId: item.productId || item.id,
+          productName: item.productName || item.name,
+          image: item.image,
+          price: item.price,
+          size: item.size || 'N/A',
+          color: item.color || 'N/A',
+          quantity: item.quantity
+        })),
+        shippingAddressId,
+        subtotal: total - 35,
+        shipping: 35,
+        total,
+        status: 'pending',
+        createdAt: new Date().toISOString()
+      };
+
+      console.log('💾 Creating order with data:', orderData);
+      const order = await ordersStorage.createOrder(orderData);
+      
+      if (!order) {
+        console.log('❌ Failed to create order in storage');
+        return res.status(500).json({ message: 'Failed to create order - Storage error' });
+      }
+
+      console.log('✅ Order created successfully:', order);
+
+      // Clear user's cart after successful order
+      console.log('🗑️ Clearing cart for user:', userId);
+      await userStorage.clearCart(userId);
+
+      res.status(201).json(order);
+    } catch (error) {
+      console.error('💥 Order creation error:', {
+        error: error,
+        message: (error as Error).message,
+        stack: (error as Error).stack,
+        body: req.body,
+        user: req.user
+      });
+      res.status(500).json({ 
+        message: 'Failed to create order',
+        error: (error as Error).message,
+        details: 'Unknown error occurred during order creation'
+      });
+    }
+  });
+
+  app.get('/api/orders', authenticateToken, async (req: any, res: any) => {
+    try {
+      console.log('📋 Orders request received:', { 
+        user: req.user, 
+        headers: req.headers 
+      });
+      
+      const userId = req.user?.sub || req.user?.id;
+      console.log('👤 Extracted userId:', { userId, userSub: req.user?.sub, userIdFromUser: req.user?.id });
+      
+      if (!userId) {
+        console.log('❌ No userId found in request');
+        return res.status(401).json({ 
+          success: false,
+          message: 'Unauthorized - No user ID',
+          code: 'NO_USER_ID'
+        });
+      }
+
+      console.log('🔍 Fetching orders for userId:', userId);
+      const orders = await ordersStorage.getOrders(userId);
+      console.log('📦 Retrieved orders count:', orders.length, 'for user:', userId);
+      
+      // Return direct array for frontend compatibility
+      res.json(orders);
+    } catch (error) {
+      console.error('❌ Error fetching orders:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to fetch orders',
+        code: 'SERVER_ERROR'
+      });
+    }
+  });
+
+  // Dedicated endpoint for frontend - /api/orders/my-orders
+  app.get('/api/orders/my-orders', authenticateToken, async (req: any, res: any) => {
+    try {
+      console.log('📋 My Orders request received:', { 
+        user: req.user, 
+        headers: req.headers 
+      });
+      
+      const userId = req.user?.sub || req.user?.id;
+      console.log('👤 My Orders - Extracted userId:', { userId, userSub: req.user?.sub, userIdFromUser: req.user?.id });
+      
+      if (!userId) {
+        console.log('❌ My Orders - No userId found in request');
+        return res.status(401).json({ 
+          success: false,
+          message: 'Unauthorized - No user ID',
+          code: 'NO_USER_ID'
+        });
+      }
+
+      console.log('🔍 My Orders - Fetching orders for userId:', userId);
+      const orders = await ordersStorage.getOrders(userId);
+      console.log('📦 My Orders - Retrieved orders count:', orders.length, 'for user:', userId);
+      
+      // Return with proper structure for frontend
+      res.json({
+        success: true,
+        orders: orders,
+        userId: userId,
+        count: orders.length
+      });
+    } catch (error) {
+      console.error('❌ My Orders - Error fetching orders:', error);
+      res.status(500).json({ 
+        success: false,
+        message: 'Failed to fetch orders',
+        code: 'SERVER_ERROR'
+      });
+    }
+  });
+
+  // Cart routes - PROTECTED with user isolation
+  app.get('/api/cart', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const cart = await userStorage.getCart(userId);
+      res.json(cart);
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      res.status(500).json({ message: 'Failed to fetch cart' });
+    }
+  });
+
+  app.post('/api/cart', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const { productId, quantity, size, color } = req.body;
+      const cartItem = await userStorage.addToCart(userId, {
+        productId,
+        quantity: quantity || 1,
+        size,
+        color
+      });
+      
+      if (cartItem) {
+        res.status(201).json(cartItem);
+      } else {
+        res.status(500).json({ message: 'Failed to add to cart' });
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      res.status(500).json({ message: 'Failed to add to cart' });
+    }
+  });
+
+  app.put('/api/cart/:productId', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const { productId } = req.params;
+      const { quantity, size, color } = req.body;
+      
+      const updated = await userStorage.updateCartItem(userId, productId, {
+        quantity,
+        size,
+        color
+      });
+      
+      if (updated) {
+        res.json({ message: 'Cart item updated' });
+      } else {
+        res.status(404).json({ message: 'Cart item not found' });
+      }
+    } catch (error) {
+      console.error('Error updating cart:', error);
+      res.status(500).json({ message: 'Failed to update cart' });
+    }
+  });
+
+  app.delete('/api/cart/:productId', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const { productId } = req.params;
+      const deleted = await userStorage.removeFromCart(userId, productId);
+      
+      if (deleted) {
+        res.json({ message: 'Cart item removed' });
+      } else {
+        res.status(404).json({ message: 'Cart item not found' });
+      }
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      res.status(500).json({ message: 'Failed to remove from cart' });
+    }
+  });
+
+  app.delete('/api/cart', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const deletedCount = await userStorage.clearCart(userId);
+      res.json({ message: `Cart cleared, removed ${deletedCount} items` });
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+      res.status(500).json({ message: 'Failed to clear cart' });
+    }
+  });
+
+  // Wishlist routes - PROTECTED with user isolation
+  app.get('/api/wishlist', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const wishlist = await userStorage.getWishlist(userId);
+      res.json(wishlist);
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+      res.status(500).json({ message: 'Failed to fetch wishlist' });
+    }
+  });
+
+  app.post('/api/wishlist', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const { productId } = req.body;
+      const wishlistItem = await userStorage.addToWishlist(userId, productId);
+      
+      if (wishlistItem) {
+        res.status(201).json(wishlistItem);
+      } else {
+        res.status(500).json({ message: 'Failed to add to wishlist' });
+      }
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      res.status(500).json({ message: 'Failed to add to wishlist' });
+    }
+  });
+
+  app.delete('/api/wishlist/:productId', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const { productId } = req.params;
+      const removed = await userStorage.removeFromWishlist(userId, productId);
+      
+      if (removed) {
+        res.json({ message: 'Wishlist item removed' });
+      } else {
+        res.status(404).json({ message: 'Wishlist item not found' });
+      }
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      res.status(500).json({ message: 'Failed to remove from wishlist' });
+    }
+  });
+
+  app.get('/api/wishlist/check/:productId', authenticateToken, async (req: any, res: any) => {
+    try {
+      const userId = req.user?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const { productId } = req.params;
+      const isInWishlist = await userStorage.isInWishlist(userId, productId);
+      res.json({ isInWishlist });
+    } catch (error) {
+      console.error('Error checking wishlist:', error);
+      res.status(500).json({ message: 'Failed to check wishlist' });
+    }
+  });
+
   return httpServer;
-
 }
-

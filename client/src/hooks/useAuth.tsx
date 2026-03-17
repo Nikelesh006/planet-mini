@@ -1,24 +1,23 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 type User = {
-  id: string;
-  email: string;
+  sub?: string;
+  id?: string;
+  email?: string;
   name?: string;
-  image?: string;
+  picture?: string;
 };
 
 type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   refetch: () => void;
-  logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoading: true,
   refetch: () => {},
-  logout: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -48,25 +47,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     fetchSession();
   };
 
-  const logout = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      setUser(null);
-    } catch (error) {
-      console.error("Logout error:", error);
-      setUser(null);
-    }
-  };
-
   useEffect(() => {
     fetchSession();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, refetch, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, refetch }}>
       {children}
     </AuthContext.Provider>
   );

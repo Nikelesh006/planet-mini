@@ -1,12 +1,14 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Search, Menu, User, X } from "lucide-react";
-import { useCart } from "@/store/use-cart";
+import { ShoppingBag, Search, Menu, User, X, Heart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useLikes } from "@/contexts/LikeContext";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAuthModal } from "@/hooks/useAuthModal";
+import { isUserAdminAuthorized } from "@/lib/admin-auth";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 
 function cn(...inputs: (string | undefined | null | false)[]) {
@@ -17,13 +19,14 @@ export default function Navbar() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const cartItemsCount = useCart((state) => state.getTotolItems());
+  const { state } = useCart();
   const { user, isLoading } = useAuth();
-  const { isAuthModalOpen, openAuthModal, closeAuthModal } = useAuthModal();
+  const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
+  const { likedProducts, toggleLike, isLiked } = useLikes();
  
   const handleProfileClick = () => {
     if (!user && !isLoading) {
-      openAuthModal(); // Open Google login modal
+      openSignInModal(); // Open sign in modal by default
     } else if (user) {
       window.location.href = '/profile'; // Navigate to profile when logged in
     }
@@ -37,14 +40,16 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Highly secure admin access - only authorized emails can see admin link
+  const isAdminUser = isUserAdminAuthorized(user || undefined);
+
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Shop by Style", href: "/shop/style" },
-    { label: "Shop by Age", href: "/shop/age" },
-    { label: "FAQ", href: "/faq" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
-    { label: "Admin", href: "/admin" },
+    // Only show Admin link to authorized users
+    ...(isAdminUser ? [{ label: "Admin", href: "/admin" }] : [])
   ];
 
   return (
@@ -103,6 +108,28 @@ export default function Navbar() {
               <button className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all">
                 <Search className="w-5 h-5" />
               </button>
+              <button className="p-2 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-full transition-all">
+                <Link href="/likes" className="block relative">
+                  {likedProducts.length > 0 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 text-primary-foreground rounded-full text-[8px] font-bold flex items-center justify-center border-2 border-background"
+                    >
+                      {likedProducts.length > 9 ? '9+' : likedProducts.length}
+                    </motion.div>
+                  )}
+                  <Heart 
+                    className={`w-5 h-5 transition-colors ${
+                      location === '/likes' 
+                        ? 'text-red-500 fill-current' 
+                        : likedProducts.some(p => p.id === 1) // Sample product ID - you can make this dynamic
+                          ? 'text-red-500 fill-current' 
+                          : 'text-muted-foreground'
+                    }`} 
+                  />
+                </Link>
+              </button>
               <button
                 onClick={handleProfileClick}
                 className="hidden sm:flex p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all items-center gap-2"
@@ -131,13 +158,13 @@ export default function Navbar() {
                 className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all relative"
               >
                 <ShoppingBag className="w-5 h-5" />
-                {cartItemsCount > 0 && (
+                {state.totalItems > 0 && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     className="absolute top-0 right-0 w-4 h-4 bg-blue-500 text-primary-foreground rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-background"
                   >
-                    {cartItemsCount}
+                    {state.totalItems > 99 ? '99+' : state.totalItems}
                   </motion.div>
                 )}
               </Link>
@@ -221,7 +248,7 @@ export default function Navbar() {
       </AnimatePresence>
       
       {/* Google Auth Modal */}
-      <GoogleAuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} />
+      <GoogleAuthModal isOpen={isAuthModalOpen} onClose={closeAuthModal} initialMode={authMode} />
     </>
   );
 }

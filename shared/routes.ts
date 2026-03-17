@@ -1,5 +1,24 @@
 import { z } from 'zod';
-import { products } from './schema';
+import { products, insertProductSchema } from './schema';
+
+// Create product schema for API responses
+const productSchema = z.object({
+  id: z.number(),
+  slug: z.string(),
+  name: z.string(),
+  description: z.string(),
+  price: z.number(),
+  originalPrice: z.number().nullable(),
+  category: z.string(),
+  subcategory: z.string().nullable(),
+  image: z.string(),
+  rating: z.number(),
+  reviews: z.number(),
+  inStock: z.boolean().nullable(),
+  isNew: z.boolean().nullable(),
+  colors: z.string().nullable(),
+  sizes: z.string().nullable(),
+});
 
 export const errorSchemas = {
   validation: z.object({
@@ -19,19 +38,23 @@ export const api = {
     list: {
       method: 'GET' as const,
       path: '/api/products' as const,
-      input: z.object({
-        category: z.string().optional(),
-        search: z.string().optional(),
-      }).optional(),
       responses: {
-        200: z.array(z.custom<typeof products.$inferSelect>()),
+        200: z.array(productSchema),
       },
     },
     get: {
       method: 'GET' as const,
       path: '/api/products/:slug' as const,
       responses: {
-        200: z.custom<typeof products.$inferSelect>(),
+        200: productSchema,
+        404: errorSchemas.notFound,
+      },
+    },
+    delete: {
+      method: 'DELETE' as const,
+      path: '/api/products/:id' as const,
+      responses: {
+        200: z.object({ message: z.string() }),
         404: errorSchemas.notFound,
       },
     },

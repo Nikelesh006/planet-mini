@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useState } from "react";
 import { 
   Users, 
   ShoppingCart, 
@@ -16,30 +18,116 @@ import {
   Home,
   Tag,
   MessageSquare,
-  Star
+  Star,
+  List,
+  Shield,
+  AlertTriangle,
+  Lock
 } from "lucide-react";
+import { isUserAdminAuthorized, logUnauthorizedAccess } from "@/lib/admin-auth";
 
 export default function AdminDashboard() {
+  const { user, logout } = useAuth();
+  const [location] = useLocation();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Check authorization on component mount
+    const checkAuthorization = () => {
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      const authorized = isUserAdminAuthorized(user);
+      
+      setIsAuthorized(!!authorized);
+      setIsLoading(false);
+
+      // Log unauthorized access attempts and redirect immediately
+      if (!authorized) {
+        logUnauthorizedAccess(user.email || 'unknown', 'Admin Dashboard Access Attempt');
+        window.location.href = '/'; // Redirect to home
+      }
+    };
+
+    checkAuthorization();
+  }, [user]);
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
+
+  // Show loading state while checking authorization
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <Lock className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-pulse" />
+          <p className="text-gray-600">Verifying admin access...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show unauthorized access message
+  if (!isAuthorized) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto p-8">
+          <Shield className="w-20 h-20 text-red-600 mx-auto mb-6" />
+          <AlertTriangle className="w-12 h-12 text-orange-600 mx-auto mb-4" />
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Access Denied</h1>
+          <p className="text-gray-600 mb-8">
+            You don't have permission to access the admin dashboard. This area is restricted to authorized administrators only.
+          </p>
+          <div className="space-y-4">
+            <Link 
+              href="/"
+              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Home className="w-4 h-4 mr-2" />
+              Return to Home
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="block w-full px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+            >
+              <LogOut className="w-4 h-4 mr-2 inline" />
+              Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Mock data for demonstration
   const stats = [
     { label: "Total Orders", value: "1,234", change: "+12%", icon: ShoppingCart, color: "from-blue-500 to-blue-600" },
-    { label: "Total Revenue", value: "$45,678", change: "+23%", icon: DollarSign, color: "from-green-500 to-green-600" },
+    { label: "Total Revenue", value: "₹45,678", change: "+23%", icon: DollarSign, color: "from-green-500 to-green-600" },
     { label: "Total Customers", value: "892", change: "+8%", icon: Users, color: "from-purple-500 to-purple-600" },
     { label: "Total Products", value: "156", change: "+5%", icon: Package, color: "from-orange-500 to-orange-600" }
   ];
 
   const recentOrders = [
-    { id: "#1234", customer: "John Doe", amount: "$89.99", status: "Delivered", date: "2024-02-23" },
-    { id: "#1235", customer: "Jane Smith", amount: "$124.99", status: "Processing", date: "2024-02-23" },
-    { id: "#1236", customer: "Bob Johnson", amount: "$67.99", status: "Shipped", date: "2024-02-22" },
-    { id: "#1237", customer: "Alice Brown", amount: "$156.99", status: "Pending", date: "2024-02-22" }
+    { id: "#1234", customer: "John Doe", amount: "₹89.99", status: "Delivered", date: "2024-02-23" },
+    { id: "#1235", customer: "Jane Smith", amount: "₹124.99", status: "Processing", date: "2024-02-23" },
+    { id: "#1236", customer: "Bob Johnson", amount: "₹67.99", status: "Shipped", date: "2024-02-22" },
+    { id: "#1237", customer: "Alice Brown", amount: "₹156.99", status: "Pending", date: "2024-02-22" }
   ];
 
   const topProducts = [
-    { name: "Baby Onesie Set", sales: 234, revenue: "$5,678", rating: 4.8 },
-    { name: "Swaddle Blanket", sales: 189, revenue: "$4,234", rating: 4.9 },
-    { name: "Baby Bib Pack", sales: 156, revenue: "$2,890", rating: 4.7 },
-    { name: "Sleeping Bag", sales: 145, revenue: "$3,456", rating: 4.6 }
+    { name: "Baby Onesie Set", sales: 234, revenue: "₹5,678", rating: 4.8 },
+    { name: "Swaddle Blanket", sales: 189, revenue: "₹4,234", rating: 4.9 },
+    { name: "Baby Bib Pack", sales: 156, revenue: "₹2,890", rating: 4.7 },
+    { name: "Sleeping Bag", sales: 145, revenue: "₹3,456", rating: 4.6 }
   ];
 
   return (
@@ -63,7 +151,7 @@ export default function AdminDashboard() {
                 <Settings className="w-5 h-5" />
                 <span className="hidden sm:inline">Settings</span>
               </button>
-              <button className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors">
+              <button onClick={handleLogout} className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors">
                 <LogOut className="w-5 h-5" />
                 <span className="hidden sm:inline">Logout</span>
               </button>
@@ -221,10 +309,18 @@ export default function AdminDashboard() {
             >
               <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
               <div className="space-y-3">
-                <button className="w-full flex items-center gap-3 p-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
+                <Link href="/admin/add-product" className="w-full flex items-center gap-3 p-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
                   <Plus className="w-5 h-5" />
                   <span className="font-medium">Add New Product</span>
-                </button>
+                </Link>
+                <Link href="/admin/product-list" className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors">
+                  <List className="w-5 h-5" />
+                  <span className="font-medium">Product List</span>
+                </Link>
+                <Link href="/admin/orders" className="w-full flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
+                  <Package className="w-5 h-5" />
+                  <span className="font-medium">Orders</span>
+                </Link>
                 <button className="w-full flex items-center gap-3 p-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
                   <Tag className="w-5 h-5" />
                   <span className="font-medium">Manage Categories</span>

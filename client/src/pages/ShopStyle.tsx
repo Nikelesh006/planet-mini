@@ -1,35 +1,12 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import CategoryCard from "@/components/CategoryCard";
+import ProductGrid from "@/components/ProductGrid";
 import { Sparkles } from "lucide-react";
+import { useStyleProducts } from "@/hooks/useProducts";
 
 export default function ShopStyle() {
-  const categories = [
-    {
-      name: "Onesies",
-      description: "Comfortable and adorable onesies for everyday wear",
-      icon: "👶",
-      image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=400",
-      productCount: 24,
-      href: "/shop/style?val=onesies"
-    },
-    {
-      name: "Sleepwear",
-      description: "Cozy sleepwear for peaceful nights",
-      icon: "🌙",
-      image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?auto=format&fit=crop&q=80&w=400",
-      productCount: 18,
-      href: "/shop/style?val=sleepwear"
-    },
-    {
-      name: "Cute Outfits",
-      description: "Stylish outfits for special occasions",
-      icon: "👗",
-      image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&q=80&w=400",
-      productCount: 32,
-      href: "/shop/style?val=outfits"
-    }
-  ];
+  // Fetch all style products (no subcategory filter)
+  const { data: products, isLoading } = useStyleProducts();
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50">
@@ -56,12 +33,26 @@ export default function ShopStyle() {
         </div>
       </section>
 
-      {/* Categories Grid */}
+      {/* Products Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
-        <div className="grid md:grid-cols-3 gap-8">
-          {categories.map((category) => (
-            <CategoryCard key={category.name} {...category} />
-          ))}
+        <div className="relative bg-white rounded-[2.5rem] overflow-hidden shadow-sm p-8 lg:p-16">
+          {/* Dynamic Products */}
+          {!isLoading && products && products.length > 0 && (
+            <ProductGrid 
+              products={products} 
+              title=""
+            />
+          )}
+          {isLoading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
+          {!isLoading && (!products || products.length === 0) && (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No style products available yet.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -96,3 +87,4 @@ export default function ShopStyle() {
     </div>
   );
 }
+

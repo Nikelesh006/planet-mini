@@ -8,6 +8,7 @@ import { connectDB } from "./db";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
+import passport from "passport";
 
 dotenv.config();
 
@@ -33,6 +34,9 @@ app.use(express.urlencoded({ extended: false }));
 // CORS + cookies
 app.use(cors({ origin: "http://localhost:5002", credentials: true }));
 app.use(cookieParser());
+
+// Initialize passport
+app.use(passport.initialize());
 
 
 // Simple logger you already had

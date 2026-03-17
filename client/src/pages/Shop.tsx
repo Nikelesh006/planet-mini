@@ -19,35 +19,20 @@ export default function Shop() {
     {
       title: "Shop by Style",
       items: [
-        { name: "Onesies", icon: "👶", count: 24, href: "/shop/style?val=onesies" },
-        { name: "Sleepwear", icon: "🌙", count: 18, href: "/shop/style?val=sleepwear" },
-        { name: "Cute Outfits", icon: "👗", count: 32, href: "/shop/style?val=outfits" }
+        { name: "Rompers", icon: "�", count: 24, href: "/shop/style?val=rompers" },
+        { name: "Overalls", icon: "👕", count: 18, href: "/shop/style?val=overalls" },
+        { name: "Onesies", icon: "�", count: 32, href: "/shop/style?val=onesies" },
+        { name: "Sleepwear", icon: "�", count: 28, href: "/shop/style?val=sleepwear" }
       ]
     },
     {
-      title: "Shop by Age",
+      title: "Home Sections",
       items: [
-        { name: "0-6 Months", icon: "🍼", count: 36, href: "/shop/age?val=0-6" },
-        { name: "6-12 Months", icon: "🧸", count: 42, href: "/shop/age?val=6-12" },
-        { name: "1-2 Years", icon: "🎈", count: 28, href: "/shop/age?val=1-2" }
-      ]
-    },
-    {
-      title: "Baby Care Essentials",
-      items: [
-        { name: "Bath Towels & Robes", icon: "🛁", count: 15, href: "/shop/care?val=bath" },
-        { name: "Bath Toys", icon: "🦆", count: 22, href: "/shop/care?val=toys" },
-        { name: "Skincare Products", icon: "🧴", count: 18, href: "/shop/care?val=skincare" },
-        { name: "Bibs & Burp Cloths", icon: "🧷", count: 25, href: "/shop/care?val=bibs" }
-      ]
-    },
-    {
-      title: "Super Saver Offers",
-      items: [
-        { name: "3-Pack Onesies", icon: "👕", count: 12, href: "/shop/offers?val=onesies-pack", badge: "33% OFF" },
-        { name: "3-Pack Jablas", icon: "🧥", count: 8, href: "/shop/offers?val=jablas-pack", badge: "27% OFF" },
-        { name: "3-Pack Diapers", icon: "🚀", count: 15, href: "/shop/offers?val=diapers-pack", badge: "43% OFF" },
-        { name: "5-Pack Nappies", icon: "📦", count: 10, href: "/shop/offers?val=nappies-pack", badge: "38% OFF" }
+        { name: "Hero Section", icon: "🏠", count: 8, href: "/?section=hero" },
+        { name: "Shop by Style", icon: "🎀", count: 12, href: "/?section=shop-style" },
+        { name: "Shop by Age", icon: "�", count: 15, href: "/?section=shop-age" },
+        { name: "Baby Care Essentials", icon: "🍼", count: 10, href: "/?section=baby-care" },
+        { name: "Super Saver Offers", icon: "�", count: 6, href: "/?section=super-saver" }
       ]
     }
   ];

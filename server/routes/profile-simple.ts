@@ -91,7 +91,7 @@ router.get('/:userId', async (req, res) => {
     console.log('Profile found:', profile);
     res.json(profile);
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Profile fetch error:', error);
     res.status(500).json({ error: 'Failed to fetch profile', details: error.message });
   }
@@ -124,7 +124,7 @@ router.post('/:userId', async (req, res) => {
     console.log('Profile updated:', profile);
     res.json(profile);
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Profile update error:', error);
     res.status(500).json({ error: 'Failed to save profile', details: error.message });
   }
