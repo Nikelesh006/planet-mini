@@ -74,10 +74,10 @@ export default function FAQ() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-100/70 via-blue-100/60 to-pink-100/50 backdrop-blur-sm border border-white/20 shadow-xl">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
           <div className="p-8 lg:p-16 text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
@@ -106,7 +106,7 @@ export default function FAQ() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1"
           >
-            <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-24">
+            <div className="bg-white rounded-2xl p-6 sticky top-24">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Categories</h2>
               <div className="space-y-2">
                 {categories.map((category) => (
@@ -145,7 +145,7 @@ export default function FAQ() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-2xl shadow-sm overflow-hidden"
+                  className="bg-white rounded-2xl overflow-hidden"
                 >
                   <button
                     onClick={() => toggleExpanded(index)}

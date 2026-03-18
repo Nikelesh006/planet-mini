@@ -7,7 +7,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50 gender-pattern">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
       <AnimatePresence mode="wait">
         <motion.main

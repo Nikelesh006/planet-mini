@@ -72,11 +72,8 @@ function App() {
     // Initialize animations when component mounts
     animations.init();
     
-    // Apply gender-themed background to body
-    document.body.classList.add('gender-pattern');
-    
     return () => {
-      document.body.classList.remove('gender-pattern');
+      // Cleanup if needed
     };
   }, []);
 

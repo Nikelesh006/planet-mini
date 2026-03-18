@@ -38,10 +38,10 @@ export default function Shop() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-blue-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-blue-100/50 via-white/30 to-pink-100/50 backdrop-blur-md border border-white/20 shadow-xl">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
           <div className="p-8 lg:p-16 text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
@@ -92,9 +92,9 @@ export default function Shop() {
                     className="group h-[380px]"
                   >
                     <Link href={item.href} className="block">
-                      <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-white to-blue-50/30 backdrop-blur-sm border border-blue-100/50 hover:bg-gradient-to-br hover:from-blue-50 hover:to-pink-50 transition-all duration-300 p-6 text-center h-full flex flex-col justify-between hover:shadow-xl hover:scale-105">
+                      <div className="relative rounded-[2.5rem] overflow-hidden bg-white border border-gray-200 hover:border-primary/30 transition-all duration-300 p-6 text-center h-full flex flex-col justify-between hover:scale-105">
                         {item.badge && (
-                          <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-pink-600 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg pulse-element">
+                          <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-800 to-pink-900 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg">
                             {item.badge}
                           </div>
                         )}
@@ -103,7 +103,7 @@ export default function Shop() {
                         </div>
                         <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent mb-2">{item.name}</h3>
                         <p className="text-sm text-gray-600 mb-4">{item.count} products</p>
-                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-pink-500 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:from-blue-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-700 to-pink-500 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:from-blue-800 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                           Shop Now
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
