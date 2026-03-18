@@ -7,6 +7,7 @@ import Slider from "@/components/Slider";
 import CategoryCard from "@/components/CategoryCard";
 import ProductGrid from "@/components/ProductGrid";
 import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const { data: products, isLoading } = useProducts();
@@ -20,86 +21,94 @@ export default function Home() {
   const { data: superSaverProducts, isLoading: superSaverLoading } = useSuperSaverProducts();
   const { data: featuredProducts, isLoading: featuredLoading } = useFeaturedProducts();
 
-  const sliderSlides = [
-    {
-      id: 1,
-      title: "Welcome to\nPlanet Mini",
-      subtitle: "Adorable & Comfortable Baby Wear",
-      image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=600",
-      buttonText: "Shop Now",
-      buttonLink: "/shop"
-    },
-    {
-      id: 2,
-      title: "Soft & Safe\nFabrics",
-      subtitle: "Gentle on your baby's delicate skin",
-      image: "https://images.unsplash.com/photo-1541697960113-1ca22342bd6d?auto=format&fit=crop&q=80&w=600",
-      buttonText: "Explore Collection",
-      buttonLink: "/shop/style"
-    },
-    {
-      id: 3,
-      title: "Adorable\nDesigns",
-      subtitle: "Cute patterns your baby will love",
-      image: "https://images.unsplash.com/photo-1606334012513-947a0c0259e1?auto=format&fit=crop&q=80&w=600",
-      buttonText: "View Designs",
-      buttonLink: "/shop/age"
-    }
+  // Slider state
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Slider images - easily change these URLs
+  const sliderImages = [
+    "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=1920&h=720",
+    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=1920&h=720",
+    "https://images.unsplash.com/photo-1519689680058-324335c77b78?auto=format&fit=crop&q=80&w=1920&h=720",
+    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=1920&h=720"
   ];
 
-  
-    
-    
-    
-  
+  // Auto-rotate slider
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 3500); // Change slide every 3.5 seconds
 
-  
-  
-     
-    
+    return () => clearInterval(interval);
+  }, [sliderImages.length]);
+
+  // Manual navigation
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  const goToPrevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + sliderImages.length) % sliderImages.length);
+  };
+
+  const goToNextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+  };
 
   return (
     <div className="min-h-screen space-y-16">
-      {/* Hero Section */}
-      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
+      {/* Hero Section with Image Slider */}
+      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-4 pb-8">
         <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
-          <div className="relative z-10 p-8 lg:p-16 text-center">
-            <motion.h1 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-bold text-black mb-6"
-            >
-              Welcome to Planet Mini
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto mb-8"
-            >
-              Adorable & Comfortable Baby Wear for Every Little Star
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <Link 
-                href="/shop"
-                className="group relative inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-secondary to-secondary/80 text-white px-8 py-4 text-lg font-semibold hover:from-secondary/90 hover:to-secondary/70 transition-all duration-300 hover:scale-105 overflow-hidden ripple-button"
+          <div className="relative h-[37.5vw] max-h-[400px] md:max-h-[500px] lg:max-h-[600px]">
+            {/* Image Slider */}
+            <div className="relative w-full h-full">
+              {/* Slider Images */}
+              <div className="relative w-full h-full">
+                {sliderImages.map((image, index) => (
+                  <img 
+                    key={index}
+                    src={image}
+                    alt={`Hero Slide ${index + 1}`} 
+                    className={`w-full h-full object-cover rounded-[2.5rem] transition-opacity duration-1000 ${
+                      index === currentSlide ? 'opacity-100' : 'opacity-0 hidden'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              {/* Slider Controls */}
+              <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+                {sliderImages.map((_, index) => (
+                  <button 
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentSlide 
+                        ? 'bg-white opacity-100' 
+                        : 'bg-white/50 hover:bg-white/75'
+                    }`}
+                  />
+                ))}
+              </div>
+              
+              {/* Navigation Arrows */}
+              <button 
+                onClick={goToPrevSlide}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-3 rounded-full transition-all duration-300 hover:scale-110"
               >
-                <span className="relative z-10">Shop Boys Collection</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-secondary/90 to-secondary/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </Link>
-              <Link 
-                href="/shop"
-                className="group relative inline-flex items-center justify-center rounded-xl bg-primary text-white px-8 py-4 text-lg font-semibold hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden ripple-button"
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button 
+                onClick={goToNextSlide}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-3 rounded-full transition-all duration-300 hover:scale-110"
               >
-                <span className="relative z-10">Shop Girls Collection</span>
-                <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </Link>
-            </motion.div>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </section>
