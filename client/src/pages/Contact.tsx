@@ -88,10 +88,10 @@ export default function Contact() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-100/70 via-rose-100/60 to-pink-100/50 backdrop-blur-sm border border-white/20 shadow-xl">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
           <div className="p-8 lg:p-16 text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}

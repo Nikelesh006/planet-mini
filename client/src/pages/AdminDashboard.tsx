@@ -67,9 +67,9 @@ export default function AdminDashboard() {
   // Show loading state while checking authorization
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Lock className="w-16 h-16 text-blue-600 mx-auto mb-4 animate-pulse" />
+          <Lock className="w-16 h-16 text-primary mx-auto mb-4 animate-pulse" />
           <p className="text-gray-600">Verifying admin access...</p>
         </div>
       </div>
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
   // Show unauthorized access message
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-orange-100 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-8">
           <Shield className="w-20 h-20 text-red-600 mx-auto mb-6" />
           <AlertTriangle className="w-12 h-12 text-orange-600 mx-auto mb-4" />
@@ -131,9 +131,9 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-blue-50">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-100/90 via-white/50 to-pink-100/90 backdrop-blur-lg shadow-lg border-b border-blue-100/50">
+      <div className="bg-gradient-to-r from-primary/90 to-secondary/90 backdrop-blur-lg shadow-lg border-b border-primary/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">

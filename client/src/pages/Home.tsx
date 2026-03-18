@@ -59,16 +59,15 @@ export default function Home() {
     
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-blue-50 space-y-16">
+    <div className="min-h-screen space-y-16">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-100/70 via-blue-100/60 to-pink-100/50 backdrop-blur-sm border border-white/20 shadow-xl">
-          <div className="absolute inset-0 bg-gradient-to-r from-pink-100/30 via-blue-100/20 to-pink-100/30"></div>
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
           <div className="relative z-10 p-8 lg:p-16 text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent mb-6"
+              className="text-5xl md:text-6xl font-bold text-black mb-6"
             >
               Welcome to Planet Mini
             </motion.h1>
@@ -88,17 +87,17 @@ export default function Home() {
             >
               <Link 
                 href="/shop"
-                className="group relative inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white px-8 py-4 text-lg font-semibold hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden ripple-button"
+                className="group relative inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-secondary to-secondary/80 text-white px-8 py-4 text-lg font-semibold hover:from-secondary/90 hover:to-secondary/70 transition-all duration-300 hover:scale-105 overflow-hidden ripple-button"
               >
                 <span className="relative z-10">Shop Boys Collection</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-secondary/90 to-secondary/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
               <Link 
                 href="/shop"
-                className="group relative inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-pink-500 to-pink-600 text-white px-8 py-4 text-lg font-semibold hover:from-pink-600 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden ripple-button"
+                className="group relative inline-flex items-center justify-center rounded-xl bg-primary text-white px-8 py-4 text-lg font-semibold hover:bg-primary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden ripple-button"
               >
                 <span className="relative z-10">Shop Girls Collection</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-primary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
             </motion.div>
           </div>
@@ -107,19 +106,19 @@ export default function Home() {
 
       {/* Shop by Style Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-100/70 via-blue-100/60 to-pink-100/50 backdrop-blur-sm border border-white/20 p-8 lg:p-16 shadow-xl">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-12"
           >
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent mb-4">Shop by Style</h2>
+            <h2 className="text-4xl font-bold text-black mb-4">Shop by Style</h2>
             <p className="text-gray-600 text-lg">Discover our latest collection of stylish baby wear</p>
             <div className="flex justify-center gap-2 mt-4">
-              <div className="w-12 h-1 bg-pink-500 rounded-full"></div>
-              <div className="w-12 h-1 bg-blue-500 rounded-full"></div>
-              <div className="w-12 h-1 bg-pink-500 rounded-full"></div>
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
             </div>
           </motion.div>
           
@@ -132,11 +131,11 @@ export default function Home() {
           {!shopByStyleLoading && (!shopByStyleProducts || shopByStyleProducts.length === 0) && (
             <div className="text-center py-12">
               <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Products Available</h3>
+              <h3 className="text-xl font-semibold text-black mb-2">No Products Available</h3>
               <p className="text-gray-500 mb-6">Start by adding some products to showcase here!</p>
               <Link 
                 href="/admin/add-product"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-blue-500 text-white px-6 py-3 rounded-lg hover:from-pink-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
               >
                 <span>Add First Product</span>
               </Link>
@@ -144,7 +143,7 @@ export default function Home() {
           )}
           {shopByStyleLoading && (
             <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-secondary to-secondary/80"></div>
             </div>
           )}
         </div>
@@ -152,19 +151,20 @@ export default function Home() {
 
       {/* Latest Style Products Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
+            <h2 className="text-4xl font-bold text-black mb-4">Latest Style Products</h2>
+            <p className="text-gray-600 text-lg">Check out our newest arrivals and trending styles</p>
+            <div className="flex justify-center gap-2 mt-4">
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+            </div>
           </motion.div>
-          
-          {/* Dynamic Products */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-center mb-4">Latest Style Products</h2>
-            <p className="text-center text-gray-600 mb-8">Check out our newest arrivals and trending styles</p>
-          </div>
           
           {!latestStyleLoading && latestStyleProducts && latestStyleProducts.length > 0 && (
             <ProductGrid 
@@ -175,7 +175,7 @@ export default function Home() {
           {!latestStyleLoading && (!latestStyleProducts || latestStyleProducts.length === 0) && (
             <div className="text-center py-12">
               <Shirt className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Latest Styles</h3>
+              <h3 className="text-xl font-semibold text-black mb-2">No Latest Styles</h3>
               <p className="text-gray-500">Add your latest products to showcase here!</p>
             </div>
           )}
@@ -189,21 +189,20 @@ export default function Home() {
 
       {/* Baby Care Essentials Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
+            <h2 className="text-4xl font-bold text-black mb-4">Baby Care Essentials</h2>
+            <p className="text-gray-600 text-lg">Everything you need for your baby's daily care routine</p>
+            <div className="flex justify-center gap-2 mt-4">
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+            </div>
           </motion.div>
-          
-          
-          
-          {/* Dynamic Products */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-center mb-4">Baby Care Essentials</h2>
-            <p className="text-center text-gray-600 mb-8">Everything you need for your baby's daily care routine</p>
-          </div>
           
           {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
             <ProductGrid 
@@ -214,13 +213,13 @@ export default function Home() {
           {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
             <div className="text-center py-12">
               <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Baby Care Products</h3>
+              <h3 className="text-xl font-semibold text-black mb-2">No Baby Care Products</h3>
               <p className="text-gray-500">Add baby care essentials to showcase here!</p>
             </div>
           )}
           {babyCareLoading && (
             <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-secondary to-secondary/80"></div>
             </div>
           )}
         </div>
@@ -228,21 +227,20 @@ export default function Home() {
 
       {/* Super Saver Offers Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-yellow-100/50 to-orange-100/50 backdrop-blur-sm border border-white/20 p-8 lg:p-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             className="text-center mb-12"
           >
+            <h2 className="text-4xl font-bold text-black mb-4">Super Saver Offers</h2>
+            <p className="text-gray-600 text-lg">Amazing deals and discounts on your favorite baby products</p>
+            <div className="flex justify-center gap-2 mt-4">
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+            </div>
           </motion.div>
-          
-          
-          
-          {/* Dynamic Products */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-center mb-4">Super Saver Offers</h2>
-            <p className="text-center text-gray-600 mb-8">Amazing deals and discounts on your favorite baby products</p>
-          </div>
           
           {!superSaverLoading && superSaverProducts && superSaverProducts.length > 0 && (
             <ProductGrid 
@@ -253,7 +251,7 @@ export default function Home() {
           {!superSaverLoading && (!superSaverProducts || superSaverProducts.length === 0) && (
             <div className="text-center py-12">
               <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Special Offers</h3>
+              <h3 className="text-xl font-semibold text-black mb-2">No Special Offers</h3>
               <p className="text-gray-500">Add special offers and deals to showcase here!</p>
             </div>
           )}
@@ -267,11 +265,20 @@ export default function Home() {
 
       {/* Featured Products Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-center mb-4">Featured Products</h2>
-            <p className="text-center text-gray-600 mb-8">Handpicked favorites and customer top-rated items</p>
-          </div>
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="text-center mb-12"
+          >
+            <h2 className="text-4xl font-bold text-black mb-4">Featured Products</h2>
+            <p className="text-gray-600 text-lg">Handpicked favorites and customer top-rated items</p>
+            <div className="flex justify-center gap-2 mt-4">
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+            </div>
+          </motion.div>
           
           {!featuredLoading && featuredProducts && featuredProducts.length > 0 && (
             <ProductGrid 
@@ -281,14 +288,14 @@ export default function Home() {
           )}
           {!featuredLoading && (!featuredProducts || featuredProducts.length === 0) && (
             <div className="text-center py-12">
-              <Star className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">No Featured Products</h3>
+              <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+              <h3 className="text-xl font-semibold text-black mb-2">No Featured Products</h3>
               <p className="text-gray-500">Add featured products to showcase here!</p>
             </div>
           )}
           {featuredLoading && (
             <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-secondary to-secondary/80"></div>
             </div>
           )}
         </div>
@@ -296,7 +303,7 @@ export default function Home() {
 
       {/* About Us / Contact Us / Know Us Links */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
           <div className="grid md:grid-cols-3 gap-8 mb-12">
             <Link href="/about" className="text-center group">
               <div className="rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20 p-6 group-hover:bg-white/40 transition-all duration-300">

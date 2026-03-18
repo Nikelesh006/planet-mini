@@ -58,8 +58,8 @@ export default function Navbar() {
         className={cn(
           "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
           isScrolled 
-            ? "bg-gradient-to-r from-pink-100/90 via-blue-100/90 to-pink-100/90 backdrop-blur-lg shadow-lg border-b border-pink-100/50 py-3" 
-            : "bg-transparent py-5"
+            ? "bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-lg shadow-lg border-b border-primary/30 py-3" 
+            : "bg-gradient-to-r from-white/10 via-primary/10 to-secondary/10 backdrop-blur-lg shadow-lg border-b border-white/20 py-5"
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -75,9 +75,9 @@ export default function Navbar() {
             {/* Logo */}
             <Link 
               href="/" 
-              className="flex items-center gap-2 text-2xl font-display font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 text-2xl font-display font-bold text-black hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-pink-500 via-blue-500 to-pink-500 flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary via-secondary to-primary flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
                 <span className="text-sm font-bold">PM</span>
               </div>
               <span className="font-bold">Planet Mini</span>
@@ -93,9 +93,9 @@ export default function Navbar() {
                     "text-sm font-semibold transition-all duration-500 ease-out relative group px-4 py-2 rounded-lg transform hover:scale-105",
                     location === link.href 
                       ? index % 2 === 0
-                        ? "text-white bg-gradient-to-r from-pink-500 to-rose-500 shadow-lg" 
-                        : "text-white bg-gradient-to-r from-blue-500 to-blue-600 shadow-lg"
-                      : "text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-pink-500 hover:to-blue-500"
+                        ? "text-white bg-primary shadow-lg" 
+                        : "text-white bg-gradient-to-r from-secondary to-secondary/80 shadow-lg"
+                      : "text-black hover:text-white hover:bg-gradient-to-r hover:from-primary hover:to-secondary/80"
                   )}
                 >
                   {link.label}
@@ -105,16 +105,16 @@ export default function Navbar() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 sm:gap-4">
-              <button className="group p-2 text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-pink-500 hover:to-blue-500 rounded-full transition-all duration-300 transform hover:scale-110">
+              <button className="group p-2 text-black hover:text-white hover:bg-gradient-to-r hover:from-primary hover:to-secondary/80 rounded-full transition-all duration-300 transform hover:scale-110">
                 <Search className="w-5 h-5" />
               </button>
-              <button className="group p-2 text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500 rounded-full transition-all duration-300 transform hover:scale-110">
+              <button className="group p-2 text-black hover:text-white hover:bg-gradient-to-r hover:from-secondary/80 hover:to-primary rounded-full transition-all duration-300 transform hover:scale-110">
                 <Link href="/likes" className="block relative">
                   {likedProducts.length > 0 && (
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-blue-500 to-pink-600 text-white rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-lg"
+                      className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-secondary/80 to-primary text-white rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-lg"
                     >
                       {likedProducts.length > 9 ? '9+' : likedProducts.length}
                     </motion.div>
@@ -124,8 +124,8 @@ export default function Navbar() {
                       location === '/likes' 
                         ? 'text-white fill-current' 
                         : likedProducts.some(p => p.id === 1) // Sample product ID - you can make this dynamic
-                          ? 'text-pink-500 fill-current' 
-                          : 'text-gray-600'
+                          ? 'text-primary fill-current' 
+                          : 'text-black'
                     }`} 
                   />
                 </Link>

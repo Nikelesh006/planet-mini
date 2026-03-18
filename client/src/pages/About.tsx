@@ -4,15 +4,15 @@ import { Heart, Shield, Truck, Award, Users, Globe } from "lucide-react";
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-pink-100/70 via-blue-100/60 to-pink-100/50 backdrop-blur-sm border border-white/20 shadow-xl">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
           <div className="p-8 lg:p-16 text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent mb-6"
+              className="text-5xl md:text-6xl font-bold text-black mb-6"
             >
               About Planet Mini
             </motion.h1>
@@ -68,7 +68,7 @@ export default function About() {
       {/* Values Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent mb-4">Our Values</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">Our Values</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             The principles that guide everything we do
           </p>
@@ -111,20 +111,20 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`rounded-2xl shadow-sm p-6 text-center border ${
+              className={`rounded-2xl p-6 text-center border bg-white ${
                 index % 2 === 0
-                  ? 'bg-gradient-to-br from-pink-50/80 to-blue-50/60 border-pink-100/50'
-                  : 'bg-gradient-to-br from-blue-50/80 to-pink-50/60 border-blue-100/50'
+                  ? 'border-primary/30'
+                  : 'border-secondary/30'
               }`}
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-white ${
                 index % 2 === 0
-                  ? 'bg-gradient-to-br from-pink-100/70 to-blue-100/60'
-                  : 'bg-gradient-to-br from-blue-100/70 to-pink-100/60'
+                  ? 'border-primary/30'
+                  : 'border-secondary/30'
               }`}>
-                <value.icon className={`w-8 h-8 ${index % 2 === 0 ? 'text-pink-600' : 'text-blue-600'}`} />
+                <value.icon className={`w-8 h-8 ${index % 2 === 0 ? 'text-primary' : 'text-secondary'}`} />
               </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">{value.title}</h3>
+              <h3 className="text-xl font-semibold text-black mb-2">{value.title}</h3>
               <p className="text-gray-600">{value.description}</p>
             </motion.div>
           ))}

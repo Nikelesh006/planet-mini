@@ -73,11 +73,11 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
     <div className="space-y-8">
       {title && (
         <div className="text-center">
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-pink-600 to-blue-600 bg-clip-text text-transparent mb-2">{title}</h2>
+          <h2 className="text-3xl font-bold text-black mb-2">{title}</h2>
           <div className="flex justify-center gap-2">
-            <div className="w-8 h-1 bg-pink-500 rounded-full"></div>
-            <div className="w-8 h-1 bg-blue-500 rounded-full"></div>
-            <div className="w-8 h-1 bg-pink-500 rounded-full"></div>
+            <div className="w-8 h-1 bg-primary rounded-full"></div>
+            <div className="w-8 h-1 bg-secondary rounded-full"></div>
+            <div className="w-8 h-1 bg-primary rounded-full"></div>
           </div>
         </div>
       )}
@@ -94,18 +94,18 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
             <div
               className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer h-full flex flex-col border ${
                 index % 2 === 0 
-                  ? 'bg-gradient-to-br from-pink-50/80 to-blue-50/60 border-pink-100/50' 
-                  : 'bg-gradient-to-br from-blue-50/80 to-pink-50/60 border-blue-100/50'
+                  ? 'bg-gradient-to-br from-primary/20 to-secondary/10 border-primary/30' 
+                  : 'bg-gradient-to-br from-secondary/20 to-primary/10 border-secondary/30'
               }`}
               onClick={() => navigateToProduct(product.slug)}
             >
               {/* Badges */}
               <div className="absolute top-3 left-3 z-10 flex gap-2">
                 {product.isNew && (
-                  <span className={`text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg pulse-element ${
+                  <span className={`text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg ${
                     index % 2 === 0 
-                      ? 'bg-gradient-to-r from-pink-500 to-rose-500' 
-                      : 'bg-gradient-to-r from-blue-500 to-blue-600'
+                      ? 'bg-primary' 
+                      : 'bg-secondary'
                   }`}>
                     New
                   </span>
@@ -119,10 +119,10 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
 
               {/* Discount Badge */}
               {product.originalPrice && (
-                <div className={`absolute top-3 right-3 z-10 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg pulse-element ${
+                <div className={`absolute top-3 right-3 z-10 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg ${
                   index % 2 === 0 
-                    ? 'bg-gradient-to-r from-rose-500 to-pink-600' 
-                    : 'bg-gradient-to-r from-blue-600 to-blue-700'
+                    ? 'bg-gradient-to-r from-secondary to-secondary/80' 
+                    : 'bg-primary'
                 }`}>
                   -{getDiscountPercentage(product.originalPrice, product.price)}%
                 </div>
@@ -235,11 +235,7 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                 {/* Price and Add to Cart */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className={`text-lg font-bold bg-clip-text text-transparent ${
-                      index % 2 === 0 
-                        ? 'bg-gradient-to-r from-pink-600 to-rose-600' 
-                        : 'bg-gradient-to-r from-blue-600 to-blue-700'
-                    }`}>
+                    <span className="text-lg font-bold text-black">
                       ₹{Number(product.price || 0).toFixed(2)}
                     </span>
                     <span className="text-sm text-gray-500 line-through">
@@ -251,8 +247,8 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                     className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 ripple-button text-white shadow-lg hover:shadow-xl ${
                       product.inStock
                         ? index % 2 === 0 
-                          ? 'bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600'
-                          : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
+                          ? 'bg-primary hover:bg-primary/90'
+                          : 'bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70'
                         : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                     }`}
                     disabled={!product.inStock}
@@ -272,9 +268,9 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
 
       {showLoadMore && (
         <div className="text-center mt-12">
-          <button className="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-pink-500 to-blue-500 text-white rounded-xl font-semibold hover:from-pink-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden">
+          <button className="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden">
             <span className="relative z-10">Load More Products</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-pink-600 to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           </button>
         </div>
       )}
