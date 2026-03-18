@@ -7,7 +7,7 @@ export default function About() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
+        <div>
           <div className="p-8 lg:p-16 text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
@@ -111,7 +111,7 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`rounded-2xl p-6 text-center border bg-white ${
+              className={`p-6 text-center border ${
                 index % 2 === 0
                   ? 'border-primary/30'
                   : 'border-secondary/30'
@@ -157,7 +157,7 @@ export default function About() {
 
       {/* CTA Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
-        <div className="bg-white rounded-2xl shadow-sm p-8 lg:p-12 text-center">
+        <div className="p-8 lg:p-12 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Join the Planet Mini Family
           </h2>

@@ -90,15 +90,15 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-semibold transition-all duration-500 ease-out relative group px-4 py-2 rounded-lg transform hover:scale-105",
+                    "text-sm font-semibold transition-all duration-300 ease-in-out relative px-4 py-2 rounded-lg overflow-hidden group",
+                    "before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary before:to-secondary before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out",
+                    "hover:before:opacity-100 hover:text-white hover:shadow-lg hover:transform hover:-translate-y-0.5",
                     location === link.href 
-                      ? index % 2 === 0
-                        ? "text-white bg-primary shadow-lg" 
-                        : "text-white bg-gradient-to-r from-secondary to-secondary/80 shadow-lg"
-                      : "text-black hover:text-white hover:bg-gradient-to-r hover:from-primary hover:to-secondary/80"
+                      ? "text-black bg-gradient-to-r from-primary to-secondary shadow-lg border border-primary/30"
+                      : "text-black hover:text-white"
                   )}
                 >
-                  {link.label}
+                  <span className="relative z-10">{link.label}</span>
                 </Link>
               ))}
             </nav>

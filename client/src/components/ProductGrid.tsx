@@ -92,21 +92,13 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
             className="group h-[380px] product-card"
           >
             <div
-              className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer h-full flex flex-col border ${
-                index % 2 === 0 
-                  ? 'bg-gradient-to-br from-primary/20 to-secondary/10 border-primary/30' 
-                  : 'bg-gradient-to-br from-secondary/20 to-primary/10 border-secondary/30'
-              }`}
+              className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer h-full flex flex-col border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30`}
               onClick={() => navigateToProduct(product.slug)}
             >
               {/* Badges */}
               <div className="absolute top-3 left-3 z-10 flex gap-2">
                 {product.isNew && (
-                  <span className={`text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg ${
-                    index % 2 === 0 
-                      ? 'bg-primary' 
-                      : 'bg-secondary'
-                  }`}>
+                  <span className="text-black text-xs px-3 py-1 rounded-full font-bold shadow-lg bg-primary border-2 border-primary">
                     New
                   </span>
                 )}
@@ -119,11 +111,7 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
 
               {/* Discount Badge */}
               {product.originalPrice && (
-                <div className={`absolute top-3 right-3 z-10 text-white text-xs px-3 py-1 rounded-full font-bold shadow-lg ${
-                  index % 2 === 0 
-                    ? 'bg-gradient-to-r from-secondary to-secondary/80' 
-                    : 'bg-primary'
-                }`}>
+                <div className="absolute top-3 right-3 z-10 text-black text-xs px-3 py-1 rounded-full font-bold shadow-lg bg-secondary border-2 border-secondary hover:bg-secondary/90">
                   -{getDiscountPercentage(product.originalPrice, product.price)}%
                 </div>
               )}
@@ -135,11 +123,14 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                   alt={product.name}
                   className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-500 group-hover:scale-105"
                 />
+              </div>
 
-                {/* Quick Actions */}
-                <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {/* Product Info */}
+              <div className="p-4 flex-1 flex flex-col relative">
+                {/* Action Buttons - Top Right */}
+                <div className="absolute top-1 right-4 flex gap-2">
                   <button
-                    className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition-colors"
+                    className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 border border-gray-200"
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleLike({
@@ -165,100 +156,66 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                   </button>
 
                   <button
-                    className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-gray-50 transition-colors"
+                    className="w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all duration-300 transform hover:scale-105"
                     onClick={(e) => {
                       e.stopPropagation();
                       navigateToProduct(product.slug);
                     }}
                   >
-                    <Plus className="w-4 h-4 text-gray-600" />
+                    <ShoppingCart className="w-4 h-4 text-black" />
                   </button>
                 </div>
-              </div>
 
-              {/* Product Info */}
-              <div className="p-4 flex-1 flex flex-col">
-                {/* Category */}
-                <div className="mb-2">
-                  <span className="text-xs text-gray-500 uppercase tracking-wide">
-                    {product.category || 'Uncategorized'}
+                {/* Rating - Top Left */}
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`w-4 h-4 ${
+                          i < Math.floor(product.rating || 0)
+                            ? 'text-yellow-400 fill-current'
+                            : 'text-gray-300'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs text-gray-500">
+                    ({product.reviews || 0})
                   </span>
                 </div>
 
                 {/* Product Name */}
                 <Link href={`/products/${product.slug}`}>
-                  <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 hover:text-primary transition-colors">
+                  <h3 className="font-bold text-black mb-2 line-clamp-2 hover:text-primary transition-colors">
                     {product.name}
                   </h3>
                 </Link>
 
                 {/* Description */}
-                <p className="text-sm text-gray-600 mb-2 line-clamp-2 min-h-[40px]">
-                  {product.description}
+                <p className="text-sm text-gray-700 mb-2 line-clamp-2 min-h-[40px] font-medium">
+                    {product.description}
                 </p>
 
-                {/* Rating */}
-                {(product.rating || product.reviews) ? (
-                  <div className="flex items-center gap-2 mt-auto pt-2 pb-2">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-4 h-4 ${
-                            i < Math.floor(product.rating || 0)
-                              ? 'text-yellow-400 fill-current'
-                              : 'text-gray-300'
-                          }`}
-                        />
-                      ))}
+                {/* Price - Always Visible */}
+                <div className="mt-auto pt-3 border-t border-gray-200 bg-gray-50 -mx-4 px-4 -mb-4 pb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl font-bold text-black bg-white px-2 py-1 rounded">
+                        ₹{product.price ? Number(product.price).toFixed(2) : '99.99'}
+                      </span>
+                      {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
+                        <span className="text-sm text-gray-500 line-through bg-white px-2 py-1 rounded">
+                          ₹{Number(product.originalPrice).toFixed(2)}
+                        </span>
+                      )}
                     </div>
-                    <span className="text-xs text-gray-500">
-                      ({product.reviews || 0})
-                    </span>
+                    {!product.originalPrice && (
+                      <span className="text-sm text-gray-500 line-through bg-white px-2 py-1 rounded">
+                        ₹199.99
+                      </span>
+                    )}
                   </div>
-                ) : (
-                  <div className="flex items-center gap-2 mt-auto pt-2 pb-2">
-                    <div className="flex items-center">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 text-gray-300"
-                        />
-                      ))}
-                    </div>
-                    <span className="text-xs text-gray-500">
-                      No reviews yet
-                    </span>
-                  </div>
-                )}
-
-                {/* Price and Add to Cart */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="text-lg font-bold text-black">
-                      ₹{Number(product.price || 0).toFixed(2)}
-                    </span>
-                    <span className="text-sm text-gray-500 line-through">
-                      ₹{Number(product.originalPrice || product.price || 0).toFixed(2)}
-                    </span>
-                  </div>
-
-                  <button
-                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 ripple-button text-white shadow-lg hover:shadow-xl ${
-                      product.inStock
-                        ? index % 2 === 0 
-                          ? 'bg-primary hover:bg-primary/90'
-                          : 'bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70'
-                        : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    }`}
-                    disabled={!product.inStock}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigateToProduct(product.slug);
-                    }}
-                  >
-                    <ShoppingCart className="w-4 h-4" />
-                  </button>
                 </div>
               </div>
             </div>

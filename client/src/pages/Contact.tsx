@@ -91,24 +91,22 @@ export default function Contact() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
-          <div className="p-8 lg:p-16 text-center">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-bold text-primary mb-6"
-            >
-              Contact Us
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto"
-            >
-              We're here to help! Get in touch with our team for any questions or support.
-            </motion.p>
-          </div>
+        <div className="text-center">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-6xl font-bold text-primary mb-6"
+          >
+            Contact Us
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto"
+          >
+            We're here to help! Get in touch with our team for any questions or support.
+          </motion.p>
         </div>
       </section>
 
@@ -121,7 +119,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-1 space-y-6"
           >
-            <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
               <p className="text-gray-600 mb-6">
                 Our friendly customer service team is here to help you with any questions about our products, orders, or services.
@@ -177,7 +175,7 @@ export default function Contact() {
             </div>
 
             {/* Quick Links */}
-            <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div>
               <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Links</h3>
               <div className="space-y-3">
                 <a href="/faq" className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors">
@@ -206,7 +204,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+            <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
               
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -303,7 +301,7 @@ export default function Contact() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-1"
           >
-            <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-24">
+            <div className="sticky top-24">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Categories</h2>
               <div className="space-y-2">
                 {categories.map((category) => (
@@ -335,7 +333,7 @@ export default function Contact() {
             animate={{ opacity: 1, x: 0 }}
             className="lg:col-span-3"
           >
-            <div className="bg-white rounded-2xl shadow-sm p-6 lg:p-8">
+            <div>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -412,7 +410,7 @@ export default function Contact() {
 
       {/* Map Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
-        <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div className="overflow-hidden">
           <div className="p-6 lg:p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Visit Our Store</h2>
             <p className="text-gray-600 mb-6">

@@ -41,24 +41,22 @@ export default function Shop() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
-          <div className="p-8 lg:p-16 text-center">
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent mb-6"
-            >
-              Shop All Categories
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto"
-            >
-              Everything you need for your little one, all in one place
-            </motion.p>
-          </div>
+        <div className="text-center">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent mb-6"
+          >
+            Shop All Categories
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto"
+          >
+            Everything you need for your little one, all in one place
+          </motion.p>
         </div>
       </section>
 
@@ -92,7 +90,7 @@ export default function Shop() {
                     className="group h-[380px]"
                   >
                     <Link href={item.href} className="block">
-                      <div className="relative rounded-[2.5rem] overflow-hidden bg-white border border-gray-200 hover:border-primary/30 transition-all duration-300 p-6 text-center h-full flex flex-col justify-between hover:scale-105">
+                      <div className="border border-gray-200 hover:border-primary/30 transition-all duration-300 p-6 text-center h-full flex flex-col justify-between hover:scale-105">
                         {item.badge && (
                           <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-800 to-pink-900 text-white text-xs px-2 py-1 rounded-full font-bold shadow-lg">
                             {item.badge}
@@ -121,7 +119,7 @@ export default function Shop() {
 
       {/* Quick Links */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white/20 backdrop-blur-sm border border-white/10 p-8 lg:p-16">
+        <div className="p-8 lg:p-16">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -131,25 +129,25 @@ export default function Shop() {
           </motion.h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Link href="/about" className="group">
-              <div className="text-center p-6 bg-white/30 backdrop-blur-sm rounded-2xl border border-white/20 group-hover:bg-white/40 transition-all">
+              <div className="text-center p-6 group-hover:bg-gray-50 transition-all">
                 <div className="text-3xl mb-3">🏪</div>
                 <h4 className="font-semibold text-primary">About Us</h4>
               </div>
             </Link>
             <Link href="/contact" className="group">
-              <div className="text-center p-6 bg-white/30 backdrop-blur-sm rounded-2xl border border-white/20 group-hover:bg-white/40 transition-all">
+              <div className="text-center p-6 group-hover:bg-gray-50 transition-all">
                 <div className="text-3xl mb-3">📞</div>
                 <h4 className="font-semibold text-primary">Contact</h4>
               </div>
             </Link>
             <Link href="/know-us" className="group">
-              <div className="text-center p-6 bg-white/30 backdrop-blur-sm rounded-2xl border border-white/20 group-hover:bg-white/40 transition-all">
+              <div className="text-center p-6 group-hover:bg-gray-50 transition-all">
                 <div className="text-3xl mb-3">💡</div>
                 <h4 className="font-semibold text-primary">Know Us</h4>
               </div>
             </Link>
             <Link href="/" className="group">
-              <div className="text-center p-6 bg-white/30 backdrop-blur-sm rounded-2xl border border-white/20 group-hover:bg-white/40 transition-all">
+              <div className="text-center p-6 group-hover:bg-gray-50 transition-all">
                 <div className="text-3xl mb-3">🏠</div>
                 <h4 className="font-semibold text-primary">Home</h4>
               </div>

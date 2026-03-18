@@ -26,10 +26,10 @@ export default function Home() {
   
   // Slider images - easily change these URLs
   const sliderImages = [
-    "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=1920&h=720",
-    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=1920&h=720",
-    "https://images.unsplash.com/photo-1519689680058-324335c77b78?auto=format&fit=crop&q=80&w=1920&h=720",
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=1920&h=720"
+    "/banner-hero.jpg",
+    "/banner-hero.jpg", 
+    "/banner-hero.jpg",
+    "/banner-hero.jpg"
   ];
 
   // Auto-rotate slider
@@ -55,11 +55,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen space-y-16">
+    <div className="min-h-screen space-y-4">
       {/* Hero Section with Image Slider */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-4 pb-8">
         <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
-          <div className="relative h-[37.5vw] max-h-[400px] md:max-h-[500px] lg:max-h-[600px]">
+          <div className="relative h-[30vw] max-h-[320px] md:max-h-[400px] lg:max-h-[480px]">
             {/* Image Slider */}
             <div className="relative w-full h-full">
               {/* Slider Images */}
@@ -115,7 +115,7 @@ export default function Home() {
 
       {/* Shop by Style Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
+        <div className="pt-0 pb-8 lg:pb-16 lg:px-16 lg:pt-2">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -312,96 +312,53 @@ export default function Home() {
 
       {/* About Us / Contact Us / Know Us Links */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
+        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-primary to-secondary p-8 lg:p-16">
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <Link href="/about" className="text-center group">
+            <Link href="/about" className="text-center group transform transition-transform duration-300 hover:scale-105">
               <div className="rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20 p-6 group-hover:bg-white/40 transition-all duration-300">
-                <Package className="w-8 h-8 text-primary mx-auto mb-3" />
-                <h3 className="text-xl font-semibold text-primary mb-2">About Us</h3>
-                <p className="text-sm text-muted-foreground">Learn more about our story</p>
+                <Package className="w-8 h-8 text-black mx-auto mb-3" />
+                <h3 className="text-xl font-semibold text-black mb-2">About Us</h3>
+                <p className="text-sm text-black/80">Learn more about our story</p>
               </div>
             </Link>
-            <Link href="/contact" className="text-center group">
+            <Link href="/contact" className="text-center group transform transition-transform duration-300 hover:scale-105">
               <div className="rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20 p-6 group-hover:bg-white/40 transition-all duration-300">
-                <Heart className="w-8 h-8 text-primary mx-auto mb-3" />
-                <h3 className="text-xl font-semibold text-primary mb-2">Contact Us</h3>
-                <p className="text-sm text-muted-foreground">Get in touch with us</p>
+                <Heart className="w-8 h-8 text-black mx-auto mb-3" />
+                <h3 className="text-xl font-semibold text-black mb-2">Contact Us</h3>
+                <p className="text-sm text-black/80">Get in touch with us</p>
               </div>
             </Link>
-            <Link href="/know-us" className="text-center group">
+            <Link href="/know-us" className="text-center group transform transition-transform duration-300 hover:scale-105">
               <div className="rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20 p-6 group-hover:bg-white/40 transition-all duration-300">
-                <Star className="w-8 h-8 text-primary mx-auto mb-3" />
-                <h3 className="text-xl font-semibold text-primary mb-2">Know Us</h3>
-                <p className="text-sm text-muted-foreground">Discover our mission</p>
+                <Star className="w-8 h-8 text-black mx-auto mb-3" />
+                <h3 className="text-xl font-semibold text-black mb-2">Know Us</h3>
+                <p className="text-sm text-black/80">Discover our mission</p>
               </div>
             </Link>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Package className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Package className="w-6 h-6 text-black" />
               </div>
-              <h4 className="font-semibold text-primary mb-2">Soft & Safe Fabrics</h4>
-              <p className="text-sm text-muted-foreground">Gentle on baby's delicate skin</p>
+              <h4 className="font-semibold text-black mb-2">Soft & Safe Fabrics</h4>
+              <p className="text-sm text-black/80">Gentle on baby's delicate skin</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Heart className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Heart className="w-6 h-6 text-black" />
               </div>
-              <h4 className="font-semibold text-primary mb-2">Eco-Friendly Materials</h4>
-              <p className="text-sm text-muted-foreground">Sustainable choices for our planet</p>
+              <h4 className="font-semibold text-black mb-2">Eco-Friendly Materials</h4>
+              <p className="text-sm text-black/80">Sustainable choices for our planet</p>
             </div>
             <div className="text-center">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Star className="w-6 h-6 text-primary" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Star className="w-6 h-6 text-black" />
               </div>
-              <h4 className="font-semibold text-primary mb-2">Loved by Parents</h4>
-              <p className="text-sm text-muted-foreground">Trusted by families worldwide</p>
+              <h4 className="font-semibold text-black mb-2">Loved by Parents</h4>
+              <p className="text-sm text-black/80">Trusted by families worldwide</p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Join the Growing Family Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-purple-100/50 via-pink-100/50 to-blue-100/50 backdrop-blur-sm border border-white/20 p-8 lg:p-16">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
-          >
-            <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4 flex items-center justify-center gap-3">
-              <Sparkles className="w-8 h-8 text-primary" />
-              Join the Growing Family!
-              <Sparkles className="w-8 h-8 text-primary" />
-            </h2>
-          </motion.div>
-          <div className="grid md:grid-cols-3 gap-8 mb-8">
-            <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300"
-                alt="Happy family 1" 
-                className="rounded-2xl shadow-lg w-full h-64 object-cover"
-              />
-            </div>
-            <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=300&h=300"
-                alt="Happy family 2" 
-                className="rounded-2xl shadow-lg w-full h-64 object-cover"
-              />
-            </div>
-            <div className="relative">
-              <img 
-                src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?auto=format&fit=crop&q=80&w=300&h=300"
-                alt="Happy family 3" 
-                className="rounded-2xl shadow-lg w-full h-64 object-cover"
-              />
-            </div>
-          </div>
-          <div className="text-center">
-            <p className="text-xl font-semibold text-primary">Happy Parents, Happy Babies!</p>
           </div>
         </div>
       </section>
