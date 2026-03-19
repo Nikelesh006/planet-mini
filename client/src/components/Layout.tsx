@@ -2,9 +2,15 @@ import Navbar from "./layout/Navbar";
 import Footer from "./layout/Footer";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
+import WelcomeMessage from "./WelcomeMessage";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
+  const { user, showWelcomeMessage, dismissWelcomeMessage } = useAuth();
+
+  // Only show welcome message on home screen
+  const shouldShowWelcome = showWelcomeMessage && user?.name && location === "/";
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -26,6 +32,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </motion.main>
       </AnimatePresence>
       <Footer />
+      
+      {/* Welcome Message - Only on Home Screen */}
+      {shouldShowWelcome && (
+        <WelcomeMessage 
+          userName={user.name || 'User'} 
+          onClose={dismissWelcomeMessage} 
+        />
+      )}
     </div>
   );
 }
