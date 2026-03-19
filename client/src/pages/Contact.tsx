@@ -209,7 +209,7 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-8 border border-primary/20">
+            <div className="bg-gradient-to-br from-primary/15 to-secondary/15 rounded-3xl p-8 border-2 border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="text-center mb-8">
                 <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <MessageCircle className="w-8 h-8 text-white" />
@@ -239,7 +239,7 @@ export default function Contact() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-primary focus:border-secondary focus:outline-none transition-all duration-300 hover:border-primary/30 placeholder-gray-400"
+                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-primary focus:border-secondary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-300 hover:border-primary/40 placeholder-gray-400 shadow-sm hover:shadow-md"
                         placeholder="John Doe"
                       />
                     </div>
@@ -260,7 +260,7 @@ export default function Contact() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-secondary focus:border-primary focus:outline-none transition-all duration-300 hover:border-secondary/30 placeholder-gray-400"
+                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-primary/50 rounded-2xl focus:border-secondary focus:border-primary focus:ring-2 focus:ring-secondary/50 focus:outline-none transition-all duration-300 hover:border-secondary/60 placeholder-gray-400"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -282,7 +282,7 @@ export default function Contact() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-primary focus:border-secondary focus:outline-none transition-all duration-300 hover:border-primary/30 placeholder-gray-400"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-primary/70 rounded-2xl focus:border-primary focus:border-secondary focus:ring-2 focus:ring-primary/50 focus:outline-none transition-all duration-300 hover:border-primary/80 placeholder-gray-400 shadow-md hover:shadow-lg"
                       placeholder="How can we help you?"
                     />
                   </div>
@@ -303,7 +303,7 @@ export default function Contact() {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-secondary focus:border-primary focus:outline-none transition-all duration-300 hover:border-secondary/30 resize-none placeholder-gray-400"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-secondary/50 rounded-2xl focus:border-primary focus:border-secondary focus:ring-2 focus:ring-secondary/30 focus:outline-none transition-all duration-300 hover:border-primary/60 resize-none placeholder-gray-400 shadow-md hover:shadow-lg"
                       placeholder="Tell us more about your question or concern..."
                     />
                   </div>
