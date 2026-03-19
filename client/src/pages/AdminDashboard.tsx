@@ -137,8 +137,8 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <Link href="/" className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
+              <Link href="/" className="flex items-center gap-2 text-xl font-bold text-black">
+                <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
                   <span className="text-sm font-bold">PM</span>
                 </div>
                 <span>Planet Mini</span>
@@ -158,6 +158,61 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl shadow-lg p-6 border border-primary/20"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
+              <Settings className="w-6 h-6 text-black" />
+            </div>
+            <h2 className="text-2xl font-bold ">Quick Actions</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <Link href="/admin/add-product" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-primary/20">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Plus className="w-6 h-6 text-black" />
+              </div>
+              <span className="font-medium text-sm text-center group-hover:text-primary transition-colors">Add Product</span>
+            </Link>
+            <Link href="/admin/product-list" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-secondary/20">
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <List className="w-6 h-6 text-black" />
+              </div>
+              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-secondary transition-colors">Products</span>
+            </Link>
+            <Link href="/admin/orders" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-primary/20">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Package className="w-6 h-6 text-black" />
+              </div>
+              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-primary transition-colors">Orders</span>
+            </Link>
+            <button className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-secondary/20">
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Tag className="w-6 h-6 text-black" />
+              </div>
+              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-secondary transition-colors">Categories</span>
+            </button>
+            <button className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-primary/20">
+              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <MessageSquare className="w-6 h-6 text-black" />
+              </div>
+              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-primary transition-colors">Messages</span>
+            </button>
+            <button className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-secondary/20">
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <BarChart3 className="w-6 h-6 text-black" />
+              </div>
+              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-secondary transition-colors">Analytics</span>
+            </button>
+          </div>
+        </motion.div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -297,42 +352,6 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
-              </div>
-            </motion.div>
-
-            {/* Quick Actions */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl shadow-sm p-6"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Actions</h2>
-              <div className="space-y-3">
-                <Link href="/admin/add-product" className="w-full flex items-center gap-3 p-3 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors">
-                  <Plus className="w-5 h-5" />
-                  <span className="font-medium">Add New Product</span>
-                </Link>
-                <Link href="/admin/product-list" className="w-full flex items-center gap-3 p-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors">
-                  <List className="w-5 h-5" />
-                  <span className="font-medium">Product List</span>
-                </Link>
-                <Link href="/admin/orders" className="w-full flex items-center gap-3 p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors">
-                  <Package className="w-5 h-5" />
-                  <span className="font-medium">Orders</span>
-                </Link>
-                <button className="w-full flex items-center gap-3 p-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
-                  <Tag className="w-5 h-5" />
-                  <span className="font-medium">Manage Categories</span>
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
-                  <MessageSquare className="w-5 h-5" />
-                  <span className="font-medium">Customer Messages</span>
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors">
-                  <BarChart3 className="w-5 h-5" />
-                  <span className="font-medium">View Analytics</span>
-                </button>
               </div>
             </motion.div>
           </div>

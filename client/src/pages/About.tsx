@@ -8,7 +8,7 @@ export default function About() {
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
         <div>
-          <div className="p-8 lg:p-16 text-center">
+          <div className="text-center">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -111,21 +111,25 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`p-6 text-center border ${
+              className={`p-6 text-center border-2 rounded-2xl transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 cursor-pointer ${
                 index % 2 === 0
-                  ? 'border-primary/30'
-                  : 'border-secondary/30'
+                  ? 'bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/30 hover:border-primary/50'
+                  : 'bg-gradient-to-br from-secondary/10 to-primary/10 border-secondary/30 hover:border-secondary/50'
               }`}
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-white ${
+              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${
                 index % 2 === 0
-                  ? 'border-primary/30'
-                  : 'border-secondary/30'
+                  ? 'bg-gradient-to-br from-primary to-secondary border-2 border-primary/30'
+                  : 'bg-gradient-to-br from-secondary to-primary border-2 border-secondary/30'
               }`}>
-                <value.icon className={`w-8 h-8 ${index % 2 === 0 ? 'text-primary' : 'text-secondary'}`} />
+                <value.icon className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-black mb-2">{value.title}</h3>
-              <p className="text-gray-600">{value.description}</p>
+              <h3 className={`text-xl font-semibold mb-2 transition-colors duration-300 ${
+                index % 2 === 0
+                  ? 'text-black hover:text-primary'
+                  : 'text-black hover:text-secondary'
+              }`}>{value.title}</h3>
+              <p className="text-gray-600 transition-colors duration-300 hover:text-black">{value.description}</p>
             </motion.div>
           ))}
         </div>

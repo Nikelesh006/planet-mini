@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Search, Menu, User, X, Heart } from "lucide-react";
+import { ShoppingBag, Search, Menu, User, X, Heart, LogOut } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
 import { useState, useEffect } from "react";
@@ -20,7 +20,7 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { state } = useCart();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
   const { likedProducts, toggleLike, isLiked } = useLikes();
  
@@ -29,6 +29,16 @@ export default function Navbar() {
       openSignInModal(); // Open sign in modal by default
     } else if (user) {
       window.location.href = '/profile'; // Navigate to profile when logged in
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setMobileMenuOpen(false);
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
   };
 
@@ -84,7 +94,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-4">
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
@@ -200,7 +210,7 @@ export default function Navbar() {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <nav className="flex flex-col gap-4">
+              <nav className="flex flex-col gap-2">
                 {navLinks.map((link) => (
                   <Link
                     key={link.href}

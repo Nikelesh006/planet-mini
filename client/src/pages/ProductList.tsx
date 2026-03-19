@@ -18,6 +18,7 @@ import {
   Check
 } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
+import { Modal, ConfirmModal } from "@/components/ui/Modal";
 import type { ProductResponse } from "@shared/routes";
 
 export default function ProductList() {
@@ -26,6 +27,14 @@ export default function ProductList() {
   const [filterCategory, setFilterCategory] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState<ProductResponse[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<Set<number>>(new Set());
+  const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; productId: string | null }>({ 
+    isOpen: false, 
+    productId: null 
+  });
+  const [bulkDeleteModal, setBulkDeleteModal] = useState<{ isOpen: boolean; count: number }>({ 
+    isOpen: false, 
+    count: 0 
+  });
 
   useEffect(() => {
     if (products) {
@@ -52,29 +61,33 @@ export default function ProductList() {
   const categories = ["all", ...Array.from(new Set(products?.map(p => p.category) || []))];
 
   const handleDeleteProduct = async (productId: string) => {
-    if (window.confirm("Are you sure you want to delete this product?")) {
-      try {
-        const response = await fetch(`/api/products/${productId}`, {
-          method: 'DELETE',
-        });
+    setDeleteModal({ isOpen: true, productId });
+  };
 
-        if (!response.ok) {
-          if (response.status === 404) {
-            alert('Product not found');
-            return;
-          }
-          throw new Error('Failed to delete product');
+  const confirmDeleteProduct = async () => {
+    if (!deleteModal.productId) return;
+    
+    try {
+      const response = await fetch(`/api/products/${deleteModal.productId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          setDeleteModal({ isOpen: true, productId: null });
+          return;
         }
-
-        const result = await response.json();
-        alert('Product deleted successfully');
-        
-        // Refresh the products list by refetching
-        window.location.reload();
-      } catch (error) {
-        console.error('Error deleting product:', error);
-        alert('Failed to delete product. Please try again.');
+        throw new Error('Failed to delete product');
       }
+
+      const result = await response.json();
+      setDeleteModal({ isOpen: false, productId: null });
+      
+      // Refresh the products list by refetching
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      setDeleteModal({ isOpen: false, productId: null });
     }
   };
 
@@ -102,15 +115,16 @@ const handleProductSelect = (productId: number) => {
 
   const handleBulkDelete = async () => {
     if (selectedProducts.size === 0) {
-      alert('No products selected for deletion');
+      setBulkDeleteModal({ isOpen: true, count: 0 });
+      setTimeout(() => setBulkDeleteModal({ isOpen: false, count: 0 }), 2000);
       return;
     }
 
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${selectedProducts.size} product${selectedProducts.size > 1 ? 's' : ''}? This action cannot be undone.`
-    );
+    setBulkDeleteModal({ isOpen: true, count: selectedProducts.size });
+  };
 
-    if (!confirmed) return;
+  const confirmBulkDelete = async () => {
+    if (selectedProducts.size === 0) return;
 
     try {
       // Delete each selected product
@@ -123,23 +137,21 @@ const handleProductSelect = (productId: number) => {
           throw new Error(`Failed to delete product ${productId}`);
         }
 
-        return productId;
+        return response.json();
       });
 
       await Promise.all(deletePromises);
-
-      // Clear selection
       setSelectedProducts(new Set());
 
       // Show success message
-      alert(`Successfully deleted ${selectedProducts.size} product${selectedProducts.size > 1 ? 's' : ''}`);
+      setBulkDeleteModal({ isOpen: false, count: 0 });
 
       // Refresh the page to show updated list
       window.location.reload();
 
     } catch (error) {
       console.error('Error deleting products:', error);
-      alert('Failed to delete some products. Please try again.');
+      setBulkDeleteModal({ isOpen: false, count: 0 });
     }
   };
 
@@ -474,6 +486,33 @@ const handleProductSelect = (productId: number) => {
           )}
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={deleteModal.isOpen}
+        onClose={() => setDeleteModal({ isOpen: false, productId: null })}
+        onConfirm={confirmDeleteProduct}
+        title="Delete Product"
+        message="Are you sure you want to delete this product? This action cannot be undone."
+        confirmText="Delete"
+        cancelText="Cancel"
+        variant="danger"
+      />
+
+      {/* Bulk Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={bulkDeleteModal.isOpen}
+        onClose={() => setBulkDeleteModal({ isOpen: false, count: 0 })}
+        onConfirm={confirmBulkDelete}
+        title={bulkDeleteModal.count === 0 ? "No Products Selected" : "Delete Multiple Products"}
+        message={bulkDeleteModal.count === 0 
+          ? "Please select at least one product to delete." 
+          : `Are you sure you want to delete ${bulkDeleteModal.count} product${bulkDeleteModal.count > 1 ? 's' : ''}? This action cannot be undone.`
+        }
+        confirmText={bulkDeleteModal.count === 0 ? "OK" : "Delete All"}
+        cancelText="Cancel"
+        variant={bulkDeleteModal.count === 0 ? "primary" : "danger"}
+      />
     </div>
   );
 }

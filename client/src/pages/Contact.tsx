@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Building, Home, Truck, ChevronDown, ChevronUp, HelpCircle, Package, Shield, CreditCard, RefreshCw } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Building, Home, Truck, ChevronDown, ChevronUp, HelpCircle, Package, Shield, CreditCard, RefreshCw, Globe } from "lucide-react";
 
 interface FAQItem {
   question: string;
@@ -82,8 +82,8 @@ export default function Contact() {
   const toggleExpanded = (index: number) => {
     setExpandedItems(prev => 
       prev.includes(index) 
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
+        ? []  // Close if it's already open
+        : [index]  // Open only this one, closing others
     );
   };
 
@@ -95,7 +95,7 @@ export default function Contact() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-bold text-primary mb-6"
+            className="text-5xl md:text-6xl font-bold text-balck mb-6"
           >
             Contact Us
           </motion.h1>
@@ -120,80 +120,85 @@ export default function Contact() {
             className="lg:col-span-1 space-y-6"
           >
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Get in Touch</h2>
-              <p className="text-gray-600 mb-6">
-                Our friendly customer service team is here to help you with any questions about our products, orders, or services.
-              </p>
-              
-              <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Mail className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Email</h3>
-                    <p className="text-gray-600">hello@planetmini.com</p>
-                    <p className="text-sm text-gray-500">We respond within 24 hours</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Phone className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Phone</h3>
-                    <p className="text-gray-600">+1 (555) 123-4567</p>
-                    <p className="text-sm text-gray-500">Mon-Fri: 9AM-6PM EST</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <MapPin className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Address</h3>
-                    <p className="text-gray-600">123 Baby Street</p>
-                    <p className="text-gray-600">New York, NY 10001</p>
-                    <p className="text-sm text-gray-500">United States</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-6 h-6 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Business Hours</h3>
-                    <p className="text-gray-600">Monday - Friday: 9AM - 6PM</p>
-                    <p className="text-gray-600">Saturday: 10AM - 4PM</p>
-                    <p className="text-gray-600">Sunday: Closed</p>
-                  </div>
-                </div>
+              <div className="text-center mb-8">
+                
+                
               </div>
-            </div>
+              
+              <div className="space-y-6">
+                <div className="group bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-6 border border-primary/20 hover:border-secondary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Mail className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-primary transition-colors">Email</h3>
+                      <p className="text-gray-700 font-medium mb-1">hello@planetmini.com</p>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        We respond within 24 hours
+                      </p>
+                    </div>
+                  </div>
+                </div>
 
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Links</h3>
-              <div className="space-y-3">
-                <a href="/faq" className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors">
-                  <MessageCircle className="w-5 h-5" />
-                  <span>FAQs</span>
-                </a>
-                <a href="/shipping" className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors">
-                  <Truck className="w-5 h-5" />
-                  <span>Shipping Information</span>
-                </a>
-                <a href="/returns" className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors">
-                  <Building className="w-5 h-5" />
-                  <span>Returns & Exchanges</span>
-                </a>
-                <a href="/size-guide" className="flex items-center gap-3 text-gray-600 hover:text-primary transition-colors">
-                  <Home className="w-5 h-5" />
-                  <span>Size Guide</span>
-                </a>
+                <div className="group bg-gradient-to-r from-secondary/5 to-primary/5 rounded-2xl p-6 border border-secondary/20 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Phone className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-secondary transition-colors">Phone</h3>
+                      <p className="text-gray-700 font-medium mb-1">+1 (555) 123-4567</p>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        Mon-Fri: 9AM-6PM EST
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="group bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-6 border border-primary/20 hover:border-secondary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <MapPin className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-primary transition-colors">Address</h3>
+                      <p className="text-gray-700 font-medium">123 Baby Street</p>
+                      <p className="text-gray-700 font-medium">New York, NY 10001</p>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        <Globe className="w-3 h-3" />
+                        United States
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="group bg-gradient-to-r from-secondary/5 to-primary/5 rounded-2xl p-6 border border-secondary/20 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Clock className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-secondary transition-colors">Business Hours</h3>
+                      <div className="space-y-1">
+                        <p className="text-gray-700 font-medium flex items-center gap-2">
+                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Mon-Fri</span>
+                          9AM - 6PM
+                        </p>
+                        <p className="text-gray-700 font-medium flex items-center gap-2">
+                          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Saturday</span>
+                          10AM - 4PM
+                        </p>
+                        <p className="text-gray-700 font-medium flex items-center gap-2">
+                          <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Sunday</span>
+                          Closed
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -204,86 +209,120 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h2>
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl p-8 border border-primary/20">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-black mb-2">
+                  Get in Touch
+                </h2>
+                <p className="text-gray-600">We'd love to hear from you! Send us a message and we'll respond as soon as possible.</p>
+              </div>
               
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="relative group">
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-primary transition-colors">
                       Your Name *
                     </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-colors"
-                      placeholder="John Doe"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <div className="w-5 h-5 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        </div>
+                      </div>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-primary focus:border-secondary focus:outline-none transition-all duration-300 hover:border-primary/30 placeholder-gray-400"
+                        placeholder="John Doe"
+                      />
+                    </div>
                   </div>
                   
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                  <div className="relative group">
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-secondary transition-colors">
                       Email Address *
                     </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Mail className="w-5 h-5 text-gray-400 group-focus-within:text-secondary transition-colors" />
+                      </div>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-secondary focus:border-primary focus:outline-none transition-all duration-300 hover:border-secondary/30 placeholder-gray-400"
+                        placeholder="john@example.com"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative group">
+                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-primary transition-colors">
+                    Subject *
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <HelpCircle className="w-5 h-5 text-gray-400 group-focus-within:text-primary transition-colors" />
+                    </div>
                     <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-colors"
-                      placeholder="john@example.com"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-primary focus:border-secondary focus:outline-none transition-all duration-300 hover:border-primary/30 placeholder-gray-400"
+                      placeholder="How can we help you?"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-colors"
-                    placeholder="How can we help you?"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="relative group">
+                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-secondary transition-colors">
                     Message *
                   </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-colors resize-none"
-                    placeholder="Tell us more about your question or concern..."
-                  />
+                  <div className="relative">
+                    <div className="absolute top-4 left-4 pointer-events-none">
+                      <MessageCircle className="w-5 h-5 text-gray-400 group-focus-within:text-secondary transition-colors" />
+                    </div>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      rows={6}
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-secondary focus:border-primary focus:outline-none transition-all duration-300 hover:border-secondary/30 resize-none placeholder-gray-400"
+                      placeholder="Tell us more about your question or concern..."
+                    />
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-500">
-                    * Required fields
-                  </p>
+                <div className="flex items-center justify-between pt-4">
+                  <div className="flex items-center gap-2">
+                    <Shield className="w-4 h-4 text-green-500" />
+                    <p className="text-sm text-gray-600">
+                      Your information is secure and encrypted
+                    </p>
+                  </div>
                   <button
                     type="submit"
-                    className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+                    className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
                   >
-                    <Send className="w-4 h-4" />
-                    Send Message
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <Send className="w-4 h-4 relative z-10 text-black group-hover:translate-x-1 transition-transform duration-300" />
+                    <span className="relative z-10 text-black">Send Message</span>
                   </button>
                 </div>
               </form>
@@ -302,27 +341,53 @@ export default function Contact() {
             className="lg:col-span-1"
           >
             <div className="sticky top-24">
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Categories</h2>
-              <div className="space-y-2">
-                {categories.map((category) => (
-                  <button
-                    key={category.id}
-                    onClick={() => setActiveCategory(category.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
-                      activeCategory === category.id
-                        ? "bg-primary text-white"
-                        : "text-gray-700 hover:bg-gray-100"
-                    }`}
-                  >
-                    <category.icon className="w-5 h-5" />
-                    <div className="flex-1">
-                      <div className="font-medium">{category.name}</div>
-                      <div className={`text-sm ${activeCategory === category.id ? "text-white/80" : "text-gray-500"}`}>
-                        {category.count} questions
+              <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-6 border border-primary/20">
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <HelpCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-black">
+                    Categories
+                  </h2>
+                </div>
+                <div className="space-y-3">
+                  {categories.map((category, index) => (
+                    <button
+                      key={category.id}
+                      onClick={() => setActiveCategory(category.id)}
+                      className={`group w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all duration-300 transform hover:scale-105 ${
+                        activeCategory === category.id
+                          ? "bg-gradient-to-r from-primary to-secondary text-white shadow-lg"
+                          : "bg-white/70 hover:bg-white text-gray-700 hover:shadow-md border border-gray-200"
+                      }`}
+                    >
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                        activeCategory === category.id
+                          ? "bg-white/20"
+                          : "bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:from-primary/20 group-hover:to-secondary/20"
+                      }`}>
+                        <category.icon className={`w-6 h-6 transition-colors ${
+                          activeCategory === category.id ? "text-white" : "text-primary group-hover:text-secondary"
+                        }`} />
                       </div>
-                    </div>
-                  </button>
-                ))}
+                      <div className="flex-1">
+                        <div className={`font-bold text-sm ${
+                          activeCategory === category.id ? "text-white" : "text-gray-900 group-hover:text-primary"
+                        }`}>
+                          {category.name}
+                        </div>
+                        <div className={`text-xs ${
+                          activeCategory === category.id ? "text-white/80" : "text-gray-500"
+                        }`}>
+                          {category.count} questions
+                        </div>
+                      </div>
+                      {activeCategory === category.id && (
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                      )}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
@@ -339,46 +404,76 @@ export default function Contact() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-12"
               >
-                <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <HelpCircle className="w-10 h-10 text-white" />
+                </div>
+                <h2 className="text-4xl font-bold text-black mb-4">
+                  Frequently Asked Questions
+                </h2>
                 <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                   Find quick answers to common questions about our products and services.
                 </p>
               </motion.div>
 
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {filteredFAQs.map((faq, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-gray-50 rounded-xl overflow-hidden"
+                    className={`group rounded-2xl overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                      expandedItems.includes(index)
+                        ? "bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/30"
+                        : "bg-white border-gray-200 hover:border-primary/30"
+                    }`}
                   >
                     <button
                       onClick={() => toggleExpanded(index)}
-                      className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors"
+                      className="w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-primary/5 group-hover:to-secondary/5"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                          <faq.icon className="w-5 h-5 text-primary" />
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                          expandedItems.includes(index)
+                            ? "bg-gradient-to-br from-primary to-secondary"
+                            : "bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:from-primary/20 group-hover:to-secondary/20"
+                        }`}>
+                          <faq.icon className={`w-6 h-6 transition-colors ${
+                            expandedItems.includes(index) ? "text-white" : "text-primary group-hover:text-secondary"
+                          }`} />
                         </div>
-                        <h3 className="font-semibold text-gray-900">{faq.question}</h3>
+                        <h3 className={`font-bold text-lg pr-4 ${
+                          expandedItems.includes(index)
+                            ? "text-primary"
+                            : "text-gray-900 group-hover:text-primary"
+                        }`}>
+                          {faq.question}
+                        </h3>
                       </div>
-                      {expandedItems.includes(index) ? (
-                        <ChevronUp className="w-5 h-5 text-gray-400" />
-                      ) : (
-                        <ChevronDown className="w-5 h-5 text-gray-400" />
-                      )}
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                        expandedItems.includes(index)
+                          ? "bg-gradient-to-br from-primary to-secondary text-white"
+                          : "bg-gray-100 group-hover:bg-primary/10 text-gray-400 group-hover:text-primary"
+                      }`}>
+                        {expandedItems.includes(index) ? (
+                          <ChevronUp className="w-5 h-5" />
+                        ) : (
+                          <ChevronDown className="w-5 h-5" />
+                        )}
+                      </div>
                     </button>
                     {expandedItems.includes(index) && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="px-6 pb-4"
+                        className="px-6 pb-5"
                       >
-                        <div className="pl-14 text-gray-600 leading-relaxed">
-                          {faq.answer}
+                        <div className="pl-16 text-gray-700 leading-relaxed bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/20">
+                          <div className="flex items-start gap-3">
+                            <div className="w-2 h-2 bg-gradient-to-br from-primary to-secondary rounded-full mt-2 flex-shrink-0"></div>
+                            <p className="text-gray-700">{faq.answer}</p>
+                          </div>
                         </div>
                       </motion.div>
                     )}
@@ -405,25 +500,6 @@ export default function Contact() {
               </motion.div>
             </div>
           </motion.div>
-        </div>
-      </section>
-
-      {/* Map Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
-        <div className="overflow-hidden">
-          <div className="p-6 lg:p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Visit Our Store</h2>
-            <p className="text-gray-600 mb-6">
-              Come visit our flagship store in New York City to see our products in person and meet our friendly team.
-            </p>
-          </div>
-          <div className="aspect-video bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center">
-            <div className="text-center">
-              <MapPin className="w-12 h-12 text-primary mx-auto mb-4" />
-              <p className="text-gray-600 font-medium">Interactive Map</p>
-              <p className="text-sm text-gray-500">123 Baby Street, New York, NY</p>
-            </div>
-          </div>
         </div>
       </section>
     </div>

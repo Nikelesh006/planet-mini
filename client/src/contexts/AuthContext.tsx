@@ -12,6 +12,8 @@ type AuthContextType = {
   isLoading: boolean;
   refetch: () => void;
   logout: () => void;
+  showWelcomeMessage: boolean;
+  dismissWelcomeMessage: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -19,11 +21,15 @@ const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   refetch: () => {},
   logout: () => {},
+  showWelcomeMessage: false,
+  dismissWelcomeMessage: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
+  const [previousUser, setPreviousUser] = useState<User | null>(null);
 
   const fetchSession = async () => {
     try {
@@ -32,12 +38,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       if (!res.ok) {
         setUser(null);
+        setPreviousUser(null);
       } else {
         const data = await res.json();
-        setUser(data.user || null);
+        const currentUser = data.user || null;
+        
+        // Check if user just logged in (was null, now has user)
+        // Only show welcome if this is a new login session
+        const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+        const userId = currentUser?.id;
+        const lastSeenUserId = localStorage.getItem('lastSeenUserId');
+        
+        if (!previousUser && currentUser && currentUser.name && (!hasSeenWelcome || lastSeenUserId !== userId)) {
+          setShowWelcomeMessage(true);
+          localStorage.setItem('hasSeenWelcome', 'true');
+          localStorage.setItem('lastSeenUserId', userId || '');
+        }
+        
+        setUser(currentUser);
+        setPreviousUser(currentUser);
       }
     } catch {
       setUser(null);
+      setPreviousUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -55,10 +78,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         credentials: "include",
       });
       setUser(null);
+      setPreviousUser(null);
+      // Clear welcome flags on logout
+      localStorage.removeItem('hasSeenWelcome');
+      localStorage.removeItem('lastSeenUserId');
     } catch (error) {
       console.error("Logout error:", error);
       setUser(null);
+      setPreviousUser(null);
+      localStorage.removeItem('hasSeenWelcome');
+      localStorage.removeItem('lastSeenUserId');
     }
+  };
+
+  const dismissWelcomeMessage = () => {
+    setShowWelcomeMessage(false);
   };
 
   useEffect(() => {
@@ -66,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, refetch, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, refetch, logout, showWelcomeMessage, dismissWelcomeMessage }}>
       {children}
     </AuthContext.Provider>
   );

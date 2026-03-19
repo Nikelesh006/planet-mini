@@ -1,5 +1,7 @@
-import { Link, useLocation } from 'wouter';
-import { useCart } from '../contexts/CartContext';
+import { motion } from "framer-motion";
+import { Link, useLocation } from "wouter";
+import { useCart } from "@/contexts/CartContext";
+import { Confetti, useConfetti } from "@/components/ui/Confetti";
 import { ChevronDown, ArrowLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
@@ -10,6 +12,7 @@ export default function CartPage() {
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [location] = useLocation();
   const [promoCode, setPromoCode] = useState('');
+  const { showConfetti, triggerConfetti } = useConfetti();
 
   // Fetch addresses on component mount and when location changes
   useEffect(() => {
@@ -134,11 +137,16 @@ export default function CartPage() {
         // Clear cart
         clearCart();
         
+        // Trigger confetti animation
+        triggerConfetti();
+        
         // Show success message
-        alert(`Order placed successfully! Order Number: ${order.orderNumber}`);
+        console.log(`Order placed successfully! Order Number: ${order.orderNumber}`);
         
         // Redirect to orders page
-        window.location.href = '/profile/orders';
+        setTimeout(() => {
+          window.location.href = '/profile/orders';
+        }, 2000);
       } else {
         // Handle non-OK responses
         const responseText = await response.text();
@@ -192,7 +200,7 @@ export default function CartPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Your Cart</h1>
+          <h1 className="text-4xl font-bold text-black">Your Cart</h1>
           <span className="text-gray-500">{state.totalItems} Items</span>
         </div>
 
@@ -216,18 +224,18 @@ export default function CartPage() {
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-20 h-24 object-cover rounded-md"
+                      className="w-24 h-24 object-cover rounded-xl shadow-md"
                     />
                     <div className="flex flex-col justify-center">
-                      <h3 className="font-medium text-gray-900 mb-1">{item.name}</h3>
-                      <p className="text-sm text-gray-500 mb-1">
+                      <h3 className="text-xl font-bold text-black">{item.name}</h3>
+                      <p className="text-sm text-gray-600 mb-1">
                         {item.size && `Size: ${item.size}`}
                         {item.size && item.color && ' · '}
                         {item.color && `Color: ${item.color}`}
                       </p>
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-xs text-pink-500 hover:text-pink-600 text-left"
+                        className="text-xs text-red-500 hover:text-red-700 text-left"
                       >
                         Remove
                       </button>
@@ -236,22 +244,22 @@ export default function CartPage() {
 
                   {/* Price */}
                   <div className="col-span-2 text-center">
-                    <span className="text-gray-900">{formatPrice(item.price)}</span>
+                    <span className="text-xl font-bold text-black">{formatPrice(item.price)}</span>
                   </div>
 
                   {/* Quantity */}
                   <div className="col-span-2 flex justify-center">
-                    <div className="flex items-center border border-gray-200 rounded">
+                    <div className="flex items-center gap-2 border-2 border-gray-200 rounded-xl">
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="px-3 py-1 text-gray-600 hover:bg-gray-50"
+                        className="px-4 py-2 text-black hover:bg-primary/10 hover:border-primary transition-colors rounded-l-lg"
                       >
                         -
                       </button>
-                      <span className="px-3 py-1 text-gray-900 min-w-[30px] text-center">{item.quantity}</span>
+                      <span className="px-4 py-2 text-black min-w-[40px] text-center font-semibold">{item.quantity}</span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="px-3 py-1 text-gray-600 hover:bg-gray-50"
+                        className="px-4 py-2 text-black hover:bg-primary/10 hover:border-primary transition-colors rounded-r-lg"
                       >
                         +
                       </button>
@@ -260,7 +268,7 @@ export default function CartPage() {
 
                   {/* Subtotal */}
                   <div className="col-span-2 text-center">
-                    <span className="text-gray-900">{formatPrice(item.price * item.quantity)}</span>
+                    <span className="text-xl font-bold text-black">{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 </div>
               ))}
@@ -270,9 +278,9 @@ export default function CartPage() {
             <div className="mt-6">
               <Link 
                 href="/"
-                className="inline-flex items-center gap-2 text-pink-500 hover:text-pink-600 font-medium"
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-5 h-5" />
                 Continue Shopping
               </Link>
             </div>
@@ -280,8 +288,8 @@ export default function CartPage() {
 
           {/* Order Summary - Right Side */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-50 rounded-lg p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-6">Order Summary</h2>
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
+              <h2 className="text-2xl font-bold text-black mb-6">Order Summary</h2>
               
               {/* SELECT ADDRESS */}
               <div className="mb-6">
@@ -304,7 +312,7 @@ export default function CartPage() {
                     onClick={(e) => {
                       console.log('Select clicked');
                     }}
-                    className="w-full px-4 py-3 pr-10 border border-gray-200 rounded-lg appearance-none bg-white text-gray-700 text-sm focus:outline-none cursor-pointer"
+                    className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl appearance-none bg-white text-black font-semibold focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer"
                   >
                     {addresses.map((address) => (
                       <option key={address._id} value={address._id}>
@@ -325,7 +333,7 @@ export default function CartPage() {
                     console.log('Add New Address button clicked');
                     window.location.href = '/add-address';
                   }}
-                  className="w-full px-4 py-2 bg-pink-500 text-white text-sm rounded-lg hover:bg-pink-600 transition-colors"
+                  className="w-full bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   + Add New Address
                 </button>
@@ -335,24 +343,24 @@ export default function CartPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">ITEMS {state.totalItems}</span>
-                  <span className="text-gray-900">{formatPrice(subtotal)}</span>
+                  <span className="text-xl font-bold text-black">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping Fee</span>
-                  <span className="text-gray-900">Free</span>
+                  <span className="text-xl font-bold text-black">Free</span>
                 </div>
               </div>
 
               {/* Total */}
               <div className="flex justify-between items-center pt-4 border-t border-gray-200 mb-6">
-                <span className="text-lg font-semibold text-gray-900">Total</span>
-                <span className="text-xl font-bold text-gray-900">{formatPrice(subtotal)}</span>
+                <span className="text-2xl font-bold text-black">Total</span>
+                <span className="text-2xl font-bold text-primary">{formatPrice(subtotal)}</span>
               </div>
 
               {/* Place Order Button */}
               <button 
                 onClick={handlePlaceOrder}
-                className="w-full bg-pink-500 text-white py-3 px-6 rounded-lg font-semibold hover:bg-pink-600 transition-colors"
+                className="w-full bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Place Order
               </button>
@@ -360,6 +368,9 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      {/* Confetti Animation */}
+      <Confetti trigger={showConfetti} />
     </div>
   );
 }

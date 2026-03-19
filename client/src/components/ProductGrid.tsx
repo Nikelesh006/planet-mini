@@ -1,10 +1,12 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 import { Link } from "wouter";
 
 import { ShoppingCart, Star, Heart, Package, Plus, Minus } from "lucide-react";
 
 import { useLikes } from "@/contexts/LikeContext";
+import { useCart } from "@/contexts/CartContext";
 
 
 
@@ -52,6 +54,8 @@ interface ProductGridProps {
 
 export default function ProductGrid({ products, title, showLoadMore = false }: ProductGridProps) {
   const { toggleLike, isLiked } = useLikes();
+  const { addToCart } = useCart();
+  const [addedToCart, setAddedToCart] = useState<number | null>(null);
 
   const formatPrice = (price: number | string) => {
     const num = typeof price === 'string' ? parseFloat(price) : price;
@@ -82,14 +86,14 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
         </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-5">
         {products.map((product, index) => (
           <motion.div
             key={product.id || `product-${index}`}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
-            className="group h-[380px] product-card"
+            className="group h-[400px] product-card"
           >
             <div
               className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer h-full flex flex-col border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30`}
@@ -117,12 +121,14 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
               )}
 
               {/* Product Image */}
-              <div className="aspect-square relative overflow-hidden bg-gray-50 flex items-center justify-center flex-shrink-0">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-500 group-hover:scale-105"
-                />
+              <div className="aspect-square relative overflow-hidden bg-gray-50 flex items-center justify-center flex-shrink-0 p-2">
+                <div className="w-full h-full flex items-center justify-center">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-500 group-hover:scale-105"
+                  />
+                </div>
               </div>
 
               {/* Product Info */}
@@ -156,13 +162,28 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                   </button>
 
                   <button
-                    className="w-10 h-10 bg-primary rounded-full flex items-center justify-center shadow-lg hover:bg-primary/90 transition-all duration-300 transform hover:scale-105"
+                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 transform hover:scale-105 ${
+                      addedToCart === product.id 
+                        ? 'bg-green-500 hover:bg-green-600' 
+                        : 'bg-primary hover:bg-primary/90'
+                    }`}
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigateToProduct(product.slug);
+                      addToCart({
+                        id: product.id.toString(),
+                        name: product.name,
+                        price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
+                        image: product.image
+                      });
+                      setAddedToCart(product.id);
+                      setTimeout(() => setAddedToCart(null), 2000);
                     }}
                   >
-                    <ShoppingCart className="w-4 h-4 text-black" />
+                    {addedToCart === product.id ? (
+                      <span className="text-white text-xs font-bold">✓</span>
+                    ) : (
+                      <ShoppingCart className="w-4 h-4 text-black" />
+                    )}
                   </button>
                 </div>
 
@@ -193,29 +214,27 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                 </Link>
 
                 {/* Description */}
-                <p className="text-sm text-gray-700 mb-2 line-clamp-2 min-h-[40px] font-medium">
+                <p className="text-sm text-gray-700 line-clamp-2 min-h-[40px] font-medium">
                     {product.description}
                 </p>
 
-                {/* Price - Always Visible */}
-                <div className="mt-auto pt-3 border-t border-gray-200 bg-gray-50 -mx-4 px-4 -mb-4 pb-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl font-bold text-black bg-white px-2 py-1 rounded">
-                        ₹{product.price ? Number(product.price).toFixed(2) : '99.99'}
-                      </span>
-                      {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
-                        <span className="text-sm text-gray-500 line-through bg-white px-2 py-1 rounded">
-                          ₹{Number(product.originalPrice).toFixed(2)}
-                        </span>
-                      )}
-                    </div>
-                    {!product.originalPrice && (
-                      <span className="text-sm text-gray-500 line-through bg-white px-2 py-1 rounded">
-                        ₹199.99
+                {/* Price - Above the line */}
+                <div className="flex items-center justify-between -mt-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-bold text-black">
+                      ₹{product.price ? Number(product.price).toFixed(2) : '99.99'}
+                    </span>
+                    {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
+                      <span className="text-sm text-gray-500 line-through">
+                        ₹{Number(product.originalPrice).toFixed(2)}
                       </span>
                     )}
                   </div>
+                  {!product.originalPrice && (
+                    <span className="text-sm text-gray-500 line-through">
+                      ₹199.99
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
