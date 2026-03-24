@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
 import { useCart } from "@/contexts/CartContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Confetti, useConfetti } from "@/components/ui/Confetti";
 import { ChevronDown, ArrowLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -8,11 +9,15 @@ import { addressApi, Address } from '../utils/addressApi';
 
 export default function CartPage() {
   const { state, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { user } = useAuth(); // Move useAuth to top level
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [location] = useLocation();
   const [promoCode, setPromoCode] = useState('');
   const { showConfetti, triggerConfetti } = useConfetti();
+
+  console.log('🔍 Cart state:', state);
+  console.log('🔍 Cart items:', state.items);
 
   // Fetch addresses on component mount and when location changes
   useEffect(() => {
@@ -46,6 +51,16 @@ export default function CartPage() {
 
     fetchAddresses();
   }, [location]); // Refetch when location changes
+
+  // Create a unique key for cart items
+  const getCartItemKey = (item: any, index: number) => {
+    // Use a combination of product id, size, color, and index to ensure uniqueness
+    const sizeColor = item.size ? `-${item.size}` : '';
+    const color = item.color ? `-${item.color}` : '';
+    const uniqueKey = `${item.id}${sizeColor}${color}-${index}`;
+    console.log(`🔍 Cart item key for ${item.name}: ${uniqueKey}`);
+    return uniqueKey;
+  };
 
   // Save selected address to localStorage when it changes
   useEffect(() => {
@@ -107,13 +122,21 @@ export default function CartPage() {
 
       // Send order to backend
       const token = localStorage.getItem('token');
+      const currentUserId = user?.id || user?.sub;
+      
+      console.log('🔍 Placing order for user:', currentUserId);
+      
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${token}`,
+          'x-user-id': currentUserId || ''
         },
-        body: JSON.stringify(orderData)
+        body: JSON.stringify({
+          ...orderData,
+          userId: currentUserId // Include userId in order data
+        })
       });
 
       console.log('REQUEST SENT - Status:', response.status);
@@ -217,8 +240,8 @@ export default function CartPage() {
 
             {/* Cart Items */}
             <div className="space-y-0">
-              {state.items.map((item) => (
-                <div key={item.id} className="grid grid-cols-12 gap-4 py-6 border-b border-gray-100 items-center">
+              {state.items.map((item, index) => (
+                <div key={getCartItemKey(item, index)} className="grid grid-cols-12 gap-4 py-6 border-b border-gray-100 items-center">
                   {/* Product Details */}
                   <div className="col-span-6 flex gap-4">
                     <img

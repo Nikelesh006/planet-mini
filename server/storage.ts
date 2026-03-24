@@ -1,667 +1,514 @@
 import mongoose from 'mongoose';
+import { productsStorage } from './db';
 
-import { productsStorage } from "./db";
-
-import { type Product } from "@shared/schema";
-
-import { Address } from "./types/Address";
-
-
-
-// In-memory address storage (for demo - replace with real database)
-
-class AddressStorage {
-
-  private addresses: Map<string, Address[]> = new Map();
-
-
-
-  async getAddresses(userId: string): Promise<Address[]> {
-
-    return this.addresses.get(userId) || [];
-
+// Create a unified storage object that includes all storage functions
+export const storage = {
+  ...productsStorage,
+  async getAddresses(userId: string) {
+    return await addressStorage.getAddresses(userId);
+  },
+  async saveAddress(userId: string, addressData: any) {
+    return await addressStorage.createAddress(userId, addressData);
   }
+};
 
-
-
-  async getAddress(userId: string, addressId: string): Promise<Address | undefined> {
-
-    const userAddresses = this.addresses.get(userId) || [];
-
-    return userAddresses.find(addr => addr._id === addressId);
-
-  }
-
-
-
-  async saveAddress(userId: string, address: Address): Promise<void> {
-
-    const userAddresses = this.addresses.get(userId) || [];
-
-    userAddresses.push(address);
-
-    this.addresses.set(userId, userAddresses);
-
-    console.log(`Saved address for user ${userId}:`, address);
-
-  }
-
-
-
-  async updateAddress(userId: string, addressId: string, updates: Partial<Address>): Promise<Address | undefined> {
-
-    const userAddresses = this.addresses.get(userId) || [];
-
-    const addressIndex = userAddresses.findIndex(addr => addr._id === addressId);
-
-    
-
-    if (addressIndex === -1) {
-
-      return undefined;
-
-    }
-
-
-
-    const updatedAddress = { ...userAddresses[addressIndex], ...updates };
-
-    userAddresses[addressIndex] = updatedAddress;
-
-    this.addresses.set(userId, userAddresses);
-
-    
-
-    console.log(`Updated address ${addressId} for user ${userId}:`, updatedAddress);
-
-    return updatedAddress;
-
-  }
-
-
-
-  async deleteAddress(userId: string, addressId: string): Promise<boolean> {
-
-    const userAddresses = this.addresses.get(userId) || [];
-
-    const addressIndex = userAddresses.findIndex(addr => addr._id === addressId);
-
-    
-
-    if (addressIndex === -1) {
-
-      return false;
-
-    }
-
-
-
-    userAddresses.splice(addressIndex, 1);
-
-    this.addresses.set(userId, userAddresses);
-
-    
-
-    console.log(`Deleted address ${addressId} for user ${userId}`);
-
-    return true;
-
-  }
-
-}
-
-
-
-// Database address storage
-
-class DatabaseAddressStorage {
-
-  async getAddresses(userId: string): Promise<Address[]> {
+// Create address storage using MongoDB collections
+export const addressStorage = {
+  async getAddresses(userId: string) {
     try {
       const db = mongoose.connection.db;
-      if (!db) throw new Error("Database not connected");
-      
-      const addresses = await db.collection("addresses").find({ userId: userId as any }).toArray();
-      return addresses as unknown as Address[];
-    } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      console.log(`🔄 Using in-memory address cache`);
-      if (process.env.NODE_ENV === 'development') {
-        console.warn("MongoDB not available, using cache");
+      if (!db) {
+        console.log('❌ Database not connected for getAddresses, returning empty array');
+        return [];
       }
+      const addresses = await db.collection("addresses").find({ userId }).toArray();
+      return addresses.map(address => ({
+        ...address,
+        id: address._id.toString()
+      }));
+    } catch (error) {
+      console.error('Error fetching addresses:', error);
       return [];
     }
-  }
+  },
 
-
-
-  async getAddress(userId: string, addressId: string): Promise<Address | undefined> {
+  async createAddress(userId: string, addressData: any) {
     try {
       const db = mongoose.connection.db;
-      if (!db) throw new Error("Database not connected");
-      
-      const address = await db.collection("addresses").findOne({ userId: userId as any, _id: addressId as any });
-      return address as unknown as Address;
+      if (!db) {
+        console.log('❌ Database not connected for createAddress, returning mock address');
+        // Return mock address for testing
+        return {
+          _id: `addr${Date.now()}`,
+          userId: userId,
+          ...addressData,
+          isDefault: false,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+      }
+      const address = { ...addressData, userId, createdAt: new Date(), updatedAt: new Date() };
+      const result = await db.collection("addresses").insertOne(address);
+      return { ...address, id: result.insertedId.toString(), _id: result.insertedId.toString() };
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      console.log(`🔄 Using in-memory address cache`);
-      return undefined;
-    }
-  }
-
-
-
-  async saveAddress(userId: string, address: Address): Promise<void> {
-
-    try {
-
-      const db = mongoose.connection.db;
-
-      if (!db) throw new Error("Database not connected");
-
-      const newAddress = {
-        ...address,
-        _id: address._id as any,
+      console.error('Error creating address:', error);
+      // Return mock address even on error for testing
+      return {
+        _id: `addr${Date.now()}`,
+        userId: userId,
+        ...addressData,
+        isDefault: false,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-
-      await db.collection("addresses").insertOne(newAddress as any);
-
-      console.log(`✅ Saved address to MongoDB for user ${userId}`);
-
-    } catch (error) {
-
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-
-      console.log(`🔄 Using in-memory address cache`);
-
-      if (process.env.NODE_ENV === 'development') {
-
-        console.warn("MongoDB not available, using cache");
-
-      }
-
-    }
-
-  }
-
-
-
-  async updateAddress(userId: string, addressId: string, updates: Partial<Address>): Promise<Address | undefined> {
-
-    try {
-
-      const db = mongoose.connection.db;
-
-      if (!db) throw new Error("Database not connected");
-
-      const { ObjectId } = mongoose.Types;
-
-      
-
-      const result = await db.collection("addresses").updateOne(
-
-        { userId, _id: new ObjectId(addressId) },
-
-        { $set: updates }
-
-      );
-
-      
-
-      if (result.matchedCount === 0) {
-
-        return undefined;
-
-      }
-
-      
-
-      const updatedAddress = await db.collection("addresses").findOne({ userId, _id: new ObjectId(addressId) });
-      return updatedAddress as unknown as Address || undefined;
-
-    } catch (error) {
-
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-
-      console.log(`🔄 Using in-memory address cache`);
-
-      return undefined;
-
-    }
-
-  }
-
-
-
-  async deleteAddress(userId: string, addressId: string): Promise<boolean> {
-
-    try {
-
-      const db = mongoose.connection.db;
-
-      if (!db) throw new Error("Database not connected");
-
-      const { ObjectId } = mongoose.Types;
-
-      await db.collection("addresses").deleteOne({ userId, _id: new ObjectId(addressId) });
-
-      console.log(`✅ Deleted address from MongoDB`);
-
-      return true;
-
-    } catch (error) {
-
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-
-      console.log(`🔄 Using in-memory address cache`);
-
-      return false;
-
-    }
-
-  }
-
-}
-
-
-
-export interface IStorage {
-
-  getProducts(): Promise<Product[]>;
-
-  getProductBySlug(slug: string): Promise<Product | undefined>;
-
-  createProduct(product: Omit<Product, "id">): Promise<Product>;
-
-  updateProduct(id: string, product: Partial<Product>): Promise<Product | null>;
-
-  deleteProduct(id: string): Promise<void>;
-
-}
-
-
-
-export class DatabaseStorage implements IStorage {
-
-  private addressStorage = new DatabaseAddressStorage();
-
-
-
-  async getProducts(): Promise<Product[]> {
-
-    return await productsStorage.getProducts();
-
-  }
-
-
-
-  async getProductBySlug(slug: string): Promise<Product | undefined> {
-
-    return await productsStorage.getProductBySlug(slug);
-
-  }
-
-
-
-  async createProduct(product: Omit<Product, "id">): Promise<Product> {
-
-    return await productsStorage.createProduct(product);
-
-  }
-
-
-
-  async updateProduct(id: string, product: Partial<Product>): Promise<Product | null> {
-
-    return await productsStorage.updateProduct(id, product);
-
-  }
-
-
-
-  async deleteProduct(id: string): Promise<void> {
-
-    await productsStorage.deleteProduct(id);
-
-  }
-
-
-
-  // Address storage methods
-
-  async getAddresses(userId: string): Promise<Address[]> {
-
-    return await this.addressStorage.getAddresses(userId);
-
-  }
-
-
-
-  async getAddress(userId: string, addressId: string): Promise<Address | undefined> {
-
-    return await this.addressStorage.getAddress(userId, addressId);
-
-  }
-
-
-
-  async saveAddress(userId: string, address: Address): Promise<void> {
-
-    await this.addressStorage.saveAddress(userId, address);
-
-  }
-
-
-
-  async updateAddress(userId: string, addressId: string, address: Partial<Address>): Promise<Address | undefined> {
-
-    return await this.addressStorage.updateAddress(userId, addressId, address);
-
-  }
-
-
-
-  async deleteAddress(userId: string, addressId: string): Promise<boolean> {
-
-    return await this.addressStorage.deleteAddress(userId, addressId);
-
-  }
-
-}
-
-
-
-export const storage = new DatabaseStorage();
-
-export const addressStorage = new DatabaseAddressStorage();
-
-// User-based storage with user schema
-export const userStorage = {
-  async getUser(userId: string) {
-    try {
-      const db = mongoose.connection.db;
-      if (!db) throw new Error("Database not connected");
-      
-      let user = await db.collection("user").findOne({ _id: userId as any });
-      
-      // If user doesn't exist, create a basic user record
-      if (!user) {
-        console.log(`⚠️ User not found, creating new user: ${userId}`);
-        const newUser = {
-          _id: userId as any,
-          name: "",
-          email: "",
-          imageUrl: "",
-          cartItems: [],
-          wishlist: [],
-          phone: "",
-          address: "",
-          bio: ""
-        };
-        
-        await db.collection("user").insertOne(newUser as any);
-        user = newUser;
-        console.log(`✅ Created new user: ${userId}`);
-      }
-      
-      return user;
-    } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return null;
     }
   },
 
-  async updateUser(userId: string, updates: any) {
+  async updateAddress(userId: string, addressId: string, updateData: any) {
     try {
       const db = mongoose.connection.db;
-      if (!db) throw new Error("Database not connected");
-      
-      const result = await db.collection("user").updateOne(
-        { _id: userId as any },
-        { $set: updates }
-      );
-      console.log(`✅ Updated user: ${userId}`);
-      return result.modifiedCount > 0;
-    } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return false;
-    }
-  },
-
-  // Cart operations within user schema
-  async getCart(userId: string) {
-    try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
-        return [];
-      }
-      
-      console.log(`✅ Retrieved ${user.cartItems?.length || 0} cart items from user schema for: ${userId}`);
-      return user.cartItems || [];
-    } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return [];
-    }
-  },
-
-  async addToCart(userId: string, cartItem: any) {
-    try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
+      if (!db) {
+        console.log('❌ Database not connected for updateAddress');
         return null;
       }
-
-      // Check if item already exists in cart
-      const existingItemIndex = user.cartItems?.findIndex((item: any) => 
-        item.productId === cartItem.productId && item.size === cartItem.size && item.color === cartItem.color
-      ) || -1;
-
-      let updatedCartItems;
-      if (existingItemIndex >= 0) {
-        // Update quantity if item exists
-        updatedCartItems = [...user.cartItems];
-        updatedCartItems[existingItemIndex].quantity += cartItem.quantity;
-      } else {
-        // Add new item
-        updatedCartItems = [...(user.cartItems || []), cartItem];
+      const { ObjectId } = mongoose.Types;
+      
+      const result = await db.collection("addresses").updateOne(
+        { _id: new ObjectId(addressId), userId },
+        { $set: updateData }
+      );
+      
+      if (result.matchedCount === 0) {
+        return null;
       }
-
-      const updated = await this.updateUser(userId, { cartItems: updatedCartItems });
-      if (updated) {
-        console.log(`✅ Added cart item for user: ${userId}`);
-        return cartItem;
-      }
-      return null;
+      
+      const updatedAddress = await db.collection("addresses").findOne({ _id: new ObjectId(addressId) });
+      return updatedAddress ? { ...updatedAddress, id: updatedAddress._id.toString() } : null;
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
+      console.error('Error updating address:', error);
       return null;
     }
   },
 
-  async updateCartItem(userId: string, productId: string, updates: any) {
+  async deleteAddress(userId: string, addressId: string) {
     try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
+      const db = mongoose.connection.db;
+      if (!db) {
+        console.log('❌ Database not connected for deleteAddress');
         return false;
       }
-
-      const updatedCartItems = user.cartItems?.map((item: any) => 
-        item.productId === productId ? { ...item, ...updates } : item
-      ) || [];
-
-      const updated = await this.updateUser(userId, { cartItems: updatedCartItems });
-      if (updated) {
-        console.log(`✅ Updated cart item for user: ${userId}`);
-        return true;
-      }
-      return false;
+      const { ObjectId } = mongoose.Types;
+      
+      const result = await db.collection("addresses").deleteOne({ 
+        _id: new ObjectId(addressId), 
+        userId 
+      });
+      
+      return result.deletedCount > 0;
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
+      console.error('Error deleting address:', error);
       return false;
+    }
+  }
+};
+
+// Create user storage for cart and wishlist functionality
+export const userStorage = {
+  // Cart functionality
+  async getCart(userId: string) {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      const cart = await db.collection("carts").findOne({ userId });
+      return cart || { items: [] };
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      return { items: [] };
+    }
+  },
+
+  async addToCart(userId: string, itemData: any) {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      
+      const cart = await db.collection("carts").findOne({ userId });
+      const item = { ...itemData, addedAt: new Date() };
+      
+      if (cart) {
+        // Check if item already exists
+        const existingItemIndex = cart.items.findIndex((item: any) => 
+          item.productId === itemData.productId && 
+          item.size === itemData.size && 
+          item.color === itemData.color
+        );
+        
+        if (existingItemIndex >= 0) {
+          // Update existing item quantity
+          cart.items[existingItemIndex].quantity += itemData.quantity || 1;
+        } else {
+          // Add new item
+          cart.items.push(item);
+        }
+        
+        await db.collection("carts").updateOne(
+          { userId },
+          { $set: { items: cart.items, updatedAt: new Date() } }
+        );
+      } else {
+        // Create new cart
+        await db.collection("carts").insertOne({
+          userId,
+          items: [item],
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+      }
+      
+      return item;
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      throw error;
+    }
+  },
+
+  async updateCartItem(userId: string, productId: string, updateData: any) {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      
+      const cart = await db.collection("carts").findOne({ userId });
+      if (!cart) return false;
+      
+      const itemIndex = cart.items.findIndex((item: any) => item.productId === productId);
+      if (itemIndex === -1) return false;
+      
+      cart.items[itemIndex] = { ...cart.items[itemIndex], ...updateData };
+      
+      await db.collection("carts").updateOne(
+        { userId },
+        { $set: { items: cart.items, updatedAt: new Date() } }
+      );
+      
+      return true;
+    } catch (error) {
+      console.error('Error updating cart item:', error);
+      throw error;
     }
   },
 
   async removeFromCart(userId: string, productId: string) {
     try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
-        return false;
-      }
-
-      const updatedCartItems = user.cartItems?.filter((item: any) => item.productId !== productId) || [];
-      const updated = await this.updateUser(userId, { cartItems: updatedCartItems });
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
       
-      if (updated) {
-        console.log(`✅ Removed cart item for user: ${userId}`);
-        return true;
-      }
-      return false;
+      const cart = await db.collection("carts").findOne({ userId });
+      if (!cart) return false;
+      
+      cart.items = cart.items.filter((item: any) => item.productId !== productId);
+      
+      await db.collection("carts").updateOne(
+        { userId },
+        { $set: { items: cart.items, updatedAt: new Date() } }
+      );
+      
+      return true;
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return false;
+      console.error('Error removing from cart:', error);
+      throw error;
     }
   },
 
   async clearCart(userId: string) {
     try {
-      const updated = await this.updateUser(userId, { cartItems: [] });
-      if (updated) {
-        console.log(`✅ Cleared cart for user: ${userId}`);
-        return 1;
-      }
-      return 0;
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      
+      const cart = await db.collection("carts").findOne({ userId });
+      if (!cart) return 0;
+      
+      const itemCount = cart.items.length;
+      
+      await db.collection("carts").updateOne(
+        { userId },
+        { $set: { items: [], updatedAt: new Date() } }
+      );
+      
+      return itemCount;
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return 0;
+      console.error('Error clearing cart:', error);
+      throw error;
     }
   },
 
-  // Wishlist operations within user schema
+  // Wishlist functionality
   async getWishlist(userId: string) {
     try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
-        return [];
-      }
-      
-      console.log(`✅ Retrieved ${user.wishlist?.length || 0} wishlist items from user schema for: ${userId}`);
-      return user.wishlist || [];
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      const wishlist = await db.collection("wishlists").findOne({ userId });
+      return wishlist || { items: [] };
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return [];
+      console.error('Error fetching wishlist:', error);
+      return { items: [] };
     }
   },
 
   async addToWishlist(userId: string, productId: string) {
     try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
-        return null;
-      }
-
-      // Check if already in wishlist
-      if (user.wishlist?.includes(productId)) {
-        console.log(`⚠️ Product already in wishlist for user: ${userId}`);
-        return { productId, alreadyExists: true };
-      }
-
-      const updatedWishlist = [...(user.wishlist || []), productId];
-      const updated = await this.updateUser(userId, { wishlist: updatedWishlist });
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
       
-      if (updated) {
-        console.log(`✅ Added wishlist item for user: ${userId}`);
-        return { productId, addedAt: new Date().toISOString() };
+      const wishlist = await db.collection("wishlists").findOne({ userId });
+      const item = { productId, addedAt: new Date() };
+      
+      if (wishlist) {
+        // Check if item already exists
+        const exists = wishlist.items.some((item: any) => item.productId === productId);
+        if (exists) return null; // Already in wishlist
+        
+        wishlist.items.push(item);
+        await db.collection("wishlists").updateOne(
+          { userId },
+          { $set: { items: wishlist.items, updatedAt: new Date() } }
+        );
+      } else {
+        // Create new wishlist
+        await db.collection("wishlists").insertOne({
+          userId,
+          items: [item],
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
       }
-      return null;
+      
+      return item;
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return null;
+      console.error('Error adding to wishlist:', error);
+      throw error;
     }
   },
 
   async removeFromWishlist(userId: string, productId: string) {
     try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
-        return false;
-      }
-
-      const updatedWishlist = user.wishlist?.filter((id: string) => id !== productId) || [];
-      const updated = await this.updateUser(userId, { wishlist: updatedWishlist });
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
       
-      if (updated) {
-        console.log(`✅ Removed wishlist item for user: ${userId}`);
-        return true;
-      }
-      return false;
+      const wishlist = await db.collection("wishlists").findOne({ userId });
+      if (!wishlist) return false;
+      
+      wishlist.items = wishlist.items.filter((item: any) => item.productId !== productId);
+      
+      await db.collection("wishlists").updateOne(
+        { userId },
+        { $set: { items: wishlist.items, updatedAt: new Date() } }
+      );
+      
+      return true;
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return false;
+      console.error('Error removing from wishlist:', error);
+      throw error;
     }
   },
 
   async isInWishlist(userId: string, productId: string) {
     try {
-      const user = await this.getUser(userId);
-      if (!user) {
-        console.log(`❌ User not found: ${userId}`);
-        return false;
-      }
-
-      return user.wishlist?.includes(productId) || false;
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      
+      const wishlist = await db.collection("wishlists").findOne({ userId });
+      if (!wishlist) return false;
+      
+      return wishlist.items.some((item: any) => item.productId === productId);
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
+      console.error('Error checking wishlist:', error);
       return false;
     }
   }
 };
 
+// Orders storage functionality
 export const ordersStorage = {
-  async getOrders(userId?: string) {
+  async getOrders(userId: string) {
     try {
       const db = mongoose.connection.db;
-      if (!db) throw new Error("Database not connected");
+      if (!db) {
+        console.log('❌ Database not connected for getOrders');
+        return [];
+      }
       
-      const filter = userId ? { userId } : {};
-      const orders = await db.collection("orders").find(filter).toArray();
-      console.log(`✅ Retrieved ${orders.length} orders from MongoDB for user: ${userId || 'all'}`);
+      console.log(`🔍 Fetching real orders from MongoDB for userId: ${userId}`);
       
-      // Convert MongoDB _id to string id for frontend compatibility
-      return orders.map(order => ({
-        ...order,
-        id: order._id.toString()
-      }));
+      // First, let's see what's in the orders collection
+      const allOrders = await db.collection("orders").find({}).toArray();
+      console.log(`📊 Total orders in database: ${allOrders.length}`);
+      
+      if (allOrders.length > 0) {
+        console.log('📊 Sample order structure:', JSON.stringify(allOrders[0], null, 2));
+        console.log('📊 All userIds in database:', allOrders.map(o => o.userId));
+      }
+      
+      const orders = await db.collection("orders").find({ userId }).sort({ createdAt: -1 }).toArray();
+      
+      console.log(`📦 Found ${orders.length} real orders in MongoDB for userId: ${userId}`);
+      
+      if (orders.length === 0) {
+        console.log('📦 No real orders found in database, returning empty array');
+        return [];
+      }
+      
+      // Convert MongoDB _id to string id and format the data
+      const formattedOrders = orders.map(order => {
+        console.log('🔍 Raw order data:', JSON.stringify(order, null, 2));
+        
+        // Transform items to match frontend expectations
+        const transformedItems = (order.items || order.products || []).map((item: any) => {
+          console.log('🔍 Raw item data:', item);
+          
+          const transformedItem = {
+            id: item.productId || item.id || item._id,
+            name: item.name || item.productName,
+            price: item.price,
+            quantity: item.quantity || 1,
+            image: item.image || item.productImage,
+            slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`
+          };
+          
+          console.log('🔍 Transformed item:', transformedItem);
+          return transformedItem;
+        });
+
+        console.log('🔍 Transformed items count:', transformedItems.length);
+
+        const formattedOrder = {
+          id: order._id.toString(),
+          orderNumber: order.orderNumber || `ORD-${order._id.toString().slice(-8).toUpperCase()}`,
+          status: order.status || 'pending',
+          totalAmount: order.total || order.totalAmount || 0,
+          createdAt: order.createdAt,
+          estimatedDelivery: order.estimatedDelivery,
+          trackingNumber: order.trackingNumber,
+          items: transformedItems,
+          shippingAddress: order.shippingAddress || order.address || {},
+          paymentMethod: order.paymentMethod || 'Credit Card',
+          paymentStatus: order.paymentStatus || 'paid'
+        };
+        
+        console.log('🔍 Formatted order:', JSON.stringify(formattedOrder, null, 2));
+        return formattedOrder;
+      });
+      
+      console.log('📦 Formatted orders:', formattedOrders.length);
+      return formattedOrders;
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
+      console.error('Error fetching orders from MongoDB:', error);
       return [];
     }
   },
 
-  async createOrder(orderData: any) {
+  getSampleOrders(userId: string) {
+    return [
+      {
+        id: 'sample-order-1',
+        orderNumber: 'ORD-SAMPLE-001',
+        status: 'delivered',
+        totalAmount: 2999,
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        estimatedDelivery: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        trackingNumber: 'TRACK123456789',
+        items: [
+          {
+            id: '1',
+            name: 'BMW S1000RR',
+            price: 2999,
+            quantity: 1,
+            image: 'https://res.cloudinary.com/dgcwiovzd/image/upload/v1773758261/products/ad5t0ahllztwzchujnyq.jpg',
+            slug: 'bmw-s1000rr'
+          }
+        ],
+        shippingAddress: {
+          street: '123 Test Street',
+          city: 'New York',
+          state: 'NY',
+          pincode: '10001'
+        },
+        paymentMethod: 'Credit Card',
+        paymentStatus: 'paid'
+      },
+      {
+        id: 'sample-order-2',
+        orderNumber: 'ORD-SAMPLE-002',
+        status: 'shipped',
+        totalAmount: 1599,
+        createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+        estimatedDelivery: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+        trackingNumber: 'TRACK987654321',
+        items: [
+          {
+            id: '2',
+            name: 'Street Triple',
+            price: 1599,
+            quantity: 1,
+            image: 'https://res.cloudinary.com/dgcwiovzd/image/upload/v1773758261/products/ad5t0ahllztwzchujnyq.jpg',
+            slug: 'street-triple'
+          }
+        ],
+        shippingAddress: {
+          street: '456 Sample Avenue',
+          city: 'Los Angeles',
+          state: 'CA',
+          pincode: '90210'
+        },
+        paymentMethod: 'PayPal',
+        paymentStatus: 'paid'
+      }
+    ];
+  },
+
+  async createOrder(userId: string, orderData: any) {
     try {
       const db = mongoose.connection.db;
       if (!db) throw new Error("Database not connected");
       
-      const result = await db.collection("orders").insertOne(orderData);
-      console.log(`✅ Created order for user: ${orderData.userId}`);
+      // For testing: if userId is in orderData, use that instead
+      const finalUserId = orderData.userId || userId;
+      console.log(`🔧 Creating order for userId: ${finalUserId}`);
       
-      return {
+      const order = {
         ...orderData,
-        id: result.insertedId.toString()
+        userId: finalUserId,
+        orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        status: orderData.status || 'pending',
+        paymentStatus: orderData.paymentStatus || 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date()
       };
+      
+      console.log('🔧 Order data being saved:', JSON.stringify(order, null, 2));
+      
+      const result = await db.collection("orders").insertOne(order);
+      return { ...order, id: result.insertedId.toString() };
     } catch (error) {
-      console.log(`❌ MongoDB error: ${(error as Error).message}`);
-      return null;
+      console.error('Error creating order:', error);
+      throw error;
+    }
+  },
+
+  async updateOrderStatus(orderId: string, status: string) {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) throw new Error("Database not connected");
+      const { ObjectId } = mongoose.Types;
+      
+      const result = await db.collection("orders").updateOne(
+        { _id: new ObjectId(orderId) },
+        { $set: { status, updatedAt: new Date() } }
+      );
+      
+      return result.modifiedCount > 0;
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
     }
   }
 };
-

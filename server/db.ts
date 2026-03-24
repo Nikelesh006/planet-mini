@@ -49,7 +49,11 @@ export const productsStorage = {
   async getProductBySlug(slug: string) {
     try {
       const db = mongoose.connection.db;
-      if (!db) throw new Error("Database not connected");
+      if (!db) {
+        console.log(`❌ Database not connected for getProductBySlug, using cache`);
+        console.log(`🔄 Searching for product with slug: ${slug} in cache (${productsCache.length} items)`);
+        return productsCache.find(p => p.slug === slug);
+      }
       const product = await db.collection("products").findOne({ slug });
       if (product) {
         // Convert MongoDB _id to string id for consistency
@@ -60,6 +64,8 @@ export const productsStorage = {
       }
       return product;
     } catch (error) {
+      console.log(`❌ MongoDB error in getProductBySlug: ${(error as Error).message}`);
+      console.log(`🔄 Using products cache with ${productsCache.length} items`);
       if (process.env.NODE_ENV === 'development') {
         console.warn("MongoDB not available, using cache");
       }
