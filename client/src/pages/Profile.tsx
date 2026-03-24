@@ -339,7 +339,7 @@ export default function Profile() {
               {/* Profile Menu */}
               <div className="space-y-3">
                 <Link
-                  href="/profile/orders"
+                  href="/orders"
                   className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">

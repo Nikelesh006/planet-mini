@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 
 type User = {
   id: string;
+  sub?: string;
   email: string;
   name?: string;
   image?: string;

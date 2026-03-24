@@ -6,12 +6,21 @@ import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 
 export default function LikesPage() {
-  const { likedProducts, removeFromLikes } = useLikes();
+  const { likedProducts, removeFromLikes, loading } = useLikes();
   const { addToCart } = useCart();
-  const [addedToCart, setAddedToCart] = useState<number | null>(null);
+  const [addedToCart, setAddedToCart] = useState<string | null>(null);
 
-  const formatPrice = (price: number) => {
-    return `₹${price.toFixed(2)}`;
+  // Debug logging
+  console.log('❤️ LikesPage: likedProducts count:', likedProducts.length);
+  console.log('❤️ LikesPage: loading state:', loading);
+  console.log('❤️ LikesPage: likedProducts data:', likedProducts);
+
+  const formatPrice = (price: number | string | undefined) => {
+    const numericPrice = typeof price === 'string' ? parseFloat(price) : (price || 0);
+    if (isNaN(numericPrice)) {
+      return '₹0.00';
+    }
+    return `₹${numericPrice.toFixed(2)}`;
   };
 
   const getDiscountPercentage = (original: number | undefined, current: number) => {
@@ -19,7 +28,7 @@ export default function LikesPage() {
     return Math.round(((original - current) / original) * 100);
   };
 
-  const isLiked = (id: number) => {
+  const isLiked = (id: string) => {
     return likedProducts.some(product => product.id === id);
   };
 
@@ -49,7 +58,12 @@ export default function LikesPage() {
           </div>
         </div>
 
-        {likedProducts.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-16">
+            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600 text-lg">Loading your liked items...</p>
+          </div>
+        ) : likedProducts.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-primary/20">
               <Heart className="w-16 h-16 text-primary" />
@@ -66,24 +80,29 @@ export default function LikesPage() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-5">
             {likedProducts.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
-                className="group h-[400px] product-card"
-              >
-                <div
-                  className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer h-full flex flex-col border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30"
+              <Link key={product.id} href={`/products/${product.slug}`}>
+                <motion.div
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
+                  className="group h-[400px] product-card"
                 >
+                  <div
+                    className="relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer h-full flex flex-col border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30"
+                  >
                   {/* Badges */}
                   <div className="absolute top-3 left-3 z-10 flex gap-2">
+                    {(product as any)._unavailable && (
+                      <span className="bg-gradient-to-r from-red-500 to-red-600 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+                        Unavailable
+                      </span>
+                    )}
                     {(product as any).isNew && (
                       <span className="text-black text-xs px-3 py-1 rounded-full font-bold shadow-lg bg-primary border-2 border-primary">
                         New
                       </span>
                     )}
-                    {(product as any).inStock === false && (
+                    {(product as any).inStock === false && !(product as any)._unavailable && (
                       <span className="bg-gradient-to-r from-gray-500 to-gray-600 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
                         Out of Stock
                       </span>
@@ -115,6 +134,7 @@ export default function LikesPage() {
                       <button
                         className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 border border-gray-200"
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
                           removeFromLikes(product.id);
                         }}
@@ -126,14 +146,20 @@ export default function LikesPage() {
 
                       <button
                         className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 transform hover:scale-105 ${
-                          addedToCart === product.id 
+                          (product as any)._unavailable
+                            ? 'bg-gray-300 cursor-not-allowed opacity-50'
+                            : addedToCart === product.id 
                             ? 'bg-green-500 hover:bg-green-600' 
                             : 'bg-primary hover:bg-primary/90'
                         }`}
                         onClick={(e) => {
+                          e.preventDefault();
                           e.stopPropagation();
+                          if ((product as any)._unavailable) {
+                            return; // Don't add unavailable products to cart
+                          }
                           addToCart({
-                            id: product.id.toString(),
+                            id: product.id,
                             name: product.name,
                             price: product.price,
                             image: product.image
@@ -141,6 +167,7 @@ export default function LikesPage() {
                           setAddedToCart(product.id);
                           setTimeout(() => setAddedToCart(null), 2000);
                         }}
+                        disabled={(product as any)._unavailable}
                       >
                         {addedToCart === product.id ? (
                           <span className="text-white text-xs font-bold">✓</span>
@@ -170,11 +197,9 @@ export default function LikesPage() {
                     </div>
 
                     {/* Product Name */}
-                    <Link href={`/products/${product.slug}`}>
-                      <h3 className="font-bold text-black mb-2 line-clamp-2 hover:text-primary transition-colors">
-                        {product.name}
-                      </h3>
-                    </Link>
+                    <h3 className="font-bold text-black mb-2 line-clamp-2 hover:text-primary transition-colors">
+                      {product.name}
+                    </h3>
 
                     {/* Description */}
                     <p className="text-sm text-gray-700 line-clamp-2 min-h-[40px] font-medium">
@@ -202,6 +227,7 @@ export default function LikesPage() {
                   </div>
                 </div>
               </motion.div>
+              </Link>
             ))}
           </div>
         )}

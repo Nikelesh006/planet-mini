@@ -1,8 +1,9 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
+import { useAuth } from './AuthContext';
 
 interface LikedProduct {
-  id: number;
+  id: string;
   name: string;
   slug: string;
   price: number;
@@ -16,9 +17,9 @@ interface LikedProduct {
 interface LikeContextType {
   likedProducts: LikedProduct[];
   toggleLike: (product: LikedProduct) => void;
-  isLiked: (productId: number) => boolean;
+  isLiked: (productId: string) => boolean;
   loading: boolean;
-  removeFromLikes: (productId: number) => void;
+  removeFromLikes: (productId: string) => void;
 }
 
 const LikeContext = createContext<LikeContextType | undefined>(undefined);
@@ -26,54 +27,147 @@ const LikeContext = createContext<LikeContextType | undefined>(undefined);
 export const LikeProvider = ({ children }: { children: ReactNode }) => {
   const [likedProducts, setLikedProducts] = useState<LikedProduct[]>([]);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
-  // Load liked products from localStorage on mount
+  const getAuthToken = () => {
+    return document.cookie.split('; ').find(row => row.startsWith('jwt='))?.split('=')[1];
+  };
+
+  // Load liked products from Profile API on mount or when user changes
   useEffect(() => {
-    try {
-      const savedLikes = localStorage.getItem('likedProducts');
-      if (savedLikes) {
-        setLikedProducts(JSON.parse(savedLikes));
-      }
-    } catch (error) {
-      console.error('Error loading liked products:', error);
+    console.log('🔐 LikeContext: User changed', { user: user?.email, hasUser: !!user });
+    
+    if (!user) {
+      console.log('🗑️ LikeContext: Clearing liked products - user logged out');
+      setLikedProducts([]);
+      return;
     }
-  }, []);
 
-  // Save liked products to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
-  }, [likedProducts]);
+    loadWishlist();
+  }, [user]);
 
-  const toggleLike = (product: LikedProduct) => {
+  const loadWishlist = async () => {
+    if (!user) return;
+
     setLoading(true);
     try {
-      const isLiked = likedProducts.some(p => p.id === product.id);
-      
-      if (isLiked) {
-        // Remove from likes
-        const updated = likedProducts.filter(p => p.id !== product.id);
-        setLikedProducts(updated);
-        toast.success('Removed from likes ❤️');
-      } else {
-        // Add to likes
-        setLikedProducts(prev => [...prev, product]);
-        toast.success('Added to likes ❤️');
+      const token = getAuthToken();
+      const response = await fetch(`/api/profile/${user.id}/wishlist`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const wishlistIds = await response.json();
+        
+        // Fetch full product details for each wishlist item
+        const productPromises = wishlistIds.map(async (productId: string) => {
+          const productResponse = await fetch(`/api/products/id/${productId}`);
+          if (productResponse.ok) {
+            return await productResponse.json();
+          }
+          return null;
+        });
+
+        const products = await Promise.all(productPromises);
+        
+        // ✅ CORRECT - Graceful handling (KEEP invalid IDs in database)
+        const validProductsMap = new Map();
+        products.forEach(product => {
+          if (product && product.id) {
+            validProductsMap.set(product.id, product);
+          }
+        });
+        
+        // Only show valid products in UI, but keep all IDs in database
+        const validLikedProducts = wishlistIds
+          .map((id: string) => validProductsMap.get(id))
+          .filter(Boolean); // Only show valid products
+        
+        // LOG invalid products but DON'T delete from database
+        const invalidIds = wishlistIds.filter((id: string) => !validProductsMap.has(id));
+        if (invalidIds.length > 0) {
+          console.warn('⚠️ Invalid wishlist products (kept in DB):', invalidIds);
+        }
+        
+        setLikedProducts(validLikedProducts);
+        console.log('✅ loadWishlist: Showing', validLikedProducts.length, 'valid products from', wishlistIds.length, 'total in database');
       }
     } catch (error) {
+      console.error('Error loading wishlist:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleLike = async (product: LikedProduct) => {
+    if (!user) {
+      toast.error('Please login to like products');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`/api/profile/${user.id}/wishlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ productId: product.id }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        
+        if (data.success) {
+          // Add product to local state immediately
+          const isLiked = likedProducts.some(p => p.id === product.id);
+          
+          if (!isLiked) {
+            setLikedProducts(prev => [...prev, product]);
+            toast.success('Added to likes ❤️');
+          } else {
+            setLikedProducts(prev => prev.filter(p => p.id !== product.id));
+            toast.success('Removed from likes ❤️');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
       toast.error('Failed to update likes');
     } finally {
       setLoading(false);
     }
   };
 
-  const isLiked = (productId: number) => {
+  const isLiked = (productId: string) => {
     return likedProducts.some(p => p.id === productId);
   };
 
-  const removeFromLikes = (productId: number) => {
-    const updated = likedProducts.filter(p => p.id !== productId);
-    setLikedProducts(updated);
-    toast.success('Removed from likes');
+  const removeFromLikes = async (productId: string) => {
+    if (!user) return;
+
+    try {
+      const token = getAuthToken();
+      const response = await fetch(`/api/profile/${user.id}/wishlist/${productId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Remove from local state
+        setLikedProducts(prev => prev.filter(p => p.id !== productId));
+        toast.success('Removed from likes');
+      }
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      toast.error('Failed to remove from likes');
+    }
   };
 
   return (
@@ -96,3 +190,4 @@ export const useLikes = () => {
   }
   return context;
 };
+

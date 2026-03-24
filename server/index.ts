@@ -32,7 +32,7 @@ app.use(
 app.use(express.urlencoded({ extended: false }));
 
 // CORS + cookies
-app.use(cors({ origin: "http://localhost:5001", credentials: true }));
+app.use(cors({ origin: "http://localhost:5002", credentials: true }));
 app.use(cookieParser());
 
 // Initialize passport
@@ -84,7 +84,7 @@ app.use((req, res, next) => {
 app.get("/api/auth/google", (req: Request, res: Response) => {
   const clientId = process.env.GOOGLE_CLIENT_ID as string;
   const redirectUri = encodeURIComponent(
-    "http://localhost:5001/api/auth/google/callback",
+    "http://localhost:5002/api/auth/google/callback",
   );
   const scope = encodeURIComponent("email profile");
 
@@ -103,7 +103,7 @@ app.get("/api/auth/google", (req: Request, res: Response) => {
 app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
   const code = req.query.code as string | undefined;
   if (!code) {
-    return res.redirect("http://localhost:5001?error=missing_code");
+    return res.redirect("http://localhost:5002?error=missing_code");
   }
 
   try {
@@ -116,14 +116,14 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
         client_secret: process.env.GOOGLE_CLIENT_SECRET as string,
         code,
         grant_type: "authorization_code",
-        redirect_uri: "http://localhost:5001/api/auth/google/callback",
+        redirect_uri: "http://localhost:5002/api/auth/google/callback",
       }),
     });
 
     const tokenJson = await tokenRes.json();
     if (tokenJson.error) {
       console.error("Google token error:", tokenJson.error);
-      return res.redirect("http://localhost:5001?error=token_error");
+      return res.redirect("http://localhost:5002?error=token_error");
     }
 
     // Get user info
@@ -156,10 +156,10 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    return res.redirect("http://localhost:5001/");
+    return res.redirect("http://localhost:5002/");
   } catch (err) {
     console.error("Google callback error:", err);
-    return res.redirect("http://localhost:5001?error=auth_failed");
+    return res.redirect("http://localhost:5002?error=auth_failed");
   }
 });
 

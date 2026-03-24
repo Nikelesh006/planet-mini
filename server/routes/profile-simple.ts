@@ -21,7 +21,6 @@ const profileSchema = new mongoose.Schema({
     age: Number,
     gender: String
   }],
-  ordersCount: { type: Number, default: 0 },
   wishlist: [String],
   joined: String,
   location: String
@@ -51,8 +50,7 @@ router.get('/:userId', async (req, res) => {
           pincode: '10001'
         },
         babyInfo: [],
-        ordersCount: 24,
-        wishlist: [],
+                wishlist: [],
         joined: 'October 2023',
         location: 'New York, USA',
         createdAt: new Date(),
@@ -78,8 +76,7 @@ router.get('/:userId', async (req, res) => {
           pincode: '10001'
         },
         babyInfo: [],
-        ordersCount: 24,
-        wishlist: [],
+                wishlist: [],
         joined: 'October 2023',
         location: 'New York, USA'
       });
