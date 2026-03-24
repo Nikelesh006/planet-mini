@@ -8,8 +8,6 @@ import { ShoppingCart, Star, Heart, Package, Plus, Minus } from "lucide-react";
 import { useLikes } from "@/contexts/LikeContext";
 import { useCart } from "@/contexts/CartContext";
 
-
-
 interface Product {
 
   id: number;
@@ -42,20 +40,21 @@ interface Product {
 
 }
 
-
-
 interface ProductGridProps {
 
   products: Product[];
 
   title?: string;
+
   showLoadMore?: boolean;
+
 }
 
 export default function ProductGrid({ products, title, showLoadMore = false }: ProductGridProps) {
   const { toggleLike, isLiked } = useLikes();
   const { addToCart } = useCart();
   const [addedToCart, setAddedToCart] = useState<number | null>(null);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   const formatPrice = (price: number | string) => {
     const num = typeof price === 'string' ? parseFloat(price) : price;
@@ -71,6 +70,24 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
 
   const navigateToProduct = (slug: string) => {
     window.location.href = `/products/${slug}`;
+  };
+
+  const toggleDescription = (e: React.MouseEvent, productId: string) => {
+    e.stopPropagation();
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+      } else {
+        newSet.add(productId);
+      }
+      return newSet;
+    });
+  };
+
+  const truncateDescription = (description: string, maxLength: number = 80) => {
+    if (description.length <= maxLength) return description;
+    return description.substring(0, maxLength) + '...';
   };
 
   return (
@@ -140,7 +157,7 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                     onClick={(e) => {
                       e.stopPropagation();
                       toggleLike({
-                        id: product.id,
+                        id: product.id.toString(),
                         name: product.name,
                         slug: product.slug,
                         price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
@@ -154,7 +171,7 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                   >
                     <Heart
                       className={`w-4 h-4 transition-colors ${
-                        isLiked(product.id)
+                        isLiked(product.id.toString())
                           ? 'text-red-500 fill-current'
                           : 'text-gray-600 hover:text-red-500'
                       }`}
@@ -214,12 +231,32 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
                 </Link>
 
                 {/* Description */}
-                <p className="text-sm text-gray-700 line-clamp-2 min-h-[40px] font-medium">
-                    {product.description}
-                </p>
+                <div className="relative mb-3">
+                  <p 
+                    className={`text-sm text-gray-700 font-medium transition-all duration-300 ${
+                      expandedCards.has(product.id.toString()) 
+                        ? 'line-clamp-none' 
+                        : 'line-clamp-1'
+                    }`}
+                    onClick={(e) => toggleDescription(e, product.id.toString())}
+                  >
+                    {expandedCards.has(product.id.toString()) 
+                      ? product.description 
+                      : truncateDescription(product.description)
+                    }
+                  </p>
+                  {product.description.length > 80 && (
+                    <button
+                      className="text-xs text-primary hover:text-primary/80 font-medium mt-1 transition-colors"
+                      onClick={(e) => toggleDescription(e, product.id.toString())}
+                    >
+                      {expandedCards.has(product.id.toString()) ? 'Show less' : 'Show more'}
+                    </button>
+                  )}
+                </div>
 
                 {/* Price - Above the line */}
-                <div className="flex items-center justify-between -mt-3">
+                <div className="flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-2">
                     <span className="text-base font-bold text-black">
                       ₹{product.price ? Number(product.price).toFixed(2) : '99.99'}

@@ -57,9 +57,9 @@ export default function Home() {
   return (
     <div className="min-h-screen space-y-4">
       {/* Hero Section with Image Slider */}
-      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-4 pb-8">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white">
-          <div className="relative h-[30vw] max-h-[320px] md:max-h-[400px] lg:max-h-[480px]">
+      <section className="relative w-full h-[70vh] min-h-[400px] max-h-[600px]">
+        <div className="relative w-full h-full overflow-hidden">
+          <div className="relative w-full h-full">
             {/* Image Slider */}
             <div className="relative w-full h-full">
               {/* Slider Images */}
@@ -69,7 +69,7 @@ export default function Home() {
                     key={index}
                     src={image}
                     alt={`Hero Slide ${index + 1}`} 
-                    className={`w-full h-full object-cover rounded-[2.5rem] transition-opacity duration-1000 ${
+                    className={`w-full h-full object-cover transition-opacity duration-1000 ${
                       index === currentSlide ? 'opacity-100' : 'opacity-0 hidden'
                     }`}
                   />
@@ -82,9 +82,9 @@ export default function Home() {
                   <button 
                     key={index}
                     onClick={() => goToSlide(index)}
-                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    className={`w-4 h-4 rounded-full transition-all duration-300 ${
                       index === currentSlide 
-                        ? 'bg-white opacity-100' 
+                        ? 'bg-white opacity-100 w-8' 
                         : 'bg-white/50 hover:bg-white/75'
                     }`}
                   />
@@ -94,17 +94,17 @@ export default function Home() {
               {/* Navigation Arrows */}
               <button 
                 onClick={goToPrevSlide}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-3 rounded-full transition-all duration-300 hover:scale-110"
+                className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               <button 
                 onClick={goToNextSlide}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-3 rounded-full transition-all duration-300 hover:scale-110"
+                className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
@@ -114,8 +114,8 @@ export default function Home() {
       </section>
 
       {/* Shop by Style Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="pt-0 pb-8 lg:pb-16 lg:px-16 lg:pt-2">
+      <section className="w-full">
+        <div className="pt-0 pb-8 lg:pb-16 lg:pt-2 px-4 sm:px-6 lg:px-8">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -131,36 +131,110 @@ export default function Home() {
             </div>
           </motion.div>
           
-          {!shopByStyleLoading && shopByStyleProducts && shopByStyleProducts.length > 0 && (
-            <ProductGrid 
-              products={shopByStyleProducts.slice(0, 6)} 
-              title=""
-            />
-          )}
-          {!shopByStyleLoading && (!shopByStyleProducts || shopByStyleProducts.length === 0) && (
-            <div className="text-center py-12">
-              <Package className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-black mb-2">No Products Available</h3>
-              <p className="text-gray-500 mb-6">Start by adding some products to showcase here!</p>
-              <Link 
-                href="/admin/add-product"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                <span>Add First Product</span>
-              </Link>
-            </div>
-          )}
-          {shopByStyleLoading && (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-secondary to-secondary/80"></div>
-            </div>
-          )}
+          {/* Style Categories Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-100/40 via-gray-50/50 to-gray-100/40 py-10 rounded-3xl shadow-inner">
+            {/* Jhablas */}
+            <Link href="/shop/jhablas" className="group">
+              <div className="bg-white rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src="/jhablas.jpg" 
+                    alt="Jhablas" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%233B82F6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-primary transition-colors">Jhablas</h3>
+                </div>
+              </div>
+            </Link>
+
+            {/* Baby Boy */}
+            <Link href="/shop/baby-boy" className="group">
+              <div className="bg-white rounded-xl border-2 border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src="/set.jpg" 
+                    alt="Baby Boy" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EC4899'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas Set%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Jhablas Set</h3>
+                </div>
+              </div>
+            </Link>
+
+            {/* Baby Girl */}
+            <Link href="/shop/baby-girl" className="group">
+              <div className="bg-white rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src="/coats.jpg" 
+                    alt="Baby Girl" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%2310B981'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3ECoats%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-primary transition-colors">Coats</h3>
+                </div>
+              </div>
+            </Link>
+
+            {/* Toys */}
+            <Link href="/shop/toys" className="group">
+              <div className="bg-white rounded-xl border-2 border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src="/nightwear.jpg" 
+                    alt="Toys" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23A855F7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3ENight Wear%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Night Wear</h3>
+                </div>
+              </div>
+            </Link>
+
+            {/* Bath */}
+            <Link href="/shop/bath" className="group">
+              <div className="bg-white rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+                <div className="aspect-square overflow-hidden">
+                  <img 
+                    src="/dress-boy.jpg" 
+                    alt="Bath" 
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EAB308'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EBoys Wear%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+                <div className="p-3">
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-primary transition-colors">Boys Wear</h3>
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* Latest Style Products Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
+      <section className="w-full">
+        <div className="px-4 sm:px-6 lg:px-8 py-8">
+          {/* Header */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -174,25 +248,54 @@ export default function Home() {
               <div className="w-12 h-1 bg-primary rounded-full"></div>
             </div>
           </motion.div>
-          
-          {!latestStyleLoading && latestStyleProducts && latestStyleProducts.length > 0 && (
-            <ProductGrid 
-              products={latestStyleProducts.slice(0, 8)} 
-              title=""
-            />
-          )}
-          {!latestStyleLoading && (!latestStyleProducts || latestStyleProducts.length === 0) && (
-            <div className="text-center py-12">
-              <Shirt className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-xl font-semibold text-black mb-2">No Latest Styles</h3>
-              <p className="text-gray-500">Add your latest products to showcase here!</p>
+
+          {/* Image and Content Layout */}
+          <div className="flex flex-col lg:flex-row items-start gap-8">
+            {/* Left Side Image - Increased Size */}
+            <div className="lg:w-1/4 flex-shrink-0">
+              <img 
+                src="/latest-products.png" 
+                alt="Latest Products" 
+                className="w-full h-auto object-contain mx-auto lg:mx-0"
+              />
             </div>
-          )}
-          {latestStyleLoading && (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            
+            {/* Right Side Content */}
+            <div className="lg:w-2/3 flex-1">
+              {!latestStyleLoading && latestStyleProducts && latestStyleProducts.length > 0 && (
+                <>
+                  <ProductGrid 
+                    products={latestStyleProducts.slice(0, 8)} 
+                    title=""
+                  />
+                  {/* Explore More Button */}
+                  <div className="text-center mt-12">
+                    <Link 
+                      href="/shop/style"
+                      className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                    >
+                      Explore More
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </Link>
+                  </div>
+                </>
+              )}
+              {!latestStyleLoading && (!latestStyleProducts || latestStyleProducts.length === 0) && (
+                <div className="text-center py-12">
+                  <Shirt className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                  <h3 className="text-xl font-semibold text-black mb-2">No Latest Styles</h3>
+                  <p className="text-gray-500">Add your latest products to showcase here!</p>
+                </div>
+              )}
+              {latestStyleLoading && (
+                <div className="flex justify-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </section>
 
@@ -235,8 +338,8 @@ export default function Home() {
       </section>
 
       {/* Super Saver Offers Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
+      <section className="w-full bg-gradient-to-br from-yellow-50/80 via-yellow-100/60 to-yellow-50/80 border-t border-b border-yellow-200/50">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto p-8 lg:p-16">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
