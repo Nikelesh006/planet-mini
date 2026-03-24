@@ -9,6 +9,7 @@ export default function LikesPage() {
   const { likedProducts, removeFromLikes, loading } = useLikes();
   const { addToCart } = useCart();
   const [addedToCart, setAddedToCart] = useState<string | null>(null);
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   // Debug logging
   console.log('❤️ LikesPage: likedProducts count:', likedProducts.length);
@@ -30,6 +31,24 @@ export default function LikesPage() {
 
   const isLiked = (id: string) => {
     return likedProducts.some(product => product.id === id);
+  };
+
+  const toggleDescription = (e: React.MouseEvent, productId: string) => {
+    e.stopPropagation();
+    setExpandedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(productId)) {
+        newSet.delete(productId);
+      } else {
+        newSet.add(productId);
+      }
+      return newSet;
+    });
+  };
+
+  const truncateDescription = (description: string, maxLength: number = 80) => {
+    if (description.length <= maxLength) return description;
+    return description.substring(0, maxLength) + '...';
   };
 
   return (
@@ -112,7 +131,7 @@ export default function LikesPage() {
                   {/* Discount Badge */}
                   {product.originalPrice && (
                     <div className="absolute top-3 right-3 z-10 text-black text-xs px-3 py-1 rounded-full font-bold shadow-lg bg-secondary border-2 border-secondary hover:bg-secondary/90">
-                      -{getDiscountPercentage(product.originalPrice, product.price)}%
+                      -{getDiscountPercentage(Number(product.originalPrice), Number(product.price))}%
                     </div>
                   )}
 
@@ -161,7 +180,7 @@ export default function LikesPage() {
                           addToCart({
                             id: product.id,
                             name: product.name,
-                            price: product.price,
+                            price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
                             image: product.image
                           });
                           setAddedToCart(product.id);
@@ -202,12 +221,36 @@ export default function LikesPage() {
                     </h3>
 
                     {/* Description */}
-                    <p className="text-sm text-gray-700 line-clamp-2 min-h-[40px] font-medium">
-                      {(product as any).description || `Beautiful ${product.name} for your little one. Made with premium materials and designed for comfort.`}
-                    </p>
+                    <div className="relative mb-3">
+                      <p 
+                        className={`text-sm text-gray-700 font-medium transition-all duration-300 ${
+                          expandedCards.has(product.id) 
+                            ? 'line-clamp-none' 
+                            : 'line-clamp-1'
+                        }`}
+                        onClick={(e) => toggleDescription(e, product.id)}
+                      >
+                        {expandedCards.has(product.id) 
+                          ? ((product as any).description || `Beautiful ${product.name} for your little one. Made with premium materials and designed for comfort.`)
+                          : truncateDescription((product as any).description || `Beautiful ${product.name} for your little one. Made with premium materials and designed for comfort.`)
+                        }
+                      </p>
+                      {(((product as any).description || `Beautiful ${product.name} for your little one. Made with premium materials and designed for comfort.`).length > 80) && (
+                        <button
+                          className="text-xs text-primary hover:text-primary/80 font-medium mt-1 transition-colors"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleDescription(e, product.id);
+                          }}
+                        >
+                          {expandedCards.has(product.id) ? 'Show less' : 'Show more'}
+                        </button>
+                      )}
+                    </div>
 
                     {/* Price - Above the line */}
-                    <div className="flex items-center justify-between -mt-3">
+                    <div className="flex items-center justify-between mt-auto">
                       <div className="flex items-center gap-2">
                         <span className="text-base font-bold text-black">
                           {formatPrice(product.price)}
