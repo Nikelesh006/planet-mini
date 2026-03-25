@@ -3,10 +3,12 @@ import { useState } from "react";
 
 import { Link } from "wouter";
 
-import { ShoppingCart, Star, Heart, Package, Plus, Minus } from "lucide-react";
+import { Heart, ShoppingBag } from "lucide-react";
 
 import { useLikes } from "@/contexts/LikeContext";
 import { useCart } from "@/contexts/CartContext";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
+import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 
 interface Product {
 
@@ -48,12 +50,14 @@ interface ProductGridProps {
 
   showLoadMore?: boolean;
 
+  layout?: 'cards' | 'boxed';
+
 }
 
-export default function ProductGrid({ products, title, showLoadMore = false }: ProductGridProps) {
-  const { toggleLike, isLiked } = useLikes();
+export default function ProductGrid({ products, title, showLoadMore = false, layout = 'cards' }: ProductGridProps) {
+  const { likedProducts, toggleLike } = useLikes();
   const { addToCart } = useCart();
-  const [addedToCart, setAddedToCart] = useState<number | null>(null);
+  const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel, isUserLoggedIn } = useAuthGuard();
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   const formatPrice = (price: number | string) => {
@@ -68,11 +72,8 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
     return Math.round(((orig - curr) / orig) * 100);
   };
 
-  const navigateToProduct = (slug: string) => {
-    window.location.href = `/products/${slug}`;
-  };
-
   const toggleDescription = (e: React.MouseEvent, productId: string) => {
+    e.preventDefault();
     e.stopPropagation();
     setExpandedCards(prev => {
       const newSet = new Set(prev);
@@ -85,209 +86,233 @@ export default function ProductGrid({ products, title, showLoadMore = false }: P
     });
   };
 
-  const truncateDescription = (description: string, maxLength: number = 80) => {
+  const truncateDescription = (description: string, maxLength: number = 100) => {
     if (description.length <= maxLength) return description;
     return description.substring(0, maxLength) + '...';
   };
 
+  const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Execute add to cart with auth guard
+    executeWithAuth(() => {
+      addToCart({
+        id: product.id.toString(),
+        name: product.name,
+        price: Number(product.price),
+        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        image: product.image,
+        category: product.category || undefined,
+        subcategory: undefined,
+      });
+      
+      // Redirect to cart page after adding
+      window.location.href = '/cart';
+    });
+  };
+
+  const handleWishlist = (e: React.MouseEvent, product: Product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Execute wishlist with auth guard
+    executeWithAuth(() => {
+      // Convert product to the format expected by toggleLike
+      const productForWishlist = {
+        id: product.id.toString(),
+        name: product.name,
+        price: Number(product.price),
+        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        image: product.image,
+        category: product.category || undefined,
+        subcategory: undefined,
+        slug: product.slug,
+        rating: product.rating,
+        reviews: product.reviews,
+        inStock: product.inStock === null ? undefined : product.inStock,
+        isNew: product.isNew === null ? undefined : product.isNew,
+        description: product.description,
+      };
+      
+      toggleLike(productForWishlist);
+    });
+  };
+
   return (
-    <div className="space-y-8">
-      {title && (
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-black mb-2">{title}</h2>
-          <div className="flex justify-center gap-2">
-            <div className="w-8 h-1 bg-primary rounded-full"></div>
-            <div className="w-8 h-1 bg-secondary rounded-full"></div>
-            <div className="w-8 h-1 bg-primary rounded-full"></div>
+    <>
+      <div className="space-y-8">
+        {title && (
+          <div className="text-center">
+            <h2 className="text-3xl font-bold text-black mb-2">{title}</h2>
+            <div className="flex justify-center gap-2">
+              <div className="w-8 h-1 bg-primary rounded-full"></div>
+              <div className="w-8 h-1 bg-secondary rounded-full"></div>
+              <div className="w-8 h-1 bg-primary rounded-full"></div>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-5">
-        {products.map((product, index) => (
-          <motion.div
-            key={product.id || `product-${index}`}
-            initial={{ opacity: 0, y: 30, scale: 0.95 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: index * 0.1, duration: 0.6, ease: "easeOut" }}
-            className="group h-[400px] product-card"
-          >
-            <div
-              className={`relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 cursor-pointer h-full flex flex-col border border-primary/20 bg-gradient-to-br from-primary/10 to-primary/5 hover:border-primary/30`}
-              onClick={() => navigateToProduct(product.slug)}
-            >
-              {/* Badges */}
-              <div className="absolute top-3 left-3 z-10 flex gap-2">
-                {product.isNew && (
-                  <span className="text-black text-xs px-3 py-1 rounded-full font-bold shadow-lg bg-primary border-2 border-primary">
-                    New
-                  </span>
-                )}
-                {!product.inStock && (
-                  <span className="bg-gradient-to-r from-gray-500 to-gray-600 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
-                    Out of Stock
-                  </span>
-                )}
-              </div>
+        {layout === 'boxed' ? (
+        // Super Saver Offers - Images only layout
+        <div className="relative w-full max-w-4xl mx-auto" style={{ height: '300px' }}>
+          {products.map((product, index) => {
+            // Define independent positions for each card
+            const positions = [
+              '-left-8 top-8',      // First card - moved further left and down
+              'left-1/2 top-8 -translate-x-1/2',  // Second card - top center and down
+              '-right-8 top-8'      // Third card - moved further right and down
+            ];
+            
+            return (
+              <div key={product.id || `product-${index}`} className={`absolute ${positions[index]} w-64`}>
+                <div className="relative group">
+                  {/* Coupon Badge - Top Left Corner */}
+                  <div className="absolute -top-3 -left-3 bg-red-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transform rotate-12 border-2 border-white z-10">
+                    <span className="text-sm font-bold">
+                      {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (() => {
+                        const originalPrice = Number(product.originalPrice);
+                        const currentPrice = Number(product.price || 0);
+                        const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+                        return `-${discountPercentage}%`;
+                      })() || 'DEAL'}
+                    </span>
+                  </div>
 
-              {/* Discount Badge */}
-              {product.originalPrice && (
-                <div className="absolute top-3 right-3 z-10 text-black text-xs px-3 py-1 rounded-full font-bold shadow-lg bg-secondary border-2 border-secondary hover:bg-secondary/90">
-                  -{getDiscountPercentage(product.originalPrice, product.price)}%
+                  {/* Price Tag - Top Right Corner */}
+                  <div className="absolute -top-12 -right-4 bg-white rounded-lg shadow-lg border-2 border-gray-300 z-10 transform rotate-2">
+                    <div className="bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-t-lg text-center">
+                      SAVE
+                    </div>
+                    <div className="px-3 py-2 text-center">
+                      <div className="text-gray-400 text-xs line-through">
+                        {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && 
+                          `₹${Number(product.originalPrice).toFixed(2)}`
+                        }
+                      </div>
+                      <div className="text-red-600 text-lg font-bold">
+                        ₹{Number(product.price || 0).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rotate-45 border-l border-b border-gray-400"></div>
+                  </div>
+                  
+                  <Link href={`/products/${product.slug}`} className="block">
+                    <div className="aspect-square overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-red-200 group-hover:border-red-400 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                        loading="lazy"
+                      />
+                    </div>
+                  </Link>
                 </div>
-              )}
-
-              {/* Product Image */}
-              <div className="aspect-square relative overflow-hidden bg-gray-50 flex items-center justify-center flex-shrink-0 p-2">
-                <div className="w-full h-full flex items-center justify-center">
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        // Original card layout for other sections
+        <div className="flex flex-wrap gap-4">
+          {products.map((product, index) => (
+            <div key={product.id || `product-${index}`} className="flex-shrink-0 w-60">
+              <Link href={`/products/${product.slug}`} className="block">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group relative flex flex-col cursor-pointer h-[450px] hover:shadow-lg transition-all duration-500 ease-out border border-gray-300 rounded-3xl overflow-hidden bg-white"
+                >
+                <div className="relative aspect-[4/5] mb-2 bg-muted/30 rounded-3xl overflow-hidden border-2 border-transparent group-hover:border-primary/30 transition-all duration-300 flex-shrink-0 flex items-center justify-center">
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-500 group-hover:scale-105"
+                    className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
                   />
-                </div>
-              </div>
-
-              {/* Product Info */}
-              <div className="p-4 flex-1 flex flex-col relative">
-                {/* Action Buttons - Top Right */}
-                <div className="absolute top-1 right-4 flex gap-2">
-                  <button
-                    className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg hover:shadow-xl hover:bg-gray-50 transition-all duration-300 transform hover:scale-105 border border-gray-200"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      toggleLike({
-                        id: product.id.toString(),
-                        name: product.name,
-                        slug: product.slug,
-                        price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
-                        originalPrice: product.originalPrice ? (typeof product.originalPrice === 'string' ? parseFloat(product.originalPrice) : product.originalPrice) : undefined,
-                        image: product.image,
-                        category: product.category || undefined,
-                        rating: product.rating,
-                        reviews: product.reviews
-                      });
-                    }}
-                  >
-                    <Heart
-                      className={`w-4 h-4 transition-colors ${
-                        isLiked(product.id.toString())
-                          ? 'text-red-500 fill-current'
-                          : 'text-gray-600 hover:text-red-500'
-                      }`}
-                    />
-                  </button>
-
-                  <button
-                    className={`w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 transform hover:scale-105 ${
-                      addedToCart === product.id 
-                        ? 'bg-green-500 hover:bg-green-600' 
-                        : 'bg-primary hover:bg-primary/90'
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addToCart({
-                        id: product.id.toString(),
-                        name: product.name,
-                        price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
-                        image: product.image
-                      });
-                      setAddedToCart(product.id);
-                      setTimeout(() => setAddedToCart(null), 2000);
-                    }}
-                  >
-                    {addedToCart === product.id ? (
-                      <span className="text-white text-xs font-bold">✓</span>
-                    ) : (
-                      <ShoppingCart className="w-4 h-4 text-black" />
-                    )}
-                  </button>
-                </div>
-
-                {/* Rating - Top Left */}
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`w-4 h-4 ${
-                          i < Math.floor(product.rating || 0)
-                            ? 'text-yellow-400 fill-current'
-                            : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
+                  
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
+                    {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (() => {
+                      const originalPrice = Number(product.originalPrice);
+                      const currentPrice = Number(product.price || 0);
+                      const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+                      return (
+                        <span className="px-3 py-1 text-xs font-semibold bg-secondary text-black rounded-full shadow-sm">
+                          -{discountPercentage}%
+                        </span>
+                      );
+                    })()}
                   </div>
-                  <span className="text-xs text-gray-500">
-                    ({product.reviews || 0})
-                  </span>
+
+                  {/* Floating Actions */}
+                  <div className="absolute top-4 right-4 flex flex-col gap-2">
+                    <button
+                      onClick={(e) => handleWishlist(e, product)}
+                      className="w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm text-foreground hover:text-primary transition-colors active:scale-95"
+                    >
+                      <Heart className={`w-5 h-5 ${likedProducts.some(p => p.id === product.id.toString()) ? 'fill-primary text-primary' : ''}`} />
+                    </button>
+                  </div>
+
+                  {/* Quick Add Button */}
+                  <div className="absolute bottom-4 left-4 right-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+                    <button
+                      onClick={(e) => handleQuickAdd(e, product)}
+                      disabled={!product.inStock}
+                      className="w-full h-12 flex items-center justify-center gap-2 rounded-2xl bg-white/90 backdrop-blur-md text-foreground font-semibold shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors active:scale-95 disabled:opacity-50"
+                    >
+                      <ShoppingBag className="w-5 h-5" />
+                      {product.inStock ? "Quick Add" : "Out of Stock"}
+                    </button>
+                  </div>
                 </div>
 
-                {/* Product Name */}
-                <Link href={`/products/${product.slug}`}>
-                  <h3 className="font-bold text-black mb-2 line-clamp-2 hover:text-primary transition-colors">
+                <div className="px-2 flex flex-col gap-3 flex-1 pt-3 pb-2">
+                  <h3 className="font-display font-bold text-lg text-black">
                     {product.name}
                   </h3>
-                </Link>
 
-                {/* Description */}
-                <div className="relative mb-3">
+                  {/* Description */}
                   <p 
-                    className={`text-sm text-gray-700 font-medium transition-all duration-300 ${
-                      expandedCards.has(product.id.toString()) 
-                        ? 'line-clamp-none' 
-                        : 'line-clamp-1'
-                    }`}
+                    className="text-sm text-muted-foreground font-bold cursor-pointer line-clamp-1"
                     onClick={(e) => toggleDescription(e, product.id.toString())}
                   >
-                    {expandedCards.has(product.id.toString()) 
-                      ? product.description 
-                      : truncateDescription(product.description)
-                    }
+                    {product.description || 'Premium quality product for your little one'}
                   </p>
-                  {product.description.length > 80 && (
-                    <button
-                      className="text-xs text-primary hover:text-primary/80 font-medium mt-1 transition-colors"
-                      onClick={(e) => toggleDescription(e, product.id.toString())}
-                    >
-                      {expandedCards.has(product.id.toString()) ? 'Show less' : 'Show more'}
-                    </button>
-                  )}
-                </div>
 
-                {/* Price - Above the line */}
-                <div className="flex items-center justify-between mt-auto">
                   <div className="flex items-center gap-2">
-                    <span className="text-base font-bold text-black">
-                      ₹{product.price ? Number(product.price).toFixed(2) : '99.99'}
+                    <span className="font-semibold text-black">₹{Number(product.price || 0).toFixed(2)}</span>
+                    <span className="text-sm text-muted-foreground line-through">
+                      ₹{Number(product.originalPrice || product.price || 0).toFixed(2)}
                     </span>
-                    {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
-                      <span className="text-sm text-gray-500 line-through">
-                        ₹{Number(product.originalPrice).toFixed(2)}
-                      </span>
-                    )}
                   </div>
-                  {!product.originalPrice && (
-                    <span className="text-sm text-gray-500 line-through">
-                      ₹199.99
-                    </span>
-                  )}
                 </div>
-              </div>
+              </motion.div>
+              </Link>
             </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {showLoadMore && (
-        <div className="text-center mt-12">
-          <button className="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden">
-            <span className="relative z-10">Load More Products</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
+          ))}
         </div>
       )}
-    </div>
+
+        {showLoadMore && (
+          <div className="text-center mt-12">
+            <button className="group relative inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 overflow-hidden">
+              <span className="relative z-10">Load More Products</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Google Auth Modal */}
+      <GoogleAuthModal
+        isOpen={showAuthModal}
+        onClose={handleAuthCancel}
+        initialMode="signin"
+      />
+    </>
   );
 }
 

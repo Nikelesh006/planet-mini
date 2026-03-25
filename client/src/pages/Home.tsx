@@ -6,8 +6,8 @@ import { motion } from "framer-motion";
 import Slider from "@/components/Slider";
 import CategoryCard from "@/components/CategoryCard";
 import ProductGrid from "@/components/ProductGrid";
-import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
   const { data: products, isLoading } = useProducts();
@@ -24,6 +24,10 @@ export default function Home() {
   // Slider state
   const [currentSlide, setCurrentSlide] = useState(0);
   
+  // Latest products scroll state
+  const [latestScrollPosition, setLatestScrollPosition] = useState(0);
+  const latestProductsRef = useRef<HTMLDivElement>(null);
+  
   // Slider images - easily change these URLs
   const sliderImages = [
     "/banner-hero.jpg",
@@ -32,14 +36,35 @@ export default function Home() {
     "/banner-hero.jpg"
   ];
 
-  // Auto-rotate slider
+  // Auto-advance slider
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
-    }, 3500); // Change slide every 3.5 seconds
-
-    return () => clearInterval(interval);
+    }, 5000);
+    return () => clearInterval(timer);
   }, [sliderImages.length]);
+
+  const scrollLatestProducts = (direction: 'left' | 'right') => {
+    const container = latestProductsRef.current;
+    if (!container) return;
+    
+    const scrollAmount = 300; // Adjust based on card width + gap
+    const newPosition = direction === 'left' 
+      ? latestScrollPosition - scrollAmount 
+      : latestScrollPosition + scrollAmount;
+    
+    container.scrollTo({
+      left: newPosition,
+      behavior: 'smooth'
+    });
+    
+    setLatestScrollPosition(newPosition);
+  };
+
+  // Check if left arrow should be visible
+  const canScrollLeft = latestScrollPosition > 0;
+  // Check if right arrow should be visible
+  const canScrollRight = latestStyleProducts && latestStyleProducts.length > 4;
 
   // Manual navigation
   const goToSlide = (index: number) => {
@@ -263,13 +288,50 @@ export default function Home() {
             {/* Right Side Content */}
             <div className="lg:w-2/3 flex-1">
               {!latestStyleLoading && latestStyleProducts && latestStyleProducts.length > 0 && (
-                <>
-                  <ProductGrid 
-                    products={latestStyleProducts.slice(0, 8)} 
-                    title=""
-                  />
+                <div className="relative">
+                  {/* Horizontal Scroll Container */}
+                  <div className="relative">
+                    <div 
+                      ref={latestProductsRef}
+                      className="flex gap-4 overflow-hidden scroll-smooth pb-4"
+                      style={{ 
+                        scrollbarWidth: 'none', 
+                        msOverflowStyle: 'none'
+                      }}
+                    >
+                      {latestStyleProducts.map((product, index) => (
+                        <div key={product.id || `latest-${index}`} className="flex-shrink-0 w-60">
+                          <ProductCard product={product} index={index} />
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Arrow Buttons - Only show if more than 4 products */}
+                    {latestStyleProducts.length > 4 && (
+                      <>
+                        {/* Left Arrow - Only show when scrolled right */}
+                        {canScrollLeft && (
+                          <button
+                            onClick={() => scrollLatestProducts('left')}
+                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
+                          >
+                            <ChevronLeft className="w-6 h-6" />
+                          </button>
+                        )}
+                        
+                        {/* Right Arrow - Always show when more than 4 cards */}
+                        <button
+                          onClick={() => scrollLatestProducts('right')}
+                          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
+                        >
+                          <ChevronRight className="w-6 h-6" />
+                        </button>
+                      </>
+                    )}
+                  </div>
+                  
                   {/* Explore More Button */}
-                  <div className="text-center mt-12">
+                  <div className="text-center mt-6">
                     <Link 
                       href="/shop/style"
                       className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -280,7 +342,7 @@ export default function Home() {
                       </svg>
                     </Link>
                   </div>
-                </>
+                </div>
               )}
               {!latestStyleLoading && (!latestStyleProducts || latestStyleProducts.length === 0) && (
                 <div className="text-center py-12">
@@ -337,15 +399,27 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Centre Banner Section */}
+      <section className="w-full pb-12">
+        <div className="relative w-full">
+          <img
+            src="/centre-banner.png"
+            alt="Centre Banner"
+            className="w-full h-auto object-cover"
+            style={{ objectPosition: 'center' }}
+          />
+        </div>
+      </section>
+
       {/* Super Saver Offers Section */}
-      <section className="w-full bg-gradient-to-br from-yellow-50/80 via-yellow-100/60 to-yellow-50/80 border-t border-b border-yellow-200/50">
-        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto p-8 lg:p-16">
+      <section className="w-full bg-red-100 py-12">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
-            <h2 className="text-4xl font-bold text-black mb-4">Super Saver Offers</h2>
+            <h2 className="text-4xl font-bold mb-4 animate-pulse bg-gradient-to-r from-black via-gray-600 to-gray-300 bg-clip-text text-transparent drop-shadow-lg" style={{ animationDuration: '1.5s' }}>Super Saver Offers</h2>
             <p className="text-gray-600 text-lg">Amazing deals and discounts on your favorite baby products</p>
             <div className="flex justify-center gap-2 mt-4">
               <div className="w-12 h-1 bg-primary rounded-full"></div>
@@ -355,10 +429,13 @@ export default function Home() {
           </motion.div>
           
           {!superSaverLoading && superSaverProducts && superSaverProducts.length > 0 && (
-            <ProductGrid 
-              products={superSaverProducts.slice(0, 6)} 
-              title=""
-            />
+            <div className="mt-16">
+              <ProductGrid 
+                products={superSaverProducts.slice(0, 3)} 
+                title=""
+                layout="boxed"
+              />
+            </div>
           )}
           {!superSaverLoading && (!superSaverProducts || superSaverProducts.length === 0) && (
             <div className="text-center py-12">

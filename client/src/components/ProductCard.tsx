@@ -1,8 +1,7 @@
 import { Link } from "wouter";
-
 import { Heart, ShoppingBag, Star } from "lucide-react";
-
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 import { useLikes } from "@/contexts/LikeContext";
 
@@ -35,6 +34,14 @@ export function ProductCard({ product, index }: ProductCardProps) {
   const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel, isUserLoggedIn } = useAuthGuard();
 
   const isWishlisted = likedProducts.some(p => p.id === product.id.toString());
+
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const toggleDescription = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDescriptionExpanded(!isDescriptionExpanded);
+  };
 
 
 
@@ -168,11 +175,11 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         transition={{ duration: 0.5, delay: index * 0.1 }}
 
-        className="group relative flex flex-col cursor-pointer h-[380px]"
+        className="group relative flex flex-col cursor-pointer h-[450px] hover:shadow-lg transition-all duration-500 ease-out border border-gray-300 rounded-3xl overflow-hidden bg-white"
 
       >
 
-        <div className="relative aspect-[4/5] mb-4 bg-muted/30 rounded-3xl overflow-hidden border-2 border-transparent group-hover:border-primary/30 transition-all duration-300 flex-shrink-0 flex items-center justify-center">
+        <div className="relative aspect-[4/5] mb-2 bg-muted/30 rounded-3xl overflow-hidden border-2 border-transparent group-hover:border-primary/30 transition-all duration-300 flex-shrink-0 flex items-center justify-center">
 
           <img
 
@@ -190,25 +197,16 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
 
-            {product.isNew && (
-
-              <span className="px-3 py-1 text-xs font-semibold bg-primary text-primary-foreground rounded-full shadow-sm">
-
-                New
-
-              </span>
-
-            )}
-
-            {product.originalPrice && (
-
-              <span className="px-3 py-1 text-xs font-semibold bg-secondary text-secondary-foreground rounded-full shadow-sm">
-
-                Sale
-
-              </span>
-
-            )}
+            {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (() => {
+              const originalPrice = Number(product.originalPrice);
+              const currentPrice = Number(product.price || 0);
+              const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+              return (
+                <span className="px-3 py-1 text-xs font-semibold bg-secondary text-black rounded-full shadow-sm">
+                  -{discountPercentage}%
+                </span>
+              );
+            })()}
 
           </div>
 
@@ -260,17 +258,25 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
 
 
-        <div className="px-2 flex flex-col gap-1 flex-1 overflow-hidden">
+        <div className="px-2 flex flex-col gap-3 flex-1 pt-3 pb-2">
 
-          <h3 className="font-display font-medium text-lg text-foreground truncate hover:text-primary transition-colors">
+          <h3 className="font-display font-bold text-lg text-black">
 
             {product.name}
 
           </h3>
 
+          {/* Description */}
+          <p 
+            className="text-sm text-muted-foreground font-bold cursor-pointer line-clamp-1"
+            onClick={toggleDescription}
+          >
+            {product.description || 'Premium quality product for your little one'}
+          </p>
+
           <div className="flex items-center gap-2">
 
-            <span className="font-semibold text-primary-foreground">₹{Number(product.price || 0).toFixed(2)}</span>
+            <span className="font-semibold text-black">₹{Number(product.price || 0).toFixed(2)}</span>
 
             <span className="text-sm text-muted-foreground line-through">
 
@@ -279,46 +285,6 @@ export function ProductCard({ product, index }: ProductCardProps) {
             </span>
 
           </div>
-
-          {/* Rating */}
-
-          {product.rating && (
-
-            <div className="flex items-center gap-2 mt-auto pt-2 pb-2">
-
-              <div className="flex items-center">
-
-                {[...Array(5)].map((_, i) => (
-
-                  <Star 
-
-                    key={i} 
-
-                    className={`w-3 h-3 ${
-
-                      i < Math.floor(product.rating) 
-
-                        ? 'text-yellow-400 fill-current' 
-
-                        : 'text-gray-300'
-
-                    }`} 
-
-                  />
-
-                ))}
-
-              </div>
-
-              <span className="text-xs text-gray-500">
-
-                ({product.reviews || 0})
-
-              </span>
-
-            </div>
-
-          )}
 
         </div>
 
