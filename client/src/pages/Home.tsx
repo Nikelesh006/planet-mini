@@ -26,6 +26,7 @@ export default function Home() {
   
   // Latest products scroll state
   const [latestScrollPosition, setLatestScrollPosition] = useState(0);
+  const [canScrollRight, setCanScrollRight] = useState(false);
   const latestProductsRef = useRef<HTMLDivElement>(null);
   
   // Slider images - easily change these URLs
@@ -44,27 +45,58 @@ export default function Home() {
     return () => clearInterval(timer);
   }, [sliderImages.length]);
 
+  // Check scroll position to update arrow visibility
+  const checkScrollPosition = () => {
+    const container = latestProductsRef.current;
+    if (!container) return;
+    
+    const scrollLeft = container.scrollLeft;
+    const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
+    
+    setLatestScrollPosition(scrollLeft);
+    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10); // 10px buffer
+  };
+
+  // Check scroll position on mount and when products change
+  useEffect(() => {
+    const container = latestProductsRef.current;
+    if (!container) return;
+    
+    checkScrollPosition();
+    
+    const handleScroll = () => checkScrollPosition();
+    container.addEventListener('scroll', handleScroll);
+    
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [latestStyleProducts]);
+
   const scrollLatestProducts = (direction: 'left' | 'right') => {
     const container = latestProductsRef.current;
     if (!container) return;
     
-    const scrollAmount = 300; // Adjust based on card width + gap
+    const scrollAmount = 264 * 4; // One full page (4 cards * 264px each)
+    const currentScroll = container.scrollLeft;
     const newPosition = direction === 'left' 
-      ? latestScrollPosition - scrollAmount 
-      : latestScrollPosition + scrollAmount;
+      ? Math.max(0, currentScroll - scrollAmount)
+      : Math.min(container.scrollWidth - container.clientWidth, currentScroll + scrollAmount);
     
     container.scrollTo({
       left: newPosition,
       behavior: 'smooth'
     });
     
+    // Update scroll position immediately for better dot sync
     setLatestScrollPosition(newPosition);
+    
+    // Check scroll position after animation completes
+    setTimeout(() => {
+      checkScrollPosition();
+    }, 300); // Match the smooth scroll duration
   };
 
   // Check if left arrow should be visible
   const canScrollLeft = latestScrollPosition > 0;
-  // Check if right arrow should be visible
-  const canScrollRight = latestStyleProducts && latestStyleProducts.length > 4;
 
   // Manual navigation
   const goToSlide = (index: number) => {
@@ -319,13 +351,15 @@ export default function Home() {
                           </button>
                         )}
                         
-                        {/* Right Arrow - Always show when more than 4 cards */}
-                        <button
-                          onClick={() => scrollLatestProducts('right')}
-                          className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-                        >
-                          <ChevronRight className="w-6 h-6" />
-                        </button>
+                        {/* Right Arrow - Show only when can scroll right */}
+                        {canScrollRight && (
+                          <button
+                            onClick={() => scrollLatestProducts('right')}
+                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
+                          >
+                            <ChevronRight className="w-6 h-6" />
+                          </button>
+                        )}
                       </>
                     )}
                   </div>

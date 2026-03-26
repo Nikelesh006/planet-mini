@@ -198,11 +198,11 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                   </div>
                   
                   <Link href={`/products/${product.slug}`} className="block">
-                    <div className="aspect-square overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-red-200 group-hover:border-red-400 transition-all duration-300 shadow-lg group-hover:shadow-xl">
+                    <div className="aspect-square overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-red-200 group-hover:border-red-400 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-105">
                       <img
                         src={product.image}
                         alt={product.name}
-                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                        className="w-full h-full object-contain transition-transform duration-300"
                         loading="lazy"
                       />
                     </div>
