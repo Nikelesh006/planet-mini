@@ -7,11 +7,22 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
           <div className="col-span-1 md:col-span-1">
-            <Link href="/" className="flex items-center gap-2 text-2xl font-display font-bold text-foreground mb-4">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-primary-foreground shadow-sm">
-                PM
+            <Link href="/" className="flex items-center gap-3 mb-4">
+              <img 
+                src="/planet-mini-logo.png" 
+                alt="Planet Mini Logo" 
+                className="h-12 w-auto object-contain transform hover:scale-105 transition-transform"
+                onError={(e) => {
+                  // Fallback to original logo if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const fallback = target.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-primary-foreground shadow-sm transform hover:scale-105 transition-transform" style={{display: 'none'}}>
+                <span className="text-sm font-bold">PM</span>
               </div>
-              <span>Planet Mini</span>
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed mb-4">
               Crafting soft, sustainable, and adorable moments for your little ones.
