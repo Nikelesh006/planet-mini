@@ -66,10 +66,10 @@ export default function Navbar() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 transition-all duration-300",
+          "fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white",
           isScrolled 
-            ? "bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-lg shadow-lg border-b border-primary/30 py-3" 
-            : "bg-gradient-to-r from-white/10 via-primary/10 to-secondary/10 backdrop-blur-lg shadow-lg border-b border-white/20 py-5"
+            ? "shadow-lg py-3" 
+            : "shadow-md py-5"
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -85,12 +85,23 @@ export default function Navbar() {
             {/* Logo */}
             <Link 
               href="/" 
-              className="flex items-center gap-2 text-2xl font-display font-bold text-black hover:opacity-80 transition-opacity"
+              className="flex items-center justify-start hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary via-secondary to-primary flex items-center justify-center text-white shadow-lg transform hover:scale-110 transition-transform">
+              <img 
+                src="/planet-mini-logo.png" 
+                alt="Planet Mini Logo" 
+                className="h-12 w-auto object-contain transform hover:scale-105 transition-transform"
+                onError={(e) => {
+                  // Fallback to original logo if image fails to load
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const fallback = target.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.style.display = 'flex';
+                }}
+              />
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-secondary to-primary flex items-center justify-center text-white shadow-lg transform hover:scale-105 transition-transform" style={{display: 'none'}}>
                 <span className="text-sm font-bold">PM</span>
               </div>
-              <span className="font-bold">Planet Mini</span>
             </Link>
 
             {/* Desktop Nav */}
@@ -133,7 +144,7 @@ export default function Navbar() {
                     className={`w-5 h-5 transition-colors ${
                       location === '/likes' 
                         ? 'text-white fill-current' 
-                        : likedProducts.some(p => p.id === 1) // Sample product ID - you can make this dynamic
+                        : likedProducts.some(p => String(p.id) === '1') // Sample product ID - you can make this dynamic
                           ? 'text-primary fill-current' 
                           : 'text-black'
                     }`} 
