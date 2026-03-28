@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { ProductResponse } from "@shared/routes";
 
 // API types
@@ -152,4 +152,24 @@ export const useFeaturedProducts = () => {
     category: 'home',
     subcategory: 'Featured Products'
   });
+};
+
+// Delete product mutation hook
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+
+  return async (productId: string) => {
+    const response = await fetch(`/api/products/${productId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete product');
+    }
+
+    // Invalidate and refetch products query to update UI immediately
+    queryClient.invalidateQueries({ queryKey: ['products'] });
+    
+    return response.json();
+  };
 };

@@ -7,12 +7,14 @@ import type { Product } from "@shared/schema";
 import { useLikes } from "@/contexts/LikeContext";
 import { useCart } from "@/contexts/CartContext";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
+import { useToast } from "@/hooks/use-toast";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { likedProducts, toggleLike } = useLikes();
   const { addToCart } = useCart();
   const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel, isUserLoggedIn } = useAuthGuard();
+  const { toast } = useToast();
   
   const isWishlisted = likedProducts.some(p => p.id === product.id.toString());
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -46,8 +48,12 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         subcategory: product.subcategory || undefined,
       });
       
-      // Redirect to cart page after adding
-      window.location.href = '/cart';
+      // Show toast notification instead of redirecting
+      toast({
+        title: "Added to Cart!",
+        description: `${product.name} has been added to your cart.`,
+        variant: "success"
+      });
     });
   };
 

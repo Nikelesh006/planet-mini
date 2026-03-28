@@ -9,6 +9,7 @@ import { useLikes } from "@/contexts/LikeContext";
 import { useCart } from "@/contexts/CartContext";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
+import { useToast } from "@/hooks/use-toast";
 
 interface Product {
 
@@ -58,6 +59,7 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
   const { likedProducts, toggleLike } = useLikes();
   const { addToCart } = useCart();
   const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel, isUserLoggedIn } = useAuthGuard();
+  const { toast } = useToast();
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   const formatPrice = (price: number | string) => {
@@ -107,8 +109,12 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
         subcategory: undefined,
       });
       
-      // Redirect to cart page after adding
-      window.location.href = '/cart';
+      // Show toast notification instead of redirecting
+      toast({
+        title: "Added to Cart!",
+        description: `${product.name} has been added to your cart.`,
+        variant: "success"
+      });
     });
   };
 
