@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link, useLocation, useSearch } from "wouter";
 import { useCloudinary } from "@/hooks/useCloudinary";
 import { useProduct, useProductById } from "@/hooks/useProducts";
-import { Modal } from "@/components/ui/Modal";
+import { useToast } from "@/hooks/use-toast";
 import { 
   ArrowLeft, 
   Save, 
@@ -72,10 +72,27 @@ export default function AddProduct() {
   const [errors, setErrors] = useState<Partial<Record<keyof ProductFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [successModal, setSuccessModal] = useState<{ isOpen: boolean; isEdit: boolean }>({ 
-    isOpen: false, 
-    isEdit: false 
-  });
+  const { toast } = useToast();
+
+  // Reset form to initial empty state
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      slug: '',
+      description: '',
+      price: '',
+      originalPrice: '',
+      category: 'style',
+      subcategory: '',
+      images: [],
+      rating: 4.5,
+      reviews: 0,
+      inStock: true,
+      isNew: false
+    });
+    setErrors({});
+    setShowSuccess(false);
+  };
 
   // Pre-fill form when product data is loaded
   useEffect(() => {
@@ -205,11 +222,12 @@ export default function AddProduct() {
         }
         
         setShowSuccess(true);
-        setSuccessModal({ isOpen: true, isEdit: true });
+        toast({
+          title: "Product Updated Successfully!",
+          description: "Your product has been updated and is now live on the store.",
+          variant: "success"
+        });
         
-        setTimeout(() => {
-          window.location.href = '/admin/product-list';
-        }, 2000);
       } else {
         // CREATE NEW (Universal Template Pattern)
         const response = await fetch('/api/products', {
@@ -239,17 +257,24 @@ export default function AddProduct() {
         }
         
         setShowSuccess(true);
-        setSuccessModal({ isOpen: true, isEdit: false });
-        alert('Product added successfully!');
+        toast({
+          title: "Product Added Successfully!",
+          description: "Your new product has been added and is now live on the store.",
+          variant: "success"
+        });
         
-        setTimeout(() => {
-          window.location.href = '/admin/product-list';
-        }, 2000);
+        // Reset form to empty state after successful addition
+        resetForm();
+        
       }
       
     } catch (error) {
       console.error('Error creating product:', error);
-      alert('Failed to create product. Please try again.');
+      toast({
+        title: "Error",
+        description: "Failed to create product. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -662,44 +687,6 @@ export default function AddProduct() {
           </motion.div>
         </form>
       </div>
-
-      {/* Success Modal */}
-      <Modal
-        isOpen={successModal.isOpen}
-        onClose={() => setSuccessModal({ isOpen: false, isEdit: false })}
-        title={successModal.isEdit ? "Product Updated Successfully!" : "Product Added Successfully!"}
-        variant="success"
-      >
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Check className="w-8 h-8 text-green-600" />
-          </div>
-          <p className="text-lg text-gray-700 mb-6">
-            {successModal.isEdit 
-              ? "Your product has been updated successfully and is now live on the store."
-              : "Your new product has been added successfully and is now live on the store."
-            }
-          </p>
-          <div className="flex gap-4 justify-center">
-            <button
-              onClick={() => setSuccessModal({ isOpen: false, isEdit: false })}
-              className="px-6 py-3 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 transition-colors font-medium"
-            >
-              Continue Editing
-            </button>
-            
-            <button
-              onClick={() => {
-                setSuccessModal({ isOpen: false, isEdit: false });
-                window.location.href = '/admin/product-list';
-              }}
-              className="px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-xl hover:from-green-600 hover:to-green-700 transition-colors font-medium shadow-lg hover:shadow-xl transform hover:scale-105"
-            >
-              View Products
-            </button>
-          </div>
-        </div>
-      </Modal>
     </div>
   );
 }

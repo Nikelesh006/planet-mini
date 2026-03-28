@@ -11,6 +11,8 @@ import { useAuthGuard } from "@/hooks/useAuthGuard";
 
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 
+import { useToast } from "@/hooks/use-toast";
+
 import type { ProductResponse } from "@shared/routes";
 
 
@@ -32,6 +34,8 @@ export function ProductCard({ product, index }: ProductCardProps) {
   const { addToCart } = useCart();
 
   const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel, isUserLoggedIn } = useAuthGuard();
+
+  const { toast } = useToast();
 
   const isWishlisted = likedProducts.some(p => p.id === product.id.toString());
 
@@ -77,9 +81,17 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
       
 
-      // Redirect to cart page after adding
+      // Show toast notification instead of redirecting
 
-      window.location.href = '/cart';
+      toast({
+
+        title: "Added to Cart!",
+
+        description: `${product.name} has been added to your cart.`,
+
+        variant: "success"
+
+      });
 
     });
 

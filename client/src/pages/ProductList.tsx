@@ -17,12 +17,15 @@ import {
   Calendar,
   Check
 } from "lucide-react";
-import { useProducts } from "@/hooks/useProducts";
+import { useProducts, useDeleteProduct } from "@/hooks/useProducts";
 import { Modal, ConfirmModal } from "@/components/ui/Modal";
+import { useToast } from "@/hooks/use-toast";
 import type { ProductResponse } from "@shared/routes";
 
 export default function ProductList() {
   const { data: products = [], isLoading, error } = useProducts();
+  const deleteProduct = useDeleteProduct();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState<ProductResponse[]>([]);
@@ -68,26 +71,26 @@ export default function ProductList() {
     if (!deleteModal.productId) return;
     
     try {
-      const response = await fetch(`/api/products/${deleteModal.productId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          setDeleteModal({ isOpen: true, productId: null });
-          return;
-        }
-        throw new Error('Failed to delete product');
-      }
-
-      const result = await response.json();
+      await deleteProduct(deleteModal.productId);
       setDeleteModal({ isOpen: false, productId: null });
       
-      // Refresh the products list by refetching
-      window.location.reload();
+      // Show success toast
+      toast({
+        title: "Product Deleted Successfully!",
+        description: "The product has been removed from your store.",
+        variant: "success"
+      });
+      
     } catch (error) {
       console.error('Error deleting product:', error);
       setDeleteModal({ isOpen: false, productId: null });
+      
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to delete product. Please try again.",
+        variant: "destructive"
+      });
     }
   };
 
@@ -129,29 +132,30 @@ const handleProductSelect = (productId: number) => {
     try {
       // Delete each selected product
       const deletePromises = Array.from(selectedProducts).map(async (productId) => {
-        const response = await fetch(`/api/products/${productId}`, {
-          method: 'DELETE',
-        });
-
-        if (!response.ok) {
-          throw new Error(`Failed to delete product ${productId}`);
-        }
-
-        return response.json();
+        await deleteProduct(productId.toString());
       });
 
       await Promise.all(deletePromises);
       setSelectedProducts(new Set());
-
-      // Show success message
       setBulkDeleteModal({ isOpen: false, count: 0 });
 
-      // Refresh the page to show updated list
-      window.location.reload();
-
+      // Show success toast
+      toast({
+        title: "Products Deleted Successfully!",
+        description: `${selectedProducts.size} product(s) have been removed from your store.`,
+        variant: "success"
+      });
+      
     } catch (error) {
       console.error('Error deleting products:', error);
       setBulkDeleteModal({ isOpen: false, count: 0 });
+      
+      // Show error toast
+      toast({
+        title: "Error",
+        description: "Failed to delete some products. Please try again.",
+        variant: "destructive"
+      });
     }
   };
 
