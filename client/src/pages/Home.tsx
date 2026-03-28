@@ -14,13 +14,18 @@ import CategoryCard from "@/components/CategoryCard";
 
 import ProductGrid from "@/components/ProductGrid";
 
-import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift, ChevronLeft, ChevronRight } from "lucide-react";
+import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift, ChevronLeft, ChevronRight, Mail } from "lucide-react";
 
 import { useState, useEffect, useRef } from "react";
 
 
 
 export default function Home() {
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { data: products, isLoading } = useProducts();
 
@@ -65,6 +70,14 @@ export default function Home() {
   const [canScrollRightBabyCare, setCanScrollRightBabyCare] = useState(false);
 
   const babyCareProductsRef = useRef<HTMLDivElement>(null);
+
+  // Featured Products scroll state
+
+  const [featuredScrollPosition, setFeaturedScrollPosition] = useState(0);
+
+  const [canScrollRightFeatured, setCanScrollRightFeatured] = useState(false);
+
+  const featuredProductsRef = useRef<HTMLDivElement>(null);
 
 
 
@@ -140,6 +153,26 @@ export default function Home() {
 
   };
 
+  // Check scroll position for Featured Products
+
+  const checkFeaturedScrollPosition = () => {
+
+    const container = featuredProductsRef.current;
+
+    if (!container) return;
+    
+    const scrollLeft = container.scrollLeft;
+
+    const scrollWidth = container.scrollWidth;
+
+    const clientWidth = container.clientWidth;
+    
+    setFeaturedScrollPosition(scrollLeft);
+
+    setCanScrollRightFeatured(scrollLeft < scrollWidth - clientWidth - 10); // 10px buffer
+
+  };
+
 
 
   // Check scroll position on mount and when products change
@@ -183,6 +216,24 @@ export default function Home() {
     return () => container.removeEventListener('scroll', handleScroll);
 
   }, [babyCareProducts]);
+
+  // Check scroll position for Featured Products on mount and when products change
+
+  useEffect(() => {
+
+    const container = featuredProductsRef.current;
+
+    if (!container) return;
+    
+    checkFeaturedScrollPosition();
+    
+    const handleScroll = () => checkFeaturedScrollPosition();
+
+    container.addEventListener('scroll', handleScroll);
+    
+    return () => container.removeEventListener('scroll', handleScroll);
+
+  }, [featuredProducts]);
 
 
 
@@ -270,6 +321,44 @@ export default function Home() {
 
   };
 
+  const scrollFeaturedProducts = (direction: 'left' | 'right') => {
+
+    const container = featuredProductsRef.current;
+
+    if (!container) return;
+    
+    const scrollAmount = 264 * 4; // One full page (4 cards * 264px each)
+
+    const currentScroll = container.scrollLeft;
+
+    const newPosition = direction === 'left' 
+
+      ? Math.max(0, currentScroll - scrollAmount)
+
+      : Math.min(container.scrollWidth - container.clientWidth, currentScroll + scrollAmount);
+    
+    container.scrollTo({
+
+      left: newPosition,
+
+      behavior: 'smooth'
+
+    });
+    
+    // Update scroll position immediately for better dot sync
+
+    setFeaturedScrollPosition(newPosition);
+    
+    // Check scroll position after animation completes
+
+    setTimeout(() => {
+
+      checkFeaturedScrollPosition();
+
+    }, 300); // Match the smooth scroll duration
+
+  };
+
 
 
   // Check if left arrow should be visible
@@ -277,6 +366,8 @@ export default function Home() {
   const canScrollLeft = latestScrollPosition > 0;
 
   const canScrollLeftBabyCare = babyCareScrollPosition > 0;
+
+  const canScrollLeftFeatured = featuredScrollPosition > 0;
 
 
 
@@ -1192,9 +1283,11 @@ export default function Home() {
 
       {/* Featured Products Section */}
 
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="w-full">
 
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-white p-8 lg:p-16">
+        <div className="px-4 sm:px-6 lg:px-8 py-8">
+
+          {/* Header */}
 
           <motion.div 
 
@@ -1224,43 +1317,547 @@ export default function Home() {
 
           
 
-          {!featuredLoading && featuredProducts && featuredProducts.length > 0 && (
+          {/* Image and Content Layout */}
 
-            <ProductGrid 
+          <div className="flex flex-col lg:flex-row items-start gap-8">
 
-              products={featuredProducts.slice(0, 8)} 
+            {/* Left Side Image */}
 
-              title=""
+            <div className="lg:w-1/4 flex-shrink-0 pb-8">
 
-            />
+              <img 
 
-          )}
+                src="/featured-products.png" 
 
-          {!featuredLoading && (!featuredProducts || featuredProducts.length === 0) && (
+                alt="Featured Products" 
 
-            <div className="text-center py-12">
+                className="w-full h-auto object-contain mx-auto lg:mx-0 max-h-[80%] object-top"
 
-              <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-
-              <h3 className="text-xl font-semibold text-black mb-2">No Featured Products</h3>
-
-              <p className="text-gray-500">Add featured products to showcase here!</p>
+              />
 
             </div>
 
-          )}
+            
 
-          {featuredLoading && (
+            {/* Right Side Content */}
 
-            <div className="flex justify-center py-8">
+            <div className="lg:w-2/3 flex-1">
 
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gradient-to-r from-secondary to-secondary/80"></div>
+              {!featuredLoading && featuredProducts && featuredProducts.length > 0 && (
+
+                <div className="relative">
+
+                  {/* Horizontal Scroll Container */}
+
+                  <div className="relative">
+
+                    <div 
+
+                      ref={featuredProductsRef}
+
+                      className="flex gap-4 overflow-hidden scroll-smooth pb-4"
+
+                      style={{ 
+
+                        scrollbarWidth: 'none', 
+
+                        msOverflowStyle: 'none'
+
+                      }}
+
+                    >
+
+                      {featuredProducts.map((product, index) => (
+
+                        <div key={product.id || `featured-${index}`} className="flex-shrink-0 w-60">
+
+                          <ProductCard product={product} index={index} />
+
+                        </div>
+
+                      ))}
+
+                    </div>
+
+                    
+
+                    {/* Arrow Buttons - Only show if more than 4 products */}
+
+                    {featuredProducts.length > 4 && (
+
+                      <>
+
+                        {/* Left Arrow - Only show when scrolled right */}
+
+                        {canScrollLeftFeatured && (
+
+                          <button
+
+                            onClick={() => scrollFeaturedProducts('left')}
+
+                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
+
+                          >
+
+                            <ChevronLeft className="w-6 h-6" />
+
+                          </button>
+
+                        )}
+
+                        
+
+                        {/* Right Arrow - Show only when can scroll right */}
+
+                        {canScrollRightFeatured && (
+
+                          <button
+
+                            onClick={() => scrollFeaturedProducts('right')}
+
+                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
+
+                          >
+
+                            <ChevronRight className="w-6 h-6" />
+
+                          </button>
+
+                        )}
+
+                      </>
+
+                    )}
+
+                  </div>
+
+                  
+
+                  {/* Explore More Button */}
+
+                  <div className="text-center mt-6">
+
+                    <Link 
+
+                      href="/shop/style"
+
+                      className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+
+                    >
+
+                      Explore More
+
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+
+                      </svg>
+
+                    </Link>
+
+                  </div>
+
+                </div>
+
+              )}
+
+              {!featuredLoading && (!featuredProducts || featuredProducts.length === 0) && (
+
+                <div className="text-center py-12">
+
+                  <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+
+                  <h3 className="text-xl font-semibold text-black mb-2">No Featured Products</h3>
+
+                  <p className="text-gray-500">Add featured products to showcase here!</p>
+
+                </div>
+
+              )}
+
+              {featuredLoading && (
+
+                <div className="flex justify-center py-8">
+
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+
+                </div>
+
+              )}
 
             </div>
 
-          )}
+          </div>
 
         </div>
+
+      </section>
+
+
+
+      {/* Customer Reviews Gallery Section */}
+
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
+
+        <motion.div
+
+          initial={{ opacity: 0, y: 20 }}
+
+          whileInView={{ opacity: 1, y: 0 }}
+
+          className="text-center mb-12"
+
+        >
+
+          <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-3xl flex items-center justify-center mx-auto mb-6">
+
+            <Heart className="w-10 h-10 text-black" />
+
+          </div>
+
+          <h2 className="text-4xl font-bold text-black mb-4">
+
+            Happy Parents & Happy Babies
+
+          </h2>
+
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+
+            See what our wonderful customers have to say about their Planet Mini experience
+
+          </p>
+
+          <div className="flex justify-center gap-2 mt-4">
+
+            <div className="w-12 h-1 bg-gradient-to-r from-primary to-primary/80 rounded-full"></div>
+
+            <div className="w-12 h-1 bg-secondary rounded-full"></div>
+
+            <div className="w-12 h-1 bg-gradient-to-r from-primary to-primary/80 rounded-full"></div>
+
+          </div>
+
+        </motion.div>
+
+
+
+        {/* Image Collage Gallery */}
+
+        <div className="relative">
+
+          {/* Main Grid Layout */}
+
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-3 auto-rows-[150px] md:auto-rows-[200px]">
+
+            {/* Large Featured Image - Top Left (2x2) */}
+            <div className="relative group col-span-2 row-span-2 md:col-span-2 md:row-span-2">
+              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
+                <img 
+                  src="https://images.unsplash.com/photo-1583119915244-22d34b9b8d0c?w=400&h=400&fit=crop&crop=faces" 
+                  alt="Happy baby with Planet Mini products"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='12' font-family='Arial'%3EBaby Review 1%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                  <div className="p-4 text-white">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-sm font-semibold">Sarah M.</span>
+                    </div>
+                    <p className="text-sm leading-relaxed">
+                      "Amazing quality! My baby loves the soft fabrics. Planet Mini has been a game-changer for us!"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Small Image - Top Right */}
+            <div className="relative group">
+              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
+                <img 
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces" 
+                  alt="Baby in comfortable sleepwear"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23DBEAFE'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%231E40AF' font-size='12' font-family='Arial'%3EBaby Review 2%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                  <div className="p-3 text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-xs font-semibold">Emily R.</span>
+                    </div>
+                    <p className="text-xs leading-relaxed">
+                      "The cutest baby clothes! So soft and durable."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Medium Image - Middle Right (1x2) */}
+            <div className="relative group row-span-2 md:row-span-2">
+              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
+                <img 
+                  src="https://images.unsplash.com/photo-1544718845-4a0d0b5d1f73?w=400&h=400&fit=crop&crop=faces" 
+                  alt="Baby playing with toys"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23D1FAE5'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23065F46' font-size='12' font-family='Arial'%3EBaby Review 3%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                  <div className="p-4 text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-xs font-semibold">Mike T.</span>
+                    </div>
+                    <p className="text-xs leading-relaxed">
+                      "Great quality products at reasonable prices! My baby looks adorable!"
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Small Image - Bottom Left */}
+            <div className="relative group">
+              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
+                <img 
+                  src="https://images.unsplash.com/photo-1516214104703-d870798faf8f?w=400&h=400&fit=crop&crop=faces" 
+                  alt="Twins in matching outfits"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEF3C7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%2392400E' font-size='12' font-family='Arial'%3EBaby Review 4%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                  <div className="p-3 text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-xs font-semibold">Jessica L.</span>
+                    </div>
+                    <p className="text-xs leading-relaxed">
+                      "Perfect for my twins! Adorable matching outfits."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Wide Image - Bottom Middle (2x1) */}
+            <div className="relative group col-span-2">
+              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
+                <img 
+                  src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&crop=faces" 
+                  alt="Happy baby in organic clothing"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23E9D5FF'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%236B21A8' font-size='12' font-family='Arial'%3EBaby Review 5%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                  <div className="p-4 text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-xs font-semibold">David K.</span>
+                    </div>
+                    <p className="text-xs leading-relaxed">
+                      "Love the eco-friendly options! Great quality and sustainability."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Small Image - Bottom Right */}
+            <div className="relative group">
+              <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
+                <img 
+                  src="https://images.unsplash.com/photo-1489456635-e61c6c5ea3c1?w=400&h=400&fit=crop&crop=faces" 
+                  alt="Baby sleeping peacefully"
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FED7AA'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239A3412' font-size='12' font-family='Arial'%3EBaby Review 6%3C/text%3E%3C/svg%3E";
+                  }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                  <div className="p-3 text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="flex">
+                        {[...Array(5)].map((_, i) => (
+                          <svg key={i} className="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                            <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                          </svg>
+                        ))}
+                      </div>
+                      <span className="text-xs font-semibold">Lisa M.</span>
+                    </div>
+                    <p className="text-xs leading-relaxed">
+                      "The sleepwear is incredibly soft! Highly recommend."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+
+          {/* Floating Stats Cards */}
+
+          <motion.div
+
+            initial={{ opacity: 0, scale: 0.9 }}
+
+            whileInView={{ opacity: 1, scale: 1 }}
+
+            transition={{ delay: 0.3 }}
+
+            className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-primary/20 z-10"
+
+          >
+
+            <div className="text-center">
+
+              <div className="text-2xl font-bold text-primary mb-1">4.9/5</div>
+
+              <div className="flex justify-center mb-1">
+
+                {[...Array(5)].map((_, i) => (
+
+                  <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
+
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+
+                  </svg>
+
+                ))}
+
+              </div>
+
+              <div className="text-xs text-gray-600">2,847 Reviews</div>
+
+            </div>
+
+          </motion.div>
+
+
+
+          <motion.div
+
+            initial={{ opacity: 0, scale: 0.9 }}
+
+            whileInView={{ opacity: 1, scale: 1 }}
+
+            transition={{ delay: 0.4 }}
+
+            className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-secondary/20 z-10"
+
+          >
+
+            <div className="text-center">
+
+              <div className="text-2xl font-bold text-secondary mb-1">98%</div>
+
+              <div className="text-xs text-gray-600">Customer Satisfaction</div>
+
+            </div>
+
+          </motion.div>
+
+        </div>
+
+
+
+        {/* Call to Action */}
+
+        <motion.div
+
+          initial={{ opacity: 0, y: 20 }}
+
+          whileInView={{ opacity: 1, y: 0 }}
+
+          transition={{ delay: 0.5 }}
+
+          className="text-center mt-12"
+
+        >
+
+          <p className="text-gray-600 mb-6">
+
+            Join thousands of happy parents who trust Planet Mini for their little ones!
+
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+
+            <Link 
+
+              href="/shop"
+
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+
+            >
+
+              <ShoppingBag className="w-5 h-5" />
+
+              Shop Now
+
+            </Link>
+
+            <Link 
+
+              href="/contact"
+
+              className="inline-flex items-center gap-2 bg-white border-2 border-primary text-primary px-8 py-4 rounded-2xl font-bold hover:bg-primary hover:text-black transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+
+            >
+
+              <Mail className="w-5 h-5" />
+
+              Share Your Story
+
+            </Link>
+
+          </div>
+
+        </motion.div>
 
       </section>
 

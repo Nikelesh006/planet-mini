@@ -205,7 +205,7 @@ export default function Profile() {
                       handleSaveProfile(formData);
                     }}
                     disabled={updateProfile.isPending}
-                    className="mt-6 bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    className="mt-6 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg"
                   >
                     {updateProfile.isPending ? (
                       <>
@@ -226,7 +226,7 @@ export default function Profile() {
                 <div className="space-y-4">
                   <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
                     <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                      <Mail className="w-6 h-6 text-white" />
+                      <Mail className="w-6 h-6 text-black" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-1">Email</p>
@@ -235,7 +235,7 @@ export default function Profile() {
                   </div>
                   <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-secondary/5 to-transparent rounded-2xl border border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-md">
                     <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center">
-                      <Phone className="w-6 h-6 text-white" />
+                      <Phone className="w-6 h-6 text-black" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-1">Phone</p>
@@ -244,7 +244,7 @@ export default function Profile() {
                   </div>
                   <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
                     <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                      <MapPin className="w-6 h-6 text-white" />
+                      <MapPin className="w-6 h-6 text-black" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-1">Address</p>
@@ -343,7 +343,7 @@ export default function Profile() {
                   className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                    <Package className="w-6 h-6 text-white" />
+                    <Package className="w-6 h-6 text-black" />
                   </div>
                   <div className="flex-1">
                     <span className="font-bold text-black group-hover:text-primary transition-colors">My Orders</span>
@@ -355,7 +355,7 @@ export default function Profile() {
                   className="group flex items-center gap-4 p-4 bg-gradient-to-r from-secondary/5 to-transparent rounded-2xl border border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-md"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center">
-                    <Heart className="w-6 h-6 text-white" />
+                    <Heart className="w-6 h-6 text-black" />
                   </div>
                   <div className="flex-1">
                     <span className="font-bold text-black group-hover:text-secondary transition-colors">Wishlist</span>
@@ -367,7 +367,7 @@ export default function Profile() {
                   className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                    <Settings className="w-6 h-6 text-white" />
+                    <Settings className="w-6 h-6 text-black" />
                   </div>
                   <div className="flex-1">
                     <span className="font-bold text-black group-hover:text-primary transition-colors">Settings</span>
@@ -379,7 +379,7 @@ export default function Profile() {
                   className="group flex items-center gap-4 p-4 bg-gradient-to-r from-secondary/5 to-transparent rounded-2xl border border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-md"
                 >
                   <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-white" />
+                    <MapPin className="w-6 h-6 text-black" />
                   </div>
                   <div className="flex-1">
                     <span className="font-bold text-black group-hover:text-secondary transition-colors">Addresses</span>
@@ -471,7 +471,7 @@ export default function Profile() {
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         >
           <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-sm mx-4">
-            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full mb-4">
+            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full mb-4">
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
             <h3 className="text-xl font-bold text-black mb-2">Baby Added!</h3>

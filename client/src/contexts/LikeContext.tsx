@@ -3,23 +3,29 @@ import { toast } from 'react-hot-toast';
 import { useAuth } from './AuthContext';
 
 interface LikedProduct {
-  id: string;
+  id: number;
   name: string;
   slug: string;
+  description: string;
   price: number;
-  originalPrice?: number;
+  originalPrice: number | null;
   image: string;
-  category?: string;
-  rating?: number;
-  reviews?: number;
+  category: string;
+  subcategory: string | null;
+  rating: number;
+  reviews: number;
+  inStock: boolean | null;
+  isNew: boolean | null;
+  colors: string | null;
+  sizes: string | null;
 }
 
 interface LikeContextType {
   likedProducts: LikedProduct[];
   toggleLike: (product: LikedProduct) => void;
-  isLiked: (productId: string) => boolean;
+  isLiked: (productId: number) => boolean;
   loading: boolean;
-  removeFromLikes: (productId: string) => void;
+  removeFromLikes: (productId: number) => void;
 }
 
 const LikeContext = createContext<LikeContextType | undefined>(undefined);
@@ -143,11 +149,11 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const isLiked = (productId: string) => {
+  const isLiked = (productId: number) => {
     return likedProducts.some(p => p.id === productId);
   };
 
-  const removeFromLikes = async (productId: string) => {
+  const removeFromLikes = async (productId: number) => {
     if (!user) return;
 
     try {
