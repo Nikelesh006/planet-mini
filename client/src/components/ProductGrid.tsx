@@ -105,8 +105,10 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
         price: Number(product.price),
         originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
         image: product.image,
-        category: product.category || undefined,
+        category: product.category ?? undefined,
         subcategory: undefined,
+        color: product.colors || undefined,
+        size: product.sizes || undefined,
       });
       
       // Show toast notification instead of redirecting
@@ -126,18 +128,20 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
     executeWithAuth(() => {
       // Convert product to the format expected by toggleLike
       const productForWishlist = {
-        id: product.id.toString(),
+        id: product.id,
         name: product.name,
         price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
         image: product.image,
-        category: product.category || undefined,
-        subcategory: undefined,
+        category: product.category || 'Uncategorized',
+        subcategory: null,
+        colors: product.colors ?? null,
+        sizes: product.sizes ?? null,
         slug: product.slug,
-        rating: product.rating,
-        reviews: product.reviews,
-        inStock: product.inStock === null ? undefined : product.inStock,
-        isNew: product.isNew === null ? undefined : product.isNew,
+        rating: product.rating || 0,
+        reviews: product.reviews || 0,
+        inStock: product.inStock ?? null,
+        isNew: product.isNew ?? null,
         description: product.description,
       };
       
@@ -220,7 +224,7 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
         </div>
       ) : (
         // Original card layout for other sections
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-8">
           {products.map((product, index) => (
             <div key={product.id || `product-${index}`} className="flex-shrink-0 w-60">
               <Link href={`/products/${product.slug}`} className="block">
@@ -258,7 +262,7 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                       onClick={(e) => handleWishlist(e, product)}
                       className="w-10 h-10 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm shadow-sm text-foreground hover:text-primary transition-colors active:scale-95"
                     >
-                      <Heart className={`w-5 h-5 ${likedProducts.some(p => p.id === product.id.toString()) ? 'fill-primary text-primary' : ''}`} />
+                      <Heart className={`w-5 h-5 ${likedProducts.some(p => p.id === product.id) ? 'fill-primary text-primary' : ''}`} />
                     </button>
                   </div>
 

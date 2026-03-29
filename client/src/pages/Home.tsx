@@ -87,11 +87,11 @@ export default function Home() {
 
     "/banner-hero.jpg",
 
-    "/banner-hero.jpg", 
+    "/banner-hero2.png", 
 
-    "/banner-hero.jpg",
+    "/banner-hero3.png",
 
-    "/banner-hero.jpg"
+    "/banner-hero4.png"
 
   ];
 
@@ -1553,7 +1553,7 @@ export default function Home() {
             <div className="relative group col-span-2 row-span-2 md:col-span-2 md:row-span-2">
               <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
                 <img 
-                  src="https://images.unsplash.com/photo-1583119915244-22d34b9b8d0c?w=400&h=400&fit=crop&crop=faces" 
+                  src="/review4.jpg" 
                   alt="Happy baby with Planet Mini products"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -1584,7 +1584,7 @@ export default function Home() {
             <div className="relative group">
               <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
                 <img 
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=faces" 
+                  src="/review5.jpg" 
                   alt="Baby in comfortable sleepwear"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -1615,7 +1615,7 @@ export default function Home() {
             <div className="relative group row-span-2 md:row-span-2">
               <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
                 <img 
-                  src="https://images.unsplash.com/photo-1544718845-4a0d0b5d1f73?w=400&h=400&fit=crop&crop=faces" 
+                  src="/review6.jpg" 
                   alt="Baby playing with toys"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -1646,7 +1646,7 @@ export default function Home() {
             <div className="relative group">
               <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
                 <img 
-                  src="https://images.unsplash.com/photo-1516214104703-d870798faf8f?w=400&h=400&fit=crop&crop=faces" 
+                  src="/review1.jpg" 
                   alt="Twins in matching outfits"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -1677,7 +1677,7 @@ export default function Home() {
             <div className="relative group col-span-2">
               <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
                 <img 
-                  src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop&crop=faces" 
+                  src="/review2.jpg" 
                   alt="Happy baby in organic clothing"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -1708,7 +1708,7 @@ export default function Home() {
             <div className="relative group">
               <div className="relative w-full h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105">
                 <img 
-                  src="https://images.unsplash.com/photo-1489456635-e61c6c5ea3c1?w=400&h=400&fit=crop&crop=faces" 
+                  src="/review3.jpg" 
                   alt="Baby sleeping peacefully"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -1737,70 +1737,6 @@ export default function Home() {
 
           </div>
 
-
-
-          {/* Floating Stats Cards */}
-
-          <motion.div
-
-            initial={{ opacity: 0, scale: 0.9 }}
-
-            whileInView={{ opacity: 1, scale: 1 }}
-
-            transition={{ delay: 0.3 }}
-
-            className="absolute top-4 right-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-primary/20 z-10"
-
-          >
-
-            <div className="text-center">
-
-              <div className="text-2xl font-bold text-primary mb-1">4.9/5</div>
-
-              <div className="flex justify-center mb-1">
-
-                {[...Array(5)].map((_, i) => (
-
-                  <svg key={i} className="w-4 h-4 text-yellow-400 fill-current" viewBox="0 0 20 20">
-
-                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-
-                  </svg>
-
-                ))}
-
-              </div>
-
-              <div className="text-xs text-gray-600">2,847 Reviews</div>
-
-            </div>
-
-          </motion.div>
-
-
-
-          <motion.div
-
-            initial={{ opacity: 0, scale: 0.9 }}
-
-            whileInView={{ opacity: 1, scale: 1 }}
-
-            transition={{ delay: 0.4 }}
-
-            className="absolute bottom-4 left-4 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl border border-secondary/20 z-10"
-
-          >
-
-            <div className="text-center">
-
-              <div className="text-2xl font-bold text-secondary mb-1">98%</div>
-
-              <div className="text-xs text-gray-600">Customer Satisfaction</div>
-
-            </div>
-
-          </motion.div>
-
         </div>
 
 
@@ -1810,10 +1746,8 @@ export default function Home() {
         <motion.div
 
           initial={{ opacity: 0, y: 20 }}
-
-          whileInView={{ opacity: 1, y: 0 }}
-
           transition={{ delay: 0.5 }}
+          whileInView={{ opacity: 1, y: 0 }}
 
           className="text-center mt-12"
 
