@@ -44,7 +44,7 @@ export default function About() {
             </p>
             <Link 
               href="/shop"
-              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
             >
               Shop Our Collection
             </Link>
@@ -122,7 +122,7 @@ export default function About() {
                   ? 'bg-gradient-to-br from-primary to-secondary border-2 border-primary/30'
                   : 'bg-gradient-to-br from-secondary to-primary border-2 border-secondary/30'
               }`}>
-                <value.icon className="w-8 h-8 text-white" />
+                <value.icon className="w-8 h-8 text-black" />
               </div>
               <h3 className={`text-xl font-semibold mb-2 transition-colors duration-300 ${
                 index % 2 === 0
@@ -151,8 +151,8 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <div className="text-4xl md:text-5xl font-bold mb-2">{stat.number}</div>
-                <div className="text-white/80">{stat.label}</div>
+                <div className="text-4xl md:text-5xl text-black font-bold mb-2">{stat.number}</div>
+                <div className="text-black">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -171,7 +171,7 @@ export default function About() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               href="/shop"
-              className="inline-flex items-center justify-center bg-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
             >
               Start Shopping
             </Link>
