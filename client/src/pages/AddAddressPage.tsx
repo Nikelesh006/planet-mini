@@ -1,10 +1,12 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
-import { ArrowLeft, MapPin, Phone, User, Home, Building } from 'lucide-react';
+import { ArrowLeft, MapPin, Phone, User, Home } from 'lucide-react';
 import { addressApi, CreateAddressData } from '../utils/addressApi';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function AddAddressPage() {
   const [, setLocation] = useLocation();
+  const { user, isLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState<CreateAddressData>({
     fullName: '',
@@ -14,8 +16,48 @@ export default function AddAddressPage() {
     city: '',
     state: '',
   });
-
   const [errors, setErrors] = useState<Partial<CreateAddressData>>({});
+  
+  // Debug: Log authentication state
+  console.log('🔍 AddAddressPage - Auth state:', { 
+    user: user ? {
+      id: user.id,
+      sub: user.sub,
+      email: user.email,
+      name: user.name
+    } : null, 
+    isLoading 
+  });
+  
+  // Debug: Check if user has required properties
+  if (user) {
+    console.log('🔍 AddAddressPage - User ID sources:', {
+      fromId: user.id,
+      fromSub: user.sub,
+      finalUserId: user.id || user.sub,
+      hasEmail: !!user.email,
+      hasName: !!user.name
+    });
+  }
+  
+  // Redirect to login if not authenticated
+  if (!isLoading && !user) {
+    console.log('🚫 AddAddressPage - No user found, redirecting to login');
+    window.location.href = '/';
+    return null;
+  }
+  
+  if (isLoading) {
+    console.log('⏳ AddAddressPage - Loading authentication...');
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Checking authentication...</p>
+        </div>
+      </div>
+    );
+  }
 
   const validateForm = (): boolean => {
     const newErrors: Partial<CreateAddressData> = {};
@@ -74,6 +116,15 @@ export default function AddAddressPage() {
       return;
     }
 
+    // Double-check authentication before submitting
+    if (!user) {
+      console.log('🚫 AddAddressPage - No user found during submit, redirecting to login');
+      alert('Please login to add an address');
+      window.location.href = '/';
+      return;
+    }
+
+    console.log('🔍 AddAddressPage - Submitting address for user:', user.id || user.sub);
     setIsSubmitting(true);
 
     try {

@@ -465,6 +465,58 @@ export const ordersStorage = {
     ];
   },
 
+  async getAllOrders() {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) {
+        console.log('❌ Database not connected for getAllOrders');
+        return [];
+      }
+      
+      console.log('🔍 Fetching all orders from MongoDB');
+      
+      const orders = await db.collection("orders").find({}).sort({ createdAt: -1 }).toArray();
+      
+      console.log(`📦 Found ${orders.length} total orders in database`);
+      
+      if (orders.length === 0) {
+        return [];
+      }
+      
+      // Format orders similar to getOrders
+      const formattedOrders = orders.map(order => {
+        const transformedItems = (order.items || order.products || []).map((item: any) => ({
+          id: item.productId || item.id || item._id,
+          name: item.name || item.productName,
+          price: item.price,
+          quantity: item.quantity || 1,
+          image: item.image || item.productImage,
+          slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`
+        }));
+
+        return {
+          id: order._id.toString(),
+          orderNumber: order.orderNumber || `ORD-${order._id.toString().slice(-8).toUpperCase()}`,
+          status: order.status || 'pending',
+          totalAmount: order.total || order.totalAmount || 0,
+          createdAt: order.createdAt,
+          estimatedDelivery: order.estimatedDelivery,
+          trackingNumber: order.trackingNumber,
+          items: transformedItems,
+          shippingAddress: order.shippingAddress || order.address || {},
+          paymentMethod: order.paymentMethod || 'Credit Card',
+          paymentStatus: order.paymentStatus || 'paid',
+          userId: order.userId
+        };
+      });
+      
+      return formattedOrders;
+    } catch (error) {
+      console.error('Error fetching all orders from MongoDB:', error);
+      return [];
+    }
+  },
+
   async createOrder(userId: string, orderData: any) {
     try {
       const db = mongoose.connection.db;
@@ -474,15 +526,46 @@ export const ordersStorage = {
       const finalUserId = orderData.userId || userId;
       console.log(`🔧 Creating order for userId: ${finalUserId}`);
       
+      // Fetch the full shipping address if only ID is provided
+      let shippingAddress = orderData.shippingAddress;
+      if (!shippingAddress && orderData.shippingAddressId) {
+        const { ObjectId } = mongoose.Types;
+        try {
+          const addressDoc = await db.collection("addresses").findOne({
+            _id: new ObjectId(orderData.shippingAddressId),
+            userId: finalUserId
+          });
+          if (addressDoc) {
+            shippingAddress = {
+              street: addressDoc.street,
+              city: addressDoc.city,
+              state: addressDoc.state,
+              pincode: addressDoc.pincode,
+              phone: addressDoc.phone,
+              isDefault: addressDoc.isDefault
+            };
+            console.log('📍 Fetched shipping address:', shippingAddress);
+          } else {
+            console.log('⚠️ Address not found for ID:', orderData.shippingAddressId);
+          }
+        } catch (addrError) {
+          console.error('Error fetching address:', addrError);
+        }
+      }
+      
       const order = {
         ...orderData,
         userId: finalUserId,
         orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
         status: orderData.status || 'pending',
         paymentStatus: orderData.paymentStatus || 'pending',
+        shippingAddress: shippingAddress || orderData.address || null,
         createdAt: new Date(),
         updatedAt: new Date()
       };
+      
+      // Remove shippingAddressId since we now have the full address
+      delete order.shippingAddressId;
       
       console.log('🔧 Order data being saved:', JSON.stringify(order, null, 2));
       

@@ -4,6 +4,8 @@ import { addressStorage } from '../storage';
 
 import { z } from 'zod';
 
+import jwt from 'jsonwebtoken';
+
 
 
 // Import Address interface from types
@@ -16,52 +18,71 @@ const router = Router();
 
 
 
-// Auth middleware for user isolation
-
+// Auth middleware for user isolation - Same logic as orders
 const authenticateToken = (req: any, res: any, next: any) => {
-
   const authHeader = req.headers['authorization'];
-
-  const token = authHeader && authHeader.split(' ')[1];
-
+  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
   
-
-  // TEMPORARY BYPASS FOR TESTING - Remove in production
-
+  console.log('🔐 Address Auth check:', { authHeader, hasToken: !!token, tokenValue: token });
+  
+  // For development: Check if this is a Google auth session
   if (!token || token === 'null' || token === 'undefined') {
-
-    console.log('⚠️ TEMP: Using test user for null token in addresses');
-
-    (req as any).user = { 
-
-      sub: 'test-user-123', 
-
-      id: 'test-user-123', 
-
-      email: 'test@example.com' 
-
-    };
-
-    return next();
-
+    // Check if there's a session-based auth (Google OAuth)
+    const sessionUserId = req.headers['x-user-id'] || req.query.userId;
+    if (sessionUserId && sessionUserId !== 'test-user-123') {
+      console.log('✅ Using Google session user ID for addresses:', sessionUserId);
+      req.user = { 
+        sub: sessionUserId, 
+        id: sessionUserId, 
+        email: req.headers['x-user-email'] || 'user@gmail.com'
+      };
+      return next();
+    }
+    
+    // Only use test user for explicit testing
+    if (sessionUserId === 'test-user-123') {
+      console.log('⚠️ TEMP: Using test user for addresses testing');
+      req.user = { 
+        sub: 'test-user-123', 
+        id: 'test-user-123', 
+        email: 'test@example.com' 
+      };
+      return next();
+    }
+    
+    console.log('❌ No authentication found for addresses');
+    return res.status(401).json({ 
+      error: 'No token provided',
+      message: 'Authentication required'
+    });
   }
 
+  const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
+  console.log('🔑 Using JWT secret for addresses:', jwtSecret ? 'Set' : 'Not set');
 
-
-  // For now, just use the token as user ID (simplified)
-
-  (req as any).user = { 
-
-    sub: token, 
-
-    id: token, 
-
-    email: 'user@example.com' 
-
-  };
-
-  next();
-
+  jwt.verify(token, jwtSecret, (err: any, user: any) => {
+    if (err) {
+      console.log('❌ Address token verification failed:', {
+        error: err.message,
+        name: err.name,
+        expired: err.expired,
+        token: token.substring(0, 50) + '...'
+      });
+      return res.status(403).json({ 
+        error: 'Invalid token',
+        details: err.message,
+        suggestion: 'Please login again to get a fresh token'
+      });
+    }
+    
+    console.log('✅ Address token verified successfully:', { 
+      userId: user?.sub || user?.id || user?.userId,
+      email: user?.email 
+    });
+    
+    req.user = user;
+    next();
+  });
 };
 
 
@@ -254,7 +275,97 @@ router.post('/', authenticateToken, async (req, res) => {
 
 });
 
+// PUT /api/addresses/:addressId - Update an existing address
+router.put('/:addressId', authenticateToken, async (req, res) => {
+  try {
+    const { addressId } = req.params;
+    const validatedData = AddressSchema.parse(req.body);
+    
+    const userId = (req as any).user?.sub || (req as any).user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+    
+    console.log(`🔍 Updating address ${addressId} for user: ${userId}`, validatedData);
+    
+    // Update address in database
+    const updatedAddress = await addressStorage.updateAddress(userId, addressId, validatedData);
+    
+    if (!updatedAddress) {
+      return res.status(404).json({
+        success: false,
+        message: 'Address not found'
+      });
+    }
+    
+    console.log('✅ Address updated in database:', updatedAddress);
+    
+    res.json({
+      success: true,
+      address: updatedAddress,
+      message: 'Address updated successfully'
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation failed',
+        errors: error.errors
+      });
+    }
 
+    console.error('Error updating address in database:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update address'
+    });
+  }
+});
+
+// DELETE /api/addresses/:addressId - Delete an address
+router.delete('/:addressId', authenticateToken, async (req, res) => {
+  try {
+    const { addressId } = req.params;
+    
+    const userId = (req as any).user?.sub || (req as any).user?.id;
+    
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'Unauthorized'
+      });
+    }
+    
+    console.log(`🔍 Deleting address ${addressId} for user: ${userId}`);
+    
+    // Delete address from database
+    const deleted = await addressStorage.deleteAddress(userId, addressId);
+    
+    if (!deleted) {
+      return res.status(404).json({
+        success: false,
+        message: 'Address not found'
+      });
+    }
+    
+    console.log('✅ Address deleted from database');
+    
+    res.json({
+      success: true,
+      message: 'Address deleted successfully'
+    });
+  } catch (error) {
+    console.error('Error deleting address from database:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete address'
+    });
+  }
+});
 
 export default router;
 

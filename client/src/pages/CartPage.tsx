@@ -98,6 +98,13 @@ export default function CartPage() {
         return;
       }
 
+      // Validate user has addresses
+      if (addresses.length === 0) {
+        alert('Please add a shipping address before placing an order.');
+        window.location.href = '/add-address';
+        return;
+      }
+
       // Get selected shipping address
       const selectedAddressId = localStorage.getItem('selectedAddressId');
       if (!selectedAddressId) {
@@ -247,6 +254,7 @@ export default function CartPage() {
                     <img
                       src={item.image}
                       alt={item.name}
+                      crossOrigin="anonymous"
                       className="w-24 h-24 object-cover rounded-xl shadow-md"
                     />
                     <div className="flex flex-col justify-center">
@@ -339,7 +347,7 @@ export default function CartPage() {
                   >
                     {addresses.map((address) => (
                       <option key={address._id} value={address._id}>
-                        {address.fullName}, {address.city}, {address.state}, {address.pincode}
+                        {address.street}, {address.city}, {address.state}, {address.pincode}
                       </option>
                     ))}
                   </select>

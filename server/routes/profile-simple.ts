@@ -127,4 +127,73 @@ router.post('/:userId', async (req, res) => {
   }
 });
 
+// Add baby info
+router.post('/:userId/baby', async (req, res) => {
+  try {
+    console.log('Adding baby info for userId:', req.params.userId);
+    console.log('Request body:', req.body);
+    
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.log('MongoDB not connected, returning mock success');
+      return res.json({
+        userId: req.params.userId,
+        babyInfo: [req.body],
+        updatedAt: new Date()
+      });
+    }
+    
+    const profile = await Profile.findOneAndUpdate(
+      { userId: req.params.userId },
+      { $push: { babyInfo: req.body } },
+      { new: true, upsert: true }
+    );
+    
+    console.log('Baby info added:', profile);
+    res.json(profile);
+    
+  } catch (error: any) {
+    console.error('Baby info add error:', error);
+    res.status(500).json({ error: 'Failed to add baby info', details: error.message });
+  }
+});
+
+// Delete baby info by index
+router.delete('/:userId/baby/:index', async (req, res) => {
+  try {
+    const { userId, index } = req.params;
+    console.log('Deleting baby info for userId:', userId, 'index:', index);
+    
+    // Check if MongoDB is connected
+    if (mongoose.connection.readyState !== 1) {
+      console.log('MongoDB not connected, returning mock success');
+      return res.json({
+        userId: req.params.userId,
+        message: 'Baby info deleted (mock)',
+        updatedAt: new Date()
+      });
+    }
+    
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+    
+    const babyIndex = parseInt(index);
+    if (babyIndex < 0 || babyIndex >= (profile.babyInfo?.length || 0)) {
+      return res.status(400).json({ error: 'Invalid baby index' });
+    }
+    
+    profile.babyInfo.splice(babyIndex, 1);
+    await profile.save();
+    
+    console.log('Baby info deleted, updated profile:', profile);
+    res.json(profile);
+    
+  } catch (error: any) {
+    console.error('Baby info delete error:', error);
+    res.status(500).json({ error: 'Failed to delete baby info', details: error.message });
+  }
+});
+
 export default router;

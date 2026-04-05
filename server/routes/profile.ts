@@ -258,6 +258,52 @@ router.post('/:userId/baby', requireAuth, async (req: any, res: any) => {
 
 
 
+// 3. DELETE /api/profile/:userId/baby/:index  ← useDeleteBabyInfo(userId)
+
+router.delete('/:userId/baby/:index', requireAuth, async (req: any, res: any) => {
+
+  try {
+
+    const userId = req.params.userId;
+    const index = parseInt(req.params.index);
+
+    
+
+    if (req.user.id !== userId) {
+
+      return res.status(403).json({ error: 'Unauthorized' });
+
+    }
+
+    
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    if (index < 0 || index >= (profile.babyInfo?.length || 0)) {
+      return res.status(400).json({ error: 'Invalid baby index' });
+    }
+
+    profile.babyInfo.splice(index, 1);
+    await profile.save();
+
+    console.log('✅ Deleted baby at index:', index);
+
+    res.json(profile);
+
+  } catch (error) {
+
+    console.error('❌ Failed to delete baby info:', error);
+
+    res.status(500).json({ error: 'Failed to delete baby info' });
+
+  }
+
+});
+
+
+
 // 4. POST /api/profile/:userId/cart  ← Add item to cart
 
 router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {

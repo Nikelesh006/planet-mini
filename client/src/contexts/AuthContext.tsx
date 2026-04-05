@@ -34,15 +34,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchSession = async () => {
     try {
+      console.log('🔍 AuthContext - Fetching session...');
       const res = await fetch("/api/auth/session", {
         credentials: "include",
       });
       if (!res.ok) {
+        console.log('❌ AuthContext - Session fetch failed:', res.status);
         setUser(null);
         setPreviousUser(null);
       } else {
         const data = await res.json();
         const currentUser = data.user || null;
+        
+        console.log('✅ AuthContext - Session data:', currentUser);
+        
+        // Store user in localStorage for addressApi to access
+        if (currentUser) {
+          localStorage.setItem('authUser', JSON.stringify(currentUser));
+          console.log('✅ AuthContext - Stored user in localStorage:', currentUser);
+        } else {
+          localStorage.removeItem('authUser');
+          console.log('🗑️ AuthContext - Removed user from localStorage');
+        }
         
         // Check if user just logged in (was null, now has user)
         // Only show welcome if this is a new login session
@@ -59,7 +72,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(currentUser);
         setPreviousUser(currentUser);
       }
-    } catch {
+    } catch (error) {
+      console.error('❌ AuthContext - Session fetch error:', error);
       setUser(null);
       setPreviousUser(null);
     } finally {

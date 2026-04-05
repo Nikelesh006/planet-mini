@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
 import { Loader2, User, Settings, ShoppingBag, Heart, Package, LogOut, Edit, Camera, MapPin, Phone, Mail, Calendar, Plus, Trash2, AlertCircle, CheckCircle, X } from "lucide-react";
-import { useProfile, useUpdateProfile, useAddBabyInfo } from "../hooks/useProfile";
+import { useProfile, useUpdateProfile, useAddBabyInfo, useDeleteBabyInfo } from "../hooks/useProfile";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Profile() {
@@ -11,7 +11,9 @@ export default function Profile() {
   const [babyForm, setBabyForm] = useState({ name: '', age: 0, gender: '' });
   const [showProfileUpdateModal, setShowProfileUpdateModal] = useState(false);
   const [showBabyAddModal, setShowBabyAddModal] = useState(false);
-  
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [babyToDelete, setBabyToDelete] = useState<number | null>(null);
+
   // Get authenticated Google user
   const { user: authUser, isLoading: authLoading, logout } = useAuth();
   
@@ -20,6 +22,7 @@ export default function Profile() {
   const { data: profile, isLoading, error } = useProfile(userId);
   const updateProfile = useUpdateProfile(userId);
   const addBabyInfo = useAddBabyInfo(userId);
+  const deleteBabyInfo = useDeleteBabyInfo(userId);
 
   const handleSaveProfile = async (formData: any) => {
     try {
@@ -43,6 +46,17 @@ export default function Profile() {
       } catch (error) {
         console.error('Failed to add baby info:', error);
       }
+    }
+  };
+
+  const handleDeleteBaby = async () => {
+    if (babyToDelete === null) return;
+    try {
+      await deleteBabyInfo.mutateAsync(babyToDelete);
+      setShowDeleteConfirm(false);
+      setBabyToDelete(null);
+    } catch (error) {
+      console.error('Failed to delete baby info:', error);
     }
   };
 
@@ -325,7 +339,13 @@ export default function Profile() {
                         <p className="font-bold text-black group-hover:text-primary transition-colors">{baby.name}</p>
                         <p className="text-sm text-gray-600">{baby.age} months old • {baby.gender}</p>
                       </div>
-                      <button className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors">
+                      <button 
+                        onClick={() => {
+                          setBabyToDelete(index);
+                          setShowDeleteConfirm(true);
+                        }}
+                        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors"
+                      >
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
@@ -482,6 +502,44 @@ export default function Profile() {
             >
               Great!
             </button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.9 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+        >
+          <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-sm mx-4">
+            <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full mb-4">
+              <AlertCircle className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-bold text-black mb-2">Delete Baby Info?</h3>
+            <p className="text-gray-600 text-center mb-6">
+              Are you sure you want to remove {profile?.babyInfo?.[babyToDelete || 0]?.name}'s information? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setShowDeleteConfirm(false);
+                  setBabyToDelete(null);
+                }}
+                className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-xl font-semibold hover:bg-gray-300 transition-all duration-300"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteBaby}
+                disabled={deleteBabyInfo.isPending}
+                className="flex-1 bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+              >
+                {deleteBabyInfo.isPending ? 'Deleting...' : 'Delete'}
+              </button>
+            </div>
           </div>
         </motion.div>
       )}

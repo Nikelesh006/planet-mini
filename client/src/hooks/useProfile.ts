@@ -97,3 +97,22 @@ export function useAddBabyInfo(userId: string) {
     },
   });
 }
+
+export function useDeleteBabyInfo(userId: string) {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (babyIndex: number) => {
+      const response = await fetch(`${API_BASE}/${userId}/baby/${babyIndex}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Failed to delete baby info');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile', userId] });
+    },
+  });
+}
