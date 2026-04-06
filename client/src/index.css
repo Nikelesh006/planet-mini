@@ -96,4 +96,20 @@
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
   }
+  
+  /* Infinite scroll animation for announcement slider */
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+    display: flex;
+    width: fit-content;
+  }
+  
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
 }

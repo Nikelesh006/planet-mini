@@ -61,6 +61,8 @@ export default function Home() {
 
   const [canScrollRight, setCanScrollRight] = useState(false);
 
+  const [isAtEndLatest, setIsAtEndLatest] = useState(false);
+
   const latestProductsRef = useRef<HTMLDivElement>(null);
 
   // Baby Care Essentials scroll state
@@ -69,6 +71,8 @@ export default function Home() {
 
   const [canScrollRightBabyCare, setCanScrollRightBabyCare] = useState(false);
 
+  const [isAtEndBabyCare, setIsAtEndBabyCare] = useState(false);
+
   const babyCareProductsRef = useRef<HTMLDivElement>(null);
 
   // Featured Products scroll state
@@ -76,6 +80,8 @@ export default function Home() {
   const [featuredScrollPosition, setFeaturedScrollPosition] = useState(0);
 
   const [canScrollRightFeatured, setCanScrollRightFeatured] = useState(false);
+
+  const [isAtEndFeatured, setIsAtEndFeatured] = useState(false);
 
   const featuredProductsRef = useRef<HTMLDivElement>(null);
 
@@ -129,7 +135,12 @@ export default function Home() {
     
     setLatestScrollPosition(scrollLeft);
 
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10); // 10px buffer
+    const canScroll = scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
+    setCanScrollRight(canScroll);
+    
+    // Check if we've reached the end
+    const atEnd = scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
+    setIsAtEndLatest(atEnd);
 
   };
 
@@ -149,7 +160,12 @@ export default function Home() {
     
     setBabyCareScrollPosition(scrollLeft);
 
-    setCanScrollRightBabyCare(scrollLeft < scrollWidth - clientWidth - 10); // 10px buffer
+    const canScroll = scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
+    setCanScrollRightBabyCare(canScroll);
+    
+    // Check if we've reached the end
+    const atEnd = scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
+    setIsAtEndBabyCare(atEnd);
 
   };
 
@@ -169,7 +185,12 @@ export default function Home() {
     
     setFeaturedScrollPosition(scrollLeft);
 
-    setCanScrollRightFeatured(scrollLeft < scrollWidth - clientWidth - 10); // 10px buffer
+    const canScroll = scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
+    setCanScrollRightFeatured(canScroll);
+    
+    // Check if we've reached the end
+    const atEnd = scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
+    setIsAtEndFeatured(atEnd);
 
   };
 
@@ -245,7 +266,7 @@ export default function Home() {
 
     
 
-    const scrollAmount = 264 * 4; // One full page (4 cards * 264px each)
+    const scrollAmount = 256 * 3; // One full page (3 cards * 256px each)
 
     const currentScroll = container.scrollLeft;
 
@@ -289,7 +310,7 @@ export default function Home() {
 
     if (!container) return;
     
-    const scrollAmount = 264 * 4; // One full page (4 cards * 264px each)
+    const scrollAmount = 256 * 3; // One full page (3 cards * 256px each)
 
     const currentScroll = container.scrollLeft;
 
@@ -327,7 +348,7 @@ export default function Home() {
 
     if (!container) return;
     
-    const scrollAmount = 264 * 4; // One full page (4 cards * 264px each)
+    const scrollAmount = 264 * 3; // One full page (3 cards * 264px each)
 
     const currentScroll = container.scrollLeft;
 
@@ -517,7 +538,7 @@ export default function Home() {
 
       {/* Shop by Style Section */}
 
-      <section className="w-full">
+      <section className="w-full pt-20">
 
         <div className="pt-0 pb-8 lg:pb-16 lg:pt-2 px-4 sm:px-6 lg:px-8">
 
@@ -533,7 +554,14 @@ export default function Home() {
 
           >
 
-            <h2 className="text-4xl font-bold text-black mb-4">Shop by Style</h2>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h2 className="text-4xl font-bold text-black">Shop by Style</h2>
+              <img 
+                src="/babies.png" 
+                alt="Babies" 
+                className="w-16 h-16 object-contain"
+              />
+            </div>
 
             <p className="text-gray-600 text-lg">Discover our latest collection of stylish baby wear</p>
 
@@ -553,7 +581,7 @@ export default function Home() {
 
           {/* Style Categories Grid */}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-100/40 via-gray-50/50 to-gray-100/40 py-10 rounded-3xl shadow-inner">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-100/40 via-gray-50/50 to-gray-100/40 py-10 rounded-3xl shadow-inner">
 
             {/* Jhablas */}
 
@@ -583,7 +611,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-primary transition-colors">Jhablas</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Jhablas</h3>
 
                 </div>
 
@@ -659,7 +687,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-primary transition-colors">Coats</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Coats</h3>
 
                 </div>
 
@@ -735,7 +763,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-primary transition-colors">Boys Wear</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Boys Wear</h3>
 
                 </div>
 
@@ -751,9 +779,9 @@ export default function Home() {
 
 
 
-      {/* Latest Style Products Section */}
+      {/* Baby Care Essentials Section */}
 
-      <section className="w-full">
+      <section className="w-full bg-yellow-50">
 
         <div className="px-4 sm:px-6 lg:px-8 py-8">
 
@@ -769,9 +797,16 @@ export default function Home() {
 
           >
 
-            <h2 className="text-4xl font-bold text-black mb-4">Latest Style Products</h2>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h2 className="text-4xl font-bold text-black">Baby Care Essentials</h2>
+              <img 
+                src="/playtime.png" 
+                alt="Playtime" 
+                className="w-16 h-16 object-contain"
+              />
+            </div>
 
-            <p className="text-gray-600 text-lg">Check out our newest arrivals and trending styles</p>
+            <p className="text-gray-600 text-lg">Everything you need for your baby's daily care routine</p>
 
             <div className="flex justify-center gap-2 mt-4">
 
@@ -785,11 +820,9 @@ export default function Home() {
 
           </motion.div>
 
-
-
           {/* Image and Content Layout */}
 
-          <div className="flex flex-col lg:flex-row items-start gap-8">
+          <div className="flex flex-col lg:flex-row items-start gap-12">
 
             {/* Left Side Image - Increased Size */}
 
@@ -797,7 +830,7 @@ export default function Home() {
 
               <img 
 
-                src="/latest-products.png" 
+                src="/essentials.png" 
 
                 alt="Latest Products" 
 
@@ -825,7 +858,7 @@ export default function Home() {
 
                       ref={latestProductsRef}
 
-                      className="flex gap-4 overflow-hidden scroll-smooth pb-4"
+                      className="flex gap-12 overflow-hidden scroll-smooth pb-4"
 
                       style={{ 
 
@@ -837,9 +870,9 @@ export default function Home() {
 
                     >
 
-                      {latestStyleProducts.map((product, index) => (
+                      {latestStyleProducts.slice(0, 3).map((product, index) => (
 
-                        <div key={product.id || `latest-${index}`} className="flex-shrink-0 w-60">
+                        <div key={product.id || `latest-${index}`} className="flex-shrink-0 w-64">
 
                           <ProductCard product={product} index={index} />
 
@@ -851,9 +884,9 @@ export default function Home() {
 
                     
 
-                    {/* Arrow Buttons - Only show if more than 4 products */}
+                    {/* Arrow Buttons - Only show if more than 3 products */}
 
-                    {latestStyleProducts.length > 4 && (
+                    {latestStyleProducts.length >= 3 && (
 
                       <>
 
@@ -877,22 +910,19 @@ export default function Home() {
 
                         
 
-                        {/* Right Arrow - Show only when can scroll right */}
+                        {/* Right Arrow - Show when can scroll right or when at end */}
 
-                        {canScrollRight && (
-
+                        {(canScrollRight || isAtEndLatest) && (
                           <button
-
-                            onClick={() => scrollLatestProducts('right')}
-
-                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-
+                            onClick={() => isAtEndLatest ? window.location.href = '/shop/style' : scrollLatestProducts('right')}
+                            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 ${
+                              isAtEndLatest 
+                                ? 'bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-black px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10 font-bold text-sm' 
+                                : 'bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10'
+                            }`}
                           >
-
-                            <ChevronRight className="w-6 h-6" />
-
+                            {isAtEndLatest ? 'Explore More →' : <ChevronRight className="w-6 h-6" />}
                           </button>
-
                         )}
 
                       </>
@@ -902,30 +932,6 @@ export default function Home() {
                   </div>
 
                   
-
-                  {/* Explore More Button */}
-
-                  <div className="text-center mt-6">
-
-                    <Link 
-
-                      href="/shop/style"
-
-                      className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-
-                    >
-
-                      Explore More
-
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-
-                      </svg>
-
-                    </Link>
-
-                  </div>
 
                 </div>
 
@@ -965,11 +971,11 @@ export default function Home() {
 
 
 
-      {/* Baby Care Essentials Section */}
+      {/* Muslin Cloths Section */}
 
       <section className="w-full">
 
-        <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <div className="px-4 sm:px-6 lg:px-8 pt-20 pb-8">
 
           {/* Header */}
 
@@ -983,9 +989,17 @@ export default function Home() {
 
           >
 
-            <h2 className="text-4xl font-bold text-black mb-4">Baby Care Essentials</h2>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h2 className="text-4xl font-bold text-black">Muslin Clothings</h2>
+              <img 
+                src="/baby.png" 
+                alt="Baby" 
+                className="w-16 h-16 object-contain"
+              />
+            </div>
+            
 
-            <p className="text-gray-600 text-lg">Everything you need for your baby's daily care routine</p>
+            <p className="text-gray-600 text-lg">Breathable, lightweight cotton fabric perfect for comfortable everyday wear</p>
 
             <div className="flex justify-center gap-2 mt-4">
 
@@ -1001,7 +1015,7 @@ export default function Home() {
 
           {/* Image and Content Layout */}
 
-          <div className="flex flex-col lg:flex-row items-start gap-8">
+          <div className="flex flex-col lg:flex-row items-start gap-12">
 
             {/* Left Side Content */}
 
@@ -1019,7 +1033,7 @@ export default function Home() {
 
                       ref={babyCareProductsRef}
 
-                      className="flex gap-4 overflow-hidden scroll-smooth pb-4"
+                      className="flex gap-12 overflow-hidden scroll-smooth pb-4"
 
                       style={{ 
 
@@ -1031,9 +1045,9 @@ export default function Home() {
 
                     >
 
-                      {babyCareProducts.map((product, index) => (
+                      {babyCareProducts.slice(0, 3).map((product, index) => (
 
-                        <div key={product.id || `baby-care-${index}`} className="flex-shrink-0 w-60">
+                        <div key={product.id || `baby-care-${index}`} className="flex-shrink-0 w-64">
 
                           <ProductCard product={product} index={index} />
 
@@ -1045,9 +1059,9 @@ export default function Home() {
 
                     
 
-                    {/* Arrow Buttons - Only show if more than 4 products */}
+                    {/* Arrow Buttons - Only show if more than 3 products */}
 
-                    {babyCareProducts.length > 4 && (
+                    {babyCareProducts.length > 3 && (
 
                       <>
 
@@ -1071,22 +1085,19 @@ export default function Home() {
 
                         
 
-                        {/* Right Arrow - Show only when can scroll right */}
+                        {/* Right Arrow - Show when can scroll right or when at end */}
 
-                        {canScrollRightBabyCare && (
-
+                        {(canScrollRightBabyCare || isAtEndBabyCare) && (
                           <button
-
-                            onClick={() => scrollBabyCareProducts('right')}
-
-                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-
+                            onClick={() => isAtEndBabyCare ? window.location.href = '/shop/style' : scrollBabyCareProducts('right')}
+                            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 ${
+                              isAtEndBabyCare 
+                                ? 'bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-black px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10 font-bold text-sm' 
+                                : 'bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10'
+                            }`}
                           >
-
-                            <ChevronRight className="w-6 h-6" />
-
+                            {isAtEndBabyCare ? 'Explore More →' : <ChevronRight className="w-6 h-6" />}
                           </button>
-
                         )}
 
                       </>
@@ -1096,30 +1107,6 @@ export default function Home() {
                   </div>
 
                   
-
-                  {/* Explore More Button */}
-
-                  <div className="text-center mt-6">
-
-                    <Link 
-
-                      href="/shop/style"
-
-                      className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-
-                    >
-
-                      Explore More
-
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-
-                      </svg>
-
-                    </Link>
-
-                  </div>
 
                 </div>
 
@@ -1157,9 +1144,9 @@ export default function Home() {
 
               <img 
 
-                src="/essentials.png" 
+                src="/latest-products.png" 
 
-                alt="Baby Care Essentials" 
+                alt="Muslin Clothing" 
 
                 className="w-full h-auto object-contain mx-auto lg:mx-0"
 
@@ -1175,31 +1162,7 @@ export default function Home() {
 
 
 
-      {/* Centre Banner Section */}
-
-      <section className="w-full pb-8">
-
-        <div className="relative w-full flex justify-center">
-
-          <img
-
-            src="/centre-banner.png"
-
-            alt="Centre Banner"
-
-            className="w-full h-auto object-cover transform scale-90"
-
-            style={{ objectPosition: 'center' }}
-
-          />
-
-        </div>
-
-      </section>
-
-
-
-      {/* Super Saver Offers Section */}
+      {/* Combo Offers Section */}
 
       <section className="w-full bg-red-100 py-12">
 
@@ -1211,11 +1174,11 @@ export default function Home() {
 
             whileInView={{ opacity: 1, y: 0 }}
 
-            className="text-center mb-8"
+            className="text-center"
 
           >
 
-            <h2 className="text-4xl font-bold mb-4 animate-pulse bg-gradient-to-r from-black via-gray-600 to-gray-300 bg-clip-text text-transparent drop-shadow-lg" style={{ animationDuration: '1.5s' }}>Super Saver Offers</h2>
+            <h2 className="text-4xl font-bold mb-4 animate-pulse bg-gradient-to-r from-black via-gray-600 to-gray-300 bg-clip-text text-transparent drop-shadow-lg" style={{ animationDuration: '1.5s' }}>Combo Offers</h2>
 
             <p className="text-gray-600 text-lg">Amazing deals and discounts on your favorite baby products</p>
 
@@ -1229,9 +1192,25 @@ export default function Home() {
 
             </div>
 
-          </motion.div>
+            {/* Decorative Discount Images */}
+            <div className="flex justify-between items-center px-4 -mt-8">
+              <div className="transform rotate-12 hover:rotate-6 transition-transform duration-300">
+                <img 
+                  src="/discount.png" 
+                  alt="Discount" 
+                  className="w-20 h-20 object-contain opacity-80 hover:opacity-100"
+                />
+              </div>
+              <div className="transform -rotate-12 hover:rotate-6 transition-transform duration-300">
+                <img 
+                  src="/offer.png" 
+                  alt="Offer" 
+                  className="w-20 h-20 object-contain opacity-80 hover:opacity-100"
+                />
+              </div>
+            </div>
 
-          
+          </motion.div>
 
           {!superSaverLoading && superSaverProducts && superSaverProducts.length > 0 && (
 
@@ -1281,7 +1260,83 @@ export default function Home() {
 
 
 
-      {/* Featured Products Section */}
+      {/* Announcement Slider */}
+
+      <section className="w-full bg-gradient-to-r from-primary to-secondary py-6 overflow-hidden">
+
+        <div className="relative">
+
+          <div className="flex animate-scroll whitespace-nowrap">
+
+            {/* First set of announcements */}
+
+            <div className="inline-flex items-center gap-8 px-8">
+
+              <span className="text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Comfort Starts Here</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Dress Your Baby in Care</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Wrap Them in Wonder</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Elevate Every Cuddle</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+            </div>
+
+            {/* Second set for seamless loop */}
+
+            <div className="inline-flex items-center gap-8 px-8">
+
+              <span className="text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Comfort Starts Here</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Dress Your Baby in Care</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Wrap Them in Wonder</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+              <span className="text-2xl font-bold text-black">Elevate Every Cuddle</span>
+
+              <span className="text-2xl font-semibold text-black/80">•</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      {/* Gifting Section */}
 
       <section className="w-full">
 
@@ -1299,9 +1354,16 @@ export default function Home() {
 
           >
 
-            <h2 className="text-4xl font-bold text-black mb-4">Featured Products</h2>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h2 className="text-4xl font-bold text-black">Gifting</h2>
+              <img 
+                src="/giftbox.png" 
+                alt="Gift Box" 
+                className="w-14 h-14 object-contain"
+              />
+            </div>
 
-            <p className="text-gray-600 text-lg">Handpicked favorites and customer top-rated items</p>
+            <p className="text-gray-600 text-lg">Thoughtfully curated presents for every special occasion</p>
 
             <div className="flex justify-center gap-2 mt-4">
 
@@ -1319,7 +1381,7 @@ export default function Home() {
 
           {/* Image and Content Layout */}
 
-          <div className="flex flex-col lg:flex-row items-start gap-8">
+          <div className="flex flex-col lg:flex-row items-start gap-12">
 
             {/* Left Side Image */}
 
@@ -1381,9 +1443,9 @@ export default function Home() {
 
                     
 
-                    {/* Arrow Buttons - Only show if more than 4 products */}
+                    {/* Arrow Buttons - Only show if more than 3 products */}
 
-                    {featuredProducts.length > 4 && (
+                    {featuredProducts.length > 3 && (
 
                       <>
 
@@ -1407,22 +1469,19 @@ export default function Home() {
 
                         
 
-                        {/* Right Arrow - Show only when can scroll right */}
+                        {/* Right Arrow - Show when can scroll right or when at end */}
 
-                        {canScrollRightFeatured && (
-
+                        {(canScrollRightFeatured || isAtEndFeatured) && (
                           <button
-
-                            onClick={() => scrollFeaturedProducts('right')}
-
-                            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-
+                            onClick={() => isAtEndFeatured ? window.location.href = '/shop/style' : scrollFeaturedProducts('right')}
+                            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 ${
+                              isAtEndFeatured 
+                                ? 'bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-black px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10 font-bold text-sm' 
+                                : 'bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10'
+                            }`}
                           >
-
-                            <ChevronRight className="w-6 h-6" />
-
+                            {isAtEndFeatured ? 'Explore More' : <ChevronRight className="w-6 h-6" />}
                           </button>
-
                         )}
 
                       </>
@@ -1433,29 +1492,31 @@ export default function Home() {
 
                   
 
-                  {/* Explore More Button */}
+                  {/* Explore More Button - Only show when at end */}
 
-                  <div className="text-center mt-6">
+                  {isAtEndFeatured && (
+                    <div className="text-center mt-6">
 
-                    <Link 
+                      <Link 
 
-                      href="/shop/style"
+                        href="/shop/style"
 
-                      className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+                        className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
 
-                    >
+                      >
 
-                      Explore More
+                        Explore More
 
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
 
-                      </svg>
+                        </svg>
 
-                    </Link>
+                      </Link>
 
-                  </div>
+                    </div>
+                  )}
 
                 </div>
 
@@ -1492,6 +1553,29 @@ export default function Home() {
         </div>
 
       </section>
+
+      {/* Centre Banner Section */}
+
+      <section className="w-full pb-8">
+
+        <div className="relative w-full flex justify-center">
+
+          <img
+
+            src="/centre-banner.png"
+
+            alt="Centre Banner"
+
+            className="w-full h-auto object-cover transform scale-90"
+
+            style={{ objectPosition: 'center' }}
+
+          />
+
+        </div>
+
+      </section>
+
 
 
 
@@ -1561,7 +1645,7 @@ export default function Home() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                  <div className="p-4 text-white">
+                  <div className="p-4 text-black">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
@@ -1592,7 +1676,7 @@ export default function Home() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                  <div className="p-3 text-white">
+                  <div className="p-3 text-black">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
@@ -1623,7 +1707,7 @@ export default function Home() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                  <div className="p-4 text-white">
+                  <div className="p-4 text-black">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
@@ -1654,7 +1738,7 @@ export default function Home() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                  <div className="p-3 text-white">
+                  <div className="p-3 text-black">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
@@ -1685,7 +1769,7 @@ export default function Home() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                  <div className="p-4 text-white">
+                  <div className="p-4 text-black">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
@@ -1716,7 +1800,7 @@ export default function Home() {
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
-                  <div className="p-3 text-white">
+                  <div className="p-3 text-black">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
@@ -1779,7 +1863,7 @@ export default function Home() {
 
               href="/contact"
 
-              className="inline-flex items-center gap-2 bg-white border-2 border-primary text-primary px-8 py-4 rounded-2xl font-bold hover:bg-primary hover:text-black transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center gap-2 bg-white border-2 border-primary text-black px-8 py-4 rounded-2xl font-bold hover:bg-primary hover:text-black transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
 
             >
 
@@ -1803,7 +1887,7 @@ export default function Home() {
 
         <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-primary to-secondary p-8 lg:p-16">
 
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
+          <div className="grid md:grid-cols-3 gap-12 mb-12">
 
             <Link href="/about" className="text-center group transform transition-transform duration-300 hover:scale-105">
 
@@ -1851,7 +1935,7 @@ export default function Home() {
 
           
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
 
             <div className="text-center">
 
