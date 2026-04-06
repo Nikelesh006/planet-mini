@@ -66,7 +66,7 @@ export default function Navbar() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-white",
+          "fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-orange-50",
           isScrolled 
             ? "shadow-lg py-3" 
             : "shadow-md py-5"
@@ -88,7 +88,7 @@ export default function Navbar() {
               className="flex items-center justify-start hover:opacity-80 transition-opacity"
             >
               <img 
-                src="/planet-mini-logo.png" 
+                src="/Planet-mini-logo.png" 
                 alt="Planet Mini Logo" 
                 className="h-12 w-auto object-contain transform hover:scale-105 transition-transform"
                 onError={(e) => {
