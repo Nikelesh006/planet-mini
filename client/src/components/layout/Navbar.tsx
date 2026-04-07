@@ -66,7 +66,7 @@ export default function Navbar() {
     <>
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-orange-50",
+          "fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800",
           isScrolled 
             ? "shadow-lg py-3" 
             : "shadow-md py-5"

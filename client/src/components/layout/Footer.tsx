@@ -9,7 +9,7 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-1">
             <Link href="/" className="flex items-center gap-3 mb-4">
               <img 
-                src="/planet-mini-logo.png" 
+                src="/Planet-mini-logo.png" 
                 alt="Planet Mini Logo" 
                 className="h-12 w-auto object-contain transform hover:scale-105 transition-transform"
                 onError={(e) => {
