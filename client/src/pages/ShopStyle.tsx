@@ -111,16 +111,26 @@ export default function ShopStyle() {
       </section>
 
       {/* Centered Text Section Below Banner */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 pt-10">
         <div className="text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">
-              Shop by Style
-            </h2>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-black">
+                Shop by Style
+              </h2>
+              <img 
+                src="/baby-cloth.png" 
+                alt="Baby Cloth" 
+                className="w-12 h-12 md:w-14 md:h-14 object-contain"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='12' font-family='Arial'%3EBaby%3C/text%3E%3C/svg%3E";
+                }}
+              />
+            </div>
             <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               Find the perfect style for your little one with our curated collection of adorable baby wear
             </p>

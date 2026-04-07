@@ -224,9 +224,9 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
         </div>
       ) : (
         // Original card layout for other sections
-        <div className="flex flex-wrap gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
           {products.map((product, index) => (
-            <div key={product.id || `product-${index}`} className="flex-shrink-0 w-60">
+            <div key={product.id || `product-${index}`} className="w-full">
               <Link href={`/products/${product.slug}`} className="block">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

@@ -424,7 +424,7 @@ export default function Home() {
 
       {/* Hero Section with Image Slider */}
 
-      <section className="relative w-full h-[70vh] min-h-[400px] max-h-[600px]">
+      <section className="relative w-full h-[50vh] min-h-[300px] sm:h-[60vh] md:h-[70vh] max-h-[600px]">
 
         <div className="relative w-full h-full overflow-hidden">
 
@@ -649,7 +649,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Jhablas Set</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Knotted Jhablas</h3>
 
                 </div>
 
@@ -687,7 +687,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Coats</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Nappies</h3>
 
                 </div>
 
@@ -725,7 +725,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Night Wear</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Hooded Towels</h3>
 
                 </div>
 
@@ -763,7 +763,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Boys Wear</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Beds</h3>
 
                 </div>
 
@@ -781,7 +781,7 @@ export default function Home() {
 
       {/* Baby Care Essentials Section */}
 
-      <section className="w-full bg-yellow-50">
+      <section className="w-full bg-red-50">
 
         <div className="px-4 sm:px-6 lg:px-8 py-8">
 
@@ -858,7 +858,7 @@ export default function Home() {
 
                       ref={latestProductsRef}
 
-                      className="flex gap-12 overflow-hidden scroll-smooth pb-4"
+                      className="flex gap-6 sm:gap-8 md:gap-12 overflow-hidden scroll-smooth pb-4"
 
                       style={{ 
 
@@ -872,10 +872,8 @@ export default function Home() {
 
                       {latestStyleProducts.slice(0, 3).map((product, index) => (
 
-                        <div key={product.id || `latest-${index}`} className="flex-shrink-0 w-64">
-
+                        <div key={product.id || `latest-${index}`} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
                           <ProductCard product={product} index={index} />
-
                         </div>
 
                       ))}
@@ -895,15 +893,10 @@ export default function Home() {
                         {canScrollLeft && (
 
                           <button
-
                             onClick={() => scrollLatestProducts('left')}
-
                             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-
                           >
-
                             <ChevronLeft className="w-6 h-6" />
-
                           </button>
 
                         )}
@@ -1033,7 +1026,7 @@ export default function Home() {
 
                       ref={babyCareProductsRef}
 
-                      className="flex gap-12 overflow-hidden scroll-smooth pb-4"
+                      className="flex gap-6 sm:gap-8 md:gap-12 overflow-hidden scroll-smooth pb-4"
 
                       style={{ 
 
@@ -1047,10 +1040,8 @@ export default function Home() {
 
                       {babyCareProducts.slice(0, 3).map((product, index) => (
 
-                        <div key={product.id || `baby-care-${index}`} className="flex-shrink-0 w-64">
-
+                        <div key={product.id || `baby-care-${index}`} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
                           <ProductCard product={product} index={index} />
-
                         </div>
 
                       ))}
@@ -1260,80 +1251,6 @@ export default function Home() {
 
 
 
-      {/* Announcement Slider */}
-
-      <section className="w-full bg-gradient-to-r from-primary to-secondary py-6 overflow-hidden">
-
-        <div className="relative">
-
-          <div className="flex animate-scroll whitespace-nowrap">
-
-            {/* First set of announcements */}
-
-            <div className="inline-flex items-center gap-8 px-8">
-
-              <span className="text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Comfort Starts Here</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Dress Your Baby in Care</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Wrap Them in Wonder</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Elevate Every Cuddle</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-            </div>
-
-            {/* Second set for seamless loop */}
-
-            <div className="inline-flex items-center gap-8 px-8">
-
-              <span className="text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Comfort Starts Here</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Dress Your Baby in Care</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Wrap Them in Wonder</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-              <span className="text-2xl font-bold text-black">Elevate Every Cuddle</span>
-
-              <span className="text-2xl font-semibold text-black/80">•</span>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
 
 
       {/* Gifting Section */}
@@ -1377,181 +1294,80 @@ export default function Home() {
 
           </motion.div>
 
-          
-
           {/* Image and Content Layout */}
-
-          <div className="flex flex-col lg:flex-row items-start gap-12">
-
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mt-8">
             {/* Left Side Image */}
-
-            <div className="lg:w-1/4 flex-shrink-0 pb-8">
-
-              <img 
-
-                src="/featured-products.png" 
-
-                alt="Featured Products" 
-
-                className="w-full h-auto object-contain mx-auto lg:mx-0 max-h-[80%] object-top"
-
-              />
-
+            <div className="lg:w-1/2 w-full flex-shrink-0 order-2 lg:order-1">
+              <Link href="/shopstyle" className="inline-block transition-all duration-300 hover:scale-105 hover:shadow-2xl group">
+                <img 
+                  src="/SALE1.png" 
+                  alt="Sale" 
+                  className="w-full h-auto object-contain mx-auto lg:mx-0 transition-all duration-300 group-hover:brightness-110 cursor-pointer"
+                />
+              </Link>
             </div>
-
             
-
             {/* Right Side Content */}
-
-            <div className="lg:w-2/3 flex-1">
-
-              {!featuredLoading && featuredProducts && featuredProducts.length > 0 && (
-
-                <div className="relative">
-
-                  {/* Horizontal Scroll Container */}
-
-                  <div className="relative">
-
-                    <div 
-
-                      ref={featuredProductsRef}
-
-                      className="flex gap-4 overflow-hidden scroll-smooth pb-4"
-
-                      style={{ 
-
-                        scrollbarWidth: 'none', 
-
-                        msOverflowStyle: 'none'
-
-                      }}
-
-                    >
-
-                      {featuredProducts.map((product, index) => (
-
-                        <div key={product.id || `featured-${index}`} className="flex-shrink-0 w-60">
-
-                          <ProductCard product={product} index={index} />
-
-                        </div>
-
-                      ))}
-
-                    </div>
-
-                    
-
-                    {/* Arrow Buttons - Only show if more than 3 products */}
-
-                    {featuredProducts.length > 3 && (
-
-                      <>
-
-                        {/* Left Arrow - Only show when scrolled right */}
-
-                        {canScrollLeftFeatured && (
-
-                          <button
-
-                            onClick={() => scrollFeaturedProducts('left')}
-
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-
-                          >
-
-                            <ChevronLeft className="w-6 h-6" />
-
-                          </button>
-
-                        )}
-
-                        
-
-                        {/* Right Arrow - Show when can scroll right or when at end */}
-
-                        {(canScrollRightFeatured || isAtEndFeatured) && (
-                          <button
-                            onClick={() => isAtEndFeatured ? window.location.href = '/shop/style' : scrollFeaturedProducts('right')}
-                            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 ${
-                              isAtEndFeatured 
-                                ? 'bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-black px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10 font-bold text-sm' 
-                                : 'bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10'
-                            }`}
-                          >
-                            {isAtEndFeatured ? 'Explore More' : <ChevronRight className="w-6 h-6" />}
-                          </button>
-                        )}
-
-                      </>
-
-                    )}
-
-                  </div>
-
-                  
-
-                  {/* Explore More Button - Only show when at end */}
-
-                  {isAtEndFeatured && (
-                    <div className="text-center mt-6">
-
-                      <Link 
-
-                        href="/shop/style"
-
-                        className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
-
-                      >
-
-                        Explore More
-
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-
-                        </svg>
-
-                      </Link>
-
-                    </div>
-                  )}
-
+            <div className="lg:w-1/2 w-full flex-1 text-center lg:text-left p-4 sm:p-6 lg:p-8 order-1 lg:order-2">
+              <h3 className="text-3xl font-extrabold text-black mb-6">Gift Bundles for Babies</h3>
+              <p className="text-gray-700 text-lg mb-8">Curated gift bundles perfect for baby showers, birthdays, and special occasions. Each bundle thoughtfully designed with love and care.</p>
+              
+              <div className="space-y-4">
+                <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-6 border border-primary/20">
+                  <h4 className="font-bold text-xl text-black mb-2">Newborn Essentials</h4>
+                  <p className="text-gray-700">Everything newborns need in one bundle</p>
                 </div>
-
-              )}
-
-              {!featuredLoading && (!featuredProducts || featuredProducts.length === 0) && (
-
-                <div className="text-center py-12">
-
-                  <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-
-                  <h3 className="text-xl font-semibold text-black mb-2">No Featured Products</h3>
-
-                  <p className="text-gray-500">Add featured products to showcase here!</p>
-
+                
+                <div className="bg-gradient-to-r from-secondary/10 to-primary/10 rounded-xl p-6 border border-secondary/20">
+                  <h4 className="font-bold text-xl text-black mb-2">Premium Care Package</h4>
+                  <p className="text-gray-700">Luxury items for special moments</p>
                 </div>
-
-              )}
-
-              {featuredLoading && (
-
-                <div className="flex justify-center py-8">
-
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-
-                </div>
-
-              )}
-
+              </div>
+              
+              <button className="mt-8 px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-full shadow-lg hover:from-secondary hover:to-primary transition-all duration-300 transform hover:scale-105">
+                Shop All Bundles
+              </button>
             </div>
-
           </div>
-
         </div>
+      </section>
 
+      {/* Announcement Slider */}
+      <section className="w-full bg-gradient-to-r from-primary to-secondary py-8 overflow-hidden">
+        <div className="relative">
+          <div className="flex animate-scroll whitespace-nowrap">
+            {/* First set of announcements */}
+            <div className="inline-flex items-center gap-8 px-8">
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Comfort Starts Here</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Dress Your Baby in Care</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Wrap Them in Wonder</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Elevate Every Cuddle</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+            </div>
+            {/* Second set for seamless loop */}
+            <div className="inline-flex items-center gap-8 px-8">
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Comfort Starts Here</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Dress Your Baby in Care</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Wrap Them in Wonder</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-bold text-black">Elevate Every Cuddle</span>
+              <span className="text-lg sm:text-xl md:text-2xl font-semibold text-black/80">·</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Centre Banner Section */}
