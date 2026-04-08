@@ -649,7 +649,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Knotted Jhablas</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Towels & Blankets</h3>
 
                 </div>
 
@@ -725,7 +725,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Hooded Towels</h3>
+                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Wipes</h3>
 
                 </div>
 
