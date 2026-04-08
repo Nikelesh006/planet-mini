@@ -1,9 +1,21 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { useState } from "react";
-import ProductGrid from "@/components/ProductGrid";
+import { BabyCareCard } from "@/components/BabyCareCard";
 import { Sparkles, Filter, X } from "lucide-react";
 import { useStyleProducts } from "@/hooks/useProducts";
+import { Slider } from "@/components/ui/slider";
+
+interface FilterSection {
+  id: string;
+  title: string;
+  icon: any;
+  items?: { id: string; name: string; count: number }[];
+  isSlider?: boolean;
+  min?: number;
+  max?: number;
+  step?: number;
+}
 
 export default function ShopStyle() {
   // Fetch all style products (no subcategory filter)
@@ -13,6 +25,7 @@ export default function ShopStyle() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['categories']);
+  const [priceRange, setPriceRange] = useState([0, 5000]);
 
   // Filter categories for baby dresses
   const filterCategories = [
@@ -27,7 +40,7 @@ export default function ShopStyle() {
   ];
 
   // Filter sections with expandable categories
-  const filterSections = [
+  const filterSections: FilterSection[] = [
     {
       id: 'categories',
       title: 'Categories',
@@ -63,12 +76,10 @@ export default function ShopStyle() {
       id: 'price',
       title: 'Price Range',
       icon: Filter,
-      items: [
-        { id: 'under-500', name: 'Under ₹500', count: 25 },
-        { id: '500-1000', name: '₹500 - ₹1000', count: 42 },
-        { id: '1000-1500', name: '₹1000 - ₹1500', count: 31 },
-        { id: 'over-1500', name: 'Over ₹1500', count: 16 },
-      ]
+      isSlider: true,
+      min: 0,
+      max: 5000,
+      step: 100
     }
   ];
 
@@ -90,6 +101,7 @@ export default function ShopStyle() {
 
   const clearFilters = () => {
     setSelectedFilters([]);
+    setPriceRange([0, 5000]);
   };
 
   return (
@@ -235,67 +247,89 @@ export default function ShopStyle() {
                     {/* Expandable Content */}
                     <div className={`
                       transition-all duration-300 ease-in-out overflow-hidden
-                      ${expandedCategories.includes(section.id) ? 'max-h-96' : 'max-h-0'}
+                      ${expandedCategories.includes(section.id) ? (section.isSlider ? 'max-h-none' : 'max-h-96') : 'max-h-0'}
                     `}>
                       <div className={`
-                        p-3 space-y-2
+                        p-3 space-y-4
                         ${index % 2 === 0 ? 'bg-primary/10' : 'bg-secondary/10'}
                       `}>
-                        {section.items.map((item) => (
-                          <label 
-                            key={item.id}
-                            className={`
-                              flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 border
-                              ${selectedFilters.includes(item.id)
-                                ? index % 2 === 0 
-                                  ? 'bg-primary/30 border-primary shadow-sm'
-                                  : 'bg-secondary/30 border-secondary shadow-sm'
-                                : 'bg-white/80 border-gray-200 hover:bg-gray-100'
-                              }
-                            `}
-                          >
-                            <div className="flex items-center gap-3">
-                              {/* Custom Checkbox */}
-                              <div className="relative">
-                                <input
-                                  type="checkbox"
-                                  checked={selectedFilters.includes(item.id)}
-                                  onChange={() => handleFilterToggle(item.id)}
-                                  className="sr-only"
-                                />
-                                <div className={`
-                                  w-4 h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
-                                  ${selectedFilters.includes(item.id)
-                                    ? index % 2 === 0 
-                                      ? 'bg-primary border-primary shadow-md' 
-                                      : 'bg-secondary border-secondary shadow-md'
-                                    : 'border-gray-400 hover:border-gray-500 bg-white'
-                                  }
-                                `}>
-                                  {selectedFilters.includes(item.id) && (
-                                    <svg className="w-2.5 h-2.5 text-black" fill="currentColor" viewBox="0 0 20 20">
-                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                  )}
+                        {section.isSlider ? (
+                          // Price Range Slider
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between text-sm font-medium text-black">
+                              <span>₹{priceRange[0]}</span>
+                              <span>₹{priceRange[1]}</span>
+                            </div>
+                            <Slider
+                              value={priceRange}
+                              onValueChange={setPriceRange}
+                              max={section.max || 5000}
+                              min={section.min || 0}
+                              step={section.step || 100}
+                              className="w-full"
+                            />
+                            <div className="text-xs text-gray-600 text-center">
+                              Drag to adjust price range
+                            </div>
+                          </div>
+                        ) : (
+                          // Regular checkbox items
+                          section.items?.map((item) => (
+                            <label 
+                              key={item.id}
+                              className={`
+                                flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 border
+                                ${selectedFilters.includes(item.id)
+                                  ? index % 2 === 0 
+                                    ? 'bg-primary/30 border-primary shadow-sm'
+                                    : 'bg-secondary/30 border-secondary shadow-sm'
+                                  : 'bg-white/80 border-gray-200 hover:bg-gray-100'
+                                }
+                              `}
+                            >
+                              <div className="flex items-center gap-3">
+                                {/* Custom Checkbox */}
+                                <div className="relative">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedFilters.includes(item.id)}
+                                    onChange={() => handleFilterToggle(item.id)}
+                                    className="sr-only"
+                                  />
+                                  <div className={`
+                                    w-4 h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
+                                    ${selectedFilters.includes(item.id)
+                                      ? index % 2 === 0 
+                                        ? 'bg-primary border-primary shadow-md' 
+                                        : 'bg-secondary border-secondary shadow-md'
+                                      : 'border-gray-400 hover:border-gray-500 bg-white'
+                                    }
+                                  `}>
+                                    {selectedFilters.includes(item.id) && (
+                                      <svg className="w-2.5 h-2.5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                      </svg>
+                                    )}
+                                  </div>
                                 </div>
+                                
+                                <span className="text-sm font-semibold text-black select-none">
+                                  {item.name}
+                                </span>
                               </div>
                               
-                              <span className="text-sm font-semibold text-black select-none">
-                                {item.name}
+                              <span className={`
+                                text-xs font-bold px-2 py-1 rounded-full border
+                                ${index % 2 === 0 
+                                  ? 'bg-primary text-black border-primary' 
+                                  : 'bg-secondary text-black border-secondary'
+                                }
+                              `}>
+                                {item.count}
                               </span>
-                            </div>
-                            
-                            <span className={`
-                              text-xs font-bold px-2 py-1 rounded-full border
-                              ${index % 2 === 0 
-                                ? 'bg-primary text-black border-primary' 
-                                : 'bg-secondary text-black border-secondary'
-                              }
-                            `}>
-                              {item.count}
-                            </span>
-                          </label>
-                        ))}
+                            </label>
+                          ))
+                        )}
                       </div>
                     </div>
                   </div>
@@ -321,7 +355,7 @@ export default function ShopStyle() {
                 <div className="mb-6 flex flex-wrap gap-2">
                   {selectedFilters.map(filterId => {
                     const section = filterSections.find(sec => sec.id === filterId);
-                    const category = section?.items.find(item => item.id === filterId);
+                    const category = section?.items?.find(item => item.id === filterId);
                     return (
                       <span
                         key={filterId}
@@ -342,11 +376,12 @@ export default function ShopStyle() {
 
               {/* Dynamic Products */}
               {!isLoading && products && products.length > 0 && (
-                <div className="p-6">
-                  <ProductGrid 
-                    products={products} 
-                    title=""
-                  />
+                <div className="w-full px-4 sm:px-6 lg:px-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+                    {products.map((product, index) => (
+                      <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} />
+                    ))}
+                  </div>
                 </div>
               )}
               {isLoading && (

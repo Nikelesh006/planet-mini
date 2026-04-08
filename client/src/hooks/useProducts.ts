@@ -154,6 +154,13 @@ export const useFeaturedProducts = () => {
   });
 };
 
+export const useGiftingProducts = () => {
+  return useProducts({
+    category: 'home',
+    subcategory: 'Gifting'
+  });
+};
+
 // Delete product mutation hook
 export const useDeleteProduct = () => {
   const queryClient = useQueryClient();

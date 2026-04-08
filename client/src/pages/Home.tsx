@@ -1,10 +1,15 @@
+import React from "react";
 import { Link } from "wouter";
 
 import { Button } from "@/components/Button";
 
 import { ProductCard } from "@/components/ProductCard";
+import { BabyCareCard } from "@/components/BabyCareCard";
+import { MuslinCard } from "@/components/MuslinCard";
+import { ComboCard } from "@/components/ComboCard";
+import { GiftingCard } from "@/components/GiftingCard";
 
-import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useSuperSaverProducts, useFeaturedProducts } from "@/hooks/useProducts";
+import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts } from "@/hooks/useProducts";
 
 import { motion } from "framer-motion";
 
@@ -27,6 +32,9 @@ export default function Home() {
     window.scrollTo(0, 0);
   }, []);
 
+  // Combo info modal state
+  const [showComboInfoModal, setShowComboInfoModal] = useState(false);
+
   const { data: products, isLoading } = useProducts();
 
   const { data: styleProducts, isLoading: styleLoading } = useStyleProducts();
@@ -46,6 +54,8 @@ export default function Home() {
   const { data: superSaverProducts, isLoading: superSaverLoading } = useSuperSaverProducts();
 
   const { data: featuredProducts, isLoading: featuredLoading } = useFeaturedProducts();
+
+  const { data: giftingProducts, isLoading: giftingLoading } = useGiftingProducts();
 
 
 
@@ -69,8 +79,8 @@ export default function Home() {
 
   const [babyCareScrollPosition, setBabyCareScrollPosition] = useState(0);
 
+  const [canScrollLeftBabyCare, setCanScrollLeftBabyCare] = useState(false);
   const [canScrollRightBabyCare, setCanScrollRightBabyCare] = useState(false);
-
   const [isAtEndBabyCare, setIsAtEndBabyCare] = useState(false);
 
   const babyCareProductsRef = useRef<HTMLDivElement>(null);
@@ -160,11 +170,13 @@ export default function Home() {
     
     setBabyCareScrollPosition(scrollLeft);
 
-    const canScroll = scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
+    // Check if there's overflow content to scroll
+    const hasOverflow = scrollWidth > clientWidth;
+    const canScroll = hasOverflow && scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
     setCanScrollRightBabyCare(canScroll);
     
     // Check if we've reached the end
-    const atEnd = scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
+    const atEnd = hasOverflow && scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
     setIsAtEndBabyCare(atEnd);
 
   };
@@ -266,7 +278,7 @@ export default function Home() {
 
     
 
-    const scrollAmount = 256 * 3; // One full page (3 cards * 256px each)
+    const scrollAmount = 288 * 3; // One full page (3 cards * 288px each)
 
     const currentScroll = container.scrollLeft;
 
@@ -305,41 +317,53 @@ export default function Home() {
   };
 
   const scrollBabyCareProducts = (direction: 'left' | 'right') => {
-
+    console.log('=== SCROLL BABY CARE CLICKED ===');
+    console.log('Direction:', direction);
+    
     const container = babyCareProductsRef.current;
-
-    if (!container) return;
+    console.log('Container exists:', !!container);
     
-    const scrollAmount = 256 * 3; // One full page (3 cards * 256px each)
-
+    if (!container) {
+      console.log('Container not found!');
+      return;
+    }
+    
+    console.log('Container element:', container);
+    console.log('Container scrollLeft:', container.scrollLeft);
+    console.log('Container scrollWidth:', container.scrollWidth);
+    console.log('Container clientWidth:', container.clientWidth);
+    console.log('Container offsetWidth:', container.offsetWidth);
+    
+    // Simple scroll test - just scroll by 100px
+    const scrollAmount = 100;
     const currentScroll = container.scrollLeft;
-
     const newPosition = direction === 'left' 
-
       ? Math.max(0, currentScroll - scrollAmount)
-
-      : Math.min(container.scrollWidth - container.clientWidth, currentScroll + scrollAmount);
+      : currentScroll + scrollAmount;
     
-    container.scrollTo({
-
-      left: newPosition,
-
-      behavior: 'smooth'
-
-    });
+    console.log('Scroll amount:', scrollAmount);
+    console.log('Current scroll:', currentScroll);
+    console.log('New position:', newPosition);
     
-    // Update scroll position immediately for better dot sync
-
-    setBabyCareScrollPosition(newPosition);
+    try {
+      container.scrollTo({
+        left: newPosition,
+        behavior: 'smooth'
+      });
+      console.log('Scroll command executed successfully');
+    } catch (error) {
+      console.error('Scroll error:', error);
+    }
     
-    // Check scroll position after animation completes
-
-    setTimeout(() => {
-
-      checkBabyCareScrollPosition();
-
-    }, 300); // Match the smooth scroll duration
-
+    // Also try scrollLeft as fallback
+    try {
+      container.scrollLeft = newPosition;
+      console.log('Direct scrollLeft assignment worked');
+    } catch (error) {
+      console.error('Direct scrollLeft error:', error);
+    }
+    
+    console.log('=== END SCROLL DEBUG ===');
   };
 
   const scrollFeaturedProducts = (direction: 'left' | 'right') => {
@@ -385,8 +409,6 @@ export default function Home() {
   // Check if left arrow should be visible
 
   const canScrollLeft = latestScrollPosition > 0;
-
-  const canScrollLeftBabyCare = babyCareScrollPosition > 0;
 
   const canScrollLeftFeatured = featuredScrollPosition > 0;
 
@@ -781,7 +803,7 @@ export default function Home() {
 
       {/* Baby Care Essentials Section */}
 
-      <section className="w-full bg-red-50">
+      <section className="w-full bg-red">
 
         <div className="px-4 sm:px-6 lg:px-8 py-8">
 
@@ -820,141 +842,61 @@ export default function Home() {
 
           </motion.div>
 
-          {/* Image and Content Layout */}
+          {/* 4-Card Grid Layout */}
 
-          <div className="flex flex-col lg:flex-row items-start gap-12">
+          <div className="w-full px-4 sm:px-6 lg:px-8">
 
-            {/* Left Side Image - Increased Size */}
+            {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
 
-            <div className="lg:w-1/4 flex-shrink-0">
+                  {babyCareProducts.slice(0, 4).map((product, index) => (
 
-              <img 
+                    <BabyCareCard key={product.id || `baby-care-${index}`} product={product} index={index} />
 
-                src="/essentials.png" 
-
-                alt="Latest Products" 
-
-                className="w-full h-auto object-contain mx-auto lg:mx-0"
-
-              />
-
-            </div>
-
-            
-
-            {/* Right Side Content */}
-
-            <div className="lg:w-2/3 flex-1">
-
-              {!latestStyleLoading && latestStyleProducts && latestStyleProducts.length > 0 && (
-
-                <div className="relative">
-
-                  {/* Horizontal Scroll Container */}
-
-                  <div className="relative">
-
-                    <div 
-
-                      ref={latestProductsRef}
-
-                      className="flex gap-6 sm:gap-8 md:gap-12 overflow-hidden scroll-smooth pb-4"
-
-                      style={{ 
-
-                        scrollbarWidth: 'none', 
-
-                        msOverflowStyle: 'none'
-
-                      }}
-
-                    >
-
-                      {latestStyleProducts.slice(0, 3).map((product, index) => (
-
-                        <div key={product.id || `latest-${index}`} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
-                          <ProductCard product={product} index={index} />
-                        </div>
-
-                      ))}
-
-                    </div>
-
-                    
-
-                    {/* Arrow Buttons - Only show if more than 3 products */}
-
-                    {latestStyleProducts.length >= 3 && (
-
-                      <>
-
-                        {/* Left Arrow - Only show when scrolled right */}
-
-                        {canScrollLeft && (
-
-                          <button
-                            onClick={() => scrollLatestProducts('left')}
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-                          >
-                            <ChevronLeft className="w-6 h-6" />
-                          </button>
-
-                        )}
-
-                        
-
-                        {/* Right Arrow - Show when can scroll right or when at end */}
-
-                        {(canScrollRight || isAtEndLatest) && (
-                          <button
-                            onClick={() => isAtEndLatest ? window.location.href = '/shop/style' : scrollLatestProducts('right')}
-                            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 ${
-                              isAtEndLatest 
-                                ? 'bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-black px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10 font-bold text-sm' 
-                                : 'bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10'
-                            }`}
-                          >
-                            {isAtEndLatest ? 'Explore More →' : <ChevronRight className="w-6 h-6" />}
-                          </button>
-                        )}
-
-                      </>
-
-                    )}
-
-                  </div>
-
-                  
+                  ))}
 
                 </div>
 
-              )}
-
-              {!latestStyleLoading && (!latestStyleProducts || latestStyleProducts.length === 0) && (
-
-                <div className="text-center py-12">
-
-                  <Shirt className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-
-                  <h3 className="text-xl font-semibold text-black mb-2">No Latest Styles</h3>
-
-                  <p className="text-gray-500">Add your latest products to showcase here!</p>
-
+                {/* Explore More Button */}
+                <div className="text-center mt-8">
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl"
+                  >
+                    Explore More
+                  </motion.button>
                 </div>
+              </>
+            )}
 
-              )}
+            {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
 
-              {latestStyleLoading && (
+              <div className="text-center py-12">
 
-                <div className="flex justify-center py-8">
+                <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
 
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <h3 className="text-xl font-semibold text-black mb-2">No Baby Care Products</h3>
 
-                </div>
+                <p className="text-gray-500">Add baby care essentials to showcase here!</p>
 
-              )}
+              </div>
 
-            </div>
+            )}
+
+            {babyCareLoading && (
+
+              <div className="flex justify-center py-8">
+
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+
+              </div>
+
+            )}
 
           </div>
 
@@ -1006,144 +948,61 @@ export default function Home() {
 
           </motion.div>
 
-          {/* Image and Content Layout */}
+          {/* 4-Card Grid Layout */}
 
-          <div className="flex flex-col lg:flex-row items-start gap-12">
+          <div className="w-full px-4 sm:px-6 lg:px-8">
 
-            {/* Left Side Content */}
+            {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
 
-            <div className="lg:w-2/3 flex-1">
+                  {babyCareProducts.slice(0, 4).map((product, index) => (
 
-              {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
+                    <MuslinCard key={product.id || `muslin-${index}`} product={product} index={index} />
 
-                <div className="relative">
-
-                  {/* Horizontal Scroll Container */}
-
-                  <div className="relative">
-
-                    <div 
-
-                      ref={babyCareProductsRef}
-
-                      className="flex gap-6 sm:gap-8 md:gap-12 overflow-hidden scroll-smooth pb-4"
-
-                      style={{ 
-
-                        scrollbarWidth: 'none', 
-
-                        msOverflowStyle: 'none'
-
-                      }}
-
-                    >
-
-                      {babyCareProducts.slice(0, 3).map((product, index) => (
-
-                        <div key={product.id || `baby-care-${index}`} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
-                          <ProductCard product={product} index={index} />
-                        </div>
-
-                      ))}
-
-                    </div>
-
-                    
-
-                    {/* Arrow Buttons - Only show if more than 3 products */}
-
-                    {babyCareProducts.length > 3 && (
-
-                      <>
-
-                        {/* Left Arrow - Only show when scrolled right */}
-
-                        {canScrollLeftBabyCare && (
-
-                          <button
-
-                            onClick={() => scrollBabyCareProducts('left')}
-
-                            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10"
-
-                          >
-
-                            <ChevronLeft className="w-6 h-6" />
-
-                          </button>
-
-                        )}
-
-                        
-
-                        {/* Right Arrow - Show when can scroll right or when at end */}
-
-                        {(canScrollRightBabyCare || isAtEndBabyCare) && (
-                          <button
-                            onClick={() => isAtEndBabyCare ? window.location.href = '/shop/style' : scrollBabyCareProducts('right')}
-                            className={`absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 ${
-                              isAtEndBabyCare 
-                                ? 'bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-black px-4 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10 font-bold text-sm' 
-                                : 'bg-white/90 hover:bg-white text-black p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-10'
-                            }`}
-                          >
-                            {isAtEndBabyCare ? 'Explore More →' : <ChevronRight className="w-6 h-6" />}
-                          </button>
-                        )}
-
-                      </>
-
-                    )}
-
-                  </div>
-
-                  
+                  ))}
 
                 </div>
 
-              )}
-
-              {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
-
-                <div className="text-center py-12">
-
-                  <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-
-                  <h3 className="text-xl font-semibold text-black mb-2">No Baby Care Products</h3>
-
-                  <p className="text-gray-500">Add baby care essentials to showcase here!</p>
-
+                {/* Explore More Button */}
+                <div className="text-center mt-8">
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl"
+                  >
+                    Explore More
+                  </motion.button>
                 </div>
+              </>
+            )}
 
-              )}
+            {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
 
-              {babyCareLoading && (
+              <div className="text-center py-12">
 
-                <div className="flex justify-center py-8">
+                <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
 
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <h3 className="text-xl font-semibold text-black mb-2">No Muslin Products</h3>
 
-                </div>
+                <p className="text-gray-500">Add muslin clothing products to showcase here!</p>
 
-              )}
+              </div>
 
-            </div>
+            )}
 
-            {/* Right Side Image - Increased Size */}
+            {babyCareLoading && (
 
-            <div className="lg:w-1/4 flex-shrink-0">
+              <div className="flex justify-center py-8">
 
-              <img 
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
 
-                src="/latest-products.png" 
+              </div>
 
-                alt="Muslin Clothing" 
-
-                className="w-full h-auto object-contain mx-auto lg:mx-0"
-
-              />
-
-            </div>
+            )}
 
           </div>
 
@@ -1169,7 +1028,18 @@ export default function Home() {
 
           >
 
-            <h2 className="text-4xl font-bold mb-4 animate-pulse bg-gradient-to-r from-black via-gray-600 to-gray-300 bg-clip-text text-transparent drop-shadow-lg" style={{ animationDuration: '1.5s' }}>Combo Offers</h2>
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <h2 className="text-4xl font-bold animate-pulse bg-gradient-to-r from-black via-gray-600 to-gray-300 bg-clip-text text-transparent drop-shadow-lg" style={{ animationDuration: '1.5s' }}>Combo Offers</h2>
+              <button
+                onClick={() => setShowComboInfoModal(true)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+                title="Combo Offers Info"
+              >
+                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+            </div>
 
             <p className="text-gray-600 text-lg">Amazing deals and discounts on your favorite baby products</p>
 
@@ -1206,17 +1076,81 @@ export default function Home() {
           {!superSaverLoading && superSaverProducts && superSaverProducts.length > 0 && (
 
             <div className="mt-16">
+              <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 max-w-6xl mx-auto">
+                {superSaverProducts.slice(0, 3).map((product, index) => (
+                  <React.Fragment key={product.id || `combo-${index}`}>
+                    {/* Product Image Only */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="group relative transition-all duration-300 overflow-hidden flex-shrink-0"
+                    >
+                      {/* Discount Badge */}
+                      {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
+                        <div className="absolute top-4 left-4 z-20">
+                          <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            -{Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}%
+                          </div>
+                        </div>
+                      )}
 
-              <ProductGrid 
+                      {/* Combo Badge - only show if no discount */}
+                      {!(product.originalPrice && Number(product.originalPrice) > Number(product.price || 0)) && (
+                        <div className="absolute top-4 left-4 z-20">
+                          <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
+                            3 PACK COMBO
+                          </div>
+                        </div>
+                      )}
 
-                products={superSaverProducts.slice(0, 3)} 
+                      {/* Large Product Image */}
+                      <div className="aspect-[4/5] w-56 lg:w-64 flex items-center justify-center relative bg-transparent">
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="w-full h-full object-cover rounded-3xl transition-all duration-300"
+                        />
+                      </div>
+                    </motion.div>
 
-                title=""
+                    {/* Plus Sign between products */}
+                    {index < 2 && (
+                      <div className="flex items-center justify-center">
+                        <div className="text-black font-bold text-3xl lg:text-4xl">
+                          +
+                        </div>
+                      </div>
+                    )}
+                  </React.Fragment>
+                ))}
+              </div>
 
-                layout="boxed"
+              {/* Buy Now Button */}
+              <div className="text-center mt-8">
+                <motion.button
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl"
+                >
+                  Buy Now
+                </motion.button>
+              </div>
 
-              />
-
+              {/* Save 300 Highlight */}
+              <div className="text-center mt-6">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="inline-block bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-full font-bold text-lg shadow-lg"
+                >
+                  💰 Save 300 on this combo!
+                </motion.div>
+              </div>
             </div>
 
           )}
@@ -1294,41 +1228,264 @@ export default function Home() {
 
           </motion.div>
 
-          {/* Image and Content Layout */}
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mt-8">
-            {/* Left Side Image */}
-            <div className="lg:w-1/2 w-full flex-shrink-0 order-2 lg:order-1">
-              <Link href="/shopstyle" className="inline-block transition-all duration-300 hover:scale-105 hover:shadow-2xl group">
-                <img 
-                  src="/SALE1.png" 
-                  alt="Sale" 
-                  className="w-full h-auto object-contain mx-auto lg:mx-0 transition-all duration-300 group-hover:brightness-110 cursor-pointer"
-                />
-              </Link>
+          {/* Gifting Products Grid */}
+          {!giftingLoading && giftingProducts && giftingProducts.length > 0 && (
+            <div className="mt-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {giftingProducts.slice(0, 3).map((product, index) => (
+                  <GiftingCard key={product.id || `gifting-${index}`} product={product} index={index} />
+                ))}
+              </div>
             </div>
-            
-            {/* Right Side Content */}
-            <div className="lg:w-1/2 w-full flex-1 text-center lg:text-left p-4 sm:p-6 lg:p-8 order-1 lg:order-2">
-              <h3 className="text-3xl font-extrabold text-black mb-6">Gift Bundles for Babies</h3>
-              <p className="text-gray-700 text-lg mb-8">Curated gift bundles perfect for baby showers, birthdays, and special occasions. Each bundle thoughtfully designed with love and care.</p>
-              
-              <div className="space-y-4">
-                <div className="bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl p-6 border border-primary/20">
-                  <h4 className="font-bold text-xl text-black mb-2">Newborn Essentials</h4>
-                  <p className="text-gray-700">Everything newborns need in one bundle</p>
+          )}
+
+          {/* Special Gifting Categories - Pricing Cards */}
+          <div className="mt-16 mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-center mb-8"
+            >
+              <h3 className="text-2xl font-bold text-black mb-2">Baby Gift Sets</h3>
+              <p className="text-gray-600">Choose the perfect collection for your little one</p>
+            </motion.div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+              {/* Basic Set - ₹1499 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                whileHover={{ y: -8, scale: 1.03 }}
+                className="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-400 overflow-hidden border-2 border-gray-200"
+              >
+                {/* Header with gradient accent */}
+                <div className="h-2 bg-gradient-to-r from-gray-400 to-gray-600 rounded-t-3xl"></div>
+                
+                <div className="p-8 text-center">
+                  <h4 className="text-2xl font-bold text-black mb-3">Basic Set</h4>
+                  <div className="mb-6">
+                    <span className="text-5xl font-bold text-black">₹1499</span>
+                  </div>
+                  <p className="text-black text-base mb-8">Essential baby care starter kit</p>
+                  
+                  {/* Expandable Content */}
+                  <details className="text-left mb-8">
+                    <summary className="flex items-center justify-between cursor-pointer p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-gray-100 hover:to-gray-200 transition-all duration-300 border border-gray-200">
+                      <span className="text-base font-semibold text-black flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        What's included?
+                      </span>
+                      <svg className="w-5 h-5 text-black transition-transform duration-300 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </summary>
+                    <div className="max-h-40 overflow-y-auto mt-4 space-y-3 text-base text-black">
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">2 x Soft Muslin Wraps</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Baby Towel Set</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">3 x Basic Bodysuits</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Diaper Bag</span>
+                      </div>
+                    </div>
+                  </details>
+                  
+                  <button className="w-full bg-gradient-to-r from-gray-500 to-gray-700 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-gray-600 hover:to-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                    Get now
+                  </button>
+                </div>
+              </motion.div>
+
+              {/* Deluxe Set - ₹2299 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                whileHover={{ y: -8, scale: 1.03 }}
+                className="group relative bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-400 border-2 border-primary transform scale-105"
+              >
+                {/* Enhanced Popular Badge */}
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
+                  <div className="bg-gradient-to-r from-primary to-secondary text-black text-sm font-bold px-6 py-2 rounded-full shadow-xl flex items-center gap-2 border-2 border-white">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    Most Popular
+                  </div>
                 </div>
                 
-                <div className="bg-gradient-to-r from-secondary/10 to-primary/10 rounded-xl p-6 border border-secondary/20">
-                  <h4 className="font-bold text-xl text-black mb-2">Premium Care Package</h4>
-                  <p className="text-gray-700">Luxury items for special moments</p>
+                {/* Header with gradient accent */}
+                <div className="h-2 bg-gradient-to-r from-primary to-secondary rounded-t-3xl"></div>
+                
+                <div className="p-10 text-center">
+                  <h4 className="text-2xl font-bold text-black mb-3">Deluxe Set</h4>
+                  <div className="mb-6">
+                    <span className="text-5xl font-bold text-black">₹2299</span>
+                  </div>
+                  <p className="text-black text-base mb-8">Complete care package with premium items</p>
+                  
+                  {/* Expandable Content */}
+                  <details className="text-left mb-8">
+                    <summary className="flex items-center justify-between cursor-pointer p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl hover:from-primary/20 hover:to-secondary/20 transition-all duration-300 border border-primary/30">
+                      <span className="text-base font-semibold text-black flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        What's included?
+                      </span>
+                      <svg className="w-5 h-5 text-black transition-transform duration-300 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </summary>
+                    <div className="max-h-40 overflow-y-auto mt-4 space-y-3 text-base text-black">
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
+                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
+                        <span className="font-medium">4 x Premium Muslin Wraps</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
+                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
+                        <span className="font-medium">2 x Luxury Towel Sets</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
+                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
+                        <span className="font-medium">5 x Designer Bodysuits</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
+                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Premium Diaper Bag</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
+                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
+                        <span className="font-medium">2 x Baby Blankets</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
+                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Grooming Kit</span>
+                      </div>
+                    </div>
+                  </details>
+                  
+                  <button className="w-full bg-gradient-to-r from-primary to-secondary text-black py-4 px-6 rounded-xl font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                    Get now
+                  </button>
                 </div>
-              </div>
-              
-              <button className="mt-8 px-8 py-3 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-full shadow-lg hover:from-secondary hover:to-primary transition-all duration-300 transform hover:scale-105">
-                Shop All Bundles
-              </button>
+              </motion.div>
+
+              {/* Premium Set - ₹3499 */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                whileHover={{ y: -8, scale: 1.03 }}
+                className="group relative bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-400 overflow-hidden border-3 border-amber-500 transform scale-105"
+              >
+                                
+                {/* Header with gradient accent */}
+                <div className="h-2 bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 rounded-t-3xl"></div>
+                
+                <div className="p-8 text-center">
+                  <h4 className="text-2xl font-bold text-black mb-3">Premium Set</h4>
+                  <div className="mb-6">
+                    <span className="text-5xl font-bold text-black">₹3499</span>
+                  </div>
+                  <p className="text-black text-base mb-8">Ultimate luxury collection for your baby</p>
+                  
+                  {/* Expandable Content */}
+                  <details className="text-left mb-8">
+                    <summary className="flex items-center justify-between cursor-pointer p-4 bg-gradient-to-r from-amber-100 to-orange-100 rounded-xl hover:from-amber-200 hover:to-orange-200 transition-all duration-300 border border-amber-300">
+                      <span className="text-base font-semibold text-black flex items-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        What's included?
+                      </span>
+                      <svg className="w-5 h-5 text-black transition-transform duration-300 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </summary>
+                    <div className="max-h-40 overflow-y-auto mt-4 space-y-3 text-base text-black">
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">6 x Organic Muslin Wraps</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">3 x Luxury Towel Sets</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">8 x Designer Bodysuits</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Premium Diaper Backpack</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">3 x Baby Blankets</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Complete Grooming Kit</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">2 x Baby Bed Sheets</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Baby Sleep Sack</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
+                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
+                        <span className="font-medium">1 x Toy Set</span>
+                      </div>
+                    </div>
+                  </details>
+                  
+                  <button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                    Get now
+                  </button>
+                </div>
+              </motion.div>
             </div>
           </div>
+
+          {/* Customise Button */}
+          <div className="text-center mt-12 pt-10 pb -10">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl flex items-center gap-2 mx-auto group"
+            >
+              Customise
+              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </motion.button>
+          </div>
+
+          {giftingLoading && (
+            <div className="flex justify-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          )}
         </div>
       </section>
 
@@ -1800,6 +1957,46 @@ export default function Home() {
         </div>
 
       </section>
+
+      {/* Combo Info Modal */}
+      {showComboInfoModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-black">Combo Offers Info</h3>
+              <button
+                onClick={() => setShowComboInfoModal(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors duration-200"
+              >
+                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="text-gray-700 leading-relaxed space-y-3">
+              <p>
+                The combo offers will be changed on a weekly basis. Make sure to check them out frequently to not miss the exciting combo offers!
+              </p>
+              <p>
+                Each week, we curate special bundles with amazing discounts on your favorite baby products. These limited-time deals offer the best value for money, combining essential items at unbeatable prices.
+              </p>
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">
+                <p className="text-sm font-medium text-amber-800">
+                  💡 <strong>Pro Tip:</strong> Bookmark this page and visit every Monday for new weekly combos!
+                </p>
+              </div>
+            </div>
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setShowComboInfoModal(false)}
+                className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-lg font-medium hover:from-primary/90 hover:to-secondary/90 transition-all duration-200"
+              >
+                Got it!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
 

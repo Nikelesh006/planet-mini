@@ -83,6 +83,7 @@ import ShopStyle from "./pages/ShopStyle";
 
 
 import ProductDetail from "./pages/ProductDetail";
+import ProductDetailPage from "./pages/ProductDetailPage";
 
 
 
@@ -238,7 +239,7 @@ function Router() {
 
 
 
-        <Route path="/products/:slug" component={ProductDetail} />
+        <Route path="/products/:slug" component={ProductDetailPage} />
 
 
 
@@ -290,21 +291,44 @@ function App() {
 
 
 
-    
+    // Preserve scroll position during development
 
+    if (process.env.NODE_ENV === 'development') {
+
+      const scrollY = sessionStorage.getItem('scrollPosition');
+
+      if (scrollY) {
+
+        window.scrollTo(0, parseInt(scrollY));
+
+        sessionStorage.removeItem('scrollPosition');
+
+      }
+
+    }
+
+    // Save scroll position before hot reload
+
+    const handleBeforeUnload = () => {
+
+      if (process.env.NODE_ENV === 'development') {
+
+        sessionStorage.setItem('scrollPosition', window.scrollY.toString());
+
+      }
+
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
 
     return () => {
 
-
-
       // Cleanup if needed
 
-
+      window.removeEventListener('beforeunload', handleBeforeUnload);
 
     };
-
-
 
   }, []);
 
