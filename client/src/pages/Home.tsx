@@ -35,6 +35,38 @@ export default function Home() {
   // Combo info modal state
   const [showComboInfoModal, setShowComboInfoModal] = useState(false);
 
+  // Discount modal state
+  const [showDiscountModal, setShowDiscountModal] = useState(true);
+
+  // Cookie modal state
+  const [showCookieModal, setShowCookieModal] = useState(() => {
+    // Check if user has already made a cookie choice
+    const cookieChoice = localStorage.getItem('cookieConsent');
+    return cookieChoice === null; // Show modal only if no choice has been made
+  });
+
+  // Handle cookie consent choices
+  const handleCookieAccept = () => {
+    localStorage.setItem('cookieConsent', 'accepted');
+    localStorage.setItem('cookieConsentDate', new Date().toISOString());
+    setShowCookieModal(false);
+  };
+
+  const handleCookieReject = () => {
+    localStorage.setItem('cookieConsent', 'rejected');
+    localStorage.setItem('cookieConsentDate', new Date().toISOString());
+    setShowCookieModal(false);
+  };
+
+  const handleCookieCustom = () => {
+    const marketingCheckbox = document.getElementById('marketing') as HTMLInputElement;
+    const choice = marketingCheckbox?.checked ? 'custom-accepted' : 'custom-rejected';
+    localStorage.setItem('cookieConsent', choice);
+    localStorage.setItem('cookieConsentDate', new Date().toISOString());
+    localStorage.setItem('marketingCookies', marketingCheckbox?.checked ? 'true' : 'false');
+    setShowCookieModal(false);
+  };
+
   const { data: products, isLoading } = useProducts();
 
   const { data: styleProducts, isLoading: styleLoading } = useStyleProducts();
@@ -864,11 +896,13 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-black/90 transition-all duration-300 shadow-xl"
+                    className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
                   >
                     Explore More
+                    <svg className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </motion.button>
                 </div>
               </>
@@ -970,11 +1004,13 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.3 }}
-                    whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl"
+                    className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
                   >
                     Explore More
+                    <svg className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
                   </motion.button>
                 </div>
               </>
@@ -1032,10 +1068,10 @@ export default function Home() {
               <h2 className="text-4xl font-bold animate-pulse bg-gradient-to-r from-black via-gray-600 to-gray-300 bg-clip-text text-transparent drop-shadow-lg" style={{ animationDuration: '1.5s' }}>Combo Offers</h2>
               <button
                 onClick={() => setShowComboInfoModal(true)}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-200"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-gray-100 transition-colors duration-200"
                 title="Combo Offers Info"
               >
-                <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </button>
@@ -1053,24 +1089,7 @@ export default function Home() {
 
             </div>
 
-            {/* Decorative Discount Images */}
-            <div className="flex justify-between items-center px-4 -mt-8">
-              <div className="transform rotate-12 hover:rotate-6 transition-transform duration-300">
-                <img 
-                  src="/discount.png" 
-                  alt="Discount" 
-                  className="w-20 h-20 object-contain opacity-80 hover:opacity-100"
-                />
-              </div>
-              <div className="transform -rotate-12 hover:rotate-6 transition-transform duration-300">
-                <img 
-                  src="/offer.png" 
-                  alt="Offer" 
-                  className="w-20 h-20 object-contain opacity-80 hover:opacity-100"
-                />
-              </div>
-            </div>
-
+            
           </motion.div>
 
           {!superSaverLoading && superSaverProducts && superSaverProducts.length > 0 && (
@@ -1132,9 +1151,8 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.5 }}
-                  whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl"
+                  className="bg-black text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-gray-800 transition-all duration-300 shadow-xl"
                 >
                   Buy Now
                 </motion.button>
@@ -1310,7 +1328,7 @@ export default function Home() {
                     </div>
                   </details>
                   
-                  <button className="w-full bg-gradient-to-r from-gray-500 to-gray-700 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-gray-600 hover:to-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg">
+                  <button className="w-full bg-gray-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
                     Get now
                   </button>
                 </div>
@@ -1392,7 +1410,7 @@ export default function Home() {
                     </div>
                   </details>
                   
-                  <button className="w-full bg-gradient-to-r from-primary to-secondary text-black py-4 px-6 rounded-xl font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                  <button className="w-full bg-red-200 py-4 px-6 rounded-xl font-bold text-lg hover:bg-red-300 transition-all duration-300 transform hover:scale-105 shadow-xl">
                     Get now
                   </button>
                 </div>
@@ -1477,7 +1495,7 @@ export default function Home() {
                     </div>
                   </details>
                   
-                  <button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:from-amber-600 hover:to-orange-600 transition-all duration-300 transform hover:scale-105 shadow-xl">
+                  <button className="w-full bg-yellow-200 text-black py-4 px-6 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 shadow-xl">
                     Get now
                   </button>
                 </div>
@@ -1491,12 +1509,11 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl flex items-center gap-2 mx-auto group"
+              className="bg-black text-white px-5 py-3 rounded-full text-lg hover:bg-gray-800 shadow-xl flex items-center gap-2 mx-auto group transition-all duration-150"
             >
               Customise
-              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </motion.button>
@@ -1857,7 +1874,7 @@ export default function Home() {
 
               href="/contact"
 
-              className="inline-flex items-center gap-2 bg-white border-2 border-primary text-black px-8 py-4 rounded-2xl font-bold hover:bg-primary hover:text-black transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center gap-2 bg-black border-2 text-white px-8 py-4 rounded-2xl hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
 
             >
 
@@ -2010,7 +2027,7 @@ export default function Home() {
             <div className="mt-6 text-center">
               <button
                 onClick={() => setShowComboInfoModal(false)}
-                className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-lg font-medium hover:from-primary/90 hover:to-secondary/90 transition-all duration-200"
+                className="bg-black text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition-all duration-200"
               >
                 Got it!
               </button>
@@ -2019,8 +2036,107 @@ export default function Home() {
         </div>
       )}
 
-    </div>
+      {/* Discount Modal */}
+      {showDiscountModal && (
+        <div className="fixed bottom-4 left-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white border border-gray-200 rounded-xl p-6 shadow-2xl max-w-lg"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold text-base">10%</span>
+                </div>
+                <div>
+                  <h3 className="text-black font-bold text-lg">Special Offer!</h3>
+                  <p className="text-gray-700 text-base">Get 10% off your first order</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowDiscountModal(false)}
+                className="text-gray-400 hover:text-black transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="text-lg text-gray-600 mb-3">
+                <span>Code - </span><span className="text-red-500 font-bold text-lg">PMSALE10</span>
+            </div>
+            <button
+              onClick={() => setShowDiscountModal(false)}
+              className="w-full bg-red-500 text-white text-sm font-semibold py-2 rounded-lg hover:bg-red-600 transition-colors shadow-md"
+            >
+              Shop Now
+            </button>
+          </motion.div>
+        </div>
+      )}
 
+      {/* Cookie Accept Modal */}
+      {showCookieModal && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white border border-gray-200 rounded-xl p-6 shadow-2xl max-w-sm"
+          >
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center shadow-md">
+                  <span className="text-white font-bold text-sm">🍪</span>
+                </div>
+                <div>
+                  <h3 className="text-black font-bold text-base">Cookie Notice</h3>
+                  <p className="text-gray-700 text-sm">We use cookies to enhance your experience</p>
+                </div>
+              </div>
+              <button
+                onClick={handleCookieReject}
+                className="text-gray-400 hover:text-black transition-colors"
+                title="Reject cookies"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="text-sm text-gray-600 mb-4">
+              <p className="mb-3">By using our site, you agree to our use of cookies for analytics, personalization, and marketing purposes.</p>
+              <div className="flex items-center gap-2 mb-3">
+                <input type="checkbox" id="necessary" className="w-4 h-4 text-red-500 rounded" defaultChecked />
+                <label htmlFor="necessary" className="text-sm text-gray-700">Essential cookies (required)</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <input type="checkbox" id="marketing" className="w-4 h-4 text-red-500 rounded" />
+                <label htmlFor="marketing" className="text-sm text-gray-700">Marketing cookies</label>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={handleCookieReject}
+                className="flex-1 bg-gray-200 text-gray-700 text-sm font-semibold py-2 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Reject All
+              </button>
+              <button
+                onClick={handleCookieAccept}
+                className="flex-1 bg-red-500 text-white text-sm font-semibold py-2 rounded-lg hover:bg-red-600 transition-colors"
+              >
+                Accept All
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </div>
   );
 
 }

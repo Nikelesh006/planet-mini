@@ -159,7 +159,7 @@ export default function ShopStyle() {
           <Filter className="w-4 h-4" />
           Filters
           {selectedFilters.length > 0 && (
-            <span className="bg-primary text-black text-xs px-2 py-1 rounded-full">
+            <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
               {selectedFilters.length}
             </span>
           )}
@@ -180,12 +180,12 @@ export default function ShopStyle() {
               {/* Mobile Close Button */}
               <div className="lg:hidden mb-4 flex justify-between items-center p-4 bg-white/80 backdrop-blur-sm border-b border-primary/20">
                 <h2 className="text-lg font-bold text-black flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-primary" />
+                  <Filter className="w-5 h-5 text-red-500" />
                   Filters
                 </h2>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
-                  className="p-2 bg-primary text-black rounded-lg hover:bg-primary/90 transition-colors"
+                  className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -194,13 +194,13 @@ export default function ShopStyle() {
               {/* Desktop Filter Header */}
               <div className="hidden lg:flex items-center justify-between p-4 bg-white/60 backdrop-blur-sm border-b border-primary/30">
                 <h2 className="text-lg font-bold text-black flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-primary" />
+                  <Filter className="w-5 h-5 text-red-500" />
                   Filters
                 </h2>
                 {selectedFilters.length > 0 && (
                   <button
                     onClick={clearFilters}
-                    className="text-sm font-semibold bg-primary text-black px-3 py-1 rounded-lg hover:bg-primary/90 transition-colors"
+                    className="text-sm font-semibold bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
                   >
                     Clear all
                   </button>
@@ -210,22 +210,22 @@ export default function ShopStyle() {
               {/* Filter Categories - Expandable Sections */}
               <div className="p-4 space-y-3">
                 {filterSections.map((section, index) => (
-                  <div key={section.id} className="border-2 border-gray-300 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
+                  <div key={section.id} className="border-2 border-black rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
                     {/* Section Header - Clickable to Expand/Collapse */}
                     <button
                       onClick={() => toggleCategory(section.id)}
                       className={`
                         w-full flex items-center justify-between p-3 transition-all duration-200
                         ${index % 2 === 0 
-                          ? 'bg-gradient-to-r from-primary/20 to-secondary/20 hover:from-primary/30 hover:to-secondary/30 border-l-4 border-primary' 
-                          : 'bg-gradient-to-r from-secondary/20 to-primary/20 hover:from-secondary/30 hover:to-primary/30 border-l-4 border-secondary'
+                          ? 'bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 border-l-4 border-red-500' 
+                          : 'bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 border-l-4 border-gray-700'
                         }
                       `}
                     >
                       <div className="flex items-center gap-2">
                         <section.icon className={`
                           w-4 h-4 transition-colors
-                          ${index % 2 === 0 ? 'text-primary' : 'text-secondary'}
+                          ${index % 2 === 0 ? 'text-red-500' : 'text-gray-700'}
                         `} />
                         <span className="font-bold text-black">{section.title}</span>
                       </div>
@@ -251,7 +251,7 @@ export default function ShopStyle() {
                     `}>
                       <div className={`
                         p-3 space-y-4
-                        ${index % 2 === 0 ? 'bg-primary/10' : 'bg-secondary/10'}
+                        ${index % 2 === 0 ? 'bg-red-50' : 'bg-gray-50'}
                       `}>
                         {section.isSlider ? (
                           // Price Range Slider
@@ -281,8 +281,8 @@ export default function ShopStyle() {
                                 flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 border
                                 ${selectedFilters.includes(item.id)
                                   ? index % 2 === 0 
-                                    ? 'bg-primary/30 border-primary shadow-sm'
-                                    : 'bg-secondary/30 border-secondary shadow-sm'
+                                    ? 'bg-red-100 border-red-500 shadow-sm'
+                                    : 'bg-gray-100 border-gray-700 shadow-sm'
                                   : 'bg-white/80 border-gray-200 hover:bg-gray-100'
                                 }
                               `}
@@ -300,8 +300,8 @@ export default function ShopStyle() {
                                     w-4 h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
                                     ${selectedFilters.includes(item.id)
                                       ? index % 2 === 0 
-                                        ? 'bg-primary border-primary shadow-md' 
-                                        : 'bg-secondary border-secondary shadow-md'
+                                        ? 'bg-red-500 border-red-500 shadow-md' 
+                                        : 'bg-gray-700 border-gray-700 shadow-md'
                                       : 'border-gray-400 hover:border-gray-500 bg-white'
                                     }
                                   `}>
@@ -320,9 +320,11 @@ export default function ShopStyle() {
                               
                               <span className={`
                                 text-xs font-bold px-2 py-1 rounded-full border
-                                ${index % 2 === 0 
-                                  ? 'bg-primary text-black border-primary' 
-                                  : 'bg-secondary text-black border-secondary'
+                                ${expandedCategories.includes(section.id)
+                                  ? 'bg-red-500 text-white border-red-500'
+                                  : index % 2 === 0 
+                                    ? 'bg-gray-200 text-gray-700 border-gray-400' 
+                                    : 'bg-gray-200 text-gray-700 border-gray-400'
                                 }
                               `}>
                                 {item.count}
@@ -359,12 +361,12 @@ export default function ShopStyle() {
                     return (
                       <span
                         key={filterId}
-                        className="inline-flex items-center gap-1 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm"
+                        className="inline-flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
                       >
                         {category?.name}
                         <button
                           onClick={() => handleFilterToggle(filterId)}
-                          className="hover:text-primary/80"
+                          className="hover:text-red-800"
                         >
                           <X className="w-3 h-3" />
                         </button>
@@ -386,7 +388,7 @@ export default function ShopStyle() {
               )}
               {isLoading && (
                 <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
                 </div>
               )}
               {!isLoading && (!products || products.length === 0) && (

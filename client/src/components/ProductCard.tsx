@@ -273,7 +273,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
               disabled={!product.inStock}
 
-              className="w-full h-12 flex items-center justify-center gap-2 rounded-2xl bg-white/90 backdrop-blur-md text-foreground font-semibold shadow-lg hover:bg-primary hover:text-primary-foreground transition-colors active:scale-95 disabled:opacity-50"
+              className="w-full h-12 flex items-center justify-center gap-2 rounded-2xl bg-white/90 backdrop-blur-md text-foreground font-semibold shadow-lg hover:bg-red-100 hover:text-red-700 transition-colors active:scale-95 disabled:opacity-50"
 
             >
 

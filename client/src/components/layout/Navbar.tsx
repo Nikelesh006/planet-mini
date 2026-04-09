@@ -111,12 +111,11 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-semibold transition-all duration-300 ease-in-out relative px-4 py-2 rounded-lg overflow-hidden group",
-                    "before:absolute before:inset-0 before:bg-gradient-to-r before:from-primary before:to-secondary before:opacity-0 before:transition-opacity before:duration-300 before:ease-in-out",
-                    "hover:before:opacity-100 hover:text-white hover:shadow-lg hover:transform hover:-translate-y-0.5",
+                    "text-sm font-semibold transition-all duration-300 ease-in-out relative px-3 py-2 rounded-md",
+                    "hover:bg-gray-200 hover:text-black",
                     location === link.href 
-                      ? "text-black bg-gradient-to-r from-primary to-secondary shadow-lg border border-primary/30"
-                      : "text-black hover:text-white"
+                      ? "text-black bg-gray-200"
+                      : "text-gray-600"
                   )}
                 >
                   <span className="relative z-10">{link.label}</span>
@@ -216,7 +215,7 @@ export default function Navbar() {
                 <span className="text-xl font-display font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">Menu</span>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 bg-gradient-to-r from-blue-100 to-pink-100 rounded-full text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500 transition-all duration-300"
+                  className="p-2 bg-gray-100 rounded-full text-gray-600 hover:text-black hover:bg-gray-200 transition-all duration-300"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -228,10 +227,11 @@ export default function Navbar() {
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
                     className={cn(
-                      "text-lg font-semibold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105",
+                      "text-lg font-semibold transition-all duration-300 relative py-3 px-4 rounded-md",
+                      "hover:bg-gray-200 hover:text-black",
                       location === link.href 
-                        ? "text-white bg-gradient-to-r from-blue-500 to-pink-500 shadow-lg" 
-                        : "text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500"
+                        ? "text-black bg-gray-200"
+                        : "text-gray-600"
                     )}
                   >
                     {link.label}
@@ -243,7 +243,7 @@ export default function Navbar() {
                     setMobileMenuOpen(false);
                     handleProfileClick();
                   }}
-                  className="text-lg font-semibold py-3 px-4 rounded-xl text-gray-600 hover:text-white hover:bg-gradient-to-r hover:from-blue-500 hover:to-pink-500 transition-all duration-300 transform hover:scale-105 flex items-center gap-3"
+                  className="text-lg font-semibold py-3 px-4 rounded-xl text-gray-600 hover:text-black hover:bg-gray-100 transition-all duration-300 flex items-center gap-3"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
