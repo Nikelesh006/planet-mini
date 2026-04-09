@@ -44,7 +44,7 @@ export default function About() {
             </p>
             <Link 
               href="/shop"
-              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
+              className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all duration-300"
             >
               Shop Our Collection
             </Link>
@@ -54,7 +54,7 @@ export default function About() {
             whileInView={{ opacity: 1, x: 0 }}
             className="relative"
           >
-            <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-pink-100 to-purple-100">
+            <div className="aspect-square rounded-2xl overflow-hidden bg-gradient-to-br from-red-100 to-gray-100">
               <img 
                 src="https://images.unsplash.com/photo-1541697960113-1ca22342bd6d?auto=format&fit=crop&q=80&w=600"
                 alt="Baby clothing" 
@@ -111,24 +111,12 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`p-6 text-center border-2 rounded-2xl transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 cursor-pointer ${
-                index % 2 === 0
-                  ? 'bg-gradient-to-br from-primary/10 to-secondary/10 border-primary/30 hover:border-primary/50'
-                  : 'bg-gradient-to-br from-secondary/10 to-primary/10 border-secondary/30 hover:border-secondary/50'
-              }`}
+              className="p-6 text-center border-2 border-gray-300 bg-white rounded-2xl transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 cursor-pointer hover:border-gray-500"
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 ${
-                index % 2 === 0
-                  ? 'bg-gradient-to-br from-primary to-secondary border-2 border-primary/30'
-                  : 'bg-gradient-to-br from-secondary to-primary border-2 border-secondary/30'
-              }`}>
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 bg-gradient-to-br from-gray-500 to-gray-600 border-2 border-gray-300">
                 <value.icon className="w-8 h-8 text-black" />
               </div>
-              <h3 className={`text-xl font-semibold mb-2 transition-colors duration-300 ${
-                index % 2 === 0
-                  ? 'text-black hover:text-primary'
-                  : 'text-black hover:text-secondary'
-              }`}>{value.title}</h3>
+              <h3 className="text-xl font-semibold mb-2 transition-colors duration-300 text-black hover:text-gray-700">{value.title}</h3>
               <p className="text-gray-600 transition-colors duration-300 hover:text-black">{value.description}</p>
             </motion.div>
           ))}
@@ -137,7 +125,7 @@ export default function About() {
 
       {/* Stats Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
-        <div className="bg-gradient-to-r from-primary to-secondary rounded-2xl p-8 lg:p-12 text-white">
+        <div className="bg-white rounded-2xl p-8 lg:p-12 border-black text-black">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             {[
               { number: "50K+", label: "Happy Customers" },

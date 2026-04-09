@@ -1,4 +1,5 @@
 import { Switch, Route } from "wouter";
+import { Router as WouterRouter } from "wouter";
 
 
 
@@ -147,11 +148,13 @@ function Router() {
 
 
 
-      <Switch>
+      <WouterRouter>
+
+        <Switch>
 
 
 
-        <Route path="/" component={Home} />
+          <Route path="/" component={Home} />
 
 
 
@@ -256,6 +259,10 @@ function Router() {
 
 
       </Switch>
+
+
+
+      </WouterRouter>
 
 
 

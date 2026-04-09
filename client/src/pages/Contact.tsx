@@ -100,7 +100,7 @@ export default function Contact() {
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-bold text-balck mb-6"
+            className="text-5xl md:text-6xl font-bold text-black mb-6"
           >
             Contact Us
           </motion.h1>
@@ -127,17 +127,16 @@ export default function Contact() {
             <div>
               <div className="text-center mb-8">
                 
-                
               </div>
               
               <div className="space-y-6">
-                <div className="group bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-6 border border-primary/20 hover:border-secondary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Mail className="w-7 h-7 text-black" />
+                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Mail className="w-7 h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-primary transition-colors">Email</h3>
+                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Email</h3>
                       <p className="text-gray-700 font-medium mb-1">hello@planetmini.com</p>
                       <p className="text-sm text-gray-500 flex items-center gap-1">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -147,13 +146,13 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-gradient-to-r from-secondary/5 to-primary/5 rounded-2xl p-6 border border-secondary/20 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Phone className="w-7 h-7 text-black" />
+                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Phone className="w-7 h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-secondary transition-colors">Phone</h3>
+                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Phone</h3>
                       <p className="text-gray-700 font-medium mb-1">+1 (555) 123-4567</p>
                       <p className="text-sm text-gray-500 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
@@ -163,13 +162,13 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-6 border border-primary/20 hover:border-secondary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <MapPin className="w-7 h-7 text-black" />
+                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <MapPin className="w-7 h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-primary transition-colors">Address</h3>
+                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Address</h3>
                       <p className="text-gray-700 font-medium">123 Baby Street</p>
                       <p className="text-gray-700 font-medium">New York, NY 10001</p>
                       <p className="text-sm text-gray-500 flex items-center gap-1">
@@ -180,13 +179,13 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-gradient-to-r from-secondary/5 to-primary/5 rounded-2xl p-6 border border-secondary/20 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Clock className="w-7 h-7 text-black" />
+                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Clock className="w-7 h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-gray-900 mb-1 group-hover:text-secondary transition-colors">Business Hours</h3>
+                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Business Hours</h3>
                       <div className="space-y-1">
                         <p className="text-gray-700 font-medium flex items-center gap-2">
                           <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Mon-Fri</span>
@@ -214,10 +213,10 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-gradient-to-br from-primary/15 to-secondary/15 rounded-3xl p-8 border-2 border-primary/30 shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="bg-white rounded-3xl p-8 border-2 border-black shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="w-8 h-8 text-black" />
+                <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="w-8 h-8 text-red-500" />
                 </div>
                 <h2 className="text-3xl font-bold text-black mb-2">
                   Get in Touch
@@ -228,12 +227,12 @@ export default function Contact() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="relative group">
-                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-primary transition-colors">
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
                       Your Name *
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <div className="w-5 h-5 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                        <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center">
                           <div className="w-2 h-2 bg-white rounded-full"></div>
                         </div>
                       </div>
@@ -244,19 +243,19 @@ export default function Contact() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl focus:border-primary focus:border-secondary focus:ring-2 focus:ring-primary/20 focus:outline-none transition-all duration-300 hover:border-primary/40 placeholder-gray-400 shadow-sm hover:shadow-md"
+                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-sm hover:shadow-md"
                         placeholder="John Doe"
                       />
                     </div>
                   </div>
                   
                   <div className="relative group">
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-secondary transition-colors">
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
                       Email Address *
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Mail className="w-5 h-5 text-gray-400 group-focus-within:text-secondary transition-colors" />
+                        <Mail className="w-5 h-5 text-gray-400 group-focus-within:text-red-600 transition-colors" />
                       </div>
                       <input
                         type="email"
@@ -265,7 +264,7 @@ export default function Contact() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-primary/50 rounded-2xl focus:border-secondary focus:border-primary focus:ring-2 focus:ring-secondary/50 focus:outline-none transition-all duration-300 hover:border-secondary/60 placeholder-gray-400"
+                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -273,12 +272,12 @@ export default function Contact() {
                 </div>
 
                 <div className="relative group">
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-primary transition-colors">
+                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
                     Subject *
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <HelpCircle className="w-5 h-5 text-gray-400 group-focus-within:text-primary transition-colors" />
+                      <HelpCircle className="w-5 h-5 text-gray-400 group-focus-within:text-red-600 transition-colors" />
                     </div>
                     <input
                       type="text"
@@ -287,19 +286,19 @@ export default function Contact() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-primary/70 rounded-2xl focus:border-primary focus:border-secondary focus:ring-2 focus:ring-primary/50 focus:outline-none transition-all duration-300 hover:border-primary/80 placeholder-gray-400 shadow-md hover:shadow-lg"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-md hover:shadow-lg"
                       placeholder="How can we help you?"
                     />
                   </div>
                 </div>
 
                 <div className="relative group">
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-secondary transition-colors">
+                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
                     Message *
                   </label>
                   <div className="relative">
                     <div className="absolute top-4 left-4 pointer-events-none">
-                      <MessageCircle className="w-5 h-5 text-gray-400 group-focus-within:text-secondary transition-colors" />
+                      <MessageCircle className="w-5 h-5 text-gray-400 group-focus-within:text-red-600 transition-colors" />
                     </div>
                     <textarea
                       id="message"
@@ -308,7 +307,7 @@ export default function Contact() {
                       onChange={handleChange}
                       required
                       rows={6}
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-secondary/50 rounded-2xl focus:border-primary focus:border-secondary focus:ring-2 focus:ring-secondary/30 focus:outline-none transition-all duration-300 hover:border-primary/60 resize-none placeholder-gray-400 shadow-md hover:shadow-lg"
+                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 resize-none placeholder-gray-400 shadow-md hover:shadow-lg"
                       placeholder="Tell us more about your question or concern..."
                     />
                   </div>
@@ -323,11 +322,11 @@ export default function Contact() {
                   </div>
                   <button
                     type="submit"
-                    className="group relative inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
+                    className="group relative inline-flex items-center gap-2 bg-red-100 text-red-600 px-8 py-4 rounded-2xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-black"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                    <Send className="w-4 h-4 relative z-10 text-black group-hover:translate-x-1 transition-transform duration-300" />
-                    <span className="relative z-10 text-black">Send Message</span>
+                    <div className="absolute inset-0 bg-red-200 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                    <Send className="w-4 h-4 relative z-10 text-red-600 group-hover:translate-x-1 transition-transform duration-300" />
+                    <span className="relative z-10 text-red-600">Send Message</span>
                   </button>
                 </div>
               </form>
@@ -346,10 +345,10 @@ export default function Contact() {
             className="lg:col-span-1"
           >
             <div className="sticky top-24">
-              <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-2xl p-6 border border-primary/20">
+              <div className="bg-white rounded-2xl p-6 border-2 border-black">
                 <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <HelpCircle className="w-8 h-8 text-black" />
+                  <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <HelpCircle className="w-8 h-8 text-red-500" />
                   </div>
                   <h2 className="text-2xl font-bold text-black">
                     Categories
@@ -362,33 +361,33 @@ export default function Contact() {
                       onClick={() => setActiveCategory(category.id)}
                       className={`group w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all duration-300 transform hover:scale-105 ${
                         activeCategory === category.id
-                          ? "bg-gradient-to-r from-primary to-secondary text-black shadow-lg"
-                          : "bg-white/70 hover:bg-white text-gray-700 hover:shadow-md border border-gray-200"
+                          ? "bg-red-100 text-red-600 shadow-lg border-2 border-black"
+                          : "bg-white hover:bg-red-50 text-gray-700 hover:shadow-md border-2 border-black hover:border-gray-700"
                       }`}
                     >
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         activeCategory === category.id
                           ? "bg-white/20"
-                          : "bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:from-primary/20 group-hover:to-secondary/20"
+                          : "bg-red-100 group-hover:bg-red-200"
                       }`}>
                         <category.icon className={`w-6 h-6 transition-colors ${
-                          activeCategory === category.id ? "text-black" : "text-primary group-hover:text-secondary"
+                          activeCategory === category.id ? "text-red-600" : "text-red-500 group-hover:text-red-600"
                         }`} />
                       </div>
                       <div className="flex-1">
                         <div className={`font-bold text-sm ${
-                          activeCategory === category.id ? "text-black" : "text-gray-900 group-hover:text-primary"
+                          activeCategory === category.id ? "text-red-600" : "text-gray-900 group-hover:text-red-600"
                         }`}>
                           {category.name}
                         </div>
                         <div className={`text-xs ${
-                          activeCategory === category.id ? "text-black/80" : "text-gray-500"
+                          activeCategory === category.id ? "text-red-600/80" : "text-gray-500"
                         }`}>
                           {category.count} questions
                         </div>
                       </div>
                       {activeCategory === category.id && (
-                        <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                        <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
                       )}
                     </button>
                   ))}
@@ -409,8 +408,8 @@ export default function Contact() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-12"
               >
-                <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <HelpCircle className="w-10 h-10 text-black" />
+                <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <HelpCircle className="w-10 h-10 text-red-500" />
                 </div>
                 <h2 className="text-4xl font-bold text-black mb-4">
                   Frequently Asked Questions
@@ -429,36 +428,36 @@ export default function Contact() {
                     transition={{ delay: index * 0.1 }}
                     className={`group rounded-2xl overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                       expandedItems.includes(index)
-                        ? "bg-gradient-to-r from-primary/5 to-secondary/5 border-primary/30"
-                        : "bg-white border-gray-200 hover:border-primary/30"
+                        ? "bg-red-50 border-black"
+                        : "bg-white border-black hover:border-gray-700"
                     }`}
                   >
                     <button
                       onClick={() => toggleExpanded(index)}
-                      className="w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-primary/5 group-hover:to-secondary/5"
+                      className="w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-300 group-hover:bg-red-50"
                     >
                       <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                           expandedItems.includes(index)
-                            ? "bg-gradient-to-br from-primary to-secondary"
-                            : "bg-gradient-to-br from-primary/10 to-secondary/10 group-hover:from-primary/20 group-hover:to-secondary/20"
+                            ? "bg-red-100"
+                            : "bg-red-100 group-hover:bg-red-200"
                         }`}>
                           <faq.icon className={`w-6 h-6 transition-colors ${
-                            expandedItems.includes(index) ? "text-black" : "text-primary group-hover:text-secondary"
+                            expandedItems.includes(index) ? "text-red-600" : "text-red-500 group-hover:text-red-600"
                           }`} />
                         </div>
                         <h3 className={`font-bold text-lg pr-4 ${
                           expandedItems.includes(index)
-                            ? "text-primary"
-                            : "text-gray-900 group-hover:text-primary"
+                            ? "text-red-600"
+                            : "text-gray-900 group-hover:text-red-600"
                         }`}>
                           {faq.question}
                         </h3>
                       </div>
                       <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         expandedItems.includes(index)
-                          ? "bg-gradient-to-br from-primary to-secondary text-black"
-                          : "bg-gray-100 group-hover:bg-primary/10 text-gray-400 group-hover:text-primary"
+                          ? "bg-red-100 text-red-600"
+                          : "bg-gray-100 group-hover:bg-red-100 text-gray-400 group-hover:text-red-500"
                       }`}>
                         {expandedItems.includes(index) ? (
                           <ChevronUp className="w-5 h-5" />
@@ -474,9 +473,9 @@ export default function Contact() {
                         exit={{ height: 0, opacity: 0 }}
                         className="px-6 pb-5"
                       >
-                        <div className="pl-16 text-gray-700 leading-relaxed bg-gradient-to-r from-primary/5 to-secondary/5 rounded-xl p-6 border border-primary/20">
+                        <div className="pl-16 text-gray-700 leading-relaxed bg-red-50 rounded-xl p-6 border-2 border-black">
                           <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-gradient-to-br from-primary to-secondary rounded-full mt-2 flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
                             <p className="text-gray-700">{faq.answer}</p>
                           </div>
                         </div>
@@ -497,7 +496,7 @@ export default function Contact() {
                 </p>
                 <a 
                   href="mailto:hello@planetmini.com" 
-                  className="inline-flex items-center gap-2 bg-primary text-black px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center gap-2 bg-red-100 text-red-600 px-6 py-3 rounded-xl font-semibold hover:bg-red-200 transition-colors border-2 border-black"
                 >
                   <Mail className="w-4 h-4" />
                   Contact Support
@@ -513,11 +512,11 @@ export default function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-3xl p-12 border-2 border-primary/20 shadow-xl"
+          className="bg-red-50 rounded-3xl p-12 border-2 border-red-200 shadow-xl"
         >
           <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-gradient-to-br from-primary to-secondary rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Home className="w-10 h-10 text-black" />
+            <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Home className="w-10 h-10 text-red-500" />
             </div>
             <h2 className="text-4xl font-bold text-black mb-4">
               Welcome to Planet Mini
@@ -534,8 +533,8 @@ export default function Contact() {
               transition={{ delay: 0.1 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Package className="w-8 h-8 text-black" />
+              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Package className="w-8 h-8 text-red-500" />
               </div>
               <h3 className="text-xl font-bold text-black mb-3">Premium Quality</h3>
               <p className="text-gray-600">
@@ -549,8 +548,8 @@ export default function Contact() {
               transition={{ delay: 0.2 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-primary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-black" />
+              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-8 h-8 text-red-500" />
               </div>
               <h3 className="text-xl font-bold text-black mb-3">Safety First</h3>
               <p className="text-gray-600">
@@ -564,8 +563,8 @@ export default function Contact() {
               transition={{ delay: 0.3 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-black" />
+              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Truck className="w-8 h-8 text-red-500" />
               </div>
               <h3 className="text-xl font-bold text-black mb-3">Fast Delivery</h3>
               <p className="text-gray-600">
@@ -578,7 +577,7 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-center bg-white/50 rounded-2xl p-8 border border-primary/30"
+            className="text-center bg-white rounded-2xl p-8 border-2 border-black"
           >
             <h3 className="text-2xl font-bold text-black mb-4">Our Promise to Parents</h3>
             <p className="text-gray-700 leading-relaxed max-w-4xl mx-auto mb-6">
@@ -607,11 +606,11 @@ export default function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-secondary/10 to-primary/10 rounded-3xl p-12 border-2 border-secondary/20 shadow-xl"
+          className="bg-red-50 rounded-3xl p-12 border-2 border-red-200 shadow-xl"
         >
           <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-gradient-to-br from-secondary to-primary rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Building className="w-10 h-10 text-black" />
+            <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Building className="w-10 h-10 text-red-500" />
             </div>
             <h2 className="text-4xl font-bold text-black mb-4">
               Sell on Planet Mini
@@ -675,7 +674,7 @@ export default function Contact() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white/50 rounded-2xl p-8 border border-secondary/30"
+              className="bg-white rounded-2xl p-8 border-2 border-black"
             >
               <h3 className="text-xl font-bold text-black mb-6">Ready to Get Started?</h3>
               <form className="space-y-4">
@@ -683,7 +682,7 @@ export default function Contact() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Brand Name *</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
                     placeholder="Your brand name"
                   />
                 </div>
@@ -691,13 +690,13 @@ export default function Contact() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Email *</label>
                   <input
                     type="email"
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors"
+                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
                     placeholder="business@example.com"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Product Category *</label>
-                  <select className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors">
+                  <select className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors">
                     <option value="">Select category</option>
                     <option value="clothing">Baby Clothing</option>
                     <option value="toys">Toys & Games</option>
@@ -712,13 +711,13 @@ export default function Contact() {
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Tell us about your products</label>
                   <textarea
                     rows={3}
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors resize-none"
+                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors resize-none"
                     placeholder="Brief description of your products and what makes them special..."
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-secondary to-primary text-black px-6 py-4 rounded-xl font-semibold hover:from-secondary/90 hover:to-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="w-full bg-red-100 text-red-600 px-6 py-4 rounded-xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-black"
                 >
                   Apply to Sell on Planet Mini
                 </button>
@@ -732,7 +731,7 @@ export default function Contact() {
             transition={{ delay: 0.3 }}
             className="text-center"
           >
-            <div className="bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl p-6 border border-primary/30">
+            <div className="bg-white rounded-2xl p-6 border-2 border-black">
               <h3 className="text-xl font-bold text-black mb-3">Join Our Growing Community</h3>
               <p className="text-gray-700 mb-4">
                 Become part of Planet Mini's trusted network of baby product vendors. Together, we're making parenting easier and more joyful for families everywhere.

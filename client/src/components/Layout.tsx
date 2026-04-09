@@ -15,7 +15,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <motion.main
           key={location}
           initial={{ opacity: 0, y: 15 }}

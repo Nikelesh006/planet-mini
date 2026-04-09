@@ -126,7 +126,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
               <button
                 onClick={handleQuickAdd}
                 disabled={!product.inStock}
-                className="w-full bg-white text-black py-2 px-3 text-sm font-medium hover:bg-gradient-to-r hover:from-primary hover:to-secondary transition-all duration-200 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg border border-gray-300"
+                className="w-full bg-white text-black py-2 px-3 text-sm font-medium hover:bg-red-100 hover:text-red-700 transition-all duration-200 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg border border-gray-300"
               >
                 {product.inStock ? "Quick Add" : "Out of Stock"}
               </button>
