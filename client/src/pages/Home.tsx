@@ -866,7 +866,7 @@ export default function Home() {
                     transition={{ duration: 0.5, delay: 0.3 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-full font-bold text-lg hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 shadow-xl"
+                    className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-black/90 transition-all duration-300 shadow-xl"
                   >
                     Explore More
                   </motion.button>
@@ -1264,7 +1264,14 @@ export default function Home() {
                 <div className="h-2 bg-gradient-to-r from-gray-400 to-gray-600 rounded-t-3xl"></div>
                 
                 <div className="p-8 text-center">
-                  <h4 className="text-2xl font-bold text-black mb-3">Basic Set</h4>
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <h4 className="text-2xl font-bold text-black">Basic Set</h4>
+                    <img 
+                      src="/must-have.png" 
+                      alt="Must Have" 
+                      className="w-8 h-8 object-contain"
+                    />
+                  </div>
                   <div className="mb-6">
                     <span className="text-5xl font-bold text-black">₹1499</span>
                   </div>
@@ -1331,7 +1338,14 @@ export default function Home() {
                 <div className="h-2 bg-gradient-to-r from-primary to-secondary rounded-t-3xl"></div>
                 
                 <div className="p-10 text-center">
-                  <h4 className="text-2xl font-bold text-black mb-3">Deluxe Set</h4>
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <h4 className="text-2xl font-bold text-black">Deluxe Set</h4>
+                    <img 
+                      src="/premium.png" 
+                      alt="Premium" 
+                      className="w-8 h-8 object-contain"
+                    />
+                  </div>
                   <div className="mb-6">
                     <span className="text-5xl font-bold text-black">₹2299</span>
                   </div>
@@ -1390,14 +1404,21 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
                 whileHover={{ y: -8, scale: 1.03 }}
-                className="group relative bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-100 rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-400 overflow-hidden border-3 border-amber-500 transform scale-105"
+                className="group relative  rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-400 overflow-hidden border-3 border-amber-500 transform scale-105"
               >
                                 
                 {/* Header with gradient accent */}
                 <div className="h-2 bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 rounded-t-3xl"></div>
                 
                 <div className="p-8 text-center">
-                  <h4 className="text-2xl font-bold text-black mb-3">Premium Set</h4>
+                  <div className="flex items-center justify-center gap-3 mb-3">
+                    <h4 className="text-2xl font-bold text-black">Premium Set</h4>
+                    <img 
+                      src="/diamond.png" 
+                      alt="Diamond" 
+                      className="w-8 h-8 object-contain"
+                    />
+                  </div>
                   <div className="mb-6">
                     <span className="text-5xl font-bold text-black">₹3499</span>
                   </div>

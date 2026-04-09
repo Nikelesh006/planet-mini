@@ -132,12 +132,21 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
           // Add product to local state immediately
           const isLiked = likedProducts.some(p => p.id === product.id);
           
+          console.log('LikeContext toggleLike:', {
+            productId: product.id,
+            productName: product.name,
+            isLikedBefore: isLiked,
+            currentLikedProducts: likedProducts.map(p => ({ id: p.id, name: p.name }))
+          });
+          
           if (!isLiked) {
             setLikedProducts(prev => [...prev, product]);
-            toast.success('Added to likes ❤️');
+            toast.success('Added to likes ');
+            console.log('Product added to likes:', product.name);
           } else {
             setLikedProducts(prev => prev.filter(p => p.id !== product.id));
-            toast.success('Removed from likes ❤️');
+            toast.success('Removed from likes ');
+            console.log('Product removed from likes:', product.name);
           }
         }
       }
