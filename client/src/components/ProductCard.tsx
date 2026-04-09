@@ -37,7 +37,16 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
   const { toast } = useToast();
 
-  const isWishlisted = likedProducts.some(p => p.id === product.id.toString());
+  const isWishlisted = likedProducts.some(p => p.id === product.id);
+
+  // Debug logging
+  console.log('ProductCard Debug:', {
+    productId: product.id,
+    productName: product.name,
+    likedProducts: likedProducts.map(p => ({ id: p.id, name: p.name })),
+    isWishlisted,
+    likedProductsCount: likedProducts.length
+  });
 
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
@@ -123,19 +132,19 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
       const productForWishlist = {
 
-        id: product.id.toString(),
+        id: product.id,
 
         name: product.name,
 
         price: Number(product.price),
 
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
 
         image: product.image,
 
         category: product.category,
 
-        subcategory: product.subcategory || undefined,
+        subcategory: product.subcategory || null,
 
         slug: product.slug,
 
@@ -143,15 +152,25 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         reviews: product.reviews,
 
-        inStock: product.inStock === null ? undefined : product.inStock,
+        inStock: product.inStock === null ? null : product.inStock,
 
-        isNew: product.isNew === null ? undefined : product.isNew,
+        isNew: product.isNew === null ? null : product.isNew,
 
         description: product.description,
+
+        colors: null,
+
+        sizes: null
 
       };
 
       
+
+      console.log('https://planet-mini.onrender.com/api/profile/${user.id}/wishlist');
+      console.log('Product for wishlist:', productForWishlist);
+      
+      // Debug: Check current liked products before toggle
+      console.log('Before toggle - Current liked products:', likedProducts.map(p => ({ id: p.id, name: p.name })));
 
       toggleLike(productForWishlist);
 
@@ -236,7 +255,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
             >
 
-              <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-primary text-primary' : ''}`} />
+              <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500 hover:fill-red-500'}`} />
 
             </button>
 
