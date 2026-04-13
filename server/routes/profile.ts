@@ -96,11 +96,20 @@ router.get('/:userId', requireAuth, async (req: any, res: any) => {
 
     
 
-    res.json(profile);
+    // Calculate orders stats
+    const orders = profile.orders || [];
+    const ordersCount = orders.length;
+    const totalSpent = orders.reduce((sum: number, order: any) => sum + (order.total || 0), 0);
+
+    res.json({
+      ...profile.toObject(),
+      ordersCount,
+      totalSpent
+    });
 
   } catch (error) {
 
-    console.error('❌ Profile GET - Error:', error);
+    console.error(' Error fetching profile:', error);
 
     res.status(500).json({ error: 'Failed to fetch profile' });
 
@@ -108,9 +117,7 @@ router.get('/:userId', requireAuth, async (req: any, res: any) => {
 
 });
 
-
-
-// 2. POST /api/profile/:userId  ← useUpdateProfile(userId)
+// 2. POST /api/profile/:userId  useUpdateProfile(userId)
 
 router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
@@ -509,12 +516,13 @@ router.post('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
     const userId = req.params.userId;
     const { productId } = req.body;
     
-    if (req.user.id !== userId) {
+    const tokenUserId = req.user.sub || req.user.id;
+    if (tokenUserId !== userId) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
-    
+
     let profile = await Profile.findOne({ userId });
-    
+
     // Auto-create profile if not found
     if (!profile) {
       profile = await Profile.create({
@@ -527,15 +535,21 @@ router.post('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
       });
       console.log('✅ Auto-created profile for user:', userId);
     }
-    
-    // Add to wishlist if not already there
-    if (!profile.wishlist.includes(productId)) {
+
+    // Toggle wishlist: add if not present, remove if present
+    const isInWishlist = profile.wishlist.includes(productId);
+    if (isInWishlist) {
+      // Remove from wishlist
+      profile.wishlist = profile.wishlist.filter((id: string) => id !== productId);
+      console.log('🗑️ Removed from wishlist:', productId);
+    } else {
+      // Add to wishlist
       profile.wishlist.push(productId);
-      const updatedProfile = await profile.save();
-      console.log('✅ Added to wishlist:', updatedProfile.wishlist);
+      console.log('✅ Added to wishlist:', productId);
     }
-    
-    res.json({ success: true, wishlist: profile.wishlist });
+    await profile.save();
+
+    res.json({ success: true, wishlist: profile.wishlist, action: isInWishlist ? 'removed' : 'added' });
   } catch (error) {
     console.error('❌ Failed to add to wishlist:', error);
     res.status(500).json({ error: 'Failed to add to wishlist' });
@@ -604,10 +618,11 @@ router.delete('/:userId/wishlist/:productId', requireAuth, async (req: any, res:
   try {
     const { userId, productId } = req.params;
     
-    if (req.user.id !== userId) {
+    const tokenUserId = req.user.sub || req.user.id;
+    if (tokenUserId !== userId) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
-    
+
     // Use atomic $pull operation to avoid version conflicts
     const updatedProfile = await Profile.findOneAndUpdate(
       { userId },
@@ -625,6 +640,67 @@ router.delete('/:userId/wishlist/:productId', requireAuth, async (req: any, res:
   } catch (error) {
     console.error('❌ Failed to remove from wishlist:', error);
     res.status(500).json({ error: 'Failed to remove from wishlist' });
+  }
+});
+
+// POST /api/profile/:userId/orders  ← Create new order
+router.post('/:userId/orders', requireAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.params.userId;
+    const { items, total } = req.body;
+
+    if (req.user.id !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    // Generate order ID
+    const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+
+    // Add order to profile
+    const newOrder = {
+      orderId,
+      items,
+      total,
+      status: 'pending',
+      createdAt: new Date()
+    };
+
+    profile.orders = profile.orders || [];
+    profile.orders.push(newOrder);
+    await profile.save();
+
+    console.log('✅ Order created:', orderId, 'Total:', total);
+
+    res.json({ success: true, order: newOrder, orders: profile.orders });
+  } catch (error) {
+    console.error('❌ Failed to create order:', error);
+    res.status(500).json({ error: 'Failed to create order' });
+  }
+});
+
+// GET /api/profile/:userId/orders  ← Get user orders
+router.get('/:userId/orders', requireAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.params.userId;
+
+    if (req.user.id !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    res.json(profile.orders || []);
+  } catch (error) {
+    console.error('❌ Failed to fetch orders:', error);
+    res.status(500).json({ error: 'Failed to fetch orders' });
   }
 });
 

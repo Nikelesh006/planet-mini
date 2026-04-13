@@ -56,7 +56,7 @@ interface ProductFormData {
 
   originalPrice: string;
 
-  category: "style" | "home";
+  category: "" | "style" | "home" | "care" | "offers";
 
   subcategory: string;
 
@@ -122,7 +122,7 @@ export default function AddProduct() {
 
     originalPrice: '',
 
-    category: 'style',
+    category: '',
 
     subcategory: '',
 
@@ -166,7 +166,7 @@ export default function AddProduct() {
 
       originalPrice: '',
 
-      category: 'style',
+      category: '',
 
       subcategory: '',
 
@@ -210,7 +210,7 @@ export default function AddProduct() {
 
         originalPrice: productData.originalPrice?.toString() || '',
 
-        category: (productData.category as "style" | "home") || 'style',
+        category: (productData.category as "" | "style" | "home" | "care" | "offers") || '',
 
         subcategory: productData.subcategory || '',
 
@@ -232,11 +232,11 @@ export default function AddProduct() {
 
 
 
-  const subcategoryOptions = {
+  const subcategoryOptions: Record<string, string[]> = {
 
     style: [],
 
-    home: ["Shop by Style", "Latest Style Products", "Baby Care Essentials", "Super Saver Offers", "Featured Products"]
+    home: ["Baby Care Essentials", "Muslin Clothings", "Combo Offers", "Gifting"]
 
   };
 
@@ -1196,7 +1196,7 @@ export default function AddProduct() {
 
                       <option value="">Select subcategory</option>
 
-                      {subcategoryOptions[formData.category]?.map(option => (
+                      {subcategoryOptions[formData.category || 'none']?.map((option: string) => (
 
                         <option key={option} value={option}>{option}</option>
 

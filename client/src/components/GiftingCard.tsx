@@ -19,7 +19,7 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
   const { addToCart } = useCart();
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
   const { toast } = useToast();
-  const isWishlisted = likedProducts.some(p => p.id === Number(product.id));
+  const isWishlisted = likedProducts.some(p => p.id === product.id);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -50,7 +50,7 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
     
     executeWithAuth(() => {
       const productForWishlist = {
-        id: Number(product.id),
+        id: product.id,
         name: product.name,
         price: Number(product.price),
         originalPrice: product.originalPrice ? Number(product.originalPrice) : null,

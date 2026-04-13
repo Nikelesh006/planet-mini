@@ -19,7 +19,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
   const { addToCart } = useCart();
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
   const { toast } = useToast();
-  const isWishlisted = likedProducts.some(p => p.id === Number(product.id));
+  const isWishlisted = likedProducts.some(p => p.id === product.id);
   
   // Image navigation state (for future multiple images support)
   // const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -57,7 +57,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
     
     executeWithAuth(() => {
       const productForWishlist = {
-        id: Number(product.id),
+        id: product.id,
         name: product.name,
         price: Number(product.price),
         originalPrice: product.originalPrice ? Number(product.originalPrice) : null,

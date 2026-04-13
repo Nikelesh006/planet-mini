@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
 
 export default function CartPage() {
-  const { state, updateQuantity, removeFromCart, clearCart } = useCart();
+  const { state, removeFromCart, clearCart } = useCart();
   const { user } = useAuth(); // Move useAuth to top level
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
@@ -226,7 +226,14 @@ export default function CartPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <motion.div
+      key="cart"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="min-h-screen bg-white"
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -239,9 +246,8 @@ export default function CartPage() {
           <div className="lg:col-span-2">
             {/* Table Header */}
             <div className="grid grid-cols-12 gap-4 pb-4 border-b border-gray-200 text-sm text-gray-600">
-              <div className="col-span-6">Product Details</div>
+              <div className="col-span-8">Product Details</div>
               <div className="col-span-2 text-center">Price</div>
-              <div className="col-span-2 text-center">Quantity</div>
               <div className="col-span-2 text-center">Subtotal</div>
             </div>
 
@@ -250,7 +256,7 @@ export default function CartPage() {
               {state.items.map((item, index) => (
                 <div key={getCartItemKey(item, index)} className="grid grid-cols-12 gap-4 py-6 border-b border-gray-100 items-center">
                   {/* Product Details */}
-                  <div className="col-span-6 flex gap-4">
+                  <div className="col-span-8 flex gap-4">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -276,25 +282,6 @@ export default function CartPage() {
                   {/* Price */}
                   <div className="col-span-2 text-center">
                     <span className="text-xl font-bold text-black">{formatPrice(item.price)}</span>
-                  </div>
-
-                  {/* Quantity */}
-                  <div className="col-span-2 flex justify-center">
-                    <div className="flex items-center gap-2 border-2 border-gray-200 rounded-xl">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="px-4 py-2 text-black hover:bg-primary/10 hover:border-primary transition-colors rounded-l-lg"
-                      >
-                        -
-                      </button>
-                      <span className="px-4 py-2 text-black min-w-[40px] text-center font-semibold">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="px-4 py-2 text-black hover:bg-primary/10 hover:border-primary transition-colors rounded-r-lg"
-                      >
-                        +
-                      </button>
-                    </div>
                   </div>
 
                   {/* Subtotal */}
@@ -402,6 +389,6 @@ export default function CartPage() {
 
       {/* Confetti Animation */}
       <Confetti trigger={showConfetti} />
-    </div>
+    </motion.div>
   );
 }

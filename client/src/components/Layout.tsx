@@ -15,14 +15,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         <motion.main
           key={location}
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -15 }}
-          transition={{ 
-            duration: 0.4, 
+          transition={{
+            duration: 0.4,
             ease: [0.4, 0.0, 0.2, 1],
             stagger: 0
           }}

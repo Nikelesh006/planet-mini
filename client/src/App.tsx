@@ -1,5 +1,4 @@
-import { Switch, Route } from "wouter";
-import { Router as WouterRouter } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 
 
 
@@ -83,7 +82,6 @@ import ShopStyle from "./pages/ShopStyle";
 
 
 
-import ProductDetail from "./pages/ProductDetail";
 import ProductDetailPage from "./pages/ProductDetailPage";
 
 
@@ -137,146 +135,40 @@ import { Layout } from "./components/Layout";
 
 
 function Router() {
-
-
+  const [location] = useLocation();
 
   return (
-
-
-
     <Layout>
-
-
-
-      <WouterRouter>
-
-        <Switch>
-
-
-
-          <Route path="/" component={Home} />
-
-
-
+      <Switch location={location}>
+        <Route path="/" component={Home} />
         <Route path="/about" component={About} />
-
-
-
         <Route path="/contact" component={Contact} />
-
-
-
         <Route path="/faq" component={FAQ} />
-
-
-
         <Route path="/admin" component={AdminDashboard} />
-
-
-
         <Route path="/admin/add-product" component={AddProduct} />
-
-
-
         <Route path="/admin/product-list" component={ProductList} />
-
-
-
         <Route path="/admin/orders" component={AdminOrders} />
-
-
-
         <Route path="/account" component={Profile} />
-
-
-
         <Route path="/profile" component={Profile} />
-
-
-
         <Route path="/orders" component={Orders} />
-
-
-
         <Route path="/orders-test" component={OrdersTest} />
-
-
-
         <Route path="/know-us" component={KnowUs} />
-
-
-
         <Route path="/shop" component={Shop} />
-
-
-
         <Route path="/shop/style" component={ShopStyle} />
-
-
-
-
-
-
-
         <Route path="/shop/care" component={ShopCare} />
-
-
-
         <Route path="/shop/offers" component={ShopOffers} />
-
-
-
         <Route path="/cart" component={CartPage} />
-
-
-
         <Route path="/likes" component={LikesPage} />
-
-
-
         <Route path="/add-address" component={AddAddressPage} />
-
-
-
         <Route path="/search" component={Search} />
-
-
-
         <Route path="/products/:slug" component={ProductDetailPage} />
-
-
-
         <Route path="/privacy" component={Home} />
-
-
-
         <Route path="/terms" component={Home} />
-
-
-
         <Route component={NotFound} />
-
-
-
       </Switch>
-
-
-
-      </WouterRouter>
-
-
-
     </Layout>
-
-
-
   );
-
-
-
 }
-
-
 
 
 

@@ -14,7 +14,14 @@ export default function LikesPage() {
   console.log('❤️ LikesPage: likedProducts data:', likedProducts);
 
   return (
-    <div className="min-h-screen bg-white">
+    <motion.div
+      key="likes"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="min-h-screen bg-white"
+    >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
@@ -70,6 +77,6 @@ export default function LikesPage() {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

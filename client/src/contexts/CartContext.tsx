@@ -94,10 +94,6 @@ type CartAction =
 
 
 
-  | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
-
-
-
   | { type: 'REMOVE_FROM_CART'; payload: { id: string } }
 
 
@@ -212,124 +208,21 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 
         items: newItems,
 
-
-
         totalItems: newItems.reduce((sum, item) => sum + item.quantity, 0),
-
-
-
-        totalPrice: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-
-
-
+        totalPrice: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
       };
-
-
-
-    
-
-
-
-    case 'UPDATE_QUANTITY':
-
-
-
-      const updatedItems = state.items.map(item =>
-
-
-
-        item.id === action.payload.id
-
-
-
-          ? { ...item, quantity: action.payload.quantity }
-
-
-
-          : item
-
-
-
-      ).filter(item => item.quantity > 0);
-
-
-
-      
-
-
-
-      return {
-
-
-
-        ...state,
-
-
-
-        items: updatedItems,
-
-
-
-        totalItems: updatedItems.reduce((sum, item) => sum + item.quantity, 0),
-
-
-
-        totalPrice: updatedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-
-
-
-      };
-
-
-
-    
-
-
 
     case 'REMOVE_FROM_CART':
-
-
-
       const filteredItems = state.items.filter(item => item.id !== action.payload.id);
 
-
-
-      
-
-
-
       return {
-
-
-
         ...state,
-
-
-
         items: filteredItems,
-
-
-
         totalItems: filteredItems.reduce((sum, item) => sum + item.quantity, 0),
-
-
-
-        totalPrice: filteredItems.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-
-
-
+        totalPrice: filteredItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
       };
 
-
-
-    
-
-
-
     case 'CLEAR_CART':
-
-
-
       return {
 
 
@@ -419,10 +312,6 @@ export const CartContext = createContext<{
 
 
   addToCart: (product: Omit<CartItem, 'quantity'>) => void;
-
-
-
-  updateQuantity: (id: string, quantity: number) => void;
 
 
 
@@ -516,29 +405,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const updateQuantity = async (id: string, quantity: number) => {
-    if (!user) return;
-
-    try {
-      const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/cart/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ quantity }),
-      });
-
-      if (response.ok) {
-        // Refresh cart from backend
-        await loadCart();
-      }
-    } catch (error) {
-      console.error('Error updating cart:', error);
-    }
-  };
-
   const removeFromCart = async (id: string) => {
     if (!user) return;
 
@@ -594,10 +460,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 
       addToCart,
-
-
-
-      updateQuantity,
 
 
 

@@ -138,10 +138,10 @@ export default function Contact() {
                     <div className="flex-1">
                       <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Email</h3>
                       <p className="text-gray-700 font-medium mb-1">hello@planetmini.com</p>
-                      <p className="text-sm text-gray-500 flex items-center gap-1">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <div className="text-sm text-gray-500 flex items-center gap-1">
+                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                         We respond within 24 hours
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>

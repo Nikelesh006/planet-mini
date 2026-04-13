@@ -40,6 +40,14 @@ const profileSchema = new mongoose.Schema({
 
   cartItems: { type: Array, default: [] },
 
+  orders: [{
+    orderId: String,
+    items: Array,
+    total: Number,
+    status: { type: String, default: 'pending' },
+    createdAt: { type: Date, default: Date.now }
+  }],
+
   joined: { type: String, default: () => new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) },
 
   location: { type: String, default: 'USA' }

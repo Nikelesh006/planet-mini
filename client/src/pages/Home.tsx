@@ -473,8 +473,14 @@ export default function Home() {
 
 
   return (
-
-    <div className="min-h-screen space-y-4">
+    <motion.div
+      key="home"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      className="min-h-screen space-y-4"
+    >
 
       {/* Hero Section with Image Slider */}
 
@@ -2136,7 +2142,7 @@ export default function Home() {
           </motion.div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 
 }
