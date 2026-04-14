@@ -39,6 +39,7 @@ import uploadRoutes from "./routes/upload";
 
 
 import addressRoutes from "./routes/addresses";
+import bannerRoutes from "./routes/banners";
 
 
 
@@ -1281,6 +1282,14 @@ export async function registerRoutes(
 
 
   app.use('/api/addresses', addressRoutes);
+
+
+
+  // Banner routes
+
+
+
+  app.use('/api/banners', bannerRoutes);
 
 
 

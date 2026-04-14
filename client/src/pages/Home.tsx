@@ -95,6 +95,43 @@ export default function Home() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Banners state
+  const [banners, setBanners] = useState<string[]>([]);
+  const [bannersLoading, setBannersLoading] = useState(true);
+
+  // Fetch banners from API
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        const response = await fetch('/api/banners');
+        if (response.ok) {
+          const result = await response.json();
+          if (result.data && result.data.length > 0) {
+            // Sort by order and extract image URLs
+            const sortedBanners = result.data
+              .sort((a: any, b: any) => a.order - b.order)
+              .map((banner: any) => banner.imageUrl);
+            setBanners(sortedBanners);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching banners:', error);
+      } finally {
+        setBannersLoading(false);
+      }
+    };
+
+    fetchBanners();
+  }, []);
+
+  // Fallback to default images if no banners in database
+  const sliderImages = banners.length > 0 ? banners : [
+    "/banner-hero.jpg",
+    "/banner-hero2.png",
+    "/banner-hero3.png",
+    "/banner-hero4.png"
+  ];
+
   
 
   // Latest products scroll state
@@ -126,22 +163,6 @@ export default function Home() {
   const [isAtEndFeatured, setIsAtEndFeatured] = useState(false);
 
   const featuredProductsRef = useRef<HTMLDivElement>(null);
-
-
-
-  // Slider images - easily change these URLs
-
-  const sliderImages = [
-
-    "/banner-hero.jpg",
-
-    "/banner-hero2.png", 
-
-    "/banner-hero3.png",
-
-    "/banner-hero4.png"
-
-  ];
 
 
 
