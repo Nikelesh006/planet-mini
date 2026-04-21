@@ -36,7 +36,18 @@ export default function Home() {
   const [showComboInfoModal, setShowComboInfoModal] = useState(false);
 
   // Discount modal state
-  const [showDiscountModal, setShowDiscountModal] = useState(true);
+  const [showDiscountModal, setShowDiscountModal] = useState(() => {
+    // Check if user has already dismissed the discount modal
+    const discountDismissed = localStorage.getItem('discountModalDismissed');
+    return discountDismissed === null; // Show modal only if not dismissed
+  });
+
+  // Handle discount modal dismiss
+  const handleDiscountDismiss = () => {
+    localStorage.setItem('discountModalDismissed', 'true');
+    localStorage.setItem('discountModalDismissedDate', new Date().toISOString());
+    setShowDiscountModal(false);
+  };
 
   // Cookie modal state
   const [showCookieModal, setShowCookieModal] = useState(() => {
@@ -607,7 +618,7 @@ export default function Home() {
 
           {/* Style Categories Grid */}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-100/40 via-gray-50/50 to-gray-100/40 py-10 rounded-3xl shadow-inner">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 px-4 sm:px-6 lg:px-8 bg-red-50 py-10 rounded-3xl shadow-inner">
 
             {/* Jhablas */}
 
@@ -637,7 +648,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Jhablas</h3>
+                  <h3 className="text-base font-bold text-black text-center">Jhablas</h3>
 
                 </div>
 
@@ -675,7 +686,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Towels & Blankets</h3>
+                  <h3 className="text-base font-bold text-black text-center">Towels & Blankets</h3>
 
                 </div>
 
@@ -713,7 +724,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Nappies</h3>
+                  <h3 className="text-base font-bold text-black text-center">Nappies</h3>
 
                 </div>
 
@@ -751,7 +762,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-secondary transition-colors">Wipes</h3>
+                  <h3 className="text-base font-bold text-black text-center">Wipes</h3>
 
                 </div>
 
@@ -789,7 +800,7 @@ export default function Home() {
 
                 <div className="p-3">
 
-                  <h3 className="text-base font-bold text-black text-center group-hover:text-black transition-colors">Beds</h3>
+                  <h3 className="text-base font-bold text-black text-center">Beds</h3>
 
                 </div>
 
@@ -2031,7 +2042,7 @@ export default function Home() {
                 </div>
               </div>
               <button
-                onClick={() => setShowDiscountModal(false)}
+                onClick={handleDiscountDismiss}
                 className="text-gray-400 hover:text-black transition-colors"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2043,7 +2054,7 @@ export default function Home() {
                 <span>Code - </span><span className="text-red-500 font-bold text-lg">PMSALE10</span>
             </div>
             <button
-              onClick={() => setShowDiscountModal(false)}
+              onClick={handleDiscountDismiss}
               className="w-full bg-red-500 text-white text-sm font-semibold py-2 rounded-lg hover:bg-red-600 transition-colors shadow-md"
             >
               Shop Now
