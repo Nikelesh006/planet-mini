@@ -1,39 +1,96 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { ArrowLeft, Upload, X, Image as ImageIcon } from "lucide-react";
+import { ArrowLeft, Upload, X, Image as ImageIcon, Trash2 } from "lucide-react";
+
+interface Banner {
+  _id: string;
+  imageUrl: string;
+  alt: string;
+  order: number;
+}
 
 export default function AddBanner() {
-  const [images, setImages] = useState<(File | null)[]>([null, null, null, null]);
-  const [previews, setPreviews] = useState<(string | null)[]>([null, null, null, null]);
-  const [uploading, setUploading] = useState(false);
+  // Existing banners from database
+  const [existingBanners, setExistingBanners] = useState<Banner[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleImageChange = (index: number, file: File | null) => {
-    const newImages = [...images];
-    newImages[index] = file;
-    setImages(newImages);
+  // New images to upload (up to 4 slots)
+  const [newImages, setNewImages] = useState<(File | null)[]>([null, null, null, null]);
+  const [newPreviews, setNewPreviews] = useState<(string | null)[]>([null, null, null, null]);
+
+  const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  // Fetch existing banners on mount
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+
+  const fetchBanners = async () => {
+    try {
+      const response = await fetch('/api/banners');
+      if (response.ok) {
+        const result = await response.json();
+        // Sort by order
+        const sorted = result.data?.sort((a: Banner, b: Banner) => a.order - b.order) || [];
+        setExistingBanners(sorted);
+      }
+    } catch (error) {
+      console.error('Error fetching banners:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteBanner = async (bannerId: string) => {
+    if (!confirm('Are you sure you want to delete this banner?')) return;
+
+    setDeleting(bannerId);
+    try {
+      const response = await fetch(`/api/banners/${bannerId}`, {
+        method: 'DELETE'
+      });
+
+      if (response.ok) {
+        setExistingBanners(prev => prev.filter(b => b._id !== bannerId));
+      } else {
+        alert('Failed to delete banner');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete banner');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
+  const handleNewImageChange = (index: number, file: File | null) => {
+    const newImagesArr = [...newImages];
+    newImagesArr[index] = file;
+    setNewImages(newImagesArr);
 
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const newPreviews = [...previews];
-        newPreviews[index] = reader.result as string;
-        setPreviews(newPreviews);
+        const newPreviewsArr = [...newPreviews];
+        newPreviewsArr[index] = reader.result as string;
+        setNewPreviews(newPreviewsArr);
       };
       reader.readAsDataURL(file);
     } else {
-      const newPreviews = [...previews];
-      newPreviews[index] = null;
-      setPreviews(newPreviews);
+      const newPreviewsArr = [...newPreviews];
+      newPreviewsArr[index] = null;
+      setNewPreviews(newPreviewsArr);
     }
   };
 
-  const handleRemoveImage = (index: number) => {
-    handleImageChange(index, null);
+  const handleRemoveNewImage = (index: number) => {
+    handleNewImageChange(index, null);
   };
 
   const handleSubmit = async () => {
-    const validImages = images.filter(img => img !== null) as File[];
+    const validImages = newImages.filter(img => img !== null) as File[];
     if (validImages.length === 0) {
       alert("Please select at least one image");
       return;
@@ -59,9 +116,10 @@ export default function AddBanner() {
       const result = await response.json();
       alert(`Successfully uploaded ${result.data.length} banner(s)!`);
 
-      // Reset form
-      setImages([null, null, null, null]);
-      setPreviews([null, null, null, null]);
+      // Reset new images and refresh existing banners
+      setNewImages([null, null, null, null]);
+      setNewPreviews([null, null, null, null]);
+      fetchBanners();
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload banners");
@@ -101,31 +159,87 @@ export default function AddBanner() {
           </div>
         </div>
 
-        {/* Image Upload Grid */}
+        {/* Current Banners Section */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-black">Current Banners</h2>
+            <span className="text-gray-500 text-sm">{existingBanners.length} of 4 banners</span>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : existingBanners.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">No banners uploaded yet</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {existingBanners.map((banner, index) => (
+                <div
+                  key={banner._id}
+                  className="relative border-2 border-gray-200 rounded-xl p-4"
+                >
+                  <div className="relative">
+                    <img
+                      src={banner.imageUrl}
+                      alt={banner.alt}
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                    <button
+                      onClick={() => handleDeleteBanner(banner._id)}
+                      disabled={deleting === banner._id}
+                      className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors disabled:opacity-50"
+                    >
+                      {deleting === banner._id ? (
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : (
+                        <Trash2 className="w-4 h-4" />
+                      )}
+                    </button>
+                    <div className="absolute bottom-2 left-2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
+                      Position {index + 1}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Add New Banners Section */}
         <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-xl font-semibold text-black mb-6">Banner Images</h2>
-          
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-black">Add New Banners</h2>
+            <span className="text-gray-500 text-sm">
+              {newImages.filter(img => img !== null).length} selected
+            </span>
+          </div>
+
+          <p className="text-gray-600 mb-4 text-sm">
+            Select images to add. First image will be Position 1, second will be Position 2, etc.
+          </p>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[0, 1, 2, 3].map((index) => (
               <div
                 key={index}
-                className="relative border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-primary/50 transition-colors"
+                className={`relative border-2 ${newPreviews[index] ? 'border-solid border-primary' : 'border-dashed border-gray-300'} rounded-xl p-6 hover:border-primary/50 transition-colors`}
               >
-                {previews[index] ? (
+                {newPreviews[index] ? (
                   <div className="relative">
                     <img
-                      src={previews[index]!}
-                      alt={`Banner ${index + 1}`}
+                      src={newPreviews[index]!}
+                      alt={`New Banner ${index + 1}`}
                       className="w-full h-48 object-cover rounded-lg"
                     />
                     <button
-                      onClick={() => handleRemoveImage(index)}
+                      onClick={() => handleRemoveNewImage(index)}
                       className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
                     >
                       <X className="w-4 h-4" />
                     </button>
-                    <div className="absolute bottom-2 left-2 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                      Banner {index + 1}
+                    <div className="absolute bottom-2 left-2 bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">
+                      Will be Position {existingBanners.length + index + 1}
                     </div>
                   </div>
                 ) : (
@@ -134,11 +248,11 @@ export default function AddBanner() {
                       <Upload className="w-8 h-8 text-primary" />
                     </div>
                     <span className="text-gray-600 font-medium">Click to upload</span>
-                    <span className="text-gray-400 text-sm mt-1">Banner {index + 1}</span>
+                    <span className="text-gray-400 text-sm mt-1">Slot {index + 1}</span>
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => handleImageChange(index, e.target.files?.[0] || null)}
+                      onChange={(e) => handleNewImageChange(index, e.target.files?.[0] || null)}
                       className="hidden"
                     />
                   </label>
@@ -151,7 +265,7 @@ export default function AddBanner() {
           <div className="mt-8 flex justify-end">
             <button
               onClick={handleSubmit}
-              disabled={uploading}
+              disabled={uploading || newImages.every(img => img === null)}
               className="bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {uploading ? (
@@ -162,7 +276,7 @@ export default function AddBanner() {
               ) : (
                 <>
                   <Upload className="w-5 h-5" />
-                  Upload Banners
+                  Upload New Banners
                 </>
               )}
             </button>

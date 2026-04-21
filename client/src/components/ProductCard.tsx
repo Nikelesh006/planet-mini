@@ -48,16 +48,6 @@ export function ProductCard({ product, index }: ProductCardProps) {
     likedProductsCount: likedProducts.length
   });
 
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-
-  const toggleDescription = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDescriptionExpanded(!isDescriptionExpanded);
-  };
-
-
-
   const handleQuickAdd = (e: React.MouseEvent) => {
 
     e.preventDefault();
@@ -299,8 +289,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           {/* Description */}
           <p 
-            className="text-sm text-muted-foreground font-bold cursor-pointer line-clamp-1"
-            onClick={toggleDescription}
+            className="text-sm text-muted-foreground font-bold line-clamp-1"
           >
             {product.description || 'Premium quality product for your little one'}
           </p>

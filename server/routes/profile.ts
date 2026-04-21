@@ -6,9 +6,18 @@ import Profile from '../models/Profile';
 
 const router = express.Router();
 
-// ✅ MIDDLEWARE: Use same JWT extraction as auth/session route
+// ✅ MIDDLEWARE: Check both cookies and Authorization header
 const requireAuth = (req: any, res: any, next: any) => {
-  const token = req.cookies?.jwt;
+  // Check cookie first, then Authorization header
+  let token = req.cookies?.jwt;
+  
+  if (!token) {
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    }
+  }
+  
   if (!token) {
     return res.status(401).json({ error: 'No token provided' });
   }
@@ -359,15 +368,20 @@ router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     
 
-    // Add item to cartItems array
+    // Check if item already exists in cart
+    const existingItemIndex = profile.cartItems.findIndex((item: any) => item.id === req.body.id);
 
-    profile.cartItems.push(req.body);
+    if (existingItemIndex >= 0) {
+      // Increment quantity if item exists
+      profile.cartItems[existingItemIndex].quantity = (profile.cartItems[existingItemIndex].quantity || 1) + 1;
+      console.log('➕ Incremented quantity for existing item:', req.body.id);
+    } else {
+      // Add new item to cartItems array
+      profile.cartItems.push(req.body);
+      console.log('✅ Added new item to cart:', req.body.id);
+    }
 
     const updatedProfile = await profile.save();
-
-    console.log('✅ Added to cart:', updatedProfile.cartItems);
-
-    
 
     res.json({ success: true, cartItems: updatedProfile.cartItems });
 
@@ -508,6 +522,94 @@ router.delete('/:userId/cart/:itemId', requireAuth, async (req: any, res: any) =
     console.error('❌ Failed to remove from cart:', error);
     res.status(500).json({ error: 'Failed to remove from cart' });
   }
+});
+
+// PATCH /api/profile/:userId/cart/:itemId/increase  ← Increase item quantity
+router.patch('/:userId/cart/:itemId/increase', requireAuth, async (req: any, res: any) => {
+  console.log('>>> BACKEND: Increase quantity endpoint hit <<<');
+  console.log('Params:', req.params);
+  console.log('User:', req.user?.id);
+
+  try {
+    const { userId, itemId } = req.params;
+
+    if (req.user.id !== userId) {
+      console.log('ERROR: User ID mismatch', req.user.id, '!==', userId);
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      console.log('ERROR: Profile not found for user:', userId);
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    console.log('Current cart items:', profile.cartItems.map((i: any) => ({ id: i.id, name: i.name, qty: i.quantity })));
+
+    // Find and increment quantity
+    const cartItem = profile.cartItems.find((item: any) => item.id === itemId);
+    if (!cartItem) {
+      console.log('ERROR: Item not found in cart. Looking for ID:', itemId);
+      return res.status(404).json({ error: 'Item not found in cart' });
+    }
+
+    const oldQty = cartItem.quantity || 1;
+    cartItem.quantity = oldQty + 1;
+    await profile.save();
+
+    console.log('✅ Increased quantity:', itemId, 'from', oldQty, 'to', cartItem.quantity);
+    res.json({ success: true, cartItems: profile.cartItems });
+  } catch (error) {
+    console.error('❌ Failed to increase quantity:', error);
+    res.status(500).json({ error: 'Failed to increase quantity' });
+  }
+  console.log('>>> BACKEND: Increase quantity complete <<<');
+});
+
+// PATCH /api/profile/:userId/cart/:itemId/decrease  ← Decrease item quantity (stops at 1)
+router.patch('/:userId/cart/:itemId/decrease', requireAuth, async (req: any, res: any) => {
+  console.log('>>> BACKEND: Decrease quantity endpoint hit <<<');
+  console.log('Params:', req.params);
+
+  try {
+    const { userId, itemId } = req.params;
+
+    if (req.user.id !== userId) {
+      console.log('ERROR: User ID mismatch');
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      console.log('ERROR: Profile not found for user:', userId);
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    // Find item
+    const cartItem = profile.cartItems.find((item: any) => item.id === itemId);
+    if (!cartItem) {
+      console.log('ERROR: Item not found in cart. Looking for ID:', itemId);
+      return res.status(404).json({ error: 'Item not found in cart' });
+    }
+
+    const oldQty = cartItem.quantity || 1;
+
+    // Only decrease if quantity > 1, otherwise keep at 1
+    if (cartItem.quantity > 1) {
+      cartItem.quantity -= 1;
+      console.log('✅ Decreased quantity:', itemId, 'from', oldQty, 'to', cartItem.quantity);
+    } else {
+      console.log('ℹ️ Quantity is 1, not decreasing (minimum reached):', itemId);
+    }
+
+    await profile.save();
+
+    res.json({ success: true, cartItems: profile.cartItems });
+  } catch (error) {
+    console.error('❌ Failed to decrease quantity:', error);
+    res.status(500).json({ error: 'Failed to decrease quantity' });
+  }
+  console.log('>>> BACKEND: Decrease quantity complete <<<');
 });
 
 // 7. POST /api/profile/:userId/wishlist  ← Add to wishlist (like button)

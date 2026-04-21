@@ -3,12 +3,12 @@ import { Link, useLocation } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Confetti, useConfetti } from "@/components/ui/Confetti";
-import { ChevronDown, ArrowLeft } from 'lucide-react';
+import { ChevronDown, ArrowLeft, Minus, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
 
 export default function CartPage() {
-  const { state, removeFromCart, clearCart } = useCart();
+  const { state, removeFromCart, increaseQuantity, decreaseQuantity, clearCart } = useCart();
   const { user } = useAuth(); // Move useAuth to top level
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
@@ -246,8 +246,9 @@ export default function CartPage() {
           <div className="lg:col-span-2">
             {/* Table Header */}
             <div className="grid grid-cols-12 gap-4 pb-4 border-b border-gray-200 text-sm text-gray-600">
-              <div className="col-span-8">Product Details</div>
+              <div className="col-span-6">Product Details</div>
               <div className="col-span-2 text-center">Price</div>
+              <div className="col-span-2 text-center">Quantity</div>
               <div className="col-span-2 text-center">Subtotal</div>
             </div>
 
@@ -256,7 +257,7 @@ export default function CartPage() {
               {state.items.map((item, index) => (
                 <div key={getCartItemKey(item, index)} className="grid grid-cols-12 gap-4 py-6 border-b border-gray-100 items-center">
                   {/* Product Details */}
-                  <div className="col-span-8 flex gap-4">
+                  <div className="col-span-6 flex gap-4">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -282,6 +283,25 @@ export default function CartPage() {
                   {/* Price */}
                   <div className="col-span-2 text-center">
                     <span className="text-xl font-bold text-black">{formatPrice(item.price)}</span>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="col-span-2 flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => decreaseQuantity(item.id)}
+                      className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                      aria-label="Decrease quantity"
+                    >
+                      <Minus className="w-4 h-4 text-gray-600" />
+                    </button>
+                    <span className="w-10 text-center font-semibold text-black">{item.quantity}</span>
+                    <button
+                      onClick={() => increaseQuantity(item.id)}
+                      className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                      aria-label="Increase quantity"
+                    >
+                      <Plus className="w-4 h-4 text-gray-600" />
+                    </button>
                   </div>
 
                   {/* Subtotal */}

@@ -1,8 +1,8 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Search, Menu, User, X, Heart, LogOut } from "lucide-react";
+import { ShoppingBag, Search, Menu, User, X, Heart, LogOut, UserCircle, ShoppingBag as OrdersIcon, ChevronRight } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -19,16 +19,29 @@ export default function Navbar() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { state } = useCart();
   const { user, isLoading, logout } = useAuth();
   const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
   const { likedProducts, toggleLike, isLiked } = useLikes();
  
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setProfileDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleProfileClick = () => {
     if (!user && !isLoading) {
-      openSignInModal(); // Open sign in modal by default
+      openSignInModal();
     } else if (user) {
-      window.location.href = '/profile'; // Navigate to profile when logged in
+      setProfileDropdownOpen(!profileDropdownOpen);
     }
   };
 
@@ -150,29 +163,95 @@ export default function Navbar() {
                   />
                 </Link>
               </button>
-              <button
-                onClick={handleProfileClick}
-                className="hidden sm:flex p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all items-center gap-2"
-              >
-                {isLoading ? (
-                  <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
-                ) : user ? (
-                  user.image ? (
-                    <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  onClick={handleProfileClick}
+                  className="hidden sm:flex p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all"
+                >
+                  {isLoading ? (
+                    <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
+                  ) : user ? (
+                    user.image ? (
+                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+                    ) : (
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                        <span className="text-white text-xs font-bold">
+                          {user.name?.charAt(0) || 'U'}
+                        </span>
+                      </div>
+                    )
                   ) : (
-                    <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                      <span className="text-white text-xs font-bold">
-                        {user.name?.charAt(0) || 'U'}
-                      </span>
+                    <User className="w-5 h-5" />
+                  )}
+                </button>
+
+                {/* Profile Dropdown Menu */}
+                {profileDropdownOpen && user && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50"
+                  >
+                    {/* User Header */}
+                    <div className="flex items-center gap-3 p-4 border-b border-gray-100">
+                      {user.image ? (
+                        <img src={user.image} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                          <span className="text-white text-lg font-bold">
+                            {user.name?.charAt(0) || 'U'}
+                          </span>
+                        </div>
+                      )}
+                      <div>
+                        <p className="font-semibold text-gray-900">{user.name || 'Planet'}</p>
+                      </div>
                     </div>
-                  )
-                ) : (
-                  <User className="w-5 h-5" />
+
+                    {/* Menu Items */}
+                    <div className="py-2">
+                      <Link
+                        href="/profile"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <UserCircle className="w-5 h-5 text-red-500" />
+                          <span className="text-gray-700">My Profile</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                      </Link>
+
+                      <Link
+                        href="/orders"
+                        onClick={() => setProfileDropdownOpen(false)}
+                        className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <OrdersIcon className="w-5 h-5 text-red-500" />
+                          <span className="text-gray-700">My Orders</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                      </Link>
+
+                      <div className="h-px bg-gray-100 my-2" />
+
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors text-red-600"
+                      >
+                        <div className="flex items-center gap-3">
+                          <LogOut className="w-5 h-5" />
+                          <span>Sign Out</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </motion.div>
                 )}
-                <span className="text-sm font-medium">
-                  {isLoading ? '' : user ? user.name || 'Profile' : 'Profile'}
-                </span>
-              </button>
+              </div>
               <Link
                 href="/cart"
                 className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all relative"

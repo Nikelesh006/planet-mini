@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { useState, useEffect } from "react";
 import { Loader2, User, Settings, ShoppingBag, Heart, Package, LogOut, Edit, Camera, MapPin, Phone, Mail, Calendar, Plus, Trash2, AlertCircle, CheckCircle, X } from "lucide-react";
 import { useProfile, useUpdateProfile, useAddBabyInfo, useDeleteBabyInfo } from "../hooks/useProfile";
+import { useOrders } from "../hooks/useOrders";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Profile() {
@@ -20,9 +21,13 @@ export default function Profile() {
   const userId = authUser?.id || '';
   
   const { data: profile, isLoading, error } = useProfile(userId);
+  const { data: orders } = useOrders(userId);
   const updateProfile = useUpdateProfile(userId);
   const addBabyInfo = useAddBabyInfo(userId);
   const deleteBabyInfo = useDeleteBabyInfo(userId);
+
+  const totalOrders = orders?.length || 0;
+  const totalSpent = orders?.reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0) || 0;
 
   const handleSaveProfile = async (formData: any) => {
     try {
@@ -114,9 +119,17 @@ export default function Profile() {
               {/* User Info */}
               <div className="flex items-start gap-6 mb-8">
                 <div className="relative">
-                  <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                    {initials}
-                  </div>
+                  {authUser?.image ? (
+                    <img
+                      src={authUser.image}
+                      alt="Profile"
+                      className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-3xl font-bold border-4 border-white shadow-lg">
+                      {initials}
+                    </div>
+                  )}
                   <button className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-primary to-secondary text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
                     <Camera className="w-5 h-5" />
                   </button>
@@ -318,7 +331,7 @@ export default function Profile() {
                       <button
                         onClick={handleAddBaby}
                         disabled={addBabyInfo.isPending}
-                        className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg"
+                        className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                       >
                         {addBabyInfo.isPending ? 'Adding...' : 'Add Baby'}
                       </button>
@@ -370,42 +383,6 @@ export default function Profile() {
                     <p className="text-sm text-gray-600">View order history and tracking</p>
                   </div>
                 </Link>
-                <Link
-                  href="/profile/wishlist"
-                  className="group flex items-center gap-4 p-4 bg-gradient-to-r from-secondary/5 to-transparent rounded-2xl border border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-md"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center">
-                    <Heart className="w-6 h-6 text-black" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="font-bold text-black group-hover:text-secondary transition-colors">Wishlist</span>
-                    <p className="text-sm text-gray-600">{profile?.wishlist?.length || 0} items saved</p>
-                  </div>
-                </Link>
-                <Link
-                  href="/profile/settings"
-                  className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                    <Settings className="w-6 h-6 text-black" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="font-bold text-black group-hover:text-primary transition-colors">Settings</span>
-                    <p className="text-sm text-gray-600">Account preferences and privacy</p>
-                  </div>
-                </Link>
-                <Link
-                  href="/profile/addresses"
-                  className="group flex items-center gap-4 p-4 bg-gradient-to-r from-secondary/5 to-transparent rounded-2xl border border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-md"
-                >
-                  <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-black" />
-                  </div>
-                  <div className="flex-1">
-                    <span className="font-bold text-black group-hover:text-secondary transition-colors">Addresses</span>
-                    <p className="text-sm text-gray-600">Manage shipping addresses</p>
-                  </div>
-                </Link>
               </div>
             </div>
           </motion.div>
@@ -423,15 +400,15 @@ export default function Profile() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Total Orders</span>
-                  <span className="font-bold text-primary text-lg">{profile?.ordersCount || 0}</span>
+                  <span className="font-bold text-primary text-lg">{totalOrders}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Total Spent</span>
-                  <span className="font-bold text-secondary text-lg">${profile?.totalSpent || 0}</span>
+                  <span className="font-bold text-secondary text-lg">₹{totalSpent.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Member Since</span>
-                  <span className="font-bold text-black text-lg">{new Date(profile?.createdAt || Date.now()).getFullYear()}</span>
+                  <span className="font-bold text-black text-lg">{new Date(authUser?.createdAt || profile?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
                 </div>
             </div>
             </div>

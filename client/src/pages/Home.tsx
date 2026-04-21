@@ -9,7 +9,7 @@ import { MuslinCard } from "@/components/MuslinCard";
 import { ComboCard } from "@/components/ComboCard";
 import { GiftingCard } from "@/components/GiftingCard";
 
-import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts } from "@/hooks/useProducts";
+import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useMuslinProducts, useComboProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts } from "@/hooks/useProducts";
 
 import { motion } from "framer-motion";
 
@@ -83,7 +83,11 @@ export default function Home() {
 
   const { data: babyCareProducts, isLoading: babyCareLoading } = useBabyCareProducts();
 
+  const { data: muslinProducts, isLoading: muslinLoading } = useMuslinProducts();
+
   const { data: superSaverProducts, isLoading: superSaverLoading } = useSuperSaverProducts();
+
+  const { data: comboProducts, isLoading: comboLoading } = useComboProducts();
 
   const { data: featuredProducts, isLoading: featuredLoading } = useFeaturedProducts();
 
@@ -124,15 +128,13 @@ export default function Home() {
     fetchBanners();
   }, []);
 
-  // Fallback to default images if no banners in database
+  // Use admin banners if available, otherwise use fallback images
   const sliderImages = banners.length > 0 ? banners : [
     "/banner-hero.jpg",
     "/banner-hero2.png",
     "/banner-hero3.png",
     "/banner-hero4.png"
   ];
-
-  
 
   // Latest products scroll state
 
@@ -504,118 +506,61 @@ export default function Home() {
     >
 
       {/* Hero Section with Image Slider */}
-
       <section className="relative w-full h-[50vh] min-h-[300px] sm:h-[60vh] md:h-[70vh] max-h-[600px]">
-
         <div className="relative w-full h-full overflow-hidden">
-
           <div className="relative w-full h-full">
-
             {/* Image Slider */}
-
             <div className="relative w-full h-full">
-
               {/* Slider Images */}
-
               <div className="relative w-full h-full">
-
                 {sliderImages.map((image, index) => (
-
                   <img 
-
                     key={index}
-
                     src={image}
-
                     alt={`Hero Slide ${index + 1}`} 
-
                     className={`w-full h-full object-cover transition-opacity duration-1000 ${
-
                       index === currentSlide ? 'opacity-100' : 'opacity-0 hidden'
-
                     }`}
-
                   />
-
                 ))}
-
               </div>
-
               
-
               {/* Slider Controls */}
-
               <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
-
                 {sliderImages.map((_, index) => (
-
                   <button 
-
                     key={index}
-
                     onClick={() => goToSlide(index)}
-
                     className={`w-4 h-4 rounded-full transition-all duration-300 ${
-
                       index === currentSlide 
-
                         ? 'bg-white opacity-100 w-8' 
-
                         : 'bg-white/50 hover:bg-white/75'
-
                     }`}
-
                   />
-
                 ))}
-
               </div>
-
               
-
               {/* Navigation Arrows */}
-
               <button 
-
                 onClick={goToPrevSlide}
-
                 className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
-
               >
-
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-
                 </svg>
-
               </button>
-
               <button 
-
                 onClick={goToNextSlide}
-
                 className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
-
               >
-
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-
                 </svg>
-
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       </section>
-
-
 
       {/* Shop by Style Section */}
 
@@ -1013,11 +958,11 @@ export default function Home() {
 
           <div className="w-full px-4 sm:px-6 lg:px-8">
 
-            {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
+            {!muslinLoading && muslinProducts && muslinProducts.length > 0 && (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
 
-                  {babyCareProducts.slice(0, 4).map((product, index) => (
+                  {muslinProducts.slice(0, 4).map((product, index) => (
 
                     <MuslinCard key={product.id || `muslin-${index}`} product={product} index={index} />
 
@@ -1043,11 +988,11 @@ export default function Home() {
               </>
             )}
 
-            {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
+            {!muslinLoading && (!muslinProducts || muslinProducts.length === 0) && (
 
               <div className="text-center py-12">
 
-                <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                <Shirt className="w-16 h-16 mx-auto text-gray-400 mb-4" />
 
                 <h3 className="text-xl font-semibold text-black mb-2">No Muslin Products</h3>
 
@@ -1057,7 +1002,7 @@ export default function Home() {
 
             )}
 
-            {babyCareLoading && (
+            {muslinLoading && (
 
               <div className="flex justify-center py-8">
 
@@ -1119,46 +1064,48 @@ export default function Home() {
             
           </motion.div>
 
-          {!superSaverLoading && superSaverProducts && superSaverProducts.length > 0 && (
+          {!comboLoading && comboProducts && comboProducts.length > 0 && (
 
             <div className="mt-16">
               <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 max-w-6xl mx-auto">
-                {superSaverProducts.slice(0, 3).map((product, index) => (
+                {comboProducts.slice(0, 3).map((product, index) => (
                   <React.Fragment key={product.id || `combo-${index}`}>
-                    {/* Product Image Only */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
-                      className="group relative transition-all duration-300 overflow-hidden flex-shrink-0"
-                    >
-                      {/* Discount Badge */}
-                      {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
-                        <div className="absolute top-4 left-4 z-20">
-                          <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                            -{Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}%
+                    {/* Product Image - Clickable */}
+                    <Link href={`/products/${product.slug}`}>
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        className="group relative transition-all duration-300 overflow-hidden flex-shrink-0 cursor-pointer"
+                      >
+                        {/* Discount Badge */}
+                        {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
+                          <div className="absolute top-4 left-4 z-20">
+                            <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                              -{Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}%
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Combo Badge - only show if no discount */}
-                      {!(product.originalPrice && Number(product.originalPrice) > Number(product.price || 0)) && (
-                        <div className="absolute top-4 left-4 z-20">
-                          <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
-                            3 PACK COMBO
+                        {/* Combo Badge - only show if no discount */}
+                        {!(product.originalPrice && Number(product.originalPrice) > Number(product.price || 0)) && (
+                          <div className="absolute top-4 left-4 z-20">
+                            <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
+                              3 PACK COMBO
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
 
-                      {/* Large Product Image */}
-                      <div className="aspect-[4/5] w-56 lg:w-64 flex items-center justify-center relative bg-transparent">
-                        <img
-                          src={product.image}
-                          alt={product.name}
-                          className="w-full h-full object-cover rounded-3xl transition-all duration-300"
-                        />
-                      </div>
-                    </motion.div>
+                        {/* Large Product Image */}
+                        <div className="aspect-[4/5] w-56 lg:w-64 flex items-center justify-center relative bg-transparent">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-cover rounded-3xl transition-all duration-300"
+                          />
+                        </div>
+                      </motion.div>
+                    </Link>
 
                     {/* Plus Sign between products */}
                     {index < 2 && (
@@ -1200,15 +1147,15 @@ export default function Home() {
 
           )}
 
-          {!superSaverLoading && (!superSaverProducts || superSaverProducts.length === 0) && (
+          {!comboLoading && (!comboProducts || comboProducts.length === 0) && (
 
             <div className="text-center py-12">
 
               <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
 
-              <h3 className="text-xl font-semibold text-black mb-2">No Special Offers</h3>
+              <h3 className="text-xl font-semibold text-black mb-2">No Combo Offers</h3>
 
-              <p className="text-gray-500">Add special offers and deals to showcase here!</p>
+              <p className="text-gray-500">Add combo offers to showcase here!</p>
 
             </div>
 

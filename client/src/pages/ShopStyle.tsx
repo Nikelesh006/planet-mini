@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { useState } from "react";
 import { BabyCareCard } from "@/components/BabyCareCard";
 import { Sparkles, Filter, X } from "lucide-react";
-import { useStyleProducts } from "@/hooks/useProducts";
+import { useShopByStyleProducts } from "@/hooks/useProducts";
 import { Slider } from "@/components/ui/slider";
 
 interface FilterSection {
@@ -18,8 +18,8 @@ interface FilterSection {
 }
 
 export default function ShopStyle() {
-  // Fetch all style products (no subcategory filter)
-  const { data: products, isLoading } = useStyleProducts();
+  // Fetch all home products (same as Home page sections)
+  const { data: products, isLoading } = useShopByStyleProducts();
   
   // Filter state
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);

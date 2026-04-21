@@ -248,15 +248,10 @@ export const useSearchProducts = (searchTerm: string) => {
 
 // Specific hooks for Home page sections
 
+// Shop by Style now shows ALL home category products (includes Latest Style, Baby Care, Muslin, Super Saver, etc.)
 export const useShopByStyleProducts = () => {
 
-  return useProducts({
-
-    category: 'home',
-
-    subcategory: 'Shop by Style'
-
-  });
+  return useHomeProducts(); // Fetch all home products without subcategory filter
 
 };
 

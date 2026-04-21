@@ -32,7 +32,8 @@ import {
   XCircle,
   MapPin,
   CreditCard,
-  X
+  X,
+  Download
 } from "lucide-react";
 import { isUserAdminAuthorized, logUnauthorizedAccess } from "@/lib/admin-auth";
 
@@ -197,12 +198,81 @@ export default function AdminDashboard() {
 
   const getStatusConfig = (status: string) => statusConfig[status] || statusConfig.pending;
 
-  const topProducts = [
-    { name: "Baby Onesie Set", sales: 234, revenue: "₹5,678", rating: 4.8 },
-    { name: "Swaddle Blanket", sales: 189, revenue: "₹4,234", rating: 4.9 },
-    { name: "Baby Bib Pack", sales: 156, revenue: "₹2,890", rating: 4.7 },
-    { name: "Sleeping Bag", sales: 145, revenue: "₹3,456", rating: 4.6 }
-  ];
+  // Download invoice as text/PDF
+  const downloadInvoice = (order: any) => {
+    const invoiceContent = generateInvoiceContent(order);
+    const blob = new Blob([invoiceContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Invoice-${order.orderNumber}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  // Generate invoice content
+  const generateInvoiceContent = (order: any): string => {
+    const statusCfg = getStatusConfig(order.status);
+    const date = new Date(order.createdAt).toLocaleDateString('en-IN');
+
+    let content = `
+========================================
+           PLANET MINI INVOICE
+========================================
+
+Order Number: ${order.orderNumber}
+Date: ${date}
+Status: ${statusCfg.label}
+
+----------------------------------------
+CUSTOMER DETAILS
+----------------------------------------
+Shipping Address:
+${order.shippingAddress?.street || 'N/A'}
+${order.shippingAddress?.city}, ${order.shippingAddress?.state}
+${order.shippingAddress?.pincode || ''}
+
+----------------------------------------
+ORDER ITEMS
+----------------------------------------
+`;
+
+    if (order.items && order.items.length > 0) {
+      order.items.forEach((item: any, index: number) => {
+        const itemTotal = (item.price * item.quantity).toFixed(2);
+        content += `${index + 1}. ${item.name}
+   Quantity: ${item.quantity}
+   Price: ₹${item.price.toFixed(2)}
+   Subtotal: ₹${itemTotal}
+\n`;
+      });
+    } else {
+      content += 'No items found\n';
+    }
+
+    content += `
+----------------------------------------
+PAYMENT DETAILS
+----------------------------------------
+Payment Method: ${order.paymentMethod || 'N/A'}
+Payment Status: ${order.paymentStatus || 'pending'}
+
+----------------------------------------
+ORDER SUMMARY
+----------------------------------------
+Subtotal: ₹${order.totalAmount.toFixed(2)}
+Shipping: Free
+Total Amount: ₹${order.totalAmount.toFixed(2)}
+
+========================================
+Thank you for shopping with Planet Mini!
+========================================
+`;
+
+    return content;
+  };
 
   return (
     <div className="min-h-screen">
@@ -442,35 +512,6 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
 
-          {/* Top Products & Quick Actions */}
-          <div className="space-y-6">
-            {/* Top Products */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="bg-white rounded-2xl shadow-sm p-6"
-            >
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Top Products</h2>
-              <div className="space-y-4">
-                {topProducts.map((product, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900 text-sm">{product.name}</h4>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-gray-500">{product.sales} sold</span>
-                        <span className="text-xs text-gray-400">•</span>
-                        <span className="text-xs text-gray-500">{product.revenue}</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                      <span className="text-sm font-medium text-gray-900">{product.rating}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
         </div>
       </div>
 
@@ -500,12 +541,21 @@ export default function AdminDashboard() {
                     Placed on {new Date(selectedOrder.createdAt).toLocaleDateString('en-IN')}
                   </p>
                 </div>
-                <button
-                  onClick={() => setShowOrderDetails(false)}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X className="w-6 h-6" />
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => downloadInvoice(selectedOrder)}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                  >
+                    <Download className="w-4 h-4" />
+                    Download Invoice
+                  </button>
+                  <button
+                    onClick={() => setShowOrderDetails(false)}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
               </div>
             </div>
 
