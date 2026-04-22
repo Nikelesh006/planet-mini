@@ -20,17 +20,64 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [typewriterText, setTypewriterText] = useState("");
+  const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchDropdownRef = useRef<HTMLDivElement>(null);
   const { state } = useCart();
   const { user, isLoading, logout } = useAuth();
   const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
   const { likedProducts, toggleLike, isLiked } = useLikes();
+
+  // Typewriter effect for search placeholder
+  const searchTerms = ["Jhablas", "Towels", "Muslin Clothes", "Combo", "Blanket", "Bed"];
+  const [currentTermIndex, setCurrentTermIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [charIndex, setCharIndex] = useState(0);
+
+  // Recommended products data
+  const recommendedProducts = [
+    { id: 1, name: "Soft Cotton Jhabla", category: "Jhablas", price: 299 },
+    { id: 2, name: "Premium Bath Towel", category: "Towels", price: 499 },
+    { id: 3, name: "Muslin Swaddle Cloth", category: "Muslin Clothes", price: 399 },
+    { id: 4, name: "Baby Care Combo", category: "Combo", price: 899 },
+    { id: 5, name: "Organic Baby Bib", category: "Muslin Clothes", price: 199 },
+  ];
+
+  useEffect(() => {
+    const currentTerm = searchTerms[currentTermIndex];
+    
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        if (charIndex < currentTerm.length) {
+          setTypewriterText(currentTerm.slice(0, charIndex + 1));
+          setCharIndex(charIndex + 1);
+        } else {
+          setTimeout(() => setIsDeleting(true), 2000);
+        }
+      } else {
+        if (charIndex > 0) {
+          setTypewriterText(currentTerm.slice(0, charIndex - 1));
+          setCharIndex(charIndex - 1);
+        } else {
+          setIsDeleting(false);
+          setCurrentTermIndex((currentTermIndex + 1) % searchTerms.length);
+        }
+      }
+    }, isDeleting ? 80 : 150);
+
+    return () => clearTimeout(timeout);
+  }, [charIndex, isDeleting, currentTermIndex]);
  
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setProfileDropdownOpen(false);
+      }
+      if (searchDropdownRef.current && !searchDropdownRef.current.contains(event.target as Node)) {
+        setSearchDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -77,12 +124,33 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Announcement Bar */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gray-300 text-black py-3 overflow-hidden">
+        <div className="flex items-center overflow-hidden">
+          <div className="animate-marquee whitespace-nowrap">
+            <span className="text-base font-semibold inline-block">
+              10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 90s linear infinite;
+        }
+      `}</style>
+
       <header
         className={cn(
-          "fixed top-0 left-0 right-0 z-40 transition-all duration-300 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800",
+          "fixed left-0 right-0 z-40 transition-all duration-300 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800",
           isScrolled 
-            ? "shadow-lg py-3" 
-            : "shadow-md py-5"
+            ? "shadow-lg py-3 top-10" 
+            : "shadow-md py-5 top-10"
         )}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -98,12 +166,12 @@ export default function Navbar() {
             {/* Logo */}
             <Link 
               href="/" 
-              className="flex items-center justify-start hover:opacity-80 transition-opacity"
+              className="flex items-center justify-start hover:opacity-80 transition-opacity flex-shrink-0 -ml-24"
             >
               <img 
                 src="/Planet-mini-logo.png" 
                 alt="Planet Mini Logo" 
-                className="h-12 w-auto object-contain transform hover:scale-105 transition-transform"
+                className="h-14 w-auto object-contain block"
                 onError={(e) => {
                   // Fallback to original logo if image fails to load
                   const target = e.target as HTMLImageElement;
@@ -112,19 +180,19 @@ export default function Navbar() {
                   if (fallback) fallback.style.display = 'flex';
                 }}
               />
-              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-secondary to-primary flex items-center justify-center text-white shadow-lg transform hover:scale-105 transition-transform" style={{display: 'none'}}>
+              <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-primary via-secondary to-primary flex items-center justify-center text-white shadow-lg transform hover:scale-105 transition-transform flex-shrink-0" style={{display: 'none'}}>
                 <span className="text-sm font-bold">PM</span>
               </div>
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-4">
+            <nav className="hidden lg:flex items-center gap-2">
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-sm font-semibold transition-all duration-300 ease-in-out relative px-3 py-2 rounded-md",
+                    "text-base font-semibold transition-all duration-300 ease-in-out relative px-5 py-2 rounded-md",
                     "hover:bg-gray-200 hover:text-black",
                     location === link.href 
                       ? "text-black bg-gray-200"
@@ -137,11 +205,67 @@ export default function Navbar() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button className="group p-2 text-black hover:text-white hover:bg-gradient-to-r hover:from-primary hover:to-secondary/80 rounded-full transition-all duration-300 transform hover:scale-110">
-                <Search className="w-5 h-5" />
-              </button>
-              <button className="group p-2 text-black hover:text-white hover:bg-gradient-to-r hover:from-secondary/80 hover:to-primary rounded-full transition-all duration-300 transform hover:scale-110">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <div className="relative hidden sm:block" ref={searchDropdownRef}>
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder={typewriterText ? `Search for ${typewriterText}...` : "Search..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setSearchDropdownOpen(true)}
+                  className="pl-9 pr-4 py-3 bg-white border border-gray-300 rounded-full text-sm focus:outline-none focus:border-gray-400 focus:shadow-lg shadow-md w-64 lg:w-80 transition-all placeholder:text-gray-500"
+                />
+                
+                {/* Search Dropdown */}
+                {searchDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 max-h-80 overflow-y-auto"
+                    style={{
+                      scrollbarWidth: 'thin',
+                      scrollbarColor: '#9CA3AF #F3F4F6'
+                    }}
+                  >
+                    <style>{`
+                      [style*="scrollbar-width"]::-webkit-scrollbar {
+                        width: 6px;
+                      }
+                      [style*="scrollbar-width"]::-webkit-scrollbar-track {
+                        background: #F3F4F6;
+                        border-radius: 3px;
+                      }
+                      [style*="scrollbar-width"]::-webkit-scrollbar-thumb {
+                        background: #9CA3AF;
+                        border-radius: 3px;
+                      }
+                      [style*="scrollbar-width"]::-webkit-scrollbar-thumb:hover {
+                        background: #6B7280;
+                      }
+                    `}</style>
+                    <div className="p-3">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recommended</p>
+                      {recommendedProducts.map((product) => (
+                        <Link
+                          key={product.id}
+                          href={`/product/${product.id}`}
+                          onClick={() => setSearchDropdownOpen(false)}
+                          className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
+                        >
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                            <p className="text-xs text-gray-500">{product.category}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+              <button className="group p-2 text-black hover:bg-gray-200 rounded-full transition-all duration-300 transform hover:scale-110">
                 <Link href="/likes" className="block relative">
                   {likedProducts.length > 0 && (
                     <motion.div
@@ -163,10 +287,25 @@ export default function Navbar() {
                   />
                 </Link>
               </button>
+              <Link
+                href="/cart"
+                className="p-2 text-muted-foreground hover:bg-gray-200 rounded-full transition-all relative"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                {state.totalItems > 0 && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="absolute top-0 right-0 w-4 h-4 bg-blue-500 text-primary-foreground rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-background"
+                  >
+                    {state.totalItems > 99 ? '99+' : state.totalItems}
+                  </motion.div>
+                )}
+              </Link>
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={handleProfileClick}
-                  className="hidden sm:flex p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all"
+                  className="hidden sm:flex p-2 text-muted-foreground hover:bg-gray-200 rounded-full transition-all"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
@@ -252,21 +391,6 @@ export default function Navbar() {
                   </motion.div>
                 )}
               </div>
-              <Link
-                href="/cart"
-                className="p-2 text-muted-foreground hover:text-blue-500 hover:bg-blue-50 rounded-full transition-all relative"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                {state.totalItems > 0 && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute top-0 right-0 w-4 h-4 bg-blue-500 text-primary-foreground rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-background"
-                  >
-                    {state.totalItems > 99 ? '99+' : state.totalItems}
-                  </motion.div>
-                )}
-              </Link>
             </div>
           </div>
         </div>
