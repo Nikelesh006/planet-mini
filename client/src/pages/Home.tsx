@@ -513,7 +513,7 @@ export default function Home() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="min-h-screen space-y-4"
+      className="min-h-screen space-y-4 pt-16"
     >
 
       {/* Hero Section with Image Slider */}
@@ -591,13 +591,17 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <h2 className="text-4xl font-bold text-black">Shop by Style</h2>
-              <img 
-                src="/babies.png" 
-                alt="Babies" 
-                className="w-16 h-16 object-contain"
-              />
+            <div className="flex items-center justify-center gap-16 mb-4">
+              <div className="flex-1 h-px bg-gray-400"></div>
+              <div className="flex items-center gap-4">
+                <h2 className="text-4xl font-bold text-black">Shop by Style</h2>
+                <img 
+                  src="/babies.png" 
+                  alt="Babies" 
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+              <div className="flex-1 h-px bg-gray-400"></div>
             </div>
 
             <p className="text-gray-600 text-lg">Discover our latest collection of stylish baby wear</p>
@@ -618,41 +622,33 @@ export default function Home() {
 
           {/* Style Categories Grid */}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-12 px-4 sm:px-6 lg:px-8 bg-red-50 py-10 rounded-3xl shadow-inner">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 px-2 sm:px-4 lg:px-6 bg-red-50 py-6 rounded-3xl shadow-inner">
 
             {/* Jhablas */}
 
-            <Link href="/shop/jhablas" className="group">
+            <Link href="/shop/jhablas" className="group flex flex-col items-center">
 
-              <div className="bg-white rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+              <div className="bg-white rounded-full border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64">
 
-                <div className="aspect-square overflow-hidden">
+                <img 
 
-                  <img 
+                  src="/jhablas.jpg" 
 
-                    src="/jhablas.jpg" 
+                  alt="Jhablas" 
 
-                    alt="Jhablas" 
+                  className="w-full h-full object-cover"
 
-                    className="w-full h-full object-contain"
+                  onError={(e) => {
 
-                    onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%233B82F6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas%3C/text%3E%3C/svg%3E";
 
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%233B82F6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas%3C/text%3E%3C/svg%3E";
+                  }}
 
-                    }}
-
-                  />
-
-                </div>
-
-                <div className="p-3">
-
-                  <h3 className="text-base font-bold text-black text-center">Jhablas</h3>
-
-                </div>
+                />
 
               </div>
+
+              <h3 className="text-lg font-bold text-black text-center mt-4">Jhablas</h3>
 
             </Link>
 
@@ -660,37 +656,29 @@ export default function Home() {
 
             {/* Baby Boy */}
 
-            <Link href="/shop/baby-boy" className="group">
+            <Link href="/shop/baby-boy" className="group flex flex-col items-center">
 
-              <div className="bg-white rounded-xl border-2 border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+              <div className="bg-white rounded-full border-2 border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64">
 
-                <div className="aspect-square overflow-hidden">
+                <img 
 
-                  <img 
+                  src="/set.jpg" 
 
-                    src="/set.jpg" 
+                  alt="Baby Boy" 
 
-                    alt="Baby Boy" 
+                  className="w-full h-full object-cover"
 
-                    className="w-full h-full object-contain"
+                  onError={(e) => {
 
-                    onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EC4899'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas Set%3C/text%3E%3C/svg%3E";
 
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EC4899'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas Set%3C/text%3E%3C/svg%3E";
+                  }}
 
-                    }}
-
-                  />
-
-                </div>
-
-                <div className="p-3">
-
-                  <h3 className="text-base font-bold text-black text-center">Towels & Blankets</h3>
-
-                </div>
+                />
 
               </div>
+
+              <h3 className="text-lg font-bold text-black text-center mt-4">Towels & Blankets</h3>
 
             </Link>
 
@@ -698,37 +686,29 @@ export default function Home() {
 
             {/* Baby Girl */}
 
-            <Link href="/shop/baby-girl" className="group">
+            <Link href="/shop/baby-girl" className="group flex flex-col items-center">
 
-              <div className="bg-white rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+              <div className="bg-white rounded-full border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64">
 
-                <div className="aspect-square overflow-hidden">
+                <img 
 
-                  <img 
+                  src="/coats.jpg" 
 
-                    src="/coats.jpg" 
+                  alt="Baby Girl" 
 
-                    alt="Baby Girl" 
+                  className="w-full h-full object-cover"
 
-                    className="w-full h-full object-contain"
+                  onError={(e) => {
 
-                    onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%2310B981'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3ECoats%3C/text%3E%3C/svg%3E";
 
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%2310B981'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3ECoats%3C/text%3E%3C/svg%3E";
+                  }}
 
-                    }}
-
-                  />
-
-                </div>
-
-                <div className="p-3">
-
-                  <h3 className="text-base font-bold text-black text-center">Nappies</h3>
-
-                </div>
+                />
 
               </div>
+
+              <h3 className="text-lg font-bold text-black text-center mt-4">Nappies</h3>
 
             </Link>
 
@@ -736,37 +716,29 @@ export default function Home() {
 
             {/* Toys */}
 
-            <Link href="/shop/toys" className="group">
+            <Link href="/shop/toys" className="group flex flex-col items-center">
 
-              <div className="bg-white rounded-xl border-2 border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+              <div className="bg-white rounded-full border-2 border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64">
 
-                <div className="aspect-square overflow-hidden">
+                <img 
 
-                  <img 
+                  src="/nightwear.jpg" 
 
-                    src="/nightwear.jpg" 
+                  alt="Toys" 
 
-                    alt="Toys" 
+                  className="w-full h-full object-cover"
 
-                    className="w-full h-full object-contain"
+                  onError={(e) => {
 
-                    onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23A855F7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3ENight Wear%3C/text%3E%3C/svg%3E";
 
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23A855F7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3ENight Wear%3C/text%3E%3C/svg%3E";
+                  }}
 
-                    }}
-
-                  />
-
-                </div>
-
-                <div className="p-3">
-
-                  <h3 className="text-base font-bold text-black text-center">Wipes</h3>
-
-                </div>
+                />
 
               </div>
+
+              <h3 className="text-lg font-bold text-black text-center mt-4">Wipes</h3>
 
             </Link>
 
@@ -774,37 +746,29 @@ export default function Home() {
 
             {/* Bath */}
 
-            <Link href="/shop/bath" className="group">
+            <Link href="/shop/bath" className="group flex flex-col items-center">
 
-              <div className="bg-white rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden p-3 shadow-xl shadow-gray-300/60 hover:shadow-black/20">
+              <div className="bg-white rounded-full border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64">
 
-                <div className="aspect-square overflow-hidden">
+                <img 
 
-                  <img 
+                  src="/dress-girl.jpg" 
 
-                    src="/dress-boy.jpg" 
+                  alt="Bath" 
 
-                    alt="Bath" 
+                  className="w-full h-full object-cover"
 
-                    className="w-full h-full object-contain"
+                  onError={(e) => {
 
-                    onError={(e) => {
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EAB308'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EBoys Wear%3C/text%3E%3C/svg%3E";
 
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EAB308'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EBoys Wear%3C/text%3E%3C/svg%3E";
+                  }}
 
-                    }}
-
-                  />
-
-                </div>
-
-                <div className="p-3">
-
-                  <h3 className="text-base font-bold text-black text-center">Beds</h3>
-
-                </div>
+                />
 
               </div>
+
+              <h3 className="text-lg font-bold text-black text-center mt-4">Beds</h3>
 
             </Link>
 
@@ -834,13 +798,17 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <h2 className="text-4xl font-bold text-black">Baby Care Essentials</h2>
-              <img 
-                src="/playtime.png" 
-                alt="Playtime" 
-                className="w-16 h-16 object-contain"
-              />
+            <div className="flex items-center justify-center gap-16 mb-4">
+              <div className="flex-1 h-px bg-gray-400"></div>
+              <div className="flex items-center gap-4">
+                <h2 className="text-4xl font-bold text-black">Baby Care Essentials</h2>
+                <img 
+                  src="/playtime.png" 
+                  alt="Playtime" 
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+              <div className="flex-1 h-px bg-gray-400"></div>
             </div>
 
             <p className="text-gray-600 text-lg">Everything you need for your baby's daily care routine</p>
@@ -941,13 +909,17 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <h2 className="text-4xl font-bold text-black">Muslin Clothings</h2>
-              <img 
-                src="/baby.png" 
-                alt="Baby" 
-                className="w-16 h-16 object-contain"
-              />
+            <div className="flex items-center justify-center gap-16 mb-4">
+              <div className="flex-1 h-px bg-gray-400"></div>
+              <div className="flex items-center gap-4">
+                <h2 className="text-4xl font-bold text-black">Muslin Clothings</h2>
+                <img 
+                  src="/baby.png" 
+                  alt="Baby" 
+                  className="w-16 h-16 object-contain"
+                />
+              </div>
+              <div className="flex-1 h-px bg-gray-400"></div>
             </div>
             
 
@@ -1208,13 +1180,17 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <h2 className="text-4xl font-bold text-black">Gifting</h2>
-              <img 
-                src="/giftbox.png" 
-                alt="Gift Box" 
-                className="w-14 h-14 object-contain"
-              />
+            <div className="flex items-center justify-center gap-16 mb-4">
+              <div className="flex-1 h-px bg-gray-400"></div>
+              <div className="flex items-center gap-4">
+                <h2 className="text-4xl font-bold text-black">Gifting</h2>
+                <img 
+                  src="/giftbox.png" 
+                  alt="Gift Box" 
+                  className="w-14 h-14 object-contain"
+                />
+              </div>
+              <div className="flex-1 h-px bg-gray-400"></div>
             </div>
 
             <p className="text-gray-600 text-lg">Thoughtfully curated presents for every special occasion</p>
