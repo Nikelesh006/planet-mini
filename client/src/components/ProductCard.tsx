@@ -210,6 +210,8 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
             className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-700 group-hover:scale-105"
 
+            draggable={false}
+
           />
 
           

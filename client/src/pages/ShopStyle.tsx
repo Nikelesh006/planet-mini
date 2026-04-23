@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BabyCareCard } from "@/components/BabyCareCard";
 import { Sparkles, Filter, X } from "lucide-react";
 import { useShopByStyleProducts } from "@/hooks/useProducts";
@@ -18,6 +18,11 @@ interface FilterSection {
 }
 
 export default function ShopStyle() {
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Fetch all home products (same as Home page sections)
   const { data: products, isLoading } = useShopByStyleProducts();
   
@@ -114,6 +119,7 @@ export default function ShopStyle() {
               src="/shopbystyle-banner.png"
               alt="Shop by Style - Planet Mini Baby Wear"
               className="w-full h-full object-cover"
+              draggable={false}
               onError={(e) => {
                 (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EShop by Style Banner%3C/text%3E%3C/svg%3E";
               }}
@@ -140,6 +146,7 @@ export default function ShopStyle() {
                   src="/baby-cloth.png" 
                   alt="Baby Cloth" 
                   className="w-12 h-12 md:w-14 md:h-14 object-contain"
+                  draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='12' font-family='Arial'%3EBaby%3C/text%3E%3C/svg%3E";
                   }}

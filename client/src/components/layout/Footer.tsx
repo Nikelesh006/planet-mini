@@ -3,7 +3,7 @@ import { Instagram, Twitter, Facebook } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-800 mt-auto pt-8 pb-4">
+    <footer className="bg-red-50 dark:bg-red-50 mt-auto pt-8 pb-4">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
           <div className="col-span-1 md:col-span-1">
@@ -12,6 +12,7 @@ export default function Footer() {
                 src="/Planet-mini-logo.png" 
                 alt="Planet Mini Logo" 
                 className="h-12 w-auto object-contain transform hover:scale-105 transition-transform"
+                draggable={false}
                 onError={(e) => {
                   // Fallback to original logo if image fails to load
                   const target = e.target as HTMLImageElement;

@@ -507,6 +507,7 @@ export default function Home() {
 
 
   return (
+    <>
     <motion.div
       key="home"
       initial={{ opacity: 0 }}
@@ -532,6 +533,7 @@ export default function Home() {
                     className={`w-full h-full object-cover transition-opacity duration-1000 ${
                       index === currentSlide ? 'opacity-100' : 'opacity-0 hidden'
                     }`}
+                    draggable={false}
                   />
                 ))}
               </div>
@@ -591,17 +593,14 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-16 mb-4">
-              <div className="flex-1 h-px bg-gray-400"></div>
-              <div className="flex items-center gap-4">
-                <h2 className="text-4xl font-bold text-black">Shop by Style</h2>
-                <img 
-                  src="/babies.png" 
-                  alt="Babies" 
-                  className="w-16 h-16 object-contain"
-                />
-              </div>
-              <div className="flex-1 h-px bg-gray-400"></div>
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <h2 className="text-4xl font-bold text-black">Shop by Style</h2>
+              <img 
+                src="/babies.png" 
+                alt="Babies" 
+                className="w-16 h-16 object-contain"
+                draggable={false}
+              />
             </div>
 
             <p className="text-gray-600 text-lg">Discover our latest collection of stylish baby wear</p>
@@ -637,6 +636,7 @@ export default function Home() {
                   alt="Jhablas" 
 
                   className="w-full h-full object-cover"
+                  draggable={false}
 
                   onError={(e) => {
 
@@ -667,6 +667,7 @@ export default function Home() {
                   alt="Baby Boy" 
 
                   className="w-full h-full object-cover"
+                  draggable={false}
 
                   onError={(e) => {
 
@@ -697,6 +698,7 @@ export default function Home() {
                   alt="Baby Girl" 
 
                   className="w-full h-full object-cover"
+                  draggable={false}
 
                   onError={(e) => {
 
@@ -727,6 +729,7 @@ export default function Home() {
                   alt="Toys" 
 
                   className="w-full h-full object-cover"
+                  draggable={false}
 
                   onError={(e) => {
 
@@ -757,6 +760,7 @@ export default function Home() {
                   alt="Bath" 
 
                   className="w-full h-full object-cover"
+                  draggable={false}
 
                   onError={(e) => {
 
@@ -806,6 +810,7 @@ export default function Home() {
                   src="/playtime.png" 
                   alt="Playtime" 
                   className="w-16 h-16 object-contain"
+                  draggable={false}
                 />
               </div>
               <div className="flex-1 h-px bg-gray-400"></div>
@@ -831,7 +836,7 @@ export default function Home() {
 
             {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
 
                   {babyCareProducts.slice(0, 4).map((product, index) => (
 
@@ -917,6 +922,7 @@ export default function Home() {
                   src="/baby.png" 
                   alt="Baby" 
                   className="w-16 h-16 object-contain"
+                  draggable={false}
                 />
               </div>
               <div className="flex-1 h-px bg-gray-400"></div>
@@ -943,7 +949,7 @@ export default function Home() {
 
             {!muslinLoading && muslinProducts && muslinProducts.length > 0 && (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-12 lg:gap-16">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
 
                   {muslinProducts.slice(0, 4).map((product, index) => (
 
@@ -1005,9 +1011,9 @@ export default function Home() {
 
       {/* Combo Offers Section */}
 
-      <section className="w-full bg-red-100 py-12">
+      <section className="w-full bg-red-50 py-12">
 
-        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="px-4 sm:px-6 lg:px-8">
 
           <motion.div 
 
@@ -1020,16 +1026,13 @@ export default function Home() {
           >
 
             <div className="flex items-center justify-center gap-3 mb-4">
-              <h2 className="text-4xl font-bold animate-pulse bg-gradient-to-r from-black via-gray-600 to-gray-300 bg-clip-text text-transparent drop-shadow-lg" style={{ animationDuration: '1.5s' }}>Combo Offers</h2>
-              <button
-                onClick={() => setShowComboInfoModal(true)}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-white hover:bg-gray-100 transition-colors duration-200"
-                title="Combo Offers Info"
-              >
-                <svg className="w-4 h-4 text-gray-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </button>
+              <h2 className="text-4xl font-bold ">Cuddle Combos</h2>
+              <img
+                src="/puzzle.png"
+                alt="Combo"
+                className="w-16 h-16 object-contain"
+                draggable={false}
+              />
             </div>
 
             <p className="text-gray-600 text-lg">Amazing deals and discounts on your favorite baby products</p>
@@ -1047,102 +1050,70 @@ export default function Home() {
             
           </motion.div>
 
-          {!comboLoading && comboProducts && comboProducts.length > 0 && (
-
-            <div className="mt-16">
-              <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 max-w-6xl mx-auto">
-                {comboProducts.slice(0, 3).map((product, index) => (
-                  <React.Fragment key={product.id || `combo-${index}`}>
-                    {/* Product Image - Clickable */}
-                    <Link href={`/products/${product.slug}`}>
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                        className="group relative transition-all duration-300 overflow-hidden flex-shrink-0 cursor-pointer"
-                      >
-                        {/* Discount Badge */}
-                        {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
-                          <div className="absolute top-4 left-4 z-20">
-                            <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                              -{Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}%
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Combo Badge - only show if no discount */}
-                        {!(product.originalPrice && Number(product.originalPrice) > Number(product.price || 0)) && (
-                          <div className="absolute top-4 left-4 z-20">
-                            <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
-                              3 PACK COMBO
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Large Product Image */}
-                        <div className="aspect-[4/5] w-56 lg:w-64 flex items-center justify-center relative bg-transparent">
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-cover rounded-3xl transition-all duration-300"
-                          />
-                        </div>
-                      </motion.div>
-                    </Link>
-
-                    {/* Plus Sign between products */}
-                    {index < 2 && (
-                      <div className="flex items-center justify-center">
-                        <div className="text-black font-bold text-3xl lg:text-4xl">
-                          +
-                        </div>
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-
-              {/* Buy Now Button */}
-              <div className="text-center mt-8">
-                <motion.button
+          <div className="mt-16">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Combo Offer Image 1 */}
+              <Link href="/shopstyle">
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-black text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-gray-800 transition-all duration-300 shadow-xl"
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
                 >
-                  Buy Now
-                </motion.button>
-              </div>
-
-              {/* Save 300 Highlight */}
-              <div className="text-center mt-6">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  className="inline-block bg-gradient-to-r from-green-500 to-emerald-500 text-white px-6 py-3 rounded-full font-bold text-lg shadow-lg"
-                >
-                  💰 Save 300 on this combo!
+                  <div className="aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/combo1.png"
+                      alt="Combo Offer 1"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
                 </motion.div>
-              </div>
+              </Link>
+              {/* Combo Offer Image 2 */}
+              <Link href="/shopstyle">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/combo2.png"
+                      alt="Combo Offer 2"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </motion.div>
+              </Link>
+              {/* Combo Offer Image 3 */}
+              <Link href="/shopstyle">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/combo3.png"
+                      alt="Combo Offer 3"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </motion.div>
+              </Link>
             </div>
-
-          )}
-
-          {!comboLoading && (!comboProducts || comboProducts.length === 0) && (
-
-            <div className="text-center py-12">
-
-              <Gift className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-
-              <h3 className="text-xl font-semibold text-black mb-2">No Combo Offers</h3>
-
-              <p className="text-gray-500">Add combo offers to showcase here!</p>
-
-            </div>
-
-          )}
+          </div>
 
           {superSaverLoading && (
 
@@ -1159,6 +1130,115 @@ export default function Home() {
       </section>
 
 
+
+      {/* Trending Products Section */}
+      <section className="w-full bg-red">
+
+        <div className="px-4 sm:px-6 lg:px-8 py-8">
+
+          {/* Header */}
+
+          <motion.div
+
+            initial={{ opacity: 0, y: 20 }}
+
+            whileInView={{ opacity: 1, y: 0 }}
+
+            className="text-center mb-12"
+
+          >
+
+            <div className="flex items-center justify-center gap-16 mb-4">
+              <div className="flex-1 h-px bg-gray-400"></div>
+              <div className="flex items-center gap-4">
+                <h2 className="text-4xl font-bold text-black">Trending Products</h2>
+                <img
+                  src="/toys.png"
+                  alt="Trending"
+                  className="w-16 h-16 object-contain"
+                  draggable={false}
+                />
+              </div>
+              <div className="flex-1 h-px bg-gray-400"></div>
+            </div>
+
+            <p className="text-gray-600 text-lg">Most loved products by parents and babies</p>
+
+            <div className="flex justify-center gap-2 mt-4">
+
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+
+            </div>
+
+          </motion.div>
+
+          {/* 4-Card Grid Layout */}
+
+          <div className="w-full px-4 sm:px-6 lg:px-8">
+
+            {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+
+                  {babyCareProducts.slice(0, 4).map((product, index) => (
+
+                    <BabyCareCard key={product.id || `trending-${index}`} product={product} index={index} />
+
+                  ))}
+
+                </div>
+
+                {/* Explore More Button */}
+                <div className="text-center mt-8">
+                  <motion.button
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
+                  >
+                    Explore More
+                    <svg className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </motion.button>
+                </div>
+              </>
+            )}
+
+            {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
+
+              <div className="text-center py-12">
+
+                <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+
+                <h3 className="text-xl font-semibold text-black mb-2">No Trending Products</h3>
+
+                <p className="text-gray-500">Add trending products to showcase here!</p>
+
+              </div>
+
+            )}
+
+            {babyCareLoading && (
+
+              <div className="flex justify-center py-8">
+
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+
+              </div>
+
+            )}
+
+          </div>
+
+        </div>
+
+      </section>
 
 
 
@@ -1188,6 +1268,7 @@ export default function Home() {
                   src="/giftbox.png" 
                   alt="Gift Box" 
                   className="w-14 h-14 object-contain"
+                  draggable={false}
                 />
               </div>
               <div className="flex-1 h-px bg-gray-400"></div>
@@ -1207,260 +1288,104 @@ export default function Home() {
 
           </motion.div>
 
-          {/* Gifting Products Grid */}
-          {!giftingLoading && giftingProducts && giftingProducts.length > 0 && (
-            <div className="mt-12">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                {giftingProducts.slice(0, 3).map((product, index) => (
-                  <GiftingCard key={product.id || `gifting-${index}`} product={product} index={index} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Special Gifting Categories - Pricing Cards */}
-          <div className="mt-16 mb-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-center mb-8"
-            >
-              <h3 className="text-2xl font-bold text-black mb-2">Baby Gift Sets</h3>
-              <p className="text-gray-600">Choose the perfect collection for your little one</p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-              {/* Basic Set - ₹1499 */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                whileHover={{ y: -8, scale: 1.03 }}
-                className="group relative bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-400 overflow-hidden border-2 border-gray-200"
-              >
-                {/* Header with gradient accent */}
-                <div className="h-2 bg-gradient-to-r from-gray-400 to-gray-600 rounded-t-3xl"></div>
-                
-                <div className="p-8 text-center">
-                  <div className="flex items-center justify-center gap-3 mb-3">
-                    <h4 className="text-2xl font-bold text-black">Basic Set</h4>
-                    <img 
-                      src="/must-have.png" 
-                      alt="Must Have" 
-                      className="w-8 h-8 object-contain"
+          {/* Gifting Products Grid - Mixed Layout */}
+          <div className="mt-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {/* Combined Card 1 & 2 - Rectangle */}
+              <Link href="/shop/gifting" className="md:col-span-2">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-[2/1] bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/gifting3.png"
+                      alt="Gift Set Collection 1"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 24 24' fill='%23E5E7EB'%3E%3Crect width='24' height='24' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239CA3AF' font-size='16' font-family='Arial'%3EGift Set Collection 1%3C/text%3E%3C/svg%3E";
+                      }}
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <div className="mb-6">
-                    <span className="text-5xl font-bold text-black">₹1499</span>
-                  </div>
-                  <p className="text-black text-base mb-8">Essential baby care starter kit</p>
-                  
-                  {/* Expandable Content */}
-                  <details className="text-left mb-8">
-                    <summary className="flex items-center justify-between cursor-pointer p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-gray-100 hover:to-gray-200 transition-all duration-300 border border-gray-200">
-                      <span className="text-base font-semibold text-black flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        What's included?
-                      </span>
-                      <svg className="w-5 h-5 text-black transition-transform duration-300 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </summary>
-                    <div className="max-h-40 overflow-y-auto mt-4 space-y-3 text-base text-black">
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">2 x Soft Muslin Wraps</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Baby Towel Set</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">3 x Basic Bodysuits</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
-                        <span className="w-3 h-3 bg-blue-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Diaper Bag</span>
-                      </div>
-                    </div>
-                  </details>
-                  
-                  <button className="w-full bg-gray-500 text-white py-4 px-6 rounded-xl font-bold text-lg hover:bg-gray-600 transition-all duration-300 transform hover:scale-105 shadow-lg">
-                    Get now
-                  </button>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
 
-              {/* Deluxe Set - ₹2299 */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                whileHover={{ y: -8, scale: 1.03 }}
-                className="group relative bg-white rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-400 border-2 border-primary transform scale-105"
-              >
-                {/* Enhanced Popular Badge */}
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
-                  <div className="bg-gradient-to-r from-primary to-secondary text-black text-sm font-bold px-6 py-2 rounded-full shadow-xl flex items-center gap-2 border-2 border-white">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                    </svg>
-                    Most Popular
-                  </div>
-                </div>
-                
-                {/* Header with gradient accent */}
-                <div className="h-2 bg-gradient-to-r from-primary to-secondary rounded-t-3xl"></div>
-                
-                <div className="p-10 text-center">
-                  <div className="flex items-center justify-center gap-3 mb-3">
-                    <h4 className="text-2xl font-bold text-black">Deluxe Set</h4>
-                    <img 
-                      src="/premium.png" 
-                      alt="Premium" 
-                      className="w-8 h-8 object-contain"
+              {/* Gifting Card 3 - 1:1 Square with gifting1.png */}
+              <Link href="/shop/gifting">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/gifting1.png"
+                      alt="Gift Set 1"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='%23E5E7EB'%3E%3Crect width='24' height='24' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239CA3AF' font-size='16' font-family='Arial'%3EGift Set 1%3C/text%3E%3C/svg%3E";
+                      }}
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <div className="mb-6">
-                    <span className="text-5xl font-bold text-black">₹2299</span>
-                  </div>
-                  <p className="text-black text-base mb-8">Complete care package with premium items</p>
-                  
-                  {/* Expandable Content */}
-                  <details className="text-left mb-8">
-                    <summary className="flex items-center justify-between cursor-pointer p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl hover:from-primary/20 hover:to-secondary/20 transition-all duration-300 border border-primary/30">
-                      <span className="text-base font-semibold text-black flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        What's included?
-                      </span>
-                      <svg className="w-5 h-5 text-black transition-transform duration-300 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </summary>
-                    <div className="max-h-40 overflow-y-auto mt-4 space-y-3 text-base text-black">
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
-                        <span className="font-medium">4 x Premium Muslin Wraps</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
-                        <span className="font-medium">2 x Luxury Towel Sets</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
-                        <span className="font-medium">5 x Designer Bodysuits</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Premium Diaper Bag</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
-                        <span className="font-medium">2 x Baby Blankets</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-primary/5 transition-colors">
-                        <span className="w-3 h-3 bg-primary rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Grooming Kit</span>
-                      </div>
-                    </div>
-                  </details>
-                  
-                  <button className="w-full bg-red-200 py-4 px-6 rounded-xl font-bold text-lg hover:bg-red-300 transition-all duration-300 transform hover:scale-105 shadow-xl">
-                    Get now
-                  </button>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
 
-              {/* Premium Set - ₹3499 */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                whileHover={{ y: -8, scale: 1.03 }}
-                className="group relative  rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-400 overflow-hidden border-3 border-amber-500 transform scale-105"
-              >
-                                
-                {/* Header with gradient accent */}
-                <div className="h-2 bg-gradient-to-r from-amber-400 via-orange-400 to-yellow-400 rounded-t-3xl"></div>
-                
-                <div className="p-8 text-center">
-                  <div className="flex items-center justify-center gap-3 mb-3">
-                    <h4 className="text-2xl font-bold text-black">Premium Set</h4>
-                    <img 
-                      src="/diamond.png" 
-                      alt="Diamond" 
-                      className="w-8 h-8 object-contain"
+              {/* Gifting Card 4 - 1:1 Square */}
+              <Link href="/shop/gifting">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/gifting2.png"
+                      alt="Gift Set 4"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='%23E5E7EB'%3E%3Crect width='24' height='24' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239CA3AF' font-size='16' font-family='Arial'%3EGift Set 4%3C/text%3E%3C/svg%3E";
+                      }}
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <div className="mb-6">
-                    <span className="text-5xl font-bold text-black">₹3499</span>
+                </motion.div>
+              </Link>
+
+              {/* Combined Card 5 & 6 - Rectangle */}
+              <Link href="/shop/gifting" className="md:col-span-2">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-[2/1] bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/gifting4.png"
+                      alt="Gift Set Collection 2"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400' viewBox='0 0 24 24' fill='%23E5E7EB'%3E%3Crect width='24' height='24' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239CA3AF' font-size='16' font-family='Arial'%3EGift Set Collection 2%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
-                  <p className="text-black text-base mb-8">Ultimate luxury collection for your baby</p>
-                  
-                  {/* Expandable Content */}
-                  <details className="text-left mb-8">
-                    <summary className="flex items-center justify-between cursor-pointer p-4 bg-gradient-to-r from-amber-100 to-orange-100 rounded-xl hover:from-amber-200 hover:to-orange-200 transition-all duration-300 border border-amber-300">
-                      <span className="text-base font-semibold text-black flex items-center gap-2">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        What's included?
-                      </span>
-                      <svg className="w-5 h-5 text-black transition-transform duration-300 details-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </summary>
-                    <div className="max-h-40 overflow-y-auto mt-4 space-y-3 text-base text-black">
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">6 x Organic Muslin Wraps</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">3 x Luxury Towel Sets</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">8 x Designer Bodysuits</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Premium Diaper Backpack</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">3 x Baby Blankets</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Complete Grooming Kit</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">2 x Baby Bed Sheets</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Baby Sleep Sack</span>
-                      </div>
-                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-amber-50 transition-colors">
-                        <span className="w-3 h-3 bg-amber-400 rounded-full shadow-sm"></span>
-                        <span className="font-medium">1 x Toy Set</span>
-                      </div>
-                    </div>
-                  </details>
-                  
-                  <button className="w-full bg-yellow-200 text-black py-4 px-6 rounded-xl font-bold text-lg hover:bg-yellow-300 transition-all duration-300 transform hover:scale-105 shadow-xl">
-                    Get now
-                  </button>
-                </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             </div>
           </div>
 
@@ -1542,6 +1467,8 @@ export default function Home() {
 
             style={{ objectPosition: 'center' }}
 
+            draggable={false}
+
           />
 
         </div>
@@ -1612,6 +1539,7 @@ export default function Home() {
                   src="/review4.jpg" 
                   alt="Happy baby with Planet Mini products"
                   className="w-full h-full object-cover"
+                  draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='12' font-family='Arial'%3EBaby Review 1%3C/text%3E%3C/svg%3E";
                   }}
@@ -1643,6 +1571,7 @@ export default function Home() {
                   src="/review5.jpg" 
                   alt="Baby in comfortable sleepwear"
                   className="w-full h-full object-cover"
+                  draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23DBEAFE'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%231E40AF' font-size='12' font-family='Arial'%3EBaby Review 2%3C/text%3E%3C/svg%3E";
                   }}
@@ -1674,6 +1603,7 @@ export default function Home() {
                   src="/review6.jpg" 
                   alt="Baby playing with toys"
                   className="w-full h-full object-cover"
+                  draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23D1FAE5'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23065F46' font-size='12' font-family='Arial'%3EBaby Review 3%3C/text%3E%3C/svg%3E";
                   }}
@@ -1705,6 +1635,7 @@ export default function Home() {
                   src="/review1.jpg" 
                   alt="Twins in matching outfits"
                   className="w-full h-full object-cover"
+                  draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEF3C7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%2392400E' font-size='12' font-family='Arial'%3EBaby Review 4%3C/text%3E%3C/svg%3E";
                   }}
@@ -1736,6 +1667,7 @@ export default function Home() {
                   src="/review2.jpg" 
                   alt="Happy baby in organic clothing"
                   className="w-full h-full object-cover"
+                  draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23E9D5FF'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%236B21A8' font-size='12' font-family='Arial'%3EBaby Review 5%3C/text%3E%3C/svg%3E";
                   }}
@@ -1767,6 +1699,7 @@ export default function Home() {
                   src="/review3.jpg" 
                   alt="Baby sleeping peacefully"
                   className="w-full h-full object-cover"
+                  draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FED7AA'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239A3412' font-size='12' font-family='Arial'%3EBaby Review 6%3C/text%3E%3C/svg%3E";
                   }}
@@ -1852,110 +1785,6 @@ export default function Home() {
       </section>
 
 
-
-      {/* About Us / Contact Us / Know Us Links */}
-
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-
-        <div className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-r from-primary to-secondary p-8 lg:p-16">
-
-          <div className="grid md:grid-cols-3 gap-12 mb-12">
-
-            <Link href="/about" className="text-center group transform transition-transform duration-300 hover:scale-105">
-
-              <div className="rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20 p-6 group-hover:bg-white/40 transition-all duration-300">
-
-                <Package className="w-8 h-8 text-black mx-auto mb-3" />
-
-                <h3 className="text-xl font-semibold text-black mb-2">About Us</h3>
-
-                <p className="text-sm text-black/80">Learn more about our story</p>
-
-              </div>
-
-            </Link>
-
-            <Link href="/contact" className="text-center group transform transition-transform duration-300 hover:scale-105">
-
-              <div className="rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20 p-6 group-hover:bg-white/40 transition-all duration-300">
-
-                <Heart className="w-8 h-8 text-black mx-auto mb-3" />
-
-                <h3 className="text-xl font-semibold text-black mb-2">Contact Us</h3>
-
-                <p className="text-sm text-black/80">Get in touch with us</p>
-
-              </div>
-
-            </Link>
-
-            <Link href="/know-us" className="text-center group transform transition-transform duration-300 hover:scale-105">
-
-              <div className="rounded-2xl bg-white/30 backdrop-blur-sm border border-white/20 p-6 group-hover:bg-white/40 transition-all duration-300">
-
-                <Star className="w-8 h-8 text-black mx-auto mb-3" />
-
-                <h3 className="text-xl font-semibold text-black mb-2">Know Us</h3>
-
-                <p className="text-sm text-black/80">Discover our mission</p>
-
-              </div>
-
-            </Link>
-
-          </div>
-
-          
-
-          <div className="grid md:grid-cols-3 gap-12">
-
-            <div className="text-center">
-
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-
-                <Package className="w-6 h-6 text-black" />
-
-              </div>
-
-              <h4 className="font-semibold text-black mb-2">Soft & Safe Fabrics</h4>
-
-              <p className="text-sm text-black/80">Gentle on baby's delicate skin</p>
-
-            </div>
-
-            <div className="text-center">
-
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-
-                <Heart className="w-6 h-6 text-black" />
-
-              </div>
-
-              <h4 className="font-semibold text-black mb-2">Eco-Friendly Materials</h4>
-
-              <p className="text-sm text-black/80">Sustainable choices for our planet</p>
-
-            </div>
-
-            <div className="text-center">
-
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
-
-                <Star className="w-6 h-6 text-black" />
-
-              </div>
-
-              <h4 className="font-semibold text-black mb-2">Loved by Parents</h4>
-
-              <p className="text-sm text-black/80">Trusted by families worldwide</p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
 
       {/* Combo Info Modal */}
       {showComboInfoModal && (
@@ -2098,6 +1927,7 @@ export default function Home() {
         </div>
       )}
     </motion.div>
+  </>
   );
 
 }

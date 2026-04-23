@@ -189,7 +189,7 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
         >
           
           {/* Large Product Image */}
-          <div className="aspect-[4/5] flex items-center justify-center relative bg-transparent">
+          <div className="aspect-[3/4] flex items-center justify-center relative bg-transparent">
             {/* Discount Badge */}
             {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
               <div className="absolute top-2 left-2 z-20">
@@ -202,6 +202,7 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
               src={product.image}
               alt={product.name}
               className="w-full h-full object-cover rounded-3xl transition-all duration-300"
+              draggable={false}
             />
             
             {/* Image Navigation Arrows - Only show if multiple images and on card hover */}
@@ -253,13 +254,13 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
             </h3>
 
             {/* Product Description */}
-            <p className="text-sm text-gray-600 mb-2 line-clamp-1">
+            <p className="text-base text-gray-600 mb-2">
               {product.description || 'Perfect for your baby\'s daily care needs'}
             </p>
 
             {/* Price Section */}
             <div className="flex items-center justify-center gap-2">
-              <span className="text-sm font-bold text-gray-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>
+              <span className="text-base font-bold text-gray-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>
               {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
                 <span className="text-xs text-gray-500 line-through">
                   &#8377;{Number(product.originalPrice).toFixed(2)}
