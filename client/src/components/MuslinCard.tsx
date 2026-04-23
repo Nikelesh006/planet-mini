@@ -106,7 +106,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
           )}
 
           {/* Large Product Image */}
-          <div className="aspect-[4/5] flex items-center justify-center relative bg-transparent">
+          <div className="aspect-[3/4] flex items-center justify-center relative bg-transparent">
             <img
               src={product.image}
               alt={product.name}
@@ -141,7 +141,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
             </h3>
 
             {/* Product Description */}
-            <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+            <p className="text-base text-gray-600 mb-2">
               {product.description || 'Perfect for your baby\'s daily care needs'}
             </p>
 

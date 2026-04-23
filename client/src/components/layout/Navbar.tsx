@@ -172,6 +172,7 @@ export default function Navbar() {
                 src="/Planet-mini-logo.png" 
                 alt="Planet Mini Logo" 
                 className="h-14 w-auto object-contain block"
+                draggable={false}
                 onError={(e) => {
                   // Fallback to original logo if image fails to load
                   const target = e.target as HTMLImageElement;
@@ -311,7 +312,7 @@ export default function Navbar() {
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
                   ) : user ? (
                     user.image ? (
-                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" draggable={false} />
                     ) : (
                       <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                         <span className="text-white text-xs font-bold">
@@ -336,7 +337,7 @@ export default function Navbar() {
                     {/* User Header */}
                     <div className="flex items-center gap-3 p-4 border-b border-gray-100">
                       {user.image ? (
-                        <img src={user.image} alt="Avatar" className="w-10 h-10 rounded-full object-cover" />
+                        <img src={user.image} alt="Avatar" className="w-10 h-10 rounded-full object-cover" draggable={false} />
                       ) : (
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                           <span className="text-white text-lg font-bold">
@@ -452,7 +453,7 @@ export default function Navbar() {
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
                   ) : user ? (
                     user.image ? (
-                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" />
+                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" draggable={false} />
                     ) : (
                       <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                         <span className="text-white text-xs font-bold">
