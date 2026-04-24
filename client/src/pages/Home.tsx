@@ -19,7 +19,7 @@ import CategoryCard from "@/components/CategoryCard";
 
 import ProductGrid from "@/components/ProductGrid";
 
-import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift, ChevronLeft, ChevronRight, Mail } from "lucide-react";
+import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift, ChevronLeft, ChevronRight, Mail, Leaf, Shield } from "lucide-react";
 
 import { useState, useEffect, useRef } from "react";
 
@@ -784,7 +784,7 @@ export default function Home() {
 
 
 
-      {/* Baby Care Essentials Section */}
+      {/*New Arrivals Section */}
 
       <section className="w-full bg-red">
 
@@ -805,7 +805,7 @@ export default function Home() {
             <div className="flex items-center justify-center gap-16 mb-4">
               <div className="flex-1 h-px bg-gray-400"></div>
               <div className="flex items-center gap-4">
-                <h2 className="text-4xl font-bold text-black">Baby Care Essentials</h2>
+                <h2 className="text-4xl font-bold text-black">New Arrivals</h2>
                 <img 
                   src="/playtime.png" 
                   alt="Playtime" 
@@ -896,7 +896,7 @@ export default function Home() {
 
 
 
-      {/* Muslin Cloths Section */}
+      {/*Trending Products Section */}
 
       <section className="w-full">
 
@@ -917,7 +917,7 @@ export default function Home() {
             <div className="flex items-center justify-center gap-16 mb-4">
               <div className="flex-1 h-px bg-gray-400"></div>
               <div className="flex items-center gap-4">
-                <h2 className="text-4xl font-bold text-black">Muslin Clothings</h2>
+                <h2 className="text-4xl font-bold text-black">Trending Products</h2>
                 <img 
                   src="/baby.png" 
                   alt="Baby" 
@@ -1026,7 +1026,7 @@ export default function Home() {
           >
 
             <div className="flex items-center justify-center gap-3 mb-4">
-              <h2 className="text-4xl font-bold ">Cuddle Combos</h2>
+              <h2 className="text-4xl font-bold ">Blockbuster Combo's</h2>
               <img
                 src="/puzzle.png"
                 alt="Combo"
@@ -1124,117 +1124,6 @@ export default function Home() {
             </div>
 
           )}
-
-        </div>
-
-      </section>
-
-
-
-      {/* Trending Products Section */}
-      <section className="w-full bg-red">
-
-        <div className="px-4 sm:px-6 lg:px-8 py-8">
-
-          {/* Header */}
-
-          <motion.div
-
-            initial={{ opacity: 0, y: 20 }}
-
-            whileInView={{ opacity: 1, y: 0 }}
-
-            className="text-center mb-12"
-
-          >
-
-            <div className="flex items-center justify-center gap-16 mb-4">
-              <div className="flex-1 h-px bg-gray-400"></div>
-              <div className="flex items-center gap-4">
-                <h2 className="text-4xl font-bold text-black">Trending Products</h2>
-                <img
-                  src="/toys.png"
-                  alt="Trending"
-                  className="w-16 h-16 object-contain"
-                  draggable={false}
-                />
-              </div>
-              <div className="flex-1 h-px bg-gray-400"></div>
-            </div>
-
-            <p className="text-gray-600 text-lg">Most loved products by parents and babies</p>
-
-            <div className="flex justify-center gap-2 mt-4">
-
-              <div className="w-12 h-1 bg-primary rounded-full"></div>
-
-              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
-
-              <div className="w-12 h-1 bg-primary rounded-full"></div>
-
-            </div>
-
-          </motion.div>
-
-          {/* 4-Card Grid Layout */}
-
-          <div className="w-full px-4 sm:px-6 lg:px-8">
-
-            {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
-
-                  {babyCareProducts.slice(0, 4).map((product, index) => (
-
-                    <BabyCareCard key={product.id || `trending-${index}`} product={product} index={index} />
-
-                  ))}
-
-                </div>
-
-                {/* Explore More Button */}
-                <div className="text-center mt-8">
-                  <motion.button
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
-                  >
-                    Explore More
-                    <svg className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </motion.button>
-                </div>
-              </>
-            )}
-
-            {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
-
-              <div className="text-center py-12">
-
-                <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-
-                <h3 className="text-xl font-semibold text-black mb-2">No Trending Products</h3>
-
-                <p className="text-gray-500">Add trending products to showcase here!</p>
-
-              </div>
-
-            )}
-
-            {babyCareLoading && (
-
-              <div className="flex justify-center py-8">
-
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-
-              </div>
-
-            )}
-
-          </div>
 
         </div>
 
@@ -1451,25 +1340,149 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Centre Banner Section */}
+      {/* Our Commitment Section */}
 
-      <section className="w-full pb-8">
+      <section className="w-full py-16 bg-gradient-to-b from-white to-red-50">
 
-        <div className="relative w-full flex justify-center">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
 
-          <img
+          {/* Header */}
 
-            src="/centre-banner.png"
+          <motion.div
 
-            alt="Centre Banner"
+            initial={{ opacity: 0, y: 20 }}
 
-            className="w-full h-auto object-cover transform scale-90"
+            whileInView={{ opacity: 1, y: 0 }}
 
-            style={{ objectPosition: 'center' }}
+            className="text-center mb-12"
 
-            draggable={false}
+          >
 
-          />
+            <h2 className="text-4xl font-bold text-black mb-4">Our commitment to your baby</h2>
+
+            <p className="text-gray-600 text-lg">We prioritize safety, comfort, and sustainability in every product</p>
+
+            <div className="flex justify-center gap-2 mt-4">
+
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+
+              <div className="w-12 h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+
+              <div className="w-12 h-1 bg-primary rounded-full"></div>
+
+            </div>
+
+          </motion.div>
+
+          {/* 4 Commitment Cards */}
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            {/* 100% Organic Cotton */}
+
+            <motion.div
+
+              initial={{ opacity: 0, y: 20 }}
+
+              whileInView={{ opacity: 1, y: 0 }}
+
+              transition={{ duration: 0.5, delay: 0.1 }}
+
+              className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 text-center"
+
+            >
+
+              <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center mx-auto mb-6">
+
+                <Leaf className="w-10 h-10 text-green-600" />
+
+              </div>
+
+              <h3 className="text-xl font-bold text-black mb-3">100% Organic Cotton</h3>
+
+              <p className="text-gray-600">Pure, natural fabric that's gentle on your baby's delicate skin</p>
+
+            </motion.div>
+
+            {/* Chemical Free */}
+
+            <motion.div
+
+              initial={{ opacity: 0, y: 20 }}
+
+              whileInView={{ opacity: 1, y: 0 }}
+
+              transition={{ duration: 0.5, delay: 0.2 }}
+
+              className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 text-center"
+
+            >
+
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-6">
+
+                <Shield className="w-10 h-10 text-blue-600" />
+
+              </div>
+
+              <h3 className="text-xl font-bold text-black mb-3">Chemical Free</h3>
+
+              <p className="text-gray-600">No harmful chemicals or dyes, ensuring complete safety</p>
+
+            </motion.div>
+
+            {/* Skin Friendly */}
+
+            <motion.div
+
+              initial={{ opacity: 0, y: 20 }}
+
+              whileInView={{ opacity: 1, y: 0 }}
+
+              transition={{ duration: 0.5, delay: 0.3 }}
+
+              className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 text-center"
+
+            >
+
+              <div className="w-20 h-20 bg-gradient-to-br from-pink-100 to-pink-200 rounded-full flex items-center justify-center mx-auto mb-6">
+
+                <Heart className="w-10 h-10 text-pink-600" />
+
+              </div>
+
+              <h3 className="text-xl font-bold text-black mb-3">Skin Friendly</h3>
+
+              <p className="text-gray-600">Soft, breathable materials that prevent irritation and rashes</p>
+
+            </motion.div>
+
+            {/* Sustainable */}
+
+            <motion.div
+
+              initial={{ opacity: 0, y: 20 }}
+
+              whileInView={{ opacity: 1, y: 0 }}
+
+              transition={{ duration: 0.5, delay: 0.4 }}
+
+              className="bg-white rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 text-center"
+
+            >
+
+              <div className="w-20 h-20 bg-gradient-to-br from-amber-100 to-amber-200 rounded-full flex items-center justify-center mx-auto mb-6">
+
+                <Sparkles className="w-10 h-10 text-amber-600" />
+
+              </div>
+
+              <h3 className="text-xl font-bold text-black mb-3">Sustainable</h3>
+
+              <p className="text-gray-600">Eco-friendly production that protects our planet for future generations</p>
+
+            </motion.div>
+
+          </div>
 
         </div>
 
