@@ -126,8 +126,8 @@ export default function Cart() {
               </div>
 
               <div className="mt-8 space-y-4">
-                <Link 
-                  href="/shop"
+                <Link
+                  href="/shop/style"
                   className="w-full bg-gradient-to-r from-primary to-secondary text-black py-3 rounded-xl hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg text-center font-semibold"
                 >
                   Continue Shopping

@@ -128,6 +128,45 @@ export default function ShopStyle() {
         </div>
       </section>
 
+      {/* Category Filter Section */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 py-6">
+        <div className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-10">
+          {[
+            { id: 'jhlablas', name: 'Jhlablas', icon: '👶' },
+            { id: 'hooded-towels', name: 'Hooded Towels', icon: '🧸' },
+            { id: 'beds', name: 'Beds', icon: '🛏️' },
+            { id: 'muslin', name: 'Muslin', icon: '🧣' },
+            { id: 'napkins', name: 'Napkins', icon: '👕' },
+            { id: 'rompers', name: 'Rompers', icon: '👗' },
+          ].map((category) => (
+            <button
+              key={category.id}
+              onClick={() => handleFilterToggle(category.id)}
+              className={`
+                flex flex-col items-center gap-3 p-6 sm:p-8 rounded-2xl transition-all duration-300 border-2
+                ${selectedFilters.includes(category.id)
+                  ? 'bg-red-100 border-red-500 shadow-xl scale-110'
+                  : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-110'
+                }
+              `}
+            >
+              <div className={`
+                text-5xl sm:text-6xl transition-transform duration-300
+                ${selectedFilters.includes(category.id) ? 'scale-125' : 'hover:scale-125'}
+              `}>
+                {category.icon}
+              </div>
+              <span className={`
+                text-base sm:text-lg font-semibold transition-colors
+                ${selectedFilters.includes(category.id) ? 'text-red-600' : 'text-gray-700'}
+              `}>
+                {category.name}
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
+
       {/* Centered Text Section Below Banner */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 pt-10">
         <div className="text-center">

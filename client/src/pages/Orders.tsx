@@ -312,7 +312,7 @@ export default function Orders() {
 
             onClick={() => window.location.reload()}
 
-            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+            className="bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-colors"
 
           >
 
@@ -362,9 +362,9 @@ export default function Orders() {
 
             </div>
 
-            <Link href="/shop">
+            <Link href="/shop/style">
 
-              <button className="bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
+              <button className="bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2">
 
                 Continue Shopping
 
@@ -688,9 +688,9 @@ export default function Orders() {
 
             </p>
 
-            <Link href="/shop">
+            <Link href="/shop/style">
 
-              <button className="bg-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto">
+              <button className="bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto">
 
                 Start Shopping
 
@@ -1060,7 +1060,7 @@ export default function Orders() {
 
                 <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-200">
 
-                  <button className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300">
+                  <button className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300">
 
                     <Download className="w-5 h-5" />
 
@@ -1078,7 +1078,7 @@ export default function Orders() {
 
                   {selectedOrder.status === 'delivered' && (
 
-                    <button className="flex items-center gap-2 bg-secondary text-white px-6 py-3 rounded-xl font-semibold hover:bg-secondary/90 transition-all duration-300 ml-auto">
+                    <button className="flex items-center gap-2 bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 ml-auto">
 
                       <RefreshCw className="w-5 h-5" />
 

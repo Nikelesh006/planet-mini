@@ -147,31 +147,31 @@ export default function Navbar() {
 
       <header
         className={cn(
-          "fixed left-0 right-0 z-40 transition-all duration-300 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800",
-          isScrolled 
-            ? "shadow-lg py-3 top-10" 
+          "fixed left-0 right-0 z-50 transition-all duration-300 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800",
+          isScrolled
+            ? "shadow-lg py-3 top-10"
             : "shadow-md py-5 top-10"
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center">
             {/* Mobile Menu Toggle */}
             <button
-              className="lg:hidden p-2 text-foreground hover:bg-muted rounded-full transition-colors"
+              className="lg:hidden p-2 text-foreground hover:bg-muted rounded-full transition-colors mr-4"
               onClick={() => setMobileMenuOpen(true)}
             >
               <Menu className="w-6 h-6" />
             </button>
 
             {/* Logo */}
-            <Link 
-              href="/" 
-              className="flex items-center justify-start hover:opacity-80 transition-opacity flex-shrink-0 -ml-24"
+            <Link
+              href="/"
+              className="flex items-center justify-start hover:opacity-80 transition-opacity flex-shrink-0"
             >
-              <img 
-                src="/Planet-mini-logo.png" 
-                alt="Planet Mini Logo" 
-                className="h-14 w-auto object-contain block"
+              <img
+                src="/Planet-mini-logo.png"
+                alt="Planet Mini Logo"
+                className="h-12 lg:h-14 w-auto object-contain block"
                 draggable={false}
                 onError={(e) => {
                   // Fallback to original logo if image fails to load
@@ -187,15 +187,15 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-2">
+            <nav className="hidden lg:flex items-center gap-2 flex-1 ml-8">
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "text-base font-semibold transition-all duration-300 ease-in-out relative px-5 py-2 rounded-md",
+                    "text-base font-semibold transition-all duration-300 ease-in-out relative px-5 py-2 rounded-md whitespace-nowrap",
                     "hover:bg-gray-200 hover:text-black",
-                    location === link.href 
+                    location === link.href
                       ? "text-black bg-gray-200"
                       : "text-gray-600"
                   )}
@@ -206,7 +206,7 @@ export default function Navbar() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 ml-auto">
               <div className="relative hidden sm:block" ref={searchDropdownRef}>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -266,7 +266,14 @@ export default function Navbar() {
                   </motion.div>
                 )}
               </div>
-              <button className="group p-2 text-black hover:bg-gray-200 rounded-full transition-all duration-300 transform hover:scale-110">
+              {/* Mobile Search Button */}
+              <button 
+                className="lg:hidden p-2 text-black hover:bg-gray-200 rounded-full transition-all duration-300"
+                onClick={() => setSearchDropdownOpen(true)}
+              >
+                <Search className="w-5 h-5" />
+              </button>
+              <button className="group p-2 text-black hover:bg-gray-200 rounded-full transition-all duration-300 transform hover:scale-110 hidden lg:block">
                 <Link href="/likes" className="block relative">
                   {likedProducts.length > 0 && (
                     <motion.div
@@ -415,8 +422,7 @@ export default function Navbar() {
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
               className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm bg-card shadow-2xl p-6 lg:hidden flex flex-col"
             >
-              <div className="flex items-center justify-between mb-8">
-                <span className="text-xl font-display font-bold bg-gradient-to-r from-blue-600 to-pink-600 bg-clip-text text-transparent">Menu</span>
+              <div className="flex items-center justify-end mb-8">
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-2 bg-gray-100 rounded-full text-gray-600 hover:text-black hover:bg-gray-200 transition-all duration-300"
@@ -469,6 +475,62 @@ export default function Navbar() {
                   </span>
                 </button>
               </nav>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Search Overlay */}
+      <AnimatePresence>
+        {searchDropdownOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden"
+              onClick={() => setSearchDropdownOpen(false)}
+            />
+            <motion.div
+              initial={{ y: "-100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "-100%" }}
+              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+              className="fixed top-10 left-0 right-0 z-50 bg-white shadow-2xl p-4 lg:hidden"
+            >
+              <div className="flex items-center gap-3">
+                <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                <input
+                  type="text"
+                  placeholder={typewriterText ? `Search for ${typewriterText}...` : "Search..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 bg-transparent border-none outline-none text-base placeholder:text-gray-500"
+                  autoFocus
+                />
+                <button
+                  onClick={() => setSearchDropdownOpen(false)}
+                  className="p-2 text-gray-600 hover:text-black transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              <div className="mt-4 max-h-80 overflow-y-auto">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recommended</p>
+                {recommendedProducts.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.id}`}
+                    onClick={() => setSearchDropdownOpen(false)}
+                    className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
+                  >
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                      <p className="text-xs text-gray-500">{product.category}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
             </motion.div>
           </>
         )}

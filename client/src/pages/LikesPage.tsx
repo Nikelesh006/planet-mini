@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Heart, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { useLikes } from "@/contexts/LikeContext";
-import { ProductCard } from "@/components/ProductCard";
+import { BabyCareCard } from "@/components/BabyCareCard";
 import type { ProductResponse } from "@shared/routes";
 
 export default function LikesPage() {
@@ -20,9 +20,9 @@ export default function LikesPage() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="min-h-screen bg-white"
+      className="bg-white pt-16"
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
@@ -58,19 +58,19 @@ export default function LikesPage() {
             </div>
             <h2 className="text-3xl font-bold text-black mb-4">No liked items yet</h2>
             <p className="text-gray-600 mb-8 text-lg">Start liking products to see them here</p>
-            <Link 
+            <Link
               href="/"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="inline-flex items-center gap-3 bg-black text-white px-8 py-4 rounded-2xl font-bold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               Start Shopping
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-4 gap-3 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
             {likedProducts.map((product, index) => (
-              <ProductCard 
-                key={product.id} 
-                product={product} 
+              <BabyCareCard
+                key={product.id}
+                product={product}
                 index={index}
               />
             ))}

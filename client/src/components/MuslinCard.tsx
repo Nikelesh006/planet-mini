@@ -106,7 +106,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
           )}
 
           {/* Large Product Image */}
-          <div className="aspect-[3/4] flex items-center justify-center relative bg-transparent">
+          <div className="aspect-[2/3] sm:aspect-[3/4] flex items-center justify-center relative bg-transparent">
             <img
               src={product.image}
               alt={product.name}
@@ -134,20 +134,20 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
           </div>
 
           {/* Product Content - Text Below Image */}
-          <div className="p-4 bg-white text-center">
+          <div className="p-1 sm:p-4 bg-white text-center">
             {/* Product Name */}
-            <h3 className="font-medium text-gray-900 mb-2 line-clamp-3 leading-relaxed text-base">
+            <h3 className="font-medium text-gray-900 mb-1 line-clamp-2 leading-relaxed text-sm sm:text-base">
               {product.name}
             </h3>
 
             {/* Product Description */}
-            <p className="text-base text-gray-600 mb-2">
+            <p className="text-xs sm:text-base text-gray-600 mb-2">
               {product.description || 'Perfect for your baby\'s daily care needs'}
             </p>
 
             {/* Price Section */}
             <div className="flex items-center justify-center gap-2">
-              <span className="text-base font-bold text-gray-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>
+              <span className="text-sm sm:text-base font-bold text-gray-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>
               {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
                 <span className="text-sm text-gray-500 line-through">
                   &#8377;{Number(product.originalPrice).toFixed(2)}

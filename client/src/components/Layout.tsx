@@ -26,7 +26,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             ease: [0.4, 0.0, 0.2, 1],
             stagger: 0
           }}
-          className="flex-1 pt-24 pb-12"
+          className="flex-1 pt-32 pb-12"
         >
           {children}
         </motion.main>
