@@ -168,20 +168,20 @@ html {
   border-radius: 4px;
 }
 
-/* Custom scrollbar with gender theme */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #3B82F6 0%, #EC4899 100%);
+  background: #888;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #2563EB 0%, #DB2777 100%);
+  background: #555;
 }

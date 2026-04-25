@@ -43,7 +43,7 @@ export default function About() {
               Today, we're proud to serve families worldwide with our carefully curated collection of baby essentials, each piece designed with love and attention to detail.
             </p>
             <Link 
-              href="/shop"
+              href="/shop/style"
               className="inline-flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all duration-300"
             >
               Shop Our Collection
@@ -157,9 +157,9 @@ export default function About() {
             Discover why thousands of parents trust us for their baby's essentials
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link 
-              href="/shop"
-              className="inline-flex items-center justify-center bg-gradient-to-r from-primary to-secondary text-black px-8 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
+            <Link
+              href="/shop/style"
+              className="inline-flex items-center justify-center bg-black text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-all duration-300"
             >
               Start Shopping
             </Link>

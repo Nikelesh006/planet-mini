@@ -146,12 +146,12 @@ export default function AddAddressPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-pink-50 to-pink-100 border-b border-pink-200">
+      <div className="bg-gray-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => window.location.href = '/cart'}
-              className="flex items-center gap-2 text-gray-700 hover:text-pink-600 transition-colors"
+              className="flex items-center gap-2 text-gray-700 hover:text-black transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Back to Cart</span>
@@ -165,7 +165,7 @@ export default function AddAddressPage() {
           {/* Left Column - Form */}
           <div className="max-w-lg">
             <h1 className="text-3xl font-bold text-gray-800 mb-8">
-              Add Shipping <span className="text-pink-500">Address</span>
+              Add Shipping <span className="text-black">Address</span>
             </h1>
             
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -175,7 +175,7 @@ export default function AddAddressPage() {
                   type="text"
                   value={formData.fullName}
                   onChange={handleInputChange('fullName')}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-pink-200 focus:border-pink-500 outline-none transition-all ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-gray-200 focus:border-black outline-none transition-all ${
                     errors.fullName ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Full name"
@@ -272,7 +272,7 @@ export default function AddAddressPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-pink-500 text-white py-3 px-6 rounded-lg font-semibold text-base hover:bg-pink-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6"
+                className="w-full bg-gray-800 text-white py-3 px-6 rounded-lg font-medium text-base hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-6"
               >
                 {isSubmitting ? 'Saving...' : 'SAVE ADDRESS'}
               </button>

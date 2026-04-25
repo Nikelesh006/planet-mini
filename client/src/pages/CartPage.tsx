@@ -316,7 +316,7 @@ export default function CartPage() {
             <div className="mt-6">
               <Link 
                 href="/"
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Continue Shopping
@@ -326,7 +326,7 @@ export default function CartPage() {
 
           {/* Order Summary - Right Side */}
           <div className="lg:col-span-1">
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
+            <div className="bg-gray-50 rounded-3xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
               <h2 className="text-2xl font-bold text-black mb-6">Order Summary</h2>
               
               {/* SELECT ADDRESS */}
@@ -350,7 +350,7 @@ export default function CartPage() {
                     onClick={(e) => {
                       console.log('Select clicked');
                     }}
-                    className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl appearance-none bg-white text-black font-semibold focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer"
+                    className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl appearance-none bg-white text-black font-semibold focus:outline-none focus:border-black focus:ring-2 focus:ring-black/20 cursor-pointer"
                   >
                     {addresses.map((address) => (
                       <option key={address._id} value={address._id}>
@@ -371,7 +371,7 @@ export default function CartPage() {
                     console.log('Add New Address button clicked');
                     window.location.href = '/add-address';
                   }}
-                  className="w-full bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="w-full bg-black text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
                   + Add New Address
                 </button>
@@ -392,13 +392,13 @@ export default function CartPage() {
               {/* Total */}
               <div className="flex justify-between items-center pt-4 border-t border-gray-200 mb-6">
                 <span className="text-2xl font-bold text-black">Total</span>
-                <span className="text-2xl font-bold text-primary">{formatPrice(subtotal)}</span>
+                <span className="text-2xl font-bold text-black">{formatPrice(subtotal)}</span>
               </div>
 
               {/* Place Order Button */}
               <button 
                 onClick={handlePlaceOrder}
-                className="w-full bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="w-full bg-black text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 Place Order
               </button>

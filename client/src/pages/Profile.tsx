@@ -109,9 +109,9 @@ export default function Profile() {
                 <h2 className="text-3xl font-bold text-black">My Profile</h2>
                 <button 
                   onClick={() => setIsEditing(!isEditing)}
-                  className="flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="flex items-center gap-3 bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                 >
-                  <Edit className="w-5 h-5 text-black" />
+                  <Edit className="w-5 h-5 text-white" />
                   <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
                 </button>
               </div>
@@ -130,7 +130,7 @@ export default function Profile() {
                       {initials}
                     </div>
                   )}
-                  <button className="absolute bottom-0 right-0 w-10 h-10 bg-gradient-to-r from-primary to-secondary text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+                  <button className="absolute bottom-0 right-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
                     <Camera className="w-5 h-5" />
                   </button>
                 </div>
@@ -141,10 +141,6 @@ export default function Profile() {
                     <div className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
                       <Calendar className="w-5 h-5" />
                       <span className="font-medium">Member since {new Date(profile?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600 hover:text-secondary transition-colors">
-                      <MapPin className="w-5 h-5" />
-                      <span className="font-medium">{profile?.address?.city || 'New York'}, {profile?.address?.state || 'USA'}</span>
                     </div>
                   </div>
                 </div>
@@ -172,7 +168,7 @@ export default function Profile() {
                     <input
                       type="tel"
                       placeholder="Phone"
-                      defaultValue={profile?.phone || ''}
+                      defaultValue=""
                       className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
                       id="phone"
                     />
@@ -188,28 +184,28 @@ export default function Profile() {
                     <input
                       type="text"
                       placeholder="Street Address"
-                      defaultValue={profile?.address?.street || ''}
+                      defaultValue=""
                       className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
                       id="street"
                     />
                     <input
                       type="text"
                       placeholder="City"
-                      defaultValue={profile?.address?.city || ''}
+                      defaultValue=""
                       className="p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black"
                       id="city"
                     />
                     <input
                       type="text"
                       placeholder="State"
-                      defaultValue={profile?.address?.state || ''}
+                      defaultValue=""
                       className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
                       id="state"
                     />
                     <input
                       type="text"
                       placeholder="Pincode"
-                      defaultValue={profile?.address?.pincode || ''}
+                      defaultValue=""
                       className="p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black"
                       id="pincode"
                     />
@@ -232,7 +228,7 @@ export default function Profile() {
                       handleSaveProfile(formData);
                     }}
                     disabled={updateProfile.isPending}
-                    className="mt-6 bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    className="mt-6 bg-gray-800 text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg"
                   >
                     {updateProfile.isPending ? (
                       <>
@@ -266,7 +262,7 @@ export default function Profile() {
                     </div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-600 mb-1">Phone</p>
-                      <p className="font-bold text-black group-hover:text-secondary transition-colors">{profile?.phone || '+1 (555) 123-4567'}</p>
+                      <p className="font-bold text-black group-hover:text-secondary transition-colors">{profile?.phone || 'No phone number added'}</p>
                     </div>
                   </div>
                   <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
@@ -278,7 +274,7 @@ export default function Profile() {
                       <p className="font-bold text-black group-hover:text-primary transition-colors">
                         {profile?.address?.street ? 
                           `${profile.address.street}, ${profile.address.city}, ${profile.address.state} ${profile.address.pincode}` :
-                          '123 Baby Street, New York, NY 10001'
+                          'No address added'
                         }
                       </p>
                     </div>
@@ -292,9 +288,9 @@ export default function Profile() {
                   <h4 className="text-2xl font-bold text-black">Baby Information</h4>
                   <button 
                     onClick={() => setShowAddBaby(!showAddBaby)}
-                    className="flex items-center gap-3 bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    className="flex items-center gap-3 bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
                   >
-                    <Plus className="w-5 h-5 text-black" />
+                    <Plus className="w-5 h-5 text-white" />
                     <span>Add Baby</span>
                   </button>
                 </div>
@@ -331,7 +327,7 @@ export default function Profile() {
                       <button
                         onClick={handleAddBaby}
                         disabled={addBabyInfo.isPending}
-                        className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-2xl font-semibold hover:from-primary/90 hover:to-secondary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                        className="bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                       >
                         {addBabyInfo.isPending ? 'Adding...' : 'Add Baby'}
                       </button>
@@ -400,15 +396,15 @@ export default function Profile() {
               <div className="space-y-4">
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Total Orders</span>
-                  <span className="font-bold text-primary text-lg">{totalOrders}</span>
+                  <span className="font-bold text-black text-lg">{totalOrders}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Total Spent</span>
-                  <span className="font-bold text-secondary text-lg">₹{totalSpent.toFixed(0)}</span>
+                  <span className="font-bold text-black text-lg">₹{totalSpent.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Member Since</span>
-                  <span className="font-bold text-black text-lg">{new Date(authUser?.createdAt || profile?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                  <span className="font-bold text-black text-lg">{new Date(profile?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
                 </div>
             </div>
             </div>
@@ -452,7 +448,7 @@ export default function Profile() {
             <p className="text-gray-600 text-center mb-6">Your profile has been successfully updated.</p>
             <button
               onClick={() => setShowProfileUpdateModal(false)}
-              className="w-full bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
+              className="w-full bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300"
             >
               Got it!
             </button>
@@ -475,7 +471,7 @@ export default function Profile() {
             <p className="text-gray-600 text-center mb-6">Baby information has been successfully added.</p>
             <button
               onClick={() => setShowBabyAddModal(false)}
-              className="w-full bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-xl font-semibold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300"
+              className="w-full bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300"
             >
               Great!
             </button>

@@ -19,7 +19,7 @@ export default function ProductDetailPage() {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Product Not Found</h1>
           <p className="text-gray-600 mb-6">The product you're looking for doesn't exist.</p>
-          <Link href="/shop">
+          <Link href="/shop/style">
             <button className="bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300">
               Back to Shop
             </button>
@@ -109,7 +109,7 @@ export default function ProductDetailPage() {
           <p className="text-gray-600 mb-6">
             {error ? `Error: ${error.message}` : 'The product you\'re looking for doesn\'t exist.'}
           </p>
-          <Link href="/shop">
+          <Link href="/shop/style">
             <button className="bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300">
               Back to Shop
             </button>
@@ -179,7 +179,7 @@ export default function ProductDetailPage() {
           <nav className="flex items-center gap-2 text-sm text-gray-600">
             <Link href="/" className="hover:text-black">Home</Link>
             <span>/</span>
-            <Link href="/shop" className="hover:text-black">Shop</Link>
+            <Link href="/shop/style" className="hover:text-black">Shop</Link>
             <span>/</span>
             <span className="text-black font-medium">{product.name}</span>
           </nav>
