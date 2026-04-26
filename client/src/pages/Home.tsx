@@ -110,6 +110,38 @@ export default function Home() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Mobile banner slider state
+  const [currentMobileSlide, setCurrentMobileSlide] = useState(0);
+
+  // Mobile banner images
+  const mobileBannerImages = [
+    "/mobile-banner1.png",
+    "/mobile-banner2.png",
+    "/mobile-banner3.png",
+    "/mobile-banner4.png"
+  ];
+
+  // Mobile banner navigation functions
+  const goToMobileSlide = (index: number) => {
+    setCurrentMobileSlide(index);
+  };
+
+  const goToMobilePrevSlide = () => {
+    setCurrentMobileSlide((prev) => (prev - 1 + mobileBannerImages.length) % mobileBannerImages.length);
+  };
+
+  const goToMobileNextSlide = () => {
+    setCurrentMobileSlide((prev) => (prev + 1) % mobileBannerImages.length);
+  };
+
+  // Auto-advance mobile banner slider
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentMobileSlide((prev) => (prev + 1) % mobileBannerImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Banners state
   const [banners, setBanners] = useState<string[]>([]);
   const [bannersLoading, setBannersLoading] = useState(true);
@@ -504,25 +536,77 @@ export default function Home() {
 
   };
 
-
-
   return (
-    <>
     <motion.div
       key="home"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="min-h-screen space-y-4 pt-16"
+      className="min-h-screen space-y-4"
     >
 
       {/* Hero Section with Image Slider */}
-      <section className="relative w-full h-[50vh] min-h-[300px] -mx-4 sm:mx-0 sm:h-[60vh] md:h-[70vh] max-h-[600px]">
+      <section className="relative w-full h-auto sm:h-[60vh] md:h-[70vh] sm:min-h-[300px] sm:max-h-[600px]">
         <div className="relative w-full h-full overflow-hidden">
           <div className="relative w-full h-full">
-            {/* Image Slider */}
-            <div className="relative w-full h-full">
+            {/* Mobile Banner - Only visible on small screens */}
+            <div className="sm:hidden relative w-full h-auto select-none">
+              {/* Mobile Banner Slider Images */}
+              <div className="relative w-full h-auto">
+                {mobileBannerImages.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Mobile Banner ${index + 1}`}
+                    className={`w-full h-auto object-contain transition-opacity duration-1000 pointer-events-none ${
+                      index === currentMobileSlide ? 'opacity-100' : 'opacity-0 hidden'
+                    }`}
+                    draggable={false}
+                    onContextMenu={(e) => e.preventDefault()}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EMobile Banner%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Mobile Banner Navigation Arrows */}
+              <button
+                onClick={goToMobilePrevSlide}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full transition-all duration-300 hover:scale-110 shadow-lg z-10"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={goToMobileNextSlide}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-2 rounded-full transition-all duration-300 hover:scale-110 shadow-lg z-10"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              {/* Mobile Banner Dot Indicators */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+                {mobileBannerImages.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => goToMobileSlide(index)}
+                    className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                      index === currentMobileSlide
+                        ? 'bg-white opacity-100 w-6'
+                        : 'bg-white/50 hover:bg-white/75'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Image Slider - Only visible on sm and larger screens */}
+            <div className="hidden sm:block relative w-full h-full">
               {/* Slider Images */}
               <div className="relative w-full h-full">
                 {sliderImages.map((image, index) => (
@@ -1412,13 +1496,9 @@ export default function Home() {
 
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                {/* Hover Content - icon and description */}
+                {/* Hover Content - description only */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  {/* Icon Badge */}
-                  <div className="w-14 h-14 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg shadow-green-500/30">
-                    <Leaf className="w-7 h-7 text-white" />
-                  </div>
-                  <p className="text-sm text-center text-black/95 leading-relaxed font-bold">Pure, natural fabric that's gentle on your baby's delicate skin</p>
+                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">Pure, natural fabric that's gentle on your baby's delicate skin</p>
                 </div>
 
               </div>
@@ -1472,12 +1552,9 @@ export default function Home() {
 
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                {/* Hover Content - icon and description */}
+                {/* Hover Content - description only */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  <div className="w-14 h-14 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg shadow-blue-500/30">
-                    <Shield className="w-7 h-7 text-white" />
-                  </div>
-                  <p className="text-sm text-center text-black/95 leading-relaxed font-bold">No harmful chemicals or dyes, ensuring complete safety</p>
+                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">No harmful chemicals or dyes, ensuring complete safety</p>
                 </div>
 
               </div>
@@ -1531,12 +1608,9 @@ export default function Home() {
 
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                {/* Hover Content - icon and description */}
+                {/* Hover Content - description only */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  <div className="w-14 h-14 bg-gradient-to-br from-pink-400 to-pink-600 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg shadow-pink-500/30">
-                    <Heart className="w-7 h-7 text-white" />
-                  </div>
-                  <p className="text-sm text-center text-black/95 leading-relaxed font-bold">Soft, breathable materials that prevent irritation and rashes</p>
+                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">Soft, breathable materials that prevent irritation and rashes</p>
                 </div>
 
               </div>
@@ -1590,12 +1664,9 @@ export default function Home() {
 
                 <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                {/* Hover Content - icon and description */}
+                {/* Hover Content - description only */}
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  <div className="w-14 h-14 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl flex items-center justify-center mb-4 mx-auto shadow-lg shadow-amber-500/30">
-                    <Sparkles className="w-7 h-7 text-white" />
-                  </div>
-                  <p className="text-sm text-center text-black/95 leading-relaxed font-bold">Eco-friendly production that protects our planet for future generations</p>
+                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">Eco-friendly production that protects our planet for future generations</p>
                 </div>
 
               </div>
@@ -1886,17 +1957,21 @@ export default function Home() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
 
-            <Link 
+            <Link
 
               href="/contact"
 
-              className="inline-flex items-center gap-2 bg-black border-2 text-white px-8 py-4 rounded-2xl hover:text-white transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 sm:px-8 sm:py-4 rounded-full sm:rounded-2xl text-base sm:text-base hover:bg-gray-800 transition-all duration-150 shadow-xl mx-auto group"
 
             >
 
-              <Mail className="w-5 h-5" />
+              <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
 
               Share Your Story
+
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
 
             </Link>
 
@@ -2049,7 +2124,6 @@ export default function Home() {
         </div>
       )}
     </motion.div>
-  </>
   );
 
 }

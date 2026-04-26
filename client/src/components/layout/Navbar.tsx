@@ -420,48 +420,88 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed inset-y-0 left-0 z-50 w-3/4 max-w-sm bg-card shadow-2xl p-6 lg:hidden flex flex-col"
+              className="fixed inset-y-0 left-0 z-50 w-[85%] max-w-xs sm:max-w-sm bg-white shadow-2xl lg:hidden flex flex-col"
             >
-              <div className="flex items-center justify-end mb-8">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
+                <Link
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+                >
+                  <img
+                    src="/Planet-mini-logo.png"
+                    alt="Planet Mini Logo"
+                    className="h-10 w-auto object-contain"
+                    draggable={false}
+                  />
+                </Link>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
-                  className="p-2 bg-gray-100 rounded-full text-gray-600 hover:text-black hover:bg-gray-200 transition-all duration-300"
+                  className="p-3 bg-gray-100 rounded-full text-gray-600 hover:text-black hover:bg-gray-200 transition-all duration-300 active:scale-95"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-6 h-6" />
                 </button>
               </div>
-              <nav className="flex flex-col gap-2">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "text-lg font-semibold transition-all duration-300 relative py-3 px-4 rounded-md",
-                      "hover:bg-gray-200 hover:text-black",
-                      location === link.href 
-                        ? "text-black bg-gray-200"
-                        : "text-gray-600"
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <div className="h-px bg-border my-4" />
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleProfileClick();
-                  }}
-                  className="text-lg font-semibold py-3 px-4 rounded-xl text-gray-600 hover:text-black hover:bg-gray-100 transition-all duration-300 flex items-center gap-3"
+              {/* Navigation Links */}
+              <nav className="flex-1 overflow-y-auto p-4 sm:p-6">
+                <div className="flex flex-col gap-1">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                        "hover:bg-gray-100 hover:text-black active:bg-gray-200",
+                        location === link.href 
+                          ? "text-black bg-gray-100"
+                          : "text-gray-700"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+                <div className="h-px bg-gray-200 my-4" />
+                <Link
+                  href="/likes"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                    "hover:bg-gray-100 hover:text-black active:bg-gray-200",
+                    location === '/likes'
+                      ? "text-black bg-gray-100"
+                      : "text-gray-700"
+                  )}
+                >
+                  <Heart className={`w-5 h-5 ${location === '/likes' ? 'fill-current' : ''}`} />
+                  <span>Liked Products</span>
+                  {likedProducts.length > 0 && (
+                    <span className="ml-auto bg-gradient-to-r from-secondary/80 to-primary text-white rounded-full text-xs font-bold px-2.5 py-1">
+                      {likedProducts.length > 9 ? '9+' : likedProducts.length}
+                    </span>
+                  )}
+                </Link>
+                <div className="h-px bg-gray-200 my-4" />
+                <Link
+                  href="/profile"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                    "hover:bg-gray-100 hover:text-black active:bg-gray-200",
+                    location === '/profile'
+                      ? "text-black bg-gray-100"
+                      : "text-gray-700"
+                  )}
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
                   ) : user ? (
                     user.image ? (
-                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" draggable={false} />
+                      <img src={user.image} alt="Avatar" className="w-6 h-6 rounded-full" draggable={false} />
                     ) : (
-                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                         <span className="text-white text-xs font-bold">
                           {user.name?.charAt(0) || 'U'}
                         </span>
@@ -470,11 +510,53 @@ export default function Navbar() {
                   ) : (
                     <User className="w-5 h-5" />
                   )}
-                  <span className="text-sm font-medium">
+                  <span className="text-sm sm:text-base font-medium">
                     {isLoading ? '' : user ? user.name || 'Profile' : 'Profile'}
                   </span>
-                </button>
+                </Link>
+                <Link
+                  href="/orders"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                    "hover:bg-gray-100 hover:text-black active:bg-gray-200",
+                    location === '/orders'
+                      ? "text-black bg-gray-100"
+                      : "text-gray-700"
+                  )}
+                >
+                  <OrdersIcon className="w-5 h-5" />
+                  <span>My Orders</span>
+                </Link>
               </nav>
+
+              {/* Quick Actions Footer */}
+              <div className="p-4 sm:p-6 border-t border-gray-200 space-y-3">
+                <Link
+                  href="/cart"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center justify-between py-3 px-4 sm:px-5 rounded-xl bg-gray-50 hover:bg-gray-100 transition-all duration-300 active:bg-gray-200"
+                >
+                  <div className="flex items-center gap-3">
+                    <ShoppingBag className="w-5 h-5 text-gray-700" />
+                    <span className="text-base sm:text-lg font-semibold text-gray-700">Cart</span>
+                  </div>
+                  {state.totalItems > 0 && (
+                    <span className="bg-black text-white rounded-full text-xs font-bold px-2.5 py-1">
+                      {state.totalItems > 99 ? '99+' : state.totalItems}
+                    </span>
+                  )}
+                </Link>
+                {user && (
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 py-3 px-4 sm:px-5 rounded-xl text-red-600 hover:bg-red-50 transition-all duration-300 active:bg-red-100"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span className="text-base sm:text-lg font-semibold">Sign Out</span>
+                  </button>
+                )}
+              </div>
             </motion.div>
           </>
         )}

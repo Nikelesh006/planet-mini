@@ -236,16 +236,16 @@ export default function CartPage() {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-4xl font-bold text-black">Your Cart</h1>
-          <span className="text-gray-500">{state.totalItems} Items</span>
+        <div className="flex items-center justify-between mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-4xl font-bold text-black">Your Cart</h1>
+          <span className="text-sm sm:text-base text-gray-500">{state.totalItems} Items</span>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items - Left Side */}
           <div className="lg:col-span-2">
-            {/* Table Header */}
-            <div className="grid grid-cols-12 gap-4 pb-4 border-b border-gray-200 text-sm text-gray-600">
+            {/* Table Header - Desktop Only */}
+            <div className="hidden lg:grid grid-cols-12 gap-4 pb-4 border-b border-gray-200 text-sm text-gray-600">
               <div className="col-span-6">Product Details</div>
               <div className="col-span-2 text-center">Price</div>
               <div className="col-span-2 text-center">Quantity</div>
@@ -253,40 +253,62 @@ export default function CartPage() {
             </div>
 
             {/* Cart Items */}
-            <div className="space-y-0">
+            <div className="space-y-4">
               {state.items.map((item, index) => (
-                <div key={getCartItemKey(item, index)} className="grid grid-cols-12 gap-4 py-6 border-b border-gray-100 items-center">
+                <div key={getCartItemKey(item, index)} className="bg-white border border-gray-200 rounded-2xl p-4 lg:p-6 lg:grid lg:grid-cols-12 lg:gap-4 lg:border-b lg:rounded-none lg:border-t-0 lg:border-x-0 items-center">
                   {/* Product Details */}
-                  <div className="col-span-6 flex gap-4">
+                  <div className="flex gap-4 mb-4 lg:mb-0 lg:col-span-6">
                     <img
                       src={item.image}
                       alt={item.name}
                       crossOrigin="anonymous"
-                      className="w-24 h-24 object-cover rounded-xl shadow-md"
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl shadow-md"
                     />
-                    <div className="flex flex-col justify-center">
-                      <h3 className="text-xl font-bold text-black">{item.name}</h3>
-                      <p className="text-sm text-gray-600 mb-1">
+                    <div className="flex flex-col justify-center flex-1">
+                      <h3 className="text-lg sm:text-xl font-bold text-black">{item.name}</h3>
+                      <p className="text-sm text-gray-600 mb-2">
                         {item.size && `Size: ${item.size}`}
                         {item.size && item.color && ' · '}
                         {item.color && `Color: ${item.color}`}
                       </p>
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-xs text-red-500 hover:text-red-700 text-left"
+                        className="text-sm text-red-500 hover:text-red-700 text-left"
                       >
                         Remove
                       </button>
                     </div>
                   </div>
 
-                  {/* Price */}
-                  <div className="col-span-2 text-center">
+                  {/* Mobile Price & Quantity Row */}
+                  <div className="flex items-center justify-between lg:hidden">
+                    <span className="text-lg font-bold text-black">{formatPrice(item.price)}</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => decreaseQuantity(item.id)}
+                        className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                        aria-label="Decrease quantity"
+                      >
+                        <Minus className="w-4 h-4 text-gray-600" />
+                      </button>
+                      <span className="w-8 text-center font-semibold text-black">{item.quantity}</span>
+                      <button
+                        onClick={() => increaseQuantity(item.id)}
+                        className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                        aria-label="Increase quantity"
+                      >
+                        <Plus className="w-4 h-4 text-gray-600" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Desktop Price */}
+                  <div className="hidden lg:block lg:col-span-2 lg:text-center">
                     <span className="text-xl font-bold text-black">{formatPrice(item.price)}</span>
                   </div>
 
-                  {/* Quantity Controls */}
-                  <div className="col-span-2 flex items-center justify-center gap-2">
+                  {/* Desktop Quantity Controls */}
+                  <div className="hidden lg:flex lg:col-span-2 lg:items-center lg:justify-center lg:gap-2">
                     <button
                       onClick={() => decreaseQuantity(item.id)}
                       className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
@@ -304,8 +326,14 @@ export default function CartPage() {
                     </button>
                   </div>
 
-                  {/* Subtotal */}
-                  <div className="col-span-2 text-center">
+                  {/* Mobile Subtotal */}
+                  <div className="flex items-center justify-between pt-4 border-t border-gray-100 lg:hidden">
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="text-lg font-bold text-black">{formatPrice(item.price * item.quantity)}</span>
+                  </div>
+
+                  {/* Desktop Subtotal */}
+                  <div className="hidden lg:block lg:col-span-2 lg:text-center">
                     <span className="text-xl font-bold text-black">{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 </div>
@@ -316,9 +344,9 @@ export default function CartPage() {
             <div className="mt-6">
               <Link 
                 href="/"
-                className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105"
+                className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 sm:px-4 sm:py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
               >
-                <ArrowLeft className="w-5 h-5" />
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
                 Continue Shopping
               </Link>
             </div>
@@ -326,13 +354,13 @@ export default function CartPage() {
 
           {/* Order Summary - Right Side */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-50 rounded-3xl shadow-lg p-8 border border-gray-200 hover:shadow-xl transition-all duration-300">
-              <h2 className="text-2xl font-bold text-black mb-6">Order Summary</h2>
+            <div className="bg-gray-50 rounded-3xl shadow-lg p-6 sm:p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 lg:sticky lg:top-24">
+              <h2 className="text-xl sm:text-2xl font-bold text-black mb-6">Order Summary</h2>
               
               {/* SELECT ADDRESS */}
               <div className="mb-6">
                 <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                  SELECT ADDRESS
+                  Shipping Address
                 </label>
                 <div className="relative">
                   <select
@@ -350,7 +378,7 @@ export default function CartPage() {
                     onClick={(e) => {
                       console.log('Select clicked');
                     }}
-                    className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl appearance-none bg-white text-black font-semibold focus:outline-none focus:border-black focus:ring-2 focus:ring-black/20 cursor-pointer"
+                    className="w-full px-3 py-2 sm:px-4 sm:py-3 pr-10 border-2 border-gray-200 rounded-xl appearance-none bg-white text-black font-semibold focus:outline-none focus:border-black focus:ring-2 focus:ring-black/20 cursor-pointer text-sm sm:text-base"
                   >
                     {addresses.map((address) => (
                       <option key={address._id} value={address._id}>
@@ -371,7 +399,7 @@ export default function CartPage() {
                     console.log('Add New Address button clicked');
                     window.location.href = '/add-address';
                   }}
-                  className="w-full bg-black text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="w-full bg-black text-white px-4 py-2 sm:px-4 sm:py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                 >
                   + Add New Address
                 </button>
@@ -380,25 +408,25 @@ export default function CartPage() {
               {/* Price Breakdown */}
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">ITEMS {state.totalItems}</span>
-                  <span className="text-xl font-bold text-black">{formatPrice(subtotal)}</span>
+                  <span className="text-gray-600">ITEMS ({state.totalItems})</span>
+                  <span className="text-lg sm:text-xl font-bold text-black">{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Shipping Fee</span>
-                  <span className="text-xl font-bold text-black">Free</span>
+                  <span className="text-lg sm:text-xl font-bold text-black">Free</span>
                 </div>
               </div>
 
               {/* Total */}
               <div className="flex justify-between items-center pt-4 border-t border-gray-200 mb-6">
-                <span className="text-2xl font-bold text-black">Total</span>
-                <span className="text-2xl font-bold text-black">{formatPrice(subtotal)}</span>
+                <span className="text-xl sm:text-2xl font-bold text-black">Total</span>
+                <span className="text-xl sm:text-2xl font-bold text-black">{formatPrice(subtotal)}</span>
               </div>
 
               {/* Place Order Button */}
               <button 
                 onClick={handlePlaceOrder}
-                className="w-full bg-black text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="w-full bg-black text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
               >
                 Place Order
               </button>
