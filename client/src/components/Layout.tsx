@@ -34,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Footer Banners with Shop Now Button - Only on Home Page */}
       {location === "/" && (
-        <section className="w-full relative">
+        <section className="w-full relative hidden md:block">
           <img
             src="/footer-banner2.png"
             alt="Footer Banner 2"
@@ -59,6 +59,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </Link>
           </div>
         </section>
+      )}
+
+      {/* Mobile Footer Banner - Only on mobile view and home page */}
+      {location === "/" && (
+        <div className="md:hidden w-full select-none pb-4">
+          <img
+            src="/mobile-footer-banner.png"
+            alt="Mobile Footer Banner"
+            className="w-full h-auto pointer-events-none"
+            draggable={false}
+            onContextMenu={(e) => e.preventDefault()}
+          />
+        </div>
       )}
 
       <Footer />

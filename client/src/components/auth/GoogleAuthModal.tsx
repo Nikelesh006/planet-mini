@@ -65,33 +65,34 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
               className="relative w-full max-w-md"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Glassmorphism card - matching navbar style */}
-              <div className="relative overflow-hidden rounded-2xl bg-white/95 backdrop-blur-xl shadow-2xl border border-white/20">
-                {/* Gradient background decoration - Planet Mini branding */}
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-50 via-blue-50 to-purple-50 opacity-50" />
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-pink-400/20 to-blue-400/20 rounded-full blur-2xl" />
+              {/* Clean modern card */}
+              <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200">
                 
                 {/* Content */}
-                <div className="relative z-10 p-8">
+                <div className="relative z-10 p-6 sm:p-8">
                   {/* Close button */}
                   <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100/80 transition-colors group"
+                    className="absolute right-4 top-4 p-2 rounded-full hover:bg-gray-100 transition-colors group"
                   >
-                    <X className="w-5 h-5 text-gray-500 group-hover:text-gray-700 transition-colors" />
+                    <X className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
                   </button>
 
                   {/* Header */}
                   <div className="text-center mb-8">
                     {/* Planet Mini Logo */}
-                    <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4 shadow-lg">
-                      <span className="text-white font-bold text-xl">PM</span>
+                    <div className="mx-auto w-32 h-32 mb-5">
+                      <img
+                        src="/Planet-mini-logo.png"
+                        alt="Planet Mini Logo"
+                        className="w-full h-full object-contain"
+                        draggable={false}
+                      />
                     </div>
                     <h2 className="text-2xl font-bold text-gray-900 mb-2">
                       {mode === 'signin' ? 'Welcome Back' : 'Join Planet Mini'}
                     </h2>
-                    <p className="text-gray-600 text-sm leading-relaxed">
+                    <p className="text-gray-500 text-sm">
                       {mode === 'signin' 
                         ? 'Sign in to access your profile, orders & wishlist'
                         : 'Create your account to start shopping and save your favorites'
@@ -103,10 +104,10 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                   <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
                     <button
                       onClick={() => setMode('signin')}
-                      className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-sm transition-all ${
+                      className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm transition-all ${
                         mode === 'signin'
-                          ? 'bg-white text-blue-600 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       <LogIn className="w-4 h-4" />
@@ -114,10 +115,10 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                     </button>
                     <button
                       onClick={() => setMode('signup')}
-                      className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium text-sm transition-all ${
+                      className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm transition-all ${
                         mode === 'signup'
-                          ? 'bg-white text-blue-600 shadow-sm'
-                          : 'text-gray-600 hover:text-gray-900'
+                          ? 'bg-white text-gray-900 shadow-sm'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
                       <UserPlus className="w-4 h-4" />
@@ -128,7 +129,7 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                   {/* Google Auth Button */}
                   <button
                     onClick={handleGoogleAuth}
-                    className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-lg transition-all duration-200 group"
+                    className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
                   >
                     {/* Google Logo */}
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -139,20 +140,20 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                     </svg>
                     
                     <span className="text-gray-700 font-medium text-base">
-                      {mode === 'signin' ? 'Sign in with Google' : 'Sign up with Google'}
+                      Continue with Google
                     </span>
                   </button>
 
                   {/* Helper Text */}
                   <div className="mt-6 text-center">
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm text-gray-500">
                       {mode === 'signin' 
                         ? "New to Planet Mini? "
                         : "Already have an account? "
                       }
                       <button
                         onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
-                        className="text-blue-600 hover:text-blue-700 font-medium"
+                        className="text-gray-900 hover:text-gray-700 font-medium ml-1"
                       >
                         {mode === 'signin' ? 'Sign up' : 'Sign in'}
                       </button>

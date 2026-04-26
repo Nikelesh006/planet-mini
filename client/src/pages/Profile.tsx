@@ -96,50 +96,50 @@ export default function Profile() {
   const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase();
   return (
     <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Profile Info */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-bold text-black">My Profile</h2>
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-4 sm:p-6 lg:p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
+                <h2 className="text-2xl sm:text-3xl font-bold text-black">My Profile</h2>
                 <button 
                   onClick={() => setIsEditing(!isEditing)}
-                  className="flex items-center gap-3 bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                  className="flex items-center gap-2 sm:gap-3 bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                 >
-                  <Edit className="w-5 h-5 text-white" />
+                  <Edit className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
                 </button>
               </div>
               
               {/* User Info */}
-              <div className="flex items-start gap-6 mb-8">
-                <div className="relative">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
+                <div className="relative flex-shrink-0">
                   {authUser?.image ? (
                     <img
                       src={authUser.image}
                       alt="Profile"
-                      className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                      className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
                     />
                   ) : (
-                    <div className="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-3xl font-bold border-4 border-white shadow-lg">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-2xl sm:text-3xl font-bold border-4 border-white shadow-lg">
                       {initials}
                     </div>
                   )}
-                  <button className="absolute bottom-0 right-0 w-10 h-10 bg-gray-800 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
-                    <Camera className="w-5 h-5" />
+                  <button className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 bg-gray-800 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
+                    <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-black mb-2">{displayName}</h3>
-                  <p className="text-gray-700 mb-4 text-lg">{displayEmail}</p>
-                  <div className="flex flex-wrap gap-6 text-sm">
+                  <h3 className="text-xl sm:text-2xl font-bold text-black mb-1 sm:mb-2">{displayName}</h3>
+                  <p className="text-gray-700 mb-3 sm:mb-4 text-sm sm:text-lg">{displayEmail}</p>
+                  <div className="flex flex-wrap justify-center sm:justify-start gap-4 sm:gap-6 text-sm">
                     <div className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
-                      <Calendar className="w-5 h-5" />
+                      <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                       <span className="font-medium">Member since {new Date(profile?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
                     </div>
                   </div>
@@ -148,65 +148,65 @@ export default function Profile() {
 
               {/* Edit Form */}
               {isEditing && (
-                <div className="mb-8 p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-primary/20">
-                  <h4 className="text-xl font-bold text-black mb-6">Edit Information</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-primary/20">
+                  <h4 className="text-lg sm:text-xl font-bold text-black mb-4 sm:mb-6">Edit Information</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <input
                       type="text"
                       placeholder="First Name"
                       defaultValue={authUser?.name?.split(' ')[0] || profile?.firstName || ''}
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="firstName"
                     />
                     <input
                       type="text"
                       placeholder="Last Name"
                       defaultValue={authUser?.name?.split(' ').slice(1).join(' ') || profile?.lastName || ''}
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="lastName"
                     />
                     <input
                       type="tel"
                       placeholder="Phone"
                       defaultValue=""
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="phone"
                     />
                     <input
                       type="email"
                       placeholder="Email"
                       defaultValue={authUser?.email || profile?.email || ''}
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="email"
                     />
                   </div>
-                  <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <input
                       type="text"
                       placeholder="Street Address"
                       defaultValue=""
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="street"
                     />
                     <input
                       type="text"
                       placeholder="City"
                       defaultValue=""
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="city"
                     />
                     <input
                       type="text"
                       placeholder="State"
                       defaultValue=""
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="state"
                     />
                     <input
                       type="text"
                       placeholder="Pincode"
                       defaultValue=""
-                      className="p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black"
+                      className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="pincode"
                     />
                   </div>
@@ -228,7 +228,7 @@ export default function Profile() {
                       handleSaveProfile(formData);
                     }}
                     disabled={updateProfile.isPending}
-                    className="mt-6 bg-gray-800 text-white px-6 py-3 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    className="mt-4 sm:mt-6 w-full sm:w-auto bg-gray-800 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                   >
                     {updateProfile.isPending ? (
                       <>
@@ -242,27 +242,26 @@ export default function Profile() {
                 </div>
               )}
 
-
               {/* Contact Information */}
-              <div className="mb-8">
-                <h4 className="text-2xl font-bold text-black mb-6">Contact Information</h4>
-                <div className="space-y-4">
-                  <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                      <Mail className="w-6 h-6 text-black" />
+              <div className="mb-6 sm:mb-8">
+                <h4 className="text-xl sm:text-2xl font-bold text-black mb-4 sm:mb-6">Contact Information</h4>
+                <div className="space-y-3 sm:space-y-4">
+                  <div className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Mail className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600 mb-1">Email</p>
-                      <p className="font-bold text-black group-hover:text-primary transition-colors">{displayEmail}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm text-gray-600 mb-0.5 sm:mb-1">Email</p>
+                      <p className="font-bold text-black group-hover:text-primary transition-colors text-sm sm:text-base truncate">{displayEmail}</p>
                     </div>
                   </div>
-                  <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-secondary/5 to-transparent rounded-2xl border border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-md">
-                    <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center">
-                      <Phone className="w-6 h-6 text-black" />
+                  <div className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-secondary/5 to-transparent rounded-2xl border border-secondary/20 hover:border-secondary/40 transition-all duration-300 hover:shadow-md">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center flex-shrink-0">
+                      <Phone className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
                     </div>
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-600 mb-1">Phone</p>
-                      <p className="font-bold text-black group-hover:text-secondary transition-colors">{profile?.phone || 'No phone number added'}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm text-gray-600 mb-0.5 sm:mb-1">Phone</p>
+                      <p className="font-bold text-black group-hover:text-secondary transition-colors text-sm sm:text-base truncate">{profile?.phone || 'No phone number added'}</p>
                     </div>
                   </div>
                   <div className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
@@ -283,39 +282,39 @@ export default function Profile() {
               </div>
 
               {/* Baby Information */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-6">
-                  <h4 className="text-2xl font-bold text-black">Baby Information</h4>
+              <div className="mb-6 sm:mb-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 gap-3">
+                  <h4 className="text-xl sm:text-2xl font-bold text-black">Baby Information</h4>
                   <button 
                     onClick={() => setShowAddBaby(!showAddBaby)}
-                    className="flex items-center gap-3 bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+                    className="flex items-center gap-2 sm:gap-3 bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                   >
-                    <Plus className="w-5 h-5 text-white" />
+                    <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     <span>Add Baby</span>
                   </button>
                 </div>
 
                 {showAddBaby && (
-                  <div className="mb-6 p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-primary/20">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="mb-4 sm:mb-6 p-4 sm:p-6 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-primary/20">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                       <input
                         type="text"
                         placeholder="Baby Name"
                         value={babyForm.name}
                         onChange={(e) => setBabyForm({...babyForm, name: e.target.value})}
-                        className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
+                        className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       />
                       <input
                         type="number"
                         placeholder="Age (months)"
                         value={babyForm.age}
                         onChange={(e) => setBabyForm({...babyForm, age: parseInt(e.target.value)})}
-                        className="p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black"
+                        className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       />
                       <select
                         value={babyForm.gender}
                         onChange={(e) => setBabyForm({...babyForm, gender: e.target.value})}
-                        className="p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black"
+                        className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       >
                         <option value="">Select Gender</option>
                         <option value="male">Male</option>
@@ -323,17 +322,17 @@ export default function Profile() {
                         <option value="other">Other</option>
                       </select>
                     </div>
-                    <div className="mt-4 flex gap-4">
+                    <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
                       <button
                         onClick={handleAddBaby}
                         disabled={addBabyInfo.isPending}
-                        className="bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+                        className="bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 text-sm sm:text-base"
                       >
                         {addBabyInfo.isPending ? 'Adding...' : 'Add Baby'}
                       </button>
                       <button
                         onClick={() => setShowAddBaby(false)}
-                        className="bg-gray-200 text-gray-700 px-6 py-3 rounded-2xl font-semibold hover:bg-gray-300 transition-all duration-300"
+                        className="bg-gray-200 text-gray-700 px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl font-semibold hover:bg-gray-300 transition-all duration-300 text-sm sm:text-base"
                       >
                         Cancel
                       </button>
@@ -343,23 +342,23 @@ export default function Profile() {
 
                 <div className="space-y-4">
                   {profile?.babyInfo?.map((baby: any, index: number) => (
-                    <div key={index} className="group flex items-center justify-between p-4 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
-                      <div className="flex-1">
-                        <p className="font-bold text-black group-hover:text-primary transition-colors">{baby.name}</p>
-                        <p className="text-sm text-gray-600">{baby.age} months old • {baby.gender}</p>
+                    <div key={index} className="group flex items-center justify-between p-3 sm:p-4 bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-bold text-black group-hover:text-primary transition-colors text-sm sm:text-base truncate">{baby.name}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">{baby.age} months old • {baby.gender}</p>
                       </div>
                       <button 
                         onClick={() => {
                           setBabyToDelete(index);
                           setShowDeleteConfirm(true);
                         }}
-                        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors"
+                        className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors flex-shrink-0"
                       >
-                        <Trash2 className="w-5 h-5" />
+                        <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                       </button>
                     </div>
                   )) || (
-                    <p className="text-gray-500 text-center py-6 bg-gray-50 rounded-2xl">No baby information added yet</p>
+                    <p className="text-gray-500 text-center py-4 sm:py-6 bg-gray-50 rounded-2xl text-sm sm:text-base">No baby information added yet</p>
                   )}
                 </div>
               </div>
@@ -369,14 +368,14 @@ export default function Profile() {
               <div className="space-y-3">
                 <Link
                   href="/orders"
-                  className="group flex items-center gap-4 p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md"
+                  className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-primary/5 to-transparent rounded-2xl border border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-md"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center">
-                    <Package className="w-6 h-6 text-black" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Package className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
                   </div>
-                  <div className="flex-1">
-                    <span className="font-bold text-black group-hover:text-primary transition-colors">My Orders</span>
-                    <p className="text-sm text-gray-600">View order history and tracking</p>
+                  <div className="flex-1 min-w-0">
+                    <span className="font-bold text-black group-hover:text-primary transition-colors text-sm sm:text-base">My Orders</span>
+                    <p className="text-xs sm:text-sm text-gray-600">View order history and tracking</p>
                   </div>
                 </Link>
               </div>
@@ -391,38 +390,38 @@ export default function Profile() {
             transition={{ delay: 0.2 }}
             className="space-y-6"
           >
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-2xl font-bold text-black mb-6">Account Overview</h3>
-              <div className="space-y-4">
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-4 sm:p-6 lg:p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-xl sm:text-2xl font-bold text-black mb-4 sm:mb-6">Account Overview</h3>
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
-                  <span className="text-gray-700 font-medium">Total Orders</span>
-                  <span className="font-bold text-black text-lg">{totalOrders}</span>
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">Total Orders</span>
+                  <span className="font-bold text-black text-base sm:text-lg">{totalOrders}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
-                  <span className="text-gray-700 font-medium">Total Spent</span>
-                  <span className="font-bold text-black text-lg">₹{totalSpent.toFixed(0)}</span>
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">Total Spent</span>
+                  <span className="font-bold text-black text-base sm:text-lg">₹{totalSpent.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between items-center p-3 bg-white/50 rounded-xl">
-                  <span className="text-gray-700 font-medium">Member Since</span>
-                  <span className="font-bold text-black text-lg">{new Date(profile?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">Member Since</span>
+                  <span className="font-bold text-black text-base sm:text-lg">{new Date(profile?.createdAt || Date.now()).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
                 </div>
             </div>
             </div>
 
-            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
-              <h3 className="text-2xl font-bold text-black mb-6">Recent Activity</h3>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 p-3 bg-white/50 rounded-xl">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-black">Order #1234 delivered</p>
+            <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-4 sm:p-6 lg:p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
+              <h3 className="text-xl sm:text-2xl font-bold text-black mb-4 sm:mb-6">Recent Activity</h3>
+              <div className="space-y-3 sm:space-y-4">
+                <div className="flex items-center gap-3 sm:gap-4 p-3 bg-white/50 rounded-xl">
+                  <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-black truncate">Order #1234 delivered</p>
                     <p className="text-xs text-gray-500">2 days ago</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-3 bg-white/50 rounded-xl">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-black">Profile updated</p>
+                <div className="flex items-center gap-3 sm:gap-4 p-3 bg-white/50 rounded-xl">
+                  <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs sm:text-sm font-medium text-black truncate">Profile updated</p>
                     <p className="text-xs text-gray-500">5 days ago</p>
                   </div>
                 </div>
@@ -440,7 +439,7 @@ export default function Profile() {
           exit={{ opacity: 0, scale: 0.9 }}
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         >
-          <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-sm mx-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl max-w-sm mx-4">
             <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full mb-4">
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
@@ -463,7 +462,7 @@ export default function Profile() {
           exit={{ opacity: 0, scale: 0.9 }}
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         >
-          <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-sm mx-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl max-w-sm mx-4">
             <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full mb-4">
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
@@ -487,7 +486,7 @@ export default function Profile() {
           exit={{ opacity: 0, scale: 0.9 }}
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
         >
-          <div className="bg-white rounded-2xl p-8 shadow-2xl max-w-sm mx-4">
+          <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-2xl max-w-sm mx-4">
             <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-full mb-4">
               <AlertCircle className="w-8 h-8 text-white" />
             </div>

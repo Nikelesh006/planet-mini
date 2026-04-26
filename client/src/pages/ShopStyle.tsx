@@ -29,7 +29,7 @@ export default function ShopStyle() {
   // Filter state
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
-  const [expandedCategories, setExpandedCategories] = useState<string[]>(['categories']);
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState([0, 5000]);
 
   // Filter categories for baby dresses
@@ -112,14 +112,29 @@ export default function ShopStyle() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Banner Section */}
-      <section className="relative w-full h-[70vh] min-h-[400px] max-h-[600px] mb-8">
+      <section className="relative w-full h-auto sm:h-[70vh] sm:min-h-[400px] sm:max-h-[600px] mb-8">
         <div className="relative w-full h-full overflow-hidden">
-          <div className="relative w-full h-full">
+          {/* Mobile Banner - Only visible on small screens */}
+          <div className="sm:hidden relative w-full h-auto select-none">
+            <img 
+              src="/mobile-shopstyle-banner.png"
+              alt="Shop by Style - Planet Mini Baby Wear"
+              className="w-full h-auto object-contain pointer-events-none"
+              draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
+              onError={(e) => {
+                (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EMobile Shop Style Banner%3C/text%3E%3C/svg%3E";
+              }}
+            />
+          </div>
+          {/* Desktop Banner - Only visible on sm and larger screens */}
+          <div className="hidden sm:block relative w-full h-full select-none">
             <img 
               src="/shopbystyle-banner.png"
               alt="Shop by Style - Planet Mini Baby Wear"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover pointer-events-none"
               draggable={false}
+              onContextMenu={(e) => e.preventDefault()}
               onError={(e) => {
                 (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EShop by Style Banner%3C/text%3E%3C/svg%3E";
               }}
@@ -130,7 +145,7 @@ export default function ShopStyle() {
 
       {/* Category Filter Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 py-6">
-        <div className="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-10">
+        <div className="flex flex-wrap justify-center gap-3 sm:gap-8 md:gap-10">
           {[
             { id: 'jhlablas', name: 'Jhlablas', icon: '👶' },
             { id: 'hooded-towels', name: 'Hooded Towels', icon: '🧸' },
@@ -143,7 +158,7 @@ export default function ShopStyle() {
               key={category.id}
               onClick={() => handleFilterToggle(category.id)}
               className={`
-                flex flex-col items-center gap-3 p-6 sm:p-8 rounded-2xl transition-all duration-300 border-2
+                flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-8 rounded-2xl transition-all duration-300 border-2
                 ${selectedFilters.includes(category.id)
                   ? 'bg-red-100 border-red-500 shadow-xl scale-110'
                   : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-110'
@@ -151,13 +166,13 @@ export default function ShopStyle() {
               `}
             >
               <div className={`
-                text-5xl sm:text-6xl transition-transform duration-300
+                text-3xl sm:text-6xl transition-transform duration-300
                 ${selectedFilters.includes(category.id) ? 'scale-125' : 'hover:scale-125'}
               `}>
                 {category.icon}
               </div>
               <span className={`
-                text-base sm:text-lg font-semibold transition-colors
+                text-xs sm:text-lg font-semibold transition-colors
                 ${selectedFilters.includes(category.id) ? 'text-red-600' : 'text-gray-700'}
               `}>
                 {category.name}
@@ -175,25 +190,25 @@ export default function ShopStyle() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <div className="flex items-center justify-center gap-16 mb-4">
-              <div className="flex-1 h-0.5 bg-gray-400"></div>
-              <div className="flex items-center gap-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-black">
+            <div className="flex items-center justify-center gap-2 sm:gap-16 mb-4">
+              <div className="hidden sm:block flex-1 h-0.5 bg-gray-400"></div>
+              <div className="flex items-center gap-2 sm:gap-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
                   Shop by Style
                 </h2>
-                <img 
-                  src="/baby-cloth.png" 
-                  alt="Baby Cloth" 
-                  className="w-12 h-12 md:w-14 md:h-14 object-contain"
+                <img
+                  src="/baby-cloth.png"
+                  alt="Baby Cloth"
+                  className="w-8 h-8 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain"
                   draggable={false}
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='12' font-family='Arial'%3EBaby%3C/text%3E%3C/svg%3E";
                   }}
                 />
               </div>
-              <div className="flex-1 h-0.5 bg-gray-400"></div>
+              <div className="hidden sm:block flex-1 h-0.5 bg-gray-400"></div>
             </div>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-sm sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
               Find the perfect style for your little one with our curated collection of adorable baby wear
             </p>
           </motion.div>
@@ -222,22 +237,22 @@ export default function ShopStyle() {
           
           {/* Filter Sidebar - Fixed to Left Corner */}
           <aside className={`
-            ${isMobileFilterOpen ? 'block' : 'hidden'} 
-            lg:block w-64 flex-shrink-0 fixed lg:relative left-0 top-0 h-screen lg:h-auto z-40 lg:z-0
+            ${isMobileFilterOpen ? 'block' : 'hidden'}
+            lg:block w-64 flex-shrink-0 fixed lg:relative left-0 top-16 lg:top-0 h-[calc(100vh-4rem)] lg:h-screen lg:h-auto z-50 lg:z-0
           `}>
-            <div className="bg-white lg:rounded-xl lg:border-2 lg:border-t-4 lg:border-t-primary lg:border-r-secondary lg:border-b-primary lg:border-l-secondary lg:shadow-xl h-full lg:h-auto lg:sticky lg:top-4 overflow-y-auto">
-              
-              {/* Mobile Close Button */}
-              <div className="lg:hidden mb-4 flex justify-between items-center p-4 bg-white/80 backdrop-blur-sm border-b border-primary/20">
-                <h2 className="text-lg font-bold text-black flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-red-500" />
+            <div className="bg-white lg:rounded-xl lg:border-2 lg:border-t-4 lg:border-t-primary lg:border-r-secondary lg:border-b-primary lg:border-l-secondary lg:shadow-xl h-full lg:h-auto lg:sticky lg:top-4 flex flex-col">
+
+              {/* Mobile Close Button - Sticky */}
+              <div className="lg:hidden sticky top-0 z-50 mb-4 flex justify-between items-center p-3 sm:p-4 bg-white/95 backdrop-blur-sm border-b border-primary/20 shadow-sm">
+                <h2 className="text-base sm:text-lg font-bold text-black flex items-center gap-2">
+                  <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-red-500" />
                   Filters
                 </h2>
                 <button
                   onClick={() => setIsMobileFilterOpen(false)}
                   className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               </div>
 
@@ -258,36 +273,36 @@ export default function ShopStyle() {
               </div>
 
               {/* Filter Categories - Expandable Sections */}
-              <div className="p-4 space-y-3">
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 pb-2 space-y-2 sm:space-y-3">
                 {filterSections.map((section, index) => (
                   <div key={section.id} className="border-2 border-black rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
                     {/* Section Header - Clickable to Expand/Collapse */}
                     <button
                       onClick={() => toggleCategory(section.id)}
                       className={`
-                        w-full flex items-center justify-between p-3 transition-all duration-200
-                        ${index % 2 === 0 
-                          ? 'bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 border-l-4 border-red-500' 
+                        w-full flex items-center justify-between p-2 sm:p-3 transition-all duration-200
+                        ${index % 2 === 0
+                          ? 'bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 border-l-4 border-red-500'
                           : 'bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 border-l-4 border-gray-700'
                         }
                       `}
                     >
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <section.icon className={`
-                          w-4 h-4 transition-colors
+                          w-3 h-3 sm:w-4 sm:h-4 transition-colors
                           ${index % 2 === 0 ? 'text-red-500' : 'text-gray-700'}
                         `} />
-                        <span className="font-bold text-black">{section.title}</span>
+                        <span className="text-sm sm:font-bold text-black">{section.title}</span>
                       </div>
-                      
+
                       {/* Expand/Collapse Icon */}
-                      <svg 
+                      <svg
                         className={`
-                          w-4 h-4 transition-transform duration-200 text-black
+                          w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 text-black
                           ${expandedCategories.includes(section.id) ? 'rotate-180' : ''}
                         `}
-                        fill="none" 
-                        stroke="currentColor" 
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -297,16 +312,16 @@ export default function ShopStyle() {
                     {/* Expandable Content */}
                     <div className={`
                       transition-all duration-300 ease-in-out overflow-hidden
-                      ${expandedCategories.includes(section.id) ? (section.isSlider ? 'max-h-none' : 'max-h-96') : 'max-h-0'}
+                      ${expandedCategories.includes(section.id) ? (section.isSlider ? 'max-h-none' : 'max-h-screen') : 'max-h-0'}
                     `}>
                       <div className={`
-                        p-3 space-y-4
+                        p-2 sm:p-3 space-y-2 sm:space-y-4
                         ${index % 2 === 0 ? 'bg-red-50' : 'bg-gray-50'}
                       `}>
                         {section.isSlider ? (
                           // Price Range Slider
-                          <div className="space-y-4">
-                            <div className="flex items-center justify-between text-sm font-medium text-black">
+                          <div className="space-y-3 sm:space-y-4">
+                            <div className="flex items-center justify-between text-xs sm:text-sm font-medium text-black">
                               <span>₹{priceRange[0]}</span>
                               <span>₹{priceRange[1]}</span>
                             </div>
@@ -325,19 +340,19 @@ export default function ShopStyle() {
                         ) : (
                           // Regular checkbox items
                           section.items?.map((item) => (
-                            <label 
+                            <label
                               key={item.id}
                               className={`
-                                flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 border
+                                flex items-center justify-between p-2 sm:p-2 rounded-md cursor-pointer transition-all duration-200 border
                                 ${selectedFilters.includes(item.id)
-                                  ? index % 2 === 0 
+                                  ? index % 2 === 0
                                     ? 'bg-red-100 border-red-500 shadow-sm'
                                     : 'bg-gray-100 border-gray-700 shadow-sm'
                                   : 'bg-white/80 border-gray-200 hover:bg-gray-100'
                                 }
                               `}
                             >
-                              <div className="flex items-center gap-3">
+                              <div className="flex items-center gap-2 sm:gap-3">
                                 {/* Custom Checkbox */}
                                 <div className="relative">
                                   <input
@@ -347,33 +362,33 @@ export default function ShopStyle() {
                                     className="sr-only"
                                   />
                                   <div className={`
-                                    w-4 h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
+                                    w-3 h-3 sm:w-4 sm:h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
                                     ${selectedFilters.includes(item.id)
-                                      ? index % 2 === 0 
-                                        ? 'bg-red-500 border-red-500 shadow-md' 
+                                      ? index % 2 === 0
+                                        ? 'bg-red-500 border-red-500 shadow-md'
                                         : 'bg-gray-700 border-gray-700 shadow-md'
                                       : 'border-gray-400 hover:border-gray-500 bg-white'
                                     }
                                   `}>
                                     {selectedFilters.includes(item.id) && (
-                                      <svg className="w-2.5 h-2.5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                      <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-black" fill="currentColor" viewBox="0 0 20 20">
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                       </svg>
                                     )}
                                   </div>
                                 </div>
-                                
-                                <span className="text-sm font-semibold text-black select-none">
+
+                                <span className="text-xs sm:text-sm font-semibold text-black select-none">
                                   {item.name}
                                 </span>
                               </div>
-                              
+
                               <span className={`
-                                text-xs font-bold px-2 py-1 rounded-full border
+                                text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border
                                 ${expandedCategories.includes(section.id)
                                   ? 'bg-red-500 text-white border-red-500'
-                                  : index % 2 === 0 
-                                    ? 'bg-gray-200 text-gray-700 border-gray-400' 
+                                  : index % 2 === 0
+                                    ? 'bg-gray-200 text-gray-700 border-gray-400'
                                     : 'bg-gray-200 text-gray-700 border-gray-400'
                                 }
                               `}>
@@ -428,8 +443,8 @@ export default function ShopStyle() {
 
               {/* Dynamic Products */}
               {!isLoading && products && products.length > 0 && (
-                <div className="w-full px-4 sm:px-6 lg:px-8">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+                <div className="w-full">
+                  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
                     {products.map((product, index) => (
                       <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} />
                     ))}

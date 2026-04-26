@@ -95,12 +95,12 @@ export default function Contact() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
+      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-10 sm:py-16 md:py-20">
         <div className="text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-bold text-black mb-6"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6"
           >
             Contact Us
           </motion.h1>
@@ -108,7 +108,7 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto"
+            className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto"
           >
             We're here to help! Get in touch with our team for any questions or support.
           </motion.p>
@@ -116,7 +116,7 @@ export default function Contact() {
       </section>
 
       {/* Contact Content */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-0 sm:py-16">
         <div className="grid lg:grid-cols-3 gap-12">
           {/* Contact Information */}
           <motion.div
@@ -130,15 +130,15 @@ export default function Contact() {
               </div>
               
               <div className="space-y-6">
-                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-                  <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Mail className="w-7 h-7 text-red-500" />
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Mail className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Email</h3>
-                      <p className="text-gray-700 font-medium mb-1">hello@planetmini.com</p>
-                      <div className="text-sm text-gray-500 flex items-center gap-1">
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Email</h3>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">hello@planetmini.com</p>
+                      <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
                         <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
                         We respond within 24 hours
                       </div>
@@ -146,15 +146,15 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-                  <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Phone className="w-7 h-7 text-red-500" />
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Phone className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Phone</h3>
-                      <p className="text-gray-700 font-medium mb-1">+1 (555) 123-4567</p>
-                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Phone</h3>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">+1 (555) 123-4567</p>
+                      <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         Mon-Fri: 9AM-6PM EST
                       </p>
@@ -162,16 +162,16 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-                  <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <MapPin className="w-7 h-7 text-red-500" />
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <MapPin className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Address</h3>
-                      <p className="text-gray-700 font-medium">123 Baby Street</p>
-                      <p className="text-gray-700 font-medium">New York, NY 10001</p>
-                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Address</h3>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium">123 Baby Street</p>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium">New York, NY 10001</p>
+                      <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
                         <Globe className="w-3 h-3" />
                         United States
                       </p>
@@ -179,23 +179,23 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
-                  <div className="flex items-start gap-4">
-                    <div className="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Clock className="w-7 h-7 text-red-500" />
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                  <div className="flex items-start gap-3 sm:gap-4">
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Clock className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Business Hours</h3>
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Business Hours</h3>
                       <div className="space-y-1">
-                        <p className="text-gray-700 font-medium flex items-center gap-2">
+                        <p className="text-sm sm:text-base text-gray-700 font-medium flex items-center gap-2">
                           <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Mon-Fri</span>
                           9AM - 6PM
                         </p>
-                        <p className="text-gray-700 font-medium flex items-center gap-2">
+                        <p className="text-sm sm:text-base text-gray-700 font-medium flex items-center gap-2">
                           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Saturday</span>
                           10AM - 4PM
                         </p>
-                        <p className="text-gray-700 font-medium flex items-center gap-2">
+                        <p className="text-sm sm:text-base text-gray-700 font-medium flex items-center gap-2">
                           <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Sunday</span>
                           Closed
                         </p>
@@ -213,15 +213,15 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-3xl p-8 border-2 border-black shadow-lg hover:shadow-xl transition-all duration-300">
-              <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="w-8 h-8 text-red-500" />
+            <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 border-2 border-black shadow-lg hover:shadow-xl transition-all duration-300">
+              <div className="text-center mb-6 sm:mb-8">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
                 </div>
-                <h2 className="text-3xl font-bold text-black mb-2">
+                <h2 className="text-2xl sm:text-3xl font-bold text-black mb-2">
                   Get in Touch
                 </h2>
-                <p className="text-gray-600">We'd love to hear from you! Send us a message and we'll respond as soon as possible.</p>
+                <p className="text-sm sm:text-base text-gray-600">We'd love to hear from you! Send us a message and we'll respond as soon as possible.</p>
               </div>
               
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -243,7 +243,7 @@ export default function Contact() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-sm hover:shadow-md"
+                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-sm hover:shadow-md"
                         placeholder="John Doe"
                       />
                     </div>
@@ -264,7 +264,7 @@ export default function Contact() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400"
+                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -286,7 +286,7 @@ export default function Contact() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-md hover:shadow-lg"
+                      className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-md hover:shadow-lg"
                       placeholder="How can we help you?"
                     />
                   </div>
@@ -306,8 +306,8 @@ export default function Contact() {
                       value={formData.message}
                       onChange={handleChange}
                       required
-                      rows={6}
-                      className="w-full pl-12 pr-4 py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 resize-none placeholder-gray-400 shadow-md hover:shadow-lg"
+                      rows={5}
+                      className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 resize-none placeholder-gray-400 shadow-md hover:shadow-lg"
                       placeholder="Tell us more about your question or concern..."
                     />
                   </div>
@@ -322,7 +322,7 @@ export default function Contact() {
                   </div>
                   <button
                     type="submit"
-                    className="group relative inline-flex items-center gap-2 bg-red-100 text-red-600 px-8 py-4 rounded-2xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-black"
+                    className="group relative inline-flex items-center gap-2 bg-red-100 text-red-600 px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-black"
                   >
                     <div className="absolute inset-0 bg-red-200 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                     <Send className="w-4 h-4 relative z-10 text-red-600 group-hover:translate-x-1 transition-transform duration-300" />
@@ -345,12 +345,12 @@ export default function Contact() {
             className="lg:col-span-1"
           >
             <div className="sticky top-24">
-              <div className="bg-white rounded-2xl p-6 border-2 border-black">
-                <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <HelpCircle className="w-8 h-8 text-red-500" />
+              <div className="bg-white rounded-2xl p-4 sm:p-6 border-2 border-black">
+                <div className="text-center mb-4 sm:mb-6">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
                   </div>
-                  <h2 className="text-2xl font-bold text-black">
+                  <h2 className="text-xl sm:text-2xl font-bold text-black">
                     Categories
                   </h2>
                 </div>
@@ -359,7 +359,7 @@ export default function Contact() {
                     <button
                       key={category.id}
                       onClick={() => setActiveCategory(category.id)}
-                      className={`group w-full flex items-center gap-4 px-4 py-4 rounded-2xl text-left transition-all duration-300 transform hover:scale-105 ${
+                      className={`group w-full flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-3 sm:py-4 rounded-2xl text-left transition-all duration-300 transform hover:scale-105 ${
                         activeCategory === category.id
                           ? "bg-red-100 text-red-600 shadow-lg border-2 border-black"
                           : "bg-white hover:bg-red-50 text-gray-700 hover:shadow-md border-2 border-black hover:border-gray-700"
@@ -370,7 +370,7 @@ export default function Contact() {
                           ? "bg-white/20"
                           : "bg-red-100 group-hover:bg-red-200"
                       }`}>
-                        <category.icon className={`w-6 h-6 transition-colors ${
+                        <category.icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
                           activeCategory === category.id ? "text-red-600" : "text-red-500 group-hover:text-red-600"
                         }`} />
                       </div>
@@ -408,13 +408,13 @@ export default function Contact() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-12"
               >
-                <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <HelpCircle className="w-10 h-10 text-red-500" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <HelpCircle className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
                 </div>
-                <h2 className="text-4xl font-bold text-black mb-4">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">
                   Frequently Asked Questions
                 </h2>
-                <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+                <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
                   Find quick answers to common questions about our products and services.
                 </p>
               </motion.div>
@@ -434,19 +434,19 @@ export default function Contact() {
                   >
                     <button
                       onClick={() => toggleExpanded(index)}
-                      className="w-full px-6 py-5 text-left flex items-center justify-between transition-all duration-300 group-hover:bg-red-50"
+                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between transition-all duration-300 group-hover:bg-red-50"
                     >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                      <div className="flex items-center gap-3 sm:gap-4">
+                        <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                           expandedItems.includes(index)
                             ? "bg-red-100"
                             : "bg-red-100 group-hover:bg-red-200"
                         }`}>
-                          <faq.icon className={`w-6 h-6 transition-colors ${
+                          <faq.icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
                             expandedItems.includes(index) ? "text-red-600" : "text-red-500 group-hover:text-red-600"
                           }`} />
                         </div>
-                        <h3 className={`font-bold text-lg pr-4 ${
+                        <h3 className={`font-bold text-base sm:text-lg pr-4 ${
                           expandedItems.includes(index)
                             ? "text-red-600"
                             : "text-gray-900 group-hover:text-red-600"
@@ -454,15 +454,15 @@ export default function Contact() {
                           {faq.question}
                         </h3>
                       </div>
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         expandedItems.includes(index)
                           ? "bg-red-100 text-red-600"
                           : "bg-gray-100 group-hover:bg-red-100 text-gray-400 group-hover:text-red-500"
                       }`}>
                         {expandedItems.includes(index) ? (
-                          <ChevronUp className="w-5 h-5" />
+                          <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" />
                         ) : (
-                          <ChevronDown className="w-5 h-5" />
+                          <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
                         )}
                       </div>
                     </button>
@@ -471,12 +471,12 @@ export default function Contact() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="px-6 pb-5"
+                        className="px-4 sm:px-6 pb-4 sm:pb-5"
                       >
-                        <div className="pl-16 text-gray-700 leading-relaxed bg-red-50 rounded-xl p-6 border-2 border-black">
+                        <div className="pl-12 sm:pl-16 text-gray-700 leading-relaxed bg-red-50 rounded-xl p-4 sm:p-6 border-2 border-black">
                           <div className="flex items-start gap-3">
                             <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
-                            <p className="text-gray-700">{faq.answer}</p>
+                            <p className="text-sm sm:text-base text-gray-700">{faq.answer}</p>
                           </div>
                         </div>
                       </motion.div>
@@ -491,12 +491,12 @@ export default function Contact() {
                 transition={{ delay: 0.5 }}
                 className="mt-12 text-center"
               >
-                <p className="text-gray-600 mb-4">
+                <p className="text-sm sm:text-base text-gray-600 mb-4">
                   Still have questions? Our customer service team is here to help!
                 </p>
                 <a 
                   href="mailto:hello@planetmini.com" 
-                  className="inline-flex items-center gap-2 bg-red-100 text-red-600 px-6 py-3 rounded-xl font-semibold hover:bg-red-200 transition-colors border-2 border-black"
+                  className="inline-flex items-center gap-2 bg-red-100 text-red-600 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold hover:bg-red-200 transition-colors border-2 border-black"
                 >
                   <Mail className="w-4 h-4" />
                   Contact Support
@@ -512,16 +512,16 @@ export default function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-red-50 rounded-3xl p-12 border-2 border-red-200 shadow-xl"
+          className="bg-red-50 rounded-3xl p-6 sm:p-8 md:p-12 border-2 border-red-200 shadow-xl"
         >
-          <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Home className="w-10 h-10 text-red-500" />
+          <div className="text-center mb-6 sm:mb-10">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Home className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
             </div>
-            <h2 className="text-4xl font-bold text-black mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">
               Welcome to Planet Mini
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
               Your trusted destination for premium baby products and essentials
             </p>
           </div>
@@ -533,11 +533,11 @@ export default function Contact() {
               transition={{ delay: 0.1 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Package className="w-8 h-8 text-red-500" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
               </div>
-              <h3 className="text-xl font-bold text-black mb-3">Premium Quality</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Premium Quality</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 Carefully curated selection of baby products made from the safest, highest-quality materials for your little ones.
               </p>
             </motion.div>
@@ -548,11 +548,11 @@ export default function Contact() {
               transition={{ delay: 0.2 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-8 h-8 text-red-500" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
               </div>
-              <h3 className="text-xl font-bold text-black mb-3">Safety First</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Safety First</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 All our products meet strict safety standards and are tested to ensure they're perfect for your baby's development.
               </p>
             </motion.div>
@@ -563,11 +563,11 @@ export default function Contact() {
               transition={{ delay: 0.3 }}
               className="text-center"
             >
-              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-8 h-8 text-red-500" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Truck className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
               </div>
-              <h3 className="text-xl font-bold text-black mb-3">Fast Delivery</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Fast Delivery</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 Quick and reliable delivery across the country, ensuring you get what you need when you need it most.
               </p>
             </motion.div>
@@ -577,22 +577,22 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-center bg-white rounded-2xl p-8 border-2 border-black"
+            className="text-center bg-white rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-black"
           >
-            <h3 className="text-2xl font-bold text-black mb-4">Our Promise to Parents</h3>
-            <p className="text-gray-700 leading-relaxed max-w-4xl mx-auto mb-6">
+            <h3 className="text-xl sm:text-2xl font-bold text-black mb-4">Our Promise to Parents</h3>
+            <p className="text-sm sm:text-base text-gray-700 leading-relaxed max-w-4xl mx-auto mb-6">
               At Planet Mini, we understand that every parent wants the very best for their baby. That's why we've made it our mission to provide a carefully selected range of baby products that combine safety, comfort, and style. From organic cotton clothing to eco-friendly toys, every item in our collection is chosen with love and care. We work with trusted brands and innovative creators to bring you products that make parenting easier and more joyful.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <div className="flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+              <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 sm:px-4 py-2 rounded-full">
                 <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                 100% Safe Products
               </div>
-              <div className="flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full">
+              <div className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 sm:px-4 py-2 rounded-full">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 Eco-Friendly Options
               </div>
-              <div className="flex items-center gap-2 bg-purple-100 text-purple-700 px-4 py-2 rounded-full">
+              <div className="flex items-center gap-2 bg-purple-100 text-purple-700 px-3 sm:px-4 py-2 rounded-full">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 Parent Approved
               </div>
@@ -606,16 +606,16 @@ export default function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-red-50 rounded-3xl p-12 border-2 border-red-200 shadow-xl"
+          className="bg-red-50 rounded-3xl p-6 sm:p-8 md:p-12 border-2 border-red-200 shadow-xl"
         >
-          <div className="text-center mb-10">
-            <div className="w-20 h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Building className="w-10 h-10 text-red-500" />
+          <div className="text-center mb-6 sm:mb-10">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Building className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
             </div>
-            <h2 className="text-4xl font-bold text-black mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">
               Sell on Planet Mini
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
               Join our marketplace and reach thousands of parents looking for quality baby products
             </p>
           </div>
@@ -626,45 +626,45 @@ export default function Contact() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
             >
-              <h3 className="text-2xl font-bold text-black mb-6">Why Partner With Us?</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-black mb-6">Why Partner With Us?</h3>
               <div className="space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg text-black mb-1">Access to Targeted Audience</h4>
-                    <p className="text-gray-600">Connect with thousands of parents actively seeking quality baby products</p>
+                    <h4 className="font-bold text-base sm:text-lg text-black mb-1">Access to Targeted Audience</h4>
+                    <p className="text-sm sm:text-base text-gray-600">Connect with thousands of parents actively seeking quality baby products</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg text-black mb-1">Easy Setup Process</h4>
-                    <p className="text-gray-600">Simple onboarding with dedicated support to get your store running quickly</p>
+                    <h4 className="font-bold text-base sm:text-lg text-black mb-1">Easy Setup Process</h4>
+                    <p className="text-sm sm:text-base text-gray-600">Simple onboarding with dedicated support to get your store running quickly</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg text-black mb-1">Marketing Support</h4>
-                    <p className="text-gray-600">Benefit from our marketing campaigns and brand reputation</p>
+                    <h4 className="font-bold text-base sm:text-lg text-black mb-1">Marketing Support</h4>
+                    <p className="text-sm sm:text-base text-gray-600">Benefit from our marketing campaigns and brand reputation</p>
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
+                <div className="flex items-start gap-3 sm:gap-4">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                    <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
-                    <h4 className="font-bold text-lg text-black mb-1">Secure Payments</h4>
-                    <p className="text-gray-600">Reliable payment processing with timely payouts and transparent analytics</p>
+                    <h4 className="font-bold text-base sm:text-lg text-black mb-1">Secure Payments</h4>
+                    <p className="text-sm sm:text-base text-gray-600">Reliable payment processing with timely payouts and transparent analytics</p>
                   </div>
                 </div>
               </div>
@@ -674,29 +674,29 @@ export default function Contact() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl p-8 border-2 border-black"
+              className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-black"
             >
-              <h3 className="text-xl font-bold text-black mb-6">Ready to Get Started?</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-6">Ready to Get Started?</h3>
               <form className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Brand Name *</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Brand Name *</label>
                   <input
                     type="text"
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
                     placeholder="Your brand name"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Email *</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Contact Email *</label>
                   <input
                     type="email"
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
                     placeholder="business@example.com"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Product Category *</label>
-                  <select className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors">
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Product Category *</label>
+                  <select className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors">
                     <option value="">Select category</option>
                     <option value="clothing">Baby Clothing</option>
                     <option value="toys">Toys & Games</option>
@@ -708,16 +708,16 @@ export default function Contact() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Tell us about your products</label>
+                  <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Tell us about your products</label>
                   <textarea
                     rows={3}
-                    className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors resize-none"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors resize-none"
                     placeholder="Brief description of your products and what makes them special..."
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-red-100 text-red-600 px-6 py-4 rounded-xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-black"
+                  className="w-full bg-red-100 text-red-600 px-4 sm:px-6 py-3 sm:py-4 rounded-xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-black"
                 >
                   Apply to Sell on Planet Mini
                 </button>
@@ -731,12 +731,12 @@ export default function Contact() {
             transition={{ delay: 0.3 }}
             className="text-center"
           >
-            <div className="bg-white rounded-2xl p-6 border-2 border-black">
-              <h3 className="text-xl font-bold text-black mb-3">Join Our Growing Community</h3>
-              <p className="text-gray-700 mb-4">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 border-2 border-black">
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Join Our Growing Community</h3>
+              <p className="text-sm sm:text-base text-gray-700 mb-4">
                 Become part of Planet Mini's trusted network of baby product vendors. Together, we're making parenting easier and more joyful for families everywhere.
               </p>
-              <div className="flex flex-wrap justify-center gap-6 text-sm">
+              <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 bg-green-500 rounded-full"></div>
                   <span className="font-medium">500+ Active Vendors</span>

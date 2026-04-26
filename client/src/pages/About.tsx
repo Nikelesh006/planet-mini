@@ -12,7 +12,7 @@ export default function About() {
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-5xl md:text-6xl font-bold text-black mb-6"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6"
             >
               About Planet Mini
             </motion.h1>
@@ -20,7 +20,7 @@ export default function About() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-lg md:text-xl text-gray-700 max-w-3xl mx-auto"
+              className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto"
             >
               We're dedicated to providing the softest, safest, and most adorable baby wear for your little ones.
             </motion.p>
@@ -29,17 +29,17 @@ export default function About() {
       </section>
 
       {/* Our Story Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-0 sm:py-16">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
-            <p className="text-gray-600 mb-4">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+            <p className="text-sm sm:text-base text-gray-600 mb-4">
               Founded in 2020, Planet Mini began with a simple mission: to create baby clothing that combines comfort, safety, and style. As parents ourselves, we understood the need for high-quality, gentle fabrics that keep babies comfortable while making parents feel confident.
             </p>
-            <p className="text-gray-600 mb-6">
+            <p className="text-sm sm:text-base text-gray-600 mb-6">
               Today, we're proud to serve families worldwide with our carefully curated collection of baby essentials, each piece designed with love and attention to detail.
             </p>
             <Link 
@@ -68,8 +68,8 @@ export default function About() {
       {/* Values Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-black mb-4">Our Values</h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">Our Values</h2>
+          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
             The principles that guide everything we do
           </p>
         </div>
@@ -113,11 +113,11 @@ export default function About() {
               transition={{ delay: index * 0.1 }}
               className="p-6 text-center border-2 border-gray-300 bg-white rounded-2xl transition-all duration-300 hover:shadow-lg hover:transform hover:-translate-y-1 cursor-pointer hover:border-gray-500"
             >
-              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 bg-gradient-to-br from-gray-500 to-gray-600 border-2 border-gray-300">
-                <value.icon className="w-8 h-8 text-black" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 bg-gradient-to-br from-gray-500 to-gray-600 border-2 border-gray-300">
+                <value.icon className="w-6 h-6 sm:w-8 sm:h-8 text-black" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 transition-colors duration-300 text-black hover:text-gray-700">{value.title}</h3>
-              <p className="text-gray-600 transition-colors duration-300 hover:text-black">{value.description}</p>
+              <h3 className="text-base sm:text-xl font-semibold mb-2 transition-colors duration-300 text-black hover:text-gray-700">{value.title}</h3>
+              <p className="text-xs sm:text-sm text-gray-600 transition-colors duration-300 hover:text-black">{value.description}</p>
             </motion.div>
           ))}
         </div>
@@ -139,8 +139,8 @@ export default function About() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <div className="text-4xl md:text-5xl text-black font-bold mb-2">{stat.number}</div>
-                <div className="text-black">{stat.label}</div>
+                <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-black font-bold mb-2">{stat.number}</div>
+                <div className="text-sm sm:text-base text-black">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -150,10 +150,10 @@ export default function About() {
       {/* CTA Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <div className="p-8 lg:p-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Join the Planet Mini Family
           </h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-base text-gray-600 mb-8 max-w-2xl mx-auto">
             Discover why thousands of parents trust us for their baby's essentials
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
