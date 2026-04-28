@@ -2,7 +2,7 @@ import { Link, useLocation } from "wouter";
 import { ShoppingBag, Search, Menu, User, X, Heart, LogOut, UserCircle, ShoppingBag as OrdersIcon, ChevronRight } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { isUserAdminAuthorized } from "@/lib/admin-auth";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
+import { useProducts } from "@/hooks/useProducts";
 
 function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
@@ -29,6 +30,25 @@ export default function Navbar() {
   const { user, isLoading, logout } = useAuth();
   const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
   const { likedProducts, toggleLike, isLiked } = useLikes();
+
+  // Fetch all products for search
+  const { data: allProducts } = useProducts();
+
+  // Search algorithm - filter products based on query
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim() || !allProducts) return [];
+    
+    const query = searchQuery.toLowerCase().trim();
+    
+    return allProducts.filter(product => {
+      const nameMatch = product.name?.toLowerCase().includes(query);
+      const categoryMatch = product.category?.toLowerCase().includes(query);
+      const subcategoryMatch = product.subcategory?.toLowerCase().includes(query);
+      const descriptionMatch = product.description?.toLowerCase().includes(query);
+      
+      return nameMatch || categoryMatch || subcategoryMatch || descriptionMatch;
+    }).slice(0, 8); // Limit to 8 results
+  }, [searchQuery, allProducts]);
 
   // Typewriter effect for search placeholder
   const searchTerms = ["Jhablas", "Towels", "Muslin Clothes", "Combo", "Blanket", "Bed"];
@@ -248,20 +268,51 @@ export default function Navbar() {
                       }
                     `}</style>
                     <div className="p-3">
-                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recommended</p>
-                      {recommendedProducts.map((product) => (
-                        <Link
-                          key={product.id}
-                          href={`/product/${product.id}`}
-                          onClick={() => setSearchDropdownOpen(false)}
-                          className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
-                        >
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">{product.name}</p>
-                            <p className="text-xs text-gray-500">{product.category}</p>
-                          </div>
-                        </Link>
-                      ))}
+                      {searchQuery.trim() && searchResults.length > 0 ? (
+                        <>
+                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Search Results</p>
+                          {searchResults.map((product) => (
+                            <Link
+                              key={product.id}
+                              href={`/products/${product.slug}`}
+                              onClick={() => {
+                                setSearchDropdownOpen(false);
+                                setSearchQuery('');
+                              }}
+                              className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
+                            >
+                              <img 
+                                src={product.image} 
+                                alt={product.name}
+                                className="w-10 h-10 rounded-md object-cover mr-3"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                                <p className="text-xs text-gray-500">₹{product.price}</p>
+                              </div>
+                            </Link>
+                          ))}
+                        </>
+                      ) : searchQuery.trim() ? (
+                        <p className="text-sm text-gray-500 text-center py-4">No products found</p>
+                      ) : (
+                        <>
+                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recommended</p>
+                          {recommendedProducts.map((product) => (
+                            <Link
+                              key={product.id}
+                              href={`/products/${product.id}`}
+                              onClick={() => setSearchDropdownOpen(false)}
+                              className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
+                            >
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                                <p className="text-xs text-gray-500">{product.category}</p>
+                              </div>
+                            </Link>
+                          ))}
+                        </>
+                      )}
                     </div>
                   </motion.div>
                 )}

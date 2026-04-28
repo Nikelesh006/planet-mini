@@ -1,12 +1,13 @@
 import { motion } from "framer-motion";
 import { useParams, Link } from "wouter";
 import { Heart, ShoppingBag, Star, Minus, Plus, Share2, HelpCircle, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
-import { useProduct, useProductById } from "@/hooks/useProducts";
+import { useProduct, useProductById, useProducts } from "@/hooks/useProducts";
+import { BabyCareCard } from "@/components/BabyCareCard";
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -48,6 +49,9 @@ export default function ProductDetailPage() {
     ? useProductById(productId)
     : useProduct(productSlug);
 
+  // Fetch all products for related products section
+  const { data: allProducts = [] } = useProducts();
+
   console.log('🔍 ProductDetail Product Data:', { product, isLoading, error });
 
   const { addToCart } = useCart();
@@ -58,19 +62,43 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
 
-  // Get all product images (main image + additional images if available)
-  const productImages = [
-    product?.image,
-    ...((product as any)?.images || [])
-  ].filter(Boolean);
+  // Get related products for "Pairs well with" section
+  const relatedProducts = useMemo(() => {
+    if (!product || !allProducts.length) return [];
 
-  // Mock related products (keep this from original)
-  const relatedProducts = [
-    { id: 2, name: "Floral Summer Dress", price: "599.00", image: "/dress1.jpg" },
-    { id: 3, name: "Cotton Baby Set", price: "899.00", image: "/set1.jpg" },
-    { id: 4, name: "Baby Sun Hat", price: "299.00", image: "/hat1.jpg" },
-    { id: 5, name: "Soft Baby Shoes", price: "399.00", image: "/shoes1.jpg" }
-  ];
+    const currentProductId = product.id;
+    const currentSubcategory = product.subcategory;
+    const currentCategory = product.category;
+
+    // Filter and sort related products
+    const related = allProducts
+      .filter((p: any) => p.id !== currentProductId) // Exclude current product
+      .sort((a: any, b: any) => {
+        // Priority 1: Same subcategory
+        const aSameSub = a.subcategory === currentSubcategory;
+        const bSameSub = b.subcategory === currentSubcategory;
+        if (aSameSub && !bSameSub) return -1;
+        if (!aSameSub && bSameSub) return 1;
+
+        // Priority 2: Same category
+        const aSameCat = a.category === currentCategory;
+        const bSameCat = b.category === currentCategory;
+        if (aSameCat && !bSameCat) return -1;
+        if (!aSameCat && bSameCat) return 1;
+
+        return 0;
+      })
+      .slice(0, 6); // Show max 6 related products
+
+    return related;
+  }, [product, allProducts]);
+
+  // Get all product images (main image + additional images if available)
+  // Deduplicate to prevent showing same image twice
+  const mainImage = product?.image;
+  const additionalImages = (product as any)?.images || [];
+  const allImages = [mainImage, ...additionalImages].filter(Boolean);
+  const productImages = Array.from(new Set(allImages));
 
   // Image navigation functions
   const goToPreviousImage = () => {
@@ -130,14 +158,13 @@ export default function ProductDetailPage() {
         category: product.category,
         subcategory: product.subcategory || undefined,
       });
-      window.location.href = '/cart';
     });
   };
 
   const handleWishlist = () => {
     executeWithAuth(() => {
       toggleLike({
-        id: Number(product.id),
+        id: product.id,
         name: product.name,
         description: product.description || "",
         slug: product.slug,
@@ -365,9 +392,9 @@ export default function ProductDetailPage() {
                   >
                     <Heart 
                       className={`w-5 h-5 transition-colors ${
-                        isLiked(Number(product.id)) 
-                          ? 'fill-current text-red-500' 
-                          : 'text-gray-600 hover:text-red-500'
+                        isLiked(product.id) 
+                          ? 'fill-red-500 text-red-500' 
+                          : 'text-gray-600 hover:text-red-500 hover:fill-red-500'
                       }`} 
                     />
                   </button>
@@ -396,35 +423,27 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* Related Products Section */}
-            <div className="mt-16">
-              <h2 className="text-2xl font-bold text-black mb-8">Pairs well with</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {relatedProducts.map((relatedProduct) => (
-                  <Link key={relatedProduct.id} href={`/products/${relatedProduct.id}`}>
-                    <div className="group cursor-pointer">
-                      <div className="aspect-square bg-gray-50 rounded-lg overflow-hidden mb-3">
-                        <img
-                          src={relatedProduct.image}
-                          alt={relatedProduct.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23F3F4F6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%236B7280' font-size='8' font-family='Arial'%3ERelated%3C/text%3E%3C/svg%3E";
-                          }}
-                        />
-                      </div>
-                      <h3 className="text-sm font-medium text-black group-hover:text-gray-700 transition-colors">
-                        {relatedProduct.name}
-                      </h3>
-                      <p className="text-sm text-gray-600">Rs. {relatedProduct.price}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
+
+      {/* Pairs well with - Related Products */}
+      {relatedProducts.length > 0 && (
+        <div className="px-4 sm:px-6 lg:px-8 py-12 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">Pairs well with</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+              {relatedProducts.map((relatedProduct: any, index: number) => (
+                <BabyCareCard 
+                  key={relatedProduct.id} 
+                  product={relatedProduct} 
+                  index={index} 
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Google Auth Modal */}
       <GoogleAuthModal

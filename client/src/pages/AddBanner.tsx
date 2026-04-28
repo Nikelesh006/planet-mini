@@ -288,9 +288,8 @@ export default function AddBanner() {
           <h3 className="font-semibold text-blue-900 mb-2">Instructions:</h3>
           <ul className="text-blue-800 text-sm space-y-1 list-disc list-inside">
             <li>Upload up to 4 banner images</li>
-            <li>Recommended size: 1920x600 pixels</li>
+            <li>Any image size is accepted</li>
             <li>Supported formats: JPG, PNG, WebP</li>
-            <li>Maximum file size: 5MB per image</li>
           </ul>
         </div>
       </div>

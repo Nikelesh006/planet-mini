@@ -654,8 +654,6 @@ export default function Orders() {
 
                       <div className="flex-1 min-w-0">
 
-                        <p className="text-xs text-gray-500 mb-1">Order #{order.orderNumber}</p>
-
                         <p className="text-sm font-semibold text-gray-900">{formatDate(order.createdAt)}</p>
 
                       </div>
@@ -834,7 +832,7 @@ export default function Orders() {
 
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
 
-                    Order #{selectedOrder.orderNumber}
+                    Order Details
 
                   </h2>
 

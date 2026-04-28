@@ -2,7 +2,15 @@ import { useState, useEffect } from "react";
 
 
 
+
+
+
+
 import { motion } from "framer-motion";
+
+
+
+
 
 
 
@@ -10,7 +18,15 @@ import { Link, useLocation, useSearch } from "wouter";
 
 
 
+
+
+
+
 import { useCloudinary } from "@/hooks/useCloudinary";
+
+
+
+
 
 
 
@@ -18,7 +34,15 @@ import { useProduct, useProductById } from "@/hooks/useProducts";
 
 
 
+
+
+
+
 import { useToast } from "@/hooks/use-toast";
+
+
+
+
 
 
 
@@ -26,7 +50,15 @@ import {
 
 
 
+
+
+
+
   ArrowLeft, 
+
+
+
+
 
 
 
@@ -34,7 +66,15 @@ import {
 
 
 
+
+
+
+
   Upload, 
+
+
+
+
 
 
 
@@ -42,7 +82,15 @@ import {
 
 
 
+
+
+
+
   Plus,
+
+
+
+
 
 
 
@@ -50,7 +98,15 @@ import {
 
 
 
+
+
+
+
   DollarSign,
+
+
+
+
 
 
 
@@ -58,7 +114,15 @@ import {
 
 
 
+
+
+
+
   FileText,
+
+
+
+
 
 
 
@@ -66,7 +130,15 @@ import {
 
 
 
+
+
+
+
   Star,
+
+
+
+
 
 
 
@@ -74,7 +146,15 @@ import {
 
 
 
+
+
+
+
   Edit3
+
+
+
+
 
 
 
@@ -86,7 +166,19 @@ import {
 
 
 
+
+
+
+
+
+
+
+
 interface ProductFormData {
+
+
+
+
 
 
 
@@ -94,7 +186,15 @@ interface ProductFormData {
 
 
 
+
+
+
+
   name: string;
+
+
+
+
 
 
 
@@ -102,7 +202,15 @@ interface ProductFormData {
 
 
 
+
+
+
+
   description: string;
+
+
+
+
 
 
 
@@ -110,7 +218,15 @@ interface ProductFormData {
 
 
 
+
+
+
+
   originalPrice: string;
+
+
+
+
 
 
 
@@ -118,7 +234,15 @@ interface ProductFormData {
 
 
 
+
+
+
+
   subcategory: string;
+
+
+
+
 
 
 
@@ -126,7 +250,15 @@ interface ProductFormData {
 
 
 
+
+
+
+
   rating: number;
+
+
+
+
 
 
 
@@ -134,7 +266,15 @@ interface ProductFormData {
 
 
 
+
+
+
+
   inStock: boolean;
+
+
+
+
 
 
 
@@ -142,7 +282,19 @@ interface ProductFormData {
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -154,7 +306,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   const { uploadImages, isUploading, uploadProgress, error, clearError } = useCloudinary();
+
+
+
+
 
 
 
@@ -162,7 +322,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -170,7 +338,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   const searchParams = new URLSearchParams(search);
+
+
+
+
 
 
 
@@ -178,11 +354,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   const viewId = searchParams.get('view');
 
 
 
+
+
+
+
   const isEdit = !!editId;
+
+
+
+
 
 
 
@@ -194,7 +382,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
   // Fetch product data when in edit or view mode
+
+
+
+
 
 
 
@@ -202,7 +402,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   const { data: productDataById, isLoading: isLoadingById } = useProductById(editId || '');
+
+
+
+
 
 
 
@@ -210,7 +418,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   const productData = editId ? productDataById : productDataBySlug;
+
+
+
+
 
 
 
@@ -222,7 +438,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
   const [formData, setFormData] = useState<ProductFormData>({
+
+
+
+
 
 
 
@@ -230,7 +458,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     slug: '',
+
+
+
+
 
 
 
@@ -238,7 +474,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     price: '',
+
+
+
+
 
 
 
@@ -246,7 +490,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     category: '',
+
+
+
+
 
 
 
@@ -254,7 +506,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     images: [],
+
+
+
+
 
 
 
@@ -262,7 +522,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     reviews: 0,
+
+
+
+
 
 
 
@@ -270,7 +538,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     isNew: false
+
+
+
+
 
 
 
@@ -282,7 +558,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
   const [errors, setErrors] = useState<Partial<Record<keyof ProductFormData, string>>>({});
+
+
+
+
 
 
 
@@ -290,7 +578,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   const [showSuccess, setShowSuccess] = useState(false);
+
+
+
+
 
 
 
@@ -302,7 +598,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
   // Reset form to initial empty state
+
+
+
+
 
 
 
@@ -310,7 +618,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     setFormData({
+
+
+
+
 
 
 
@@ -318,7 +634,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       slug: '',
+
+
+
+
 
 
 
@@ -326,7 +650,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       price: '',
+
+
+
+
 
 
 
@@ -334,7 +666,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       category: '',
+
+
+
+
 
 
 
@@ -342,7 +682,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       images: [],
+
+
+
+
 
 
 
@@ -350,7 +698,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       reviews: 0,
+
+
+
+
 
 
 
@@ -358,7 +714,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       isNew: false
+
+
+
+
 
 
 
@@ -366,7 +730,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     setErrors({});
+
+
+
+
 
 
 
@@ -374,7 +746,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -386,7 +770,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   useEffect(() => {
+
+
+
+
 
 
 
@@ -394,7 +786,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       setFormData({
+
+
+
+
 
 
 
@@ -402,7 +802,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         name: productData.name || '',
+
+
+
+
 
 
 
@@ -410,11 +818,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         description: productData.description || '',
 
 
 
-        price: typeof productData.price === 'number' ? productData.price.toString() : '',
+
+
+
+
+        price: productData.price != null ? String(productData.price) : '',
+
+
+
+
 
 
 
@@ -422,7 +842,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         category: (productData.category as "" | "style" | "home" | "care" | "offers") || '',
+
+
+
+
 
 
 
@@ -430,7 +858,15 @@ export default function AddProduct() {
 
 
 
-        images: productData.image ? [productData.image] : [],
+
+
+
+
+        images: (productData as any).images || (productData.image ? [productData.image] : []) || [],
+
+
+
+
 
 
 
@@ -438,7 +874,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         reviews: productData.reviews || 0,
+
+
+
+
 
 
 
@@ -446,7 +890,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         isNew: productData.isNew || false
+
+
+
+
 
 
 
@@ -454,7 +906,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -466,7 +926,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
   const subcategoryOptions: Record<string, string[]> = {
+
+
+
+
 
 
 
@@ -474,11 +946,27 @@ export default function AddProduct() {
 
 
 
-    home: ["Baby Care Essentials", "Muslin Clothings", "Combo Offers", "Gifting"]
+
+
+
+
+    home: ["New Arrivals", "Trending Products"]
+
+
+
+
 
 
 
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -490,7 +978,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   const sizeOptions = ["0-6M", "6-12M", "1-2Y", "2-3Y", "3-4Y"];
+
+
+
+
+
+
+
+
 
 
 
@@ -502,7 +1002,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     const { name, value, type } = e.target;
+
+
+
+
 
 
 
@@ -510,7 +1018,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -518,7 +1034,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       ...prev,
+
+
+
+
 
 
 
@@ -526,7 +1050,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     }));
+
+
+
+
 
 
 
@@ -534,7 +1066,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     // Clear error when user starts typing
+
+
+
+
 
 
 
@@ -542,7 +1082,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       setErrors(prev => ({ ...prev, [name]: '' }));
+
+
+
+
 
 
 
@@ -550,7 +1098,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -560,91 +1120,185 @@ export default function AddProduct() {
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
+
+
     const files = e.target.files;
+
+
 
     console.log('📁 Selected files:', files?.length);
 
 
 
+
+
+
+
     if (!files || files.length === 0) {
+
+
 
       console.log('❌ No files selected');
 
+
+
       return;
 
+
+
     }
+
+
+
+
 
 
 
     try {
 
+
+
       console.log('⬆️ Starting upload for', files.length, 'files');
 
+
+
       const imageUrls = await uploadImages(Array.from(files));
+
+
 
       console.log('✅ Upload successful:', imageUrls);
 
 
 
+
+
+
+
       if (imageUrls && imageUrls.length > 0) {
+
+
 
         // Extract URLs from the Cloudinary response objects
 
+
+
         const newImageUrls = imageUrls.map((img: any) => 
 
+
+
           typeof img === 'string' ? img : img.url
+
+
 
         );
 
 
 
+
+
+
+
         setFormData(prev => ({ 
+
+
 
           ...prev, 
 
+
+
           images: [...prev.images, ...newImageUrls].slice(0, 5)
+
+
 
         }));
 
 
 
+
+
+
+
         toast({
+
+
 
           title: "Image Uploaded!",
 
+
+
           description: `${newImageUrls.length} image(s) added successfully.`,
 
+
+
           variant: "success"
+
+
 
         });
 
 
 
+
+
+
+
         if (errors.images) {
+
+
 
           setErrors(prev => ({ ...prev, images: '' }));
 
+
+
         }
+
+
 
       }
 
+
+
     } catch (error: any) {
+
+
 
       console.error('❌ Image upload failed:', error);
 
+
+
       toast({
+
+
 
         title: "Upload Failed",
 
+
+
         description: error.message || "Failed to upload image. Please try again.",
+
+
 
         variant: "destructive"
 
+
+
       });
+
+
 
     }
 
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -656,7 +1310,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     setFormData(prev => ({
+
+
+
+
 
 
 
@@ -664,7 +1326,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       images: prev.images.filter((_, i) => i !== index)
+
+
+
+
 
 
 
@@ -672,7 +1342,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -684,11 +1366,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     const newErrors: Partial<Record<keyof ProductFormData, string>> = {};
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -696,7 +1390,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     if (!formData.slug.trim()) newErrors.slug = 'Slug is required';
+
+
+
+
 
 
 
@@ -704,7 +1406,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     if (!formData.price || parseFloat(formData.price) <= 0) newErrors.price = 'Valid price is required';
+
+
+
+
 
 
 
@@ -712,7 +1422,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     // Subcategory is now optional - no validation required
+
+
+
+
 
 
 
@@ -720,7 +1438,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -728,11 +1454,27 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     return Object.keys(newErrors).length === 0;
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -744,7 +1486,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     e.preventDefault();
+
+
+
+
 
 
 
@@ -752,7 +1502,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     if (!validateForm()) {
+
+
+
+
 
 
 
@@ -760,7 +1518,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -772,7 +1542,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -780,7 +1558,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       if (isEdit && editId) {
+
+
+
+
 
 
 
@@ -788,7 +1574,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         const response = await fetch(`/api/products/${editId}`, {
+
+
+
+
 
 
 
@@ -796,7 +1590,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           headers: {
+
+
+
+
 
 
 
@@ -804,7 +1606,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           },
+
+
+
+
 
 
 
@@ -812,7 +1622,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             slug: formData.slug,
+
+
+
+
 
 
 
@@ -820,7 +1638,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             description: formData.description,
+
+
+
+
 
 
 
@@ -828,11 +1654,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
 
 
 
+
+
+
+
             category: formData.category,
+
+
+
+
 
 
 
@@ -840,7 +1678,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+            images: formData.images,
+
+
+
+
+
+
+
             image: formData.images[0] || '',
+
+
+
+
 
 
 
@@ -848,11 +1702,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             reviews: formData.reviews,
 
 
 
+
+
+
+
             inStock: formData.inStock,
+
+
+
+
 
 
 
@@ -860,7 +1726,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           }),
+
+
+
+
 
 
 
@@ -868,11 +1742,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         
 
 
 
+
+
+
+
         if (!response.ok) {
+
+
+
+
 
 
 
@@ -880,7 +1766,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         }
+
+
+
+
 
 
 
@@ -888,11 +1782,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         setShowSuccess(true);
 
 
 
+
+
+
+
         toast({
+
+
+
+
 
 
 
@@ -900,7 +1806,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           description: "Your product has been updated and is now live on the store.",
+
+
+
+
 
 
 
@@ -908,11 +1822,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         });
 
 
 
+
+
+
+
         
+
+
+
+
 
 
 
@@ -920,7 +1846,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         // CREATE NEW (Universal Template Pattern)
+
+
+
+
 
 
 
@@ -928,7 +1862,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           method: 'POST',
+
+
+
+
 
 
 
@@ -936,7 +1878,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             'Content-Type': 'application/json',
+
+
+
+
 
 
 
@@ -944,7 +1894,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           body: JSON.stringify({
+
+
+
+
 
 
 
@@ -952,7 +1910,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             name: formData.name,
+
+
+
+
 
 
 
@@ -960,7 +1926,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             price: formData.price,
+
+
+
+
 
 
 
@@ -968,7 +1942,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             category: formData.category,
+
+
+
+
 
 
 
@@ -976,7 +1958,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             image: formData.images[0] || '', // Use first image as primary
+
+
+
+
 
 
 
@@ -984,7 +1974,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             reviews: formData.reviews,
+
+
+
+
 
 
 
@@ -992,7 +1990,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             isNew: formData.isNew,
+
+
+
+
 
 
 
@@ -1000,7 +2006,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           }),
+
+
+
+
 
 
 
@@ -1008,7 +2022,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         
+
+
+
+
 
 
 
@@ -1016,7 +2038,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           throw new Error('Failed to create product');
+
+
+
+
 
 
 
@@ -1024,7 +2054,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         
+
+
+
+
 
 
 
@@ -1032,7 +2070,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         toast({
+
+
+
+
 
 
 
@@ -1040,7 +2086,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           description: "Your new product has been added and is now live on the store.",
+
+
+
+
 
 
 
@@ -1048,11 +2102,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         });
 
 
 
+
+
+
+
         
+
+
+
+
 
 
 
@@ -1060,7 +2126,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         resetForm();
+
+
+
+
 
 
 
@@ -1068,7 +2142,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1076,7 +2158,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1084,7 +2174,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       toast({
+
+
+
+
 
 
 
@@ -1092,7 +2190,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         description: "Failed to create product. Please try again.",
+
+
+
+
 
 
 
@@ -1100,7 +2206,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       });
+
+
+
+
 
 
 
@@ -1108,11 +2222,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       setIsSubmitting(false);
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -1124,7 +2250,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
   return (
+
+
+
+
 
 
 
@@ -1132,7 +2270,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       {/* Header */}
+
+
+
+
 
 
 
@@ -1140,7 +2286,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+
+
+
 
 
 
@@ -1148,7 +2302,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             <div className="flex items-center gap-4">
+
+
+
+
 
 
 
@@ -1156,7 +2318,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 href="/admin" 
+
+
+
+
 
 
 
@@ -1164,7 +2334,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               >
+
+
+
+
 
 
 
@@ -1172,7 +2350,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <span>Back to Admin</span>
+
+
+
+
 
 
 
@@ -1180,7 +2366,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               <h1 className="text-xl font-semibold text-gray-900">{isEdit ? 'Edit Product' : 'Add New Product'}</h1>
+
+
+
+
 
 
 
@@ -1188,7 +2382,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           </div>
+
+
+
+
 
 
 
@@ -1196,7 +2398,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1208,7 +2422,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       {showSuccess && (
+
+
+
+
 
 
 
@@ -1216,7 +2438,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           initial={{ opacity: 0, y: -20 }}
+
+
+
+
 
 
 
@@ -1224,7 +2454,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2"
+
+
+
+
 
 
 
@@ -1232,7 +2470,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           <Check className="w-5 h-5" />
+
+
+
+
 
 
 
@@ -1240,7 +2486,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         </motion.div>
+
+
+
+
 
 
 
@@ -1252,7 +2506,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
       {/* Form */}
+
+
+
+
 
 
 
@@ -1260,7 +2526,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
         <form onSubmit={handleSubmit} className="space-y-8 pointer-events-auto" style={{ pointerEvents: 'auto' }}>
+
+
+
+
 
 
 
@@ -1268,7 +2542,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           <motion.div
+
+
+
+
 
 
 
@@ -1276,7 +2558,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             animate={{ opacity: 1, y: 0 }}
+
+
+
+
 
 
 
@@ -1284,7 +2574,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           >
+
+
+
+
 
 
 
@@ -1292,7 +2590,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               <ImageIcon className="w-5 h-5 text-primary" />
+
+
+
+
 
 
 
@@ -1300,7 +2606,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             </h2>
+
+
+
+
 
 
 
@@ -1308,7 +2622,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             <div className="space-y-4">
+
+
+
+
 
 
 
@@ -1316,7 +2638,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 {/* Show 5 image slots */}
+
+
+
+
 
 
 
@@ -1324,7 +2654,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <div key={index} className="relative">
+
+
+
+
 
 
 
@@ -1332,7 +2670,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                       <div className="relative w-full h-32 bg-gray-100 rounded-lg overflow-hidden group">
+
+
+
+
 
 
 
@@ -1340,7 +2686,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           src={formData.images[index]}
+
+
+
+
 
 
 
@@ -1348,11 +2702,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           className="w-full h-full object-cover"
 
 
 
+
+
+
+
                         />
+
+
+
+
 
 
 
@@ -1360,7 +2726,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           type="button"
+
+
+
+
 
 
 
@@ -1368,7 +2742,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+
+
+
+
 
 
 
@@ -1376,7 +2758,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           <X className="w-3 h-3" />
+
+
+
+
 
 
 
@@ -1384,7 +2774,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+
+
+
+
 
 
 
@@ -1392,11 +2790,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         </div>
 
 
 
+
+
+
+
                       </div>
+
+
+
+
 
 
 
@@ -1404,7 +2814,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                       // Show progress for current upload slot
+
+
+
+
 
 
 
@@ -1412,7 +2830,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         <div className="w-12 h-12 relative">
+
+
+
+
 
 
 
@@ -1420,7 +2846,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                             <path
+
+
+
+
 
 
 
@@ -1428,7 +2862,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+
+
+
+
 
 
 
@@ -1436,7 +2878,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                               stroke="currentColor"
+
+
+
+
 
 
 
@@ -1444,7 +2894,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                             />
+
+
+
+
 
 
 
@@ -1452,7 +2910,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                               className="text-primary"
+
+
+
+
 
 
 
@@ -1460,7 +2926,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                               d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+
+
+
+
 
 
 
@@ -1468,7 +2942,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                               stroke="currentColor"
+
+
+
+
 
 
 
@@ -1476,7 +2958,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                             />
+
+
+
+
 
 
 
@@ -1484,7 +2974,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-primary">
+
+
+
+
 
 
 
@@ -1492,7 +2990,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           </span>
+
+
+
+
 
 
 
@@ -1500,7 +3006,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         <span className="text-xs text-gray-600 mt-2 text-center">
+
+
+
+
 
 
 
@@ -1508,11 +3022,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         </span>
 
 
 
+
+
+
+
                       </div>
+
+
+
+
 
 
 
@@ -1520,7 +3046,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                       <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 h-32 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
+
+
+
+
 
 
 
@@ -1528,7 +3062,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           type="file"
+
+
+
+
 
 
 
@@ -1536,7 +3078,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           onChange={(e) => {
+
+
+
+
 
 
 
@@ -1544,7 +3094,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                             if (file) {
+
+
+
+
 
 
 
@@ -1552,7 +3110,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                               e.target.value = ''; // Reset input
+
+
+
+
 
 
 
@@ -1560,7 +3126,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           }}
+
+
+
+
 
 
 
@@ -1568,7 +3142,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           className="hidden"
+
+
+
+
 
 
 
@@ -1576,7 +3158,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         />
+
+
+
+
 
 
 
@@ -1584,7 +3174,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                           <Upload className="w-6 h-6 text-gray-400 mb-2" />
+
+
+
+
 
 
 
@@ -1592,7 +3190,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                             {formData.images.length >= 5 ? 'Max 5 images' : 'Upload Image'}
+
+
+
+
 
 
 
@@ -1600,7 +3206,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         </label>
+
+
+
+
 
 
 
@@ -1608,7 +3222,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     )}
+
+
+
+
 
 
 
@@ -1616,7 +3238,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 ))}
+
+
+
+
 
 
 
@@ -1624,7 +3254,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               
+
+
+
+
 
 
 
@@ -1632,7 +3270,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <p className="text-red-500 text-sm">{errors.images}</p>
+
+
+
+
 
 
 
@@ -1640,7 +3286,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               
+
+
+
+
 
 
 
@@ -1648,7 +3302,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 {formData.images.length}/5 images uploaded. Add up to 5 product images.
+
+
+
+
 
 
 
@@ -1656,7 +3318,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <span className="ml-2 text-primary">Uploading... {uploadProgress}%</span>
+
+
+
+
 
 
 
@@ -1664,7 +3334,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
 
 
 
@@ -1672,7 +3350,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1684,7 +3374,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           <motion.div
+
+
+
+
 
 
 
@@ -1692,7 +3390,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             animate={{ opacity: 1, y: 0 }}
+
+
+
+
 
 
 
@@ -1700,7 +3406,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             className="bg-white rounded-xl shadow-sm p-6"
+
+
+
+
 
 
 
@@ -1708,7 +3422,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+
+
+
+
 
 
 
@@ -1716,7 +3438,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               Basic Information
+
+
+
+
 
 
 
@@ -1724,7 +3454,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             
+
+
+
+
 
 
 
@@ -1732,11 +3470,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               <div>
 
 
 
+
+
+
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -1744,7 +3494,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -1752,7 +3510,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   type="text"
+
+
+
+
 
 
 
@@ -1760,7 +3526,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   value={formData.name}
+
+
+
+
 
 
 
@@ -1768,7 +3542,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   disabled={false}
+
+
+
+
 
 
 
@@ -1776,7 +3558,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   autoComplete="off"
+
+
+
+
 
 
 
@@ -1784,7 +3574,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     errors.name ? 'border-red-500' : 'border-gray-300'
+
+
+
+
 
 
 
@@ -1792,7 +3590,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   placeholder="Enter product name"
+
+
+
+
 
 
 
@@ -1800,7 +3606,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 {errors.name && (
+
+
+
+
 
 
 
@@ -1808,11 +3622,27 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 )}
 
 
 
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1824,7 +3654,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -1832,7 +3670,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -1840,7 +3686,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   type="text"
+
+
+
+
 
 
 
@@ -1848,7 +3702,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   value={formData.slug}
+
+
+
+
 
 
 
@@ -1856,7 +3718,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   disabled={false}
+
+
+
+
 
 
 
@@ -1864,7 +3734,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   autoComplete="off"
+
+
+
+
 
 
 
@@ -1872,7 +3750,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     errors.slug ? 'border-red-500' : 'border-gray-300'
+
+
+
+
 
 
 
@@ -1880,7 +3766,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   placeholder="product-slug"
+
+
+
+
 
 
 
@@ -1888,7 +3782,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 {errors.slug && (
+
+
+
+
 
 
 
@@ -1896,11 +3798,27 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 )}
 
 
 
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -1912,7 +3830,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -1920,7 +3846,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -1928,7 +3862,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   name="description"
+
+
+
+
 
 
 
@@ -1936,7 +3878,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   onChange={handleInputChange}
+
+
+
+
 
 
 
@@ -1944,7 +3894,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   readOnly={false}
+
+
+
+
 
 
 
@@ -1952,7 +3910,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none pointer-events-auto ${
+
+
+
+
 
 
 
@@ -1960,7 +3926,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   }`}
+
+
+
+
 
 
 
@@ -1968,7 +3942,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 />
+
+
+
+
 
 
 
@@ -1976,11 +3958,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <p className="text-red-500 text-sm mt-1">{errors.description}</p>
 
 
 
+
+
+
+
                 )}
+
+
+
+
 
 
 
@@ -1992,11 +3986,27 @@ export default function AddProduct() {
 
 
 
+
+
+
+
+
+
+
+
               <div>
 
 
 
+
+
+
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -2004,7 +4014,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -2012,7 +4030,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
+
+
+
+
 
 
 
@@ -2020,7 +4046,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     type="number"
+
+
+
+
 
 
 
@@ -2028,7 +4062,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     value={formData.price}
+
+
+
+
 
 
 
@@ -2036,7 +4078,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     disabled={false}
+
+
+
+
 
 
 
@@ -2044,7 +4094,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     step="0.01"
+
+
+
+
 
 
 
@@ -2052,7 +4110,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     autoComplete="off"
+
+
+
+
 
 
 
@@ -2060,7 +4126,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                       errors.price ? 'border-red-500' : 'border-gray-300'
+
+
+
+
 
 
 
@@ -2068,7 +4142,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     placeholder="0.00"
+
+
+
+
 
 
 
@@ -2076,7 +4158,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </div>
+
+
+
+
 
 
 
@@ -2084,7 +4174,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <p className="text-red-500 text-sm mt-1">{errors.price}</p>
+
+
+
+
 
 
 
@@ -2092,7 +4190,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2104,7 +4214,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -2112,7 +4230,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -2120,7 +4246,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
+
+
+
+
 
 
 
@@ -2128,7 +4262,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     type="number"
+
+
+
+
 
 
 
@@ -2136,7 +4278,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     value={formData.originalPrice}
+
+
+
+
 
 
 
@@ -2144,7 +4294,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     step="0.01"
+
+
+
+
 
 
 
@@ -2152,7 +4310,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
+
+
+
+
 
 
 
@@ -2160,7 +4326,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   />
+
+
+
+
 
 
 
@@ -2168,7 +4342,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
 
 
 
@@ -2176,7 +4358,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2188,7 +4382,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           <motion.div
+
+
+
+
 
 
 
@@ -2196,7 +4398,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             animate={{ opacity: 1, y: 0 }}
+
+
+
+
 
 
 
@@ -2204,7 +4414,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             className="bg-white rounded-xl shadow-sm p-6"
+
+
+
+
 
 
 
@@ -2212,7 +4430,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+
+
+
+
 
 
 
@@ -2220,7 +4446,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               Product Details
+
+
+
+
 
 
 
@@ -2228,7 +4462,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             
+
+
+
+
 
 
 
@@ -2236,11 +4478,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               <div>
 
 
 
+
+
+
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -2248,7 +4502,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -2256,7 +4518,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   name="category"
+
+
+
+
 
 
 
@@ -2264,7 +4534,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   onChange={handleInputChange}
+
+
+
+
 
 
 
@@ -2272,7 +4550,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     errors.category ? 'border-red-500' : 'border-gray-300'
+
+
+
+
 
 
 
@@ -2280,7 +4566,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 >
+
+
+
+
 
 
 
@@ -2288,7 +4582,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <option value="style">Shop by Style</option>
+
+
+
+
 
 
 
@@ -2296,7 +4598,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </select>
+
+
+
+
 
 
 
@@ -2304,7 +4614,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <p className="text-red-500 text-sm mt-1">{errors.category}</p>
+
+
+
+
 
 
 
@@ -2312,7 +4630,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2324,7 +4654,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -2332,7 +4670,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -2340,7 +4686,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   name="subcategory"
+
+
+
+
 
 
 
@@ -2348,7 +4702,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   onChange={handleInputChange}
+
+
+
+
 
 
 
@@ -2356,7 +4718,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     errors.subcategory ? 'border-red-500' : 'border-gray-300'
+
+
+
+
 
 
 
@@ -2364,7 +4734,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   disabled={!formData.category}
+
+
+
+
 
 
 
@@ -2372,7 +4750,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   {formData.category === 'style' ? (
+
+
+
+
 
 
 
@@ -2380,7 +4766,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   ) : (
+
+
+
+
 
 
 
@@ -2388,7 +4782,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                       <option value="">Select subcategory</option>
+
+
+
+
 
 
 
@@ -2396,7 +4798,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                         <option key={option} value={option}>{option}</option>
+
+
+
+
 
 
 
@@ -2404,7 +4814,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     </>
+
+
+
+
 
 
 
@@ -2412,7 +4830,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </select>
+
+
+
+
 
 
 
@@ -2420,7 +4846,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <p className="text-red-500 text-sm mt-1">{errors.subcategory}</p>
+
+
+
+
 
 
 
@@ -2428,7 +4862,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2440,11 +4886,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <input
 
 
 
+
+
+
+
                   type="checkbox"
+
+
+
+
 
 
 
@@ -2452,7 +4910,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   id="inStock"
+
+
+
+
 
 
 
@@ -2460,7 +4926,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   onChange={handleInputChange}
+
+
+
+
 
 
 
@@ -2468,7 +4942,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 />
+
+
+
+
 
 
 
@@ -2476,7 +4958,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   In Stock
+
+
+
+
 
 
 
@@ -2484,7 +4974,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2496,7 +4998,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <input
+
+
+
+
 
 
 
@@ -2504,7 +5014,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   name="isNew"
+
+
+
+
 
 
 
@@ -2512,7 +5030,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   checked={formData.isNew}
+
+
+
+
 
 
 
@@ -2520,7 +5046,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+
+
+
+
 
 
 
@@ -2528,7 +5062,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <label htmlFor="isNew" className="text-sm font-medium text-gray-700">
+
+
+
+
 
 
 
@@ -2536,7 +5078,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 </label>
+
+
+
+
 
 
 
@@ -2544,11 +5094,27 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             </div>
 
 
 
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2560,7 +5126,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           <motion.div
+
+
+
+
 
 
 
@@ -2568,7 +5142,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             animate={{ opacity: 1, y: 0 }}
+
+
+
+
 
 
 
@@ -2576,7 +5158,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             className="bg-white rounded-xl shadow-sm p-6"
+
+
+
+
 
 
 
@@ -2584,7 +5174,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+
+
+
+
 
 
 
@@ -2592,7 +5190,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               Advanced Options
+
+
+
+
 
 
 
@@ -2600,7 +5206,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             
+
+
+
+
 
 
 
@@ -2608,7 +5222,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               <div className="grid md:grid-cols-2 gap-6">
+
+
+
+
 
 
 
@@ -2616,7 +5238,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -2624,7 +5254,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   </label>
+
+
+
+
 
 
 
@@ -2632,7 +5270,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     type="number"
+
+
+
+
 
 
 
@@ -2640,7 +5286,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     value={formData.rating}
+
+
+
+
 
 
 
@@ -2648,7 +5302,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     min="1"
+
+
+
+
 
 
 
@@ -2656,7 +5318,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     step="0.1"
+
+
+
+
 
 
 
@@ -2664,11 +5334,27 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   />
 
 
 
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2680,7 +5366,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+
+
+
+
 
 
 
@@ -2688,7 +5382,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   </label>
+
+
+
+
 
 
 
@@ -2696,7 +5398,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     type="number"
+
+
+
+
 
 
 
@@ -2704,7 +5414,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     value={formData.reviews}
+
+
+
+
 
 
 
@@ -2712,7 +5430,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                     min="0"
+
+
+
+
 
 
 
@@ -2720,7 +5446,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   />
+
+
+
+
 
 
 
@@ -2728,7 +5462,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
 
 
 
@@ -2736,7 +5478,19 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           </motion.div>
+
+
+
+
+
+
+
+
 
 
 
@@ -2748,7 +5502,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           <motion.div
+
+
+
+
 
 
 
@@ -2756,7 +5518,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             animate={{ opacity: 1, y: 0 }}
+
+
+
+
 
 
 
@@ -2764,7 +5534,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200"
+
+
+
+
 
 
 
@@ -2772,7 +5550,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             <button
+
+
+
+
 
 
 
@@ -2780,7 +5566,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               onClick={() => window.location.href = '/admin'}
+
+
+
+
 
 
 
@@ -2788,7 +5582,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             >
+
+
+
+
 
 
 
@@ -2796,7 +5598,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
             </button>
+
+
+
+
 
 
 
@@ -2804,7 +5614,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               type="submit"
+
+
+
+
 
 
 
@@ -2812,7 +5630,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               className="flex items-center gap-2 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+
+
+
+
 
 
 
@@ -2820,11 +5646,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               {isSubmitting ? (
 
 
 
+
+
+
+
                 <>
+
+
+
+
 
 
 
@@ -2832,11 +5670,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   {isEdit ? 'Updating...' : 'Saving...'}
 
 
 
+
+
+
+
                 </>
+
+
+
+
 
 
 
@@ -2844,7 +5694,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                 <>
+
+
+
+
 
 
 
@@ -2852,7 +5710,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
                   {isEdit ? 'Update Product' : 'Save Product'}
+
+
+
+
 
 
 
@@ -2860,7 +5726,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
               )}
+
+
+
+
 
 
 
@@ -2868,7 +5742,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
           </motion.div>
+
+
+
+
 
 
 
@@ -2876,7 +5758,15 @@ export default function AddProduct() {
 
 
 
+
+
+
+
       </div>
+
+
+
+
 
 
 
@@ -2884,11 +5774,23 @@ export default function AddProduct() {
 
 
 
+
+
+
+
   );
 
 
 
+
+
+
+
 }
+
+
+
+
 
 
 

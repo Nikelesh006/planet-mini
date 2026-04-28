@@ -30,7 +30,7 @@ export default function ShopStyle() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [maxPrice, setMaxPrice] = useState(5000);
 
   // Filter categories for baby dresses
   const filterCategories = [
@@ -106,8 +106,13 @@ export default function ShopStyle() {
 
   const clearFilters = () => {
     setSelectedFilters([]);
-    setPriceRange([0, 5000]);
+    setMaxPrice(5000);
   };
+
+  // Filter products by max price (show products with price <= maxPrice)
+  const filteredProducts = products
+    ? products.filter(product => Number(product.price) <= maxPrice)
+    : [];
 
   return (
     <div className="min-h-screen bg-white">
@@ -322,12 +327,12 @@ export default function ShopStyle() {
                           // Price Range Slider
                           <div className="space-y-3 sm:space-y-4">
                             <div className="flex items-center justify-between text-xs sm:text-sm font-medium text-black">
-                              <span>₹{priceRange[0]}</span>
-                              <span>₹{priceRange[1]}</span>
+                              <span>₹0</span>
+                              <span>₹{maxPrice}</span>
                             </div>
                             <Slider
-                              value={priceRange}
-                              onValueChange={setPriceRange}
+                              value={[maxPrice]}
+                              onValueChange={(val) => setMaxPrice(val[0])}
                               max={section.max || 5000}
                               min={section.min || 0}
                               step={section.step || 100}
@@ -442,10 +447,10 @@ export default function ShopStyle() {
               )}
 
               {/* Dynamic Products */}
-              {!isLoading && products && products.length > 0 && (
+              {!isLoading && filteredProducts && filteredProducts.length > 0 && (
                 <div className="w-full">
                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
-                    {products.map((product, index) => (
+                    {filteredProducts.map((product, index) => (
                       <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} />
                     ))}
                   </div>
@@ -456,9 +461,9 @@ export default function ShopStyle() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
                 </div>
               )}
-              {!isLoading && (!products || products.length === 0) && (
+              {!isLoading && (!filteredProducts || filteredProducts.length === 0) && (
                 <div className="text-center py-8">
-                    <p className="text-gray-500">No style products available yet.</p>
+                    <p className="text-gray-500">No products match the selected price range.</p>
                   </div>
               )}
             </div>

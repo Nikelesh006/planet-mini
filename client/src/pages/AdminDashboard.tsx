@@ -337,24 +337,6 @@ Thank you for shopping with Planet Mini!
               </div>
               <span className="font-medium text-gray-700 text-sm text-center group-hover:text-primary transition-colors">Orders</span>
             </Link>
-            <button className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-secondary/20">
-              <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Tag className="w-6 h-6 text-black" />
-              </div>
-              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-secondary transition-colors">Categories</span>
-            </button>
-            <button className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-primary/20">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <MessageSquare className="w-6 h-6 text-black" />
-              </div>
-              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-primary transition-colors">Messages</span>
-            </button>
-            <button className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-secondary/20">
-              <div className="w-12 h-12 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <BarChart3 className="w-6 h-6 text-black" />
-              </div>
-              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-secondary transition-colors">Analytics</span>
-            </button>
             <Link href="/admin/add-banner" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-primary/20">
               <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <Image className="w-6 h-6 text-black" />

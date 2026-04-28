@@ -2,7 +2,15 @@ import type { Express } from "express";
 
 
 
+
+
+
+
 import { createServer, type Server } from "http";
+
+
+
+
 
 
 
@@ -14,7 +22,19 @@ import jwt from "jsonwebtoken";
 
 
 
+
+
+
+
+
+
+
+
 import { storage, addressStorage, userStorage, ordersStorage } from "./storage";
+
+
+
+
 
 
 
@@ -22,11 +42,23 @@ import { api } from "@shared/routes";
 
 
 
+
+
+
+
 import { z } from "zod";
 
 
 
-import profileRoutes from "./routes/profile";
+
+
+
+
+import profileRoutes from "./routes/profile";            
+
+
+
+
 
 
 
@@ -34,12 +66,30 @@ import authRoutes from "./routes/auth";
 
 
 
+
+
+
+
 import uploadRoutes from "./routes/upload";
 
 
 
+
+
+
+
 import addressRoutes from "./routes/addresses";
+
 import bannerRoutes from "./routes/banners";
+
+
+
+
+
+
+
+
+
 
 
 
@@ -55,7 +105,15 @@ import bannerRoutes from "./routes/banners";
 
 
 
+
+
+
+
 interface User {
+
+
+
+
 
 
 
@@ -63,7 +121,15 @@ interface User {
 
 
 
+
+
+
+
   email: string;
+
+
+
+
 
 
 
@@ -71,11 +137,27 @@ interface User {
 
 
 
+
+
+
+
   image?: string;
 
 
 
+
+
+
+
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -87,7 +169,15 @@ interface User {
 
 
 
+
+
+
+
 const authenticateToken = (req: any, res: any, next: any) => {
+
+
+
+
 
 
 
@@ -95,11 +185,23 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN[1]
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -107,7 +209,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -115,7 +225,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
   if (!token || token === 'null' || token === 'undefined') {
+
+
+
+
 
 
 
@@ -123,7 +241,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     const sessionUserId = req.headers['x-user-id'] || req.query.userId;
+
+
+
+
 
 
 
@@ -131,11 +257,23 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
       console.log('✅ Using Google session user ID:', sessionUserId);
 
 
 
+
+
+
+
       req.user = { 
+
+
+
+
 
 
 
@@ -143,7 +281,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
         id: sessionUserId, 
+
+
+
+
 
 
 
@@ -151,7 +297,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
       };
+
+
+
+
 
 
 
@@ -159,11 +313,23 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -171,7 +337,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     if (sessionUserId === 'test-user-123') {
+
+
+
+
 
 
 
@@ -179,7 +353,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
       req.user = { 
+
+
+
+
 
 
 
@@ -187,7 +369,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
         id: 'test-user-123', 
+
+
+
+
 
 
 
@@ -195,7 +385,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
       };
+
+
+
+
 
 
 
@@ -203,7 +401,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -211,7 +417,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     console.log('❌ No authentication found');
+
+
+
+
 
 
 
@@ -219,7 +433,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
       error: 'No token provided',
+
+
+
+
 
 
 
@@ -227,7 +449,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     });
+
+
+
+
 
 
 
@@ -239,7 +469,19 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
+
+
+
+
   const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
+
+
+
+
 
 
 
@@ -251,7 +493,19 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
+
+
+
+
   jwt.verify(token, jwtSecret, (err: any, user: any) => {
+
+
+
+
 
 
 
@@ -259,7 +513,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
       console.log('❌ Token verification failed:', {
+
+
+
+
 
 
 
@@ -267,7 +529,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
         name: err.name,
+
+
+
+
 
 
 
@@ -275,11 +545,23 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
         token: token.substring(0, 50) + '...'
 
 
 
+
+
+
+
       });
+
+
+
+
 
 
 
@@ -287,7 +569,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
         error: 'Invalid token',
+
+
+
+
 
 
 
@@ -295,7 +585,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
         suggestion: 'Please login again to get a fresh token'
+
+
+
+
 
 
 
@@ -303,11 +601,23 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -315,7 +625,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
       userId: user?.sub || user?.id || user?.userId,
+
+
+
+
 
 
 
@@ -323,7 +641,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     });
+
+
+
+
 
 
 
@@ -331,7 +657,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
     req.user = user;
+
+
+
+
 
 
 
@@ -339,7 +673,15 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
   });
+
+
+
+
 
 
 
@@ -351,7 +693,19 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+
+
+
+
+
+
+
+
 export async function registerRoutes(
+
+
+
+
 
 
 
@@ -359,7 +713,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app: Express
+
+
+
+
 
 
 
@@ -367,7 +729,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -375,11 +745,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.get(api.products.list.path, async (req, res) => {
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -391,11 +773,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
+
+
+
+
       let filtered = allProducts;
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -403,7 +801,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (req.query?.category && typeof req.query.category === 'string') {
+
+
+
+
 
 
 
@@ -411,7 +817,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         filtered = filtered.filter(p => 
+
+
+
+
 
 
 
@@ -419,7 +833,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -427,7 +849,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -435,7 +865,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (req.query?.subcategory && typeof req.query.subcategory === 'string') {
+
+
+
+
 
 
 
@@ -443,7 +881,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         filtered = filtered.filter(p => 
+
+
+
+
 
 
 
@@ -451,7 +897,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         );
+
+
+
+
 
 
 
@@ -459,7 +913,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -467,11 +929,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       filtered = filtered.filter(p => p.inStock === true);
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -479,7 +953,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       filtered.sort((a, b) => {
+
+
+
+
 
 
 
@@ -487,7 +969,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         if (a.isNew !== b.isNew) {
+
+
+
+
 
 
 
@@ -495,7 +985,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         }
+
+
+
+
 
 
 
@@ -503,7 +1001,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return (b.rating || 0) - (a.rating || 0);
+
+
+
+
 
 
 
@@ -511,7 +1017,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -519,7 +1033,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (req.query?.search && typeof req.query.search === 'string') {
+
+
+
+
 
 
 
@@ -527,7 +1049,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         filtered = filtered.filter(p => 
+
+
+
+
 
 
 
@@ -535,7 +1065,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
           p.description?.toLowerCase().includes(searchLower)
+
+
+
+
 
 
 
@@ -543,7 +1081,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -551,7 +1097,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.json(filtered);
+
+
+
+
 
 
 
@@ -559,7 +1113,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(400).json({ message: "Invalid query parameters" });
+
+
+
+
 
 
 
@@ -567,7 +1129,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -579,7 +1153,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -587,7 +1169,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const newProduct = await storage.createProduct(productData);
+
+
+
+
 
 
 
@@ -595,7 +1185,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -603,7 +1201,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: "Failed to create product" });
+
+
+
+
 
 
 
@@ -611,7 +1217,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -623,7 +1241,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.get(api.products.get.path, async (req, res) => {
+
+
+
+
 
 
 
@@ -631,49 +1257,99 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     console.log('📝 Backend: slug parameter:', req.params.slug);
+
+
+
+
 
 
 
     const { slug } = req.params;
 
+
+
     let product;
+
+
+
+
 
 
 
     // NEW LOGIC: Handle both real slugs and "product-{mongoId}" format
 
+
+
     if (slug.startsWith('product-')) {
+
+
 
       // Extract real MongoDB _id from "product-{id}" format
 
+
+
       const productId = slug.replace('product-', '');
+
+
 
       console.log('🔍 Slug type: id-slug, extracting MongoDB ID:', productId);
 
+
+
       
+
+
 
       // Query by actual MongoDB _id
 
+
+
       const products = await storage.getProducts();
+
+
 
       product = products.find(p => p.id === productId || p._id?.toString() === productId);
 
+
+
       console.log('📦 Found by ID:', productId, product ? product.name : 'Not found');
+
+
 
       
 
+
+
     } else {
+
+
 
       // Normal slug lookup
 
+
+
       console.log('� Slug type: real-slug, querying by slug:', slug);
+
+
 
       product = await storage.getProductBySlug(slug);
 
+
+
       console.log('📦 Found by slug:', slug, product ? product.name : 'Not found');
 
+
+
     }
+
+
+
+
 
 
 
@@ -681,11 +1357,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('❌ Backend: Product not found for slug:', slug);
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -693,7 +1381,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       try {
+
+
+
+
 
 
 
@@ -701,7 +1397,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         const profile = await Profile.findOne({ 
+
+
+
+
 
 
 
@@ -709,7 +1413,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         });
+
+
+
+
 
 
 
@@ -717,7 +1429,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         if (profile) {
+
+
+
+
 
 
 
@@ -725,7 +1445,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
           // Return minimal product data to prevent deletion
+
+
+
+
 
 
 
@@ -733,7 +1461,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
             id: slug,
+
+
+
+
 
 
 
@@ -741,7 +1477,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
             slug: slug,
+
+
+
+
 
 
 
@@ -749,7 +1493,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
             originalPrice: undefined,
+
+
+
+
 
 
 
@@ -757,7 +1509,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
             category: 'unknown',
+
+
+
+
 
 
 
@@ -765,7 +1525,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
             rating: 0,
+
+
+
+
 
 
 
@@ -773,7 +1541,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
             inStock: false,
+
+
+
+
 
 
 
@@ -781,7 +1557,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
             description: 'This product is no longer available but is kept in your wishlist for reference.',
+
+
+
+
 
 
 
@@ -789,7 +1573,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
           });
+
+
+
+
 
 
 
@@ -797,7 +1589,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       } catch (importError) {
+
+
+
+
 
 
 
@@ -805,7 +1605,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -813,11 +1621,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       return res.status(404).json({ message: "Product not found" });
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -829,11 +1653,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     res.json(product);
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -845,7 +1685,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.get("/api/products/id/:id", async (req, res) => {
+
+
+
+
 
 
 
@@ -853,7 +1701,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const productId = req.params.id;
+
+
+
+
 
 
 
@@ -861,11 +1717,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('📝 Backend: ID parameter:', productId);
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -873,7 +1741,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const products = await storage.getProducts();
+
+
+
+
 
 
 
@@ -881,7 +1757,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -889,7 +1773,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         console.log('⚠️ Product not found for ID:', productId);
+
+
+
+
 
 
 
@@ -897,7 +1789,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -905,7 +1805,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('✅ Backend: Product found by ID:', product.name);
+
+
+
+
 
 
 
@@ -913,7 +1821,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -921,7 +1837,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: "Internal server error" });
+
+
+
+
 
 
 
@@ -929,7 +1853,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -941,7 +1877,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.patch(api.products.get.path, async (req, res) => {
+
+
+
+
 
 
 
@@ -949,7 +1893,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const productSlug = req.params.slug;
+
+
+
+
 
 
 
@@ -957,7 +1909,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -965,7 +1925,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(400).json({ message: "Invalid product slug" });
+
+
+
+
 
 
 
@@ -973,7 +1941,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -981,7 +1957,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const existingProduct = await storage.getProductBySlug(productSlug);
+
+
+
+
 
 
 
@@ -989,7 +1973,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(404).json({ message: "Product not found" });
+
+
+
+
 
 
 
@@ -997,7 +1989,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1005,11 +2005,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const updatedProduct = await storage.updateProduct(existingProduct.id.toString(), updateData);
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1017,7 +2029,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(404).json({ message: "Product not found" });
+
+
+
+
 
 
 
@@ -1025,7 +2045,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1033,7 +2061,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1041,7 +2077,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: "Internal server error" });
+
+
+
+
 
 
 
@@ -1049,7 +2093,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1061,7 +2117,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.put("/api/products/:id", async (req, res) => {
+
+
+
+
 
 
 
@@ -1069,7 +2133,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const productId = req.params.id;
+
+
+
+
 
 
 
@@ -1077,7 +2149,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1085,7 +2165,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(400).json({ message: "Invalid product ID" });
+
+
+
+
 
 
 
@@ -1093,15 +2181,7 @@ export async function registerRoutes(
 
 
 
-      
 
-
-
-      // Update product using storage
-
-
-
-      const updatedProduct = await storage.updateProduct(productId, updateData);
 
 
 
@@ -1109,7 +2189,31 @@ export async function registerRoutes(
 
 
 
-      if (!updatedProduct) {
+
+
+
+
+      // Get existing product to merge images
+
+
+
+
+
+
+
+      const existingProduct = await storage.getProductById(productId);
+
+
+
+
+
+
+
+      if (!existingProduct) {
+
+
+
+
 
 
 
@@ -1117,7 +2221,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1125,7 +2237,183 @@ export async function registerRoutes(
 
 
 
+
+
+
+
+      // Merge images: use provided images or fall back to existing
+
+
+
+
+
+
+
+      const existingImages = existingProduct.images || (existingProduct.image ? [existingProduct.image] : []);
+
+
+
+
+
+
+
+      const updatedImages = updateData.images || (updateData.image ? [updateData.image] : []);
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      // If images field provided, use it; otherwise preserve existing
+
+
+
+
+
+
+
+      const mergedImages = updatedImages.length > 0 ? updatedImages : existingImages;
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      // Update with merged images
+
+
+
+
+
+
+
+      const updateDataWithImages = {
+
+
+
+
+
+
+
+        ...updateData,
+
+
+
+
+
+
+
+        images: mergedImages,
+
+
+
+
+
+
+
+        image: mergedImages[0] || existingProduct.image
+
+
+
+
+
+
+
+      };
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      // Update product using storage
+
+
+
+
+
+
+
+      const updatedProduct = await storage.updateProduct(productId, updateDataWithImages);
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
+      if (!updatedProduct) {
+
+
+
+
+
+
+
+        return res.status(404).json({ message: "Product not found" });
+
+
+
+
+
+
+
+      }
+
+
+
+
+
+
+
+      
+
+
+
+
+
+
+
       res.json(updatedProduct);
+
+
+
+
 
 
 
@@ -1133,7 +2421,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error("Error updating product:", error);
+
+
+
+
 
 
 
@@ -1141,11 +2437,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1157,7 +2469,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.delete("/api/products/:id", async (req, res) => {
+
+
+
+
 
 
 
@@ -1165,11 +2485,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const productId = req.params.id;
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1177,7 +2509,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(400).json({ message: "Invalid product ID" });
+
+
+
+
 
 
 
@@ -1185,7 +2525,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1193,7 +2541,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1201,7 +2557,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(404).json({ message: "Product not found" });
+
+
+
+
 
 
 
@@ -1209,7 +2573,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1217,7 +2589,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1225,7 +2605,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: "Internal server error" });
+
+
+
+
 
 
 
@@ -1233,7 +2621,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1245,7 +2645,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.use('/api/profile', profileRoutes);
+
+
+
+
+
+
+
+
 
 
 
@@ -1257,7 +2669,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.use('/api/auth', authRoutes);
+
+
+
+
+
+
+
+
 
 
 
@@ -1269,7 +2693,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.use('/api/upload', uploadRoutes);
+
+
+
+
+
+
+
+
 
 
 
@@ -1281,11 +2717,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.use('/api/addresses', addressRoutes);
 
 
 
+
+
+
+
   // Banner routes
+
+
+
+
 
 
 
@@ -1297,7 +2745,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
+
+
+
+
   // Debug endpoint to check token
+
+
+
+
 
 
 
@@ -1305,7 +2765,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     const authHeader = req.headers['authorization'];
+
+
+
+
 
 
 
@@ -1313,7 +2781,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -1321,7 +2797,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -1329,11 +2813,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       return res.json({ error: 'No token provided' });
 
 
 
+
+
+
+
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -1345,7 +2845,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       // Try to decode without verification first
+
+
+
+
 
 
 
@@ -1353,11 +2861,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('🔓 Decoded token (no verification):', decoded);
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1365,7 +2885,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
+
+
+
+
 
 
 
@@ -1373,7 +2901,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('✅ Verified token:', verified);
+
+
+
+
 
 
 
@@ -1381,7 +2917,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.json({ 
+
+
+
+
 
 
 
@@ -1389,7 +2933,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         verified,
+
+
+
+
 
 
 
@@ -1397,7 +2949,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       });
+
+
+
+
 
 
 
@@ -1405,7 +2965,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('❌ Token error:', error.message);
+
+
+
+
 
 
 
@@ -1413,7 +2981,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         error: error.message,
+
+
+
+
 
 
 
@@ -1421,7 +2997,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         token: token.substring(0, 50) + '...'
+
+
+
+
 
 
 
@@ -1429,11 +3013,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1449,7 +3049,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
+
+
+
+
   // Cart routes - PROTECTED with user isolation
+
+
+
+
 
 
 
@@ -1457,7 +3069,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -1465,11 +3085,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
 
 
 
+
+
+
+
         return res.status(401).json({ message: 'Unauthorized' });
+
+
+
+
 
 
 
@@ -1481,7 +3113,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
+
+
+
+
       const cart = await userStorage.getCart(userId);
+
+
+
+
 
 
 
@@ -1489,7 +3133,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1497,7 +3149,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to fetch cart' });
+
+
+
+
 
 
 
@@ -1505,7 +3165,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1517,7 +3189,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -1525,7 +3205,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
+
+
+
+
 
 
 
@@ -1533,7 +3221,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -1545,7 +3245,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const cartItem = await userStorage.addToCart(userId, {
+
+
+
+
 
 
 
@@ -1553,7 +3261,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         quantity: quantity || 1,
+
+
+
+
 
 
 
@@ -1561,7 +3277,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         color
+
+
+
+
 
 
 
@@ -1569,7 +3293,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1577,7 +3309,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(201).json(cartItem);
+
+
+
+
 
 
 
@@ -1585,7 +3325,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(500).json({ message: 'Failed to add to cart' });
+
+
+
+
 
 
 
@@ -1593,7 +3341,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1601,7 +3357,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to add to cart' });
+
+
+
+
 
 
 
@@ -1609,7 +3373,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1621,7 +3397,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -1629,7 +3413,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
+
+
+
+
 
 
 
@@ -1637,7 +3429,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -1649,11 +3453,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const { quantity, size, color } = req.body;
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1661,7 +3477,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         quantity,
+
+
+
+
 
 
 
@@ -1669,7 +3493,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         color
+
+
+
+
 
 
 
@@ -1677,7 +3509,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1685,7 +3525,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.json({ message: 'Cart item updated' });
+
+
+
+
 
 
 
@@ -1693,7 +3541,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(404).json({ message: 'Cart item not found' });
+
+
+
+
 
 
 
@@ -1701,7 +3557,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1709,7 +3573,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to update cart' });
+
+
+
+
 
 
 
@@ -1717,7 +3589,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1729,7 +3613,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -1737,7 +3629,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
+
+
+
+
 
 
 
@@ -1745,7 +3645,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -1757,7 +3669,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const deleted = await userStorage.removeFromCart(userId, productId);
+
+
+
+
 
 
 
@@ -1765,7 +3685,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (deleted) {
+
+
+
+
 
 
 
@@ -1773,7 +3701,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       } else {
+
+
+
+
 
 
 
@@ -1781,7 +3717,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1789,7 +3733,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error('Error removing from cart:', error);
+
+
+
+
 
 
 
@@ -1797,11 +3749,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1813,7 +3781,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -1821,11 +3797,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
 
 
 
+
+
+
+
         return res.status(401).json({ message: 'Unauthorized' });
+
+
+
+
 
 
 
@@ -1837,7 +3825,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
+
+
+
+
       const deletedCount = await userStorage.clearCart(userId);
+
+
+
+
 
 
 
@@ -1845,7 +3845,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1853,7 +3861,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to clear cart' });
+
+
+
+
 
 
 
@@ -1861,7 +3877,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1873,7 +3901,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.get('/api/wishlist', authenticateToken, async (req: any, res: any) => {
+
+
+
+
 
 
 
@@ -1881,7 +3917,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const userId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -1889,7 +3933,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(401).json({ message: 'Unauthorized' });
+
+
+
+
 
 
 
@@ -1901,7 +3953,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
+
+
+
+
       const wishlist = await userStorage.getWishlist(userId);
+
+
+
+
 
 
 
@@ -1909,7 +3973,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -1917,7 +3989,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to fetch wishlist' });
+
+
+
+
 
 
 
@@ -1925,7 +4005,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -1937,7 +4029,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -1945,7 +4045,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
+
+
+
+
 
 
 
@@ -1953,7 +4061,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -1965,7 +4085,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const wishlistItem = await userStorage.addToWishlist(userId, productId);
+
+
+
+
 
 
 
@@ -1973,7 +4101,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (wishlistItem) {
+
+
+
+
 
 
 
@@ -1981,7 +4117,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       } else {
+
+
+
+
 
 
 
@@ -1989,7 +4133,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1997,7 +4149,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error('Error adding to wishlist:', error);
+
+
+
+
 
 
 
@@ -2005,11 +4165,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2021,7 +4197,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2029,7 +4213,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
+
+
+
+
 
 
 
@@ -2037,7 +4229,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2049,7 +4253,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const removed = await userStorage.removeFromWishlist(userId, productId);
+
+
+
+
 
 
 
@@ -2057,7 +4269,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (removed) {
+
+
+
+
 
 
 
@@ -2065,7 +4285,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       } else {
+
+
+
+
 
 
 
@@ -2073,7 +4301,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -2081,7 +4317,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error('Error removing from wishlist:', error);
+
+
+
+
 
 
 
@@ -2089,11 +4333,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2105,7 +4365,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2113,7 +4381,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
+
+
+
+
 
 
 
@@ -2121,7 +4397,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2133,7 +4421,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const isInWishlist = await userStorage.isInWishlist(userId, productId);
+
+
+
+
 
 
 
@@ -2141,7 +4437,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -2149,7 +4453,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to check wishlist' });
+
+
+
+
 
 
 
@@ -2157,7 +4469,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2169,7 +4493,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.get('/api/profile/:userId/wishlist', authenticateToken, async (req: any, res: any) => {
+
+
+
+
 
 
 
@@ -2177,7 +4509,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const { userId } = req.params;
+
+
+
+
 
 
 
@@ -2185,7 +4525,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2193,11 +4541,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         return res.status(403).json({ message: 'Forbidden' });
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2209,7 +4573,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.json(wishlist);
+
+
+
+
 
 
 
@@ -2217,7 +4589,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error('Error fetching wishlist:', error);
+
+
+
+
 
 
 
@@ -2225,11 +4605,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2241,7 +4637,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2249,7 +4653,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const currentUserId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -2257,7 +4669,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (userId !== currentUserId) {
+
+
+
+
 
 
 
@@ -2265,7 +4685,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2277,7 +4709,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const wishlistItem = await userStorage.addToWishlist(userId, productId);
+
+
+
+
 
 
 
@@ -2285,7 +4725,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (wishlistItem) {
+
+
+
+
 
 
 
@@ -2293,7 +4741,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       } else {
+
+
+
+
 
 
 
@@ -2301,7 +4757,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -2309,7 +4773,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error('Error adding to wishlist:', error);
+
+
+
+
 
 
 
@@ -2317,11 +4789,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2333,7 +4821,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2341,7 +4837,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const currentUserId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -2349,7 +4853,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (userId !== currentUserId) {
+
+
+
+
 
 
 
@@ -2357,7 +4869,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2369,7 +4893,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2377,7 +4909,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.json({ message: 'Wishlist item removed' });
+
+
+
+
 
 
 
@@ -2385,7 +4925,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(404).json({ message: 'Wishlist item not found' });
+
+
+
+
 
 
 
@@ -2393,7 +4941,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -2401,7 +4957,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to remove from wishlist' });
+
+
+
+
 
 
 
@@ -2409,7 +4973,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2421,7 +4997,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2429,7 +5013,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const currentUserId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -2437,7 +5029,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (userId !== currentUserId) {
+
+
+
+
 
 
 
@@ -2445,7 +5045,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2457,7 +5069,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.json(cart);
+
+
+
+
 
 
 
@@ -2465,7 +5085,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error('Error fetching cart:', error);
+
+
+
+
 
 
 
@@ -2473,11 +5101,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2489,7 +5133,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2497,7 +5149,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const currentUserId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -2505,7 +5165,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (userId !== currentUserId) {
+
+
+
+
 
 
 
@@ -2513,7 +5181,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2525,7 +5205,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const cartItem = await userStorage.addToCart(userId, {
+
+
+
+
 
 
 
@@ -2533,7 +5221,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         quantity: quantity || 1,
+
+
+
+
 
 
 
@@ -2541,7 +5237,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         color
+
+
+
+
 
 
 
@@ -2549,7 +5253,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2557,7 +5269,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(201).json(cartItem);
+
+
+
+
 
 
 
@@ -2565,7 +5285,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(500).json({ message: 'Failed to add to cart' });
+
+
+
+
 
 
 
@@ -2573,7 +5301,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -2581,7 +5317,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to add to cart' });
+
+
+
+
 
 
 
@@ -2589,7 +5333,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2601,7 +5357,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2609,7 +5373,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const currentUserId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -2617,7 +5389,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (userId !== currentUserId) {
+
+
+
+
 
 
 
@@ -2625,7 +5405,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2637,7 +5429,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2645,7 +5445,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         quantity,
+
+
+
+
 
 
 
@@ -2653,7 +5461,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         color
+
+
+
+
 
 
 
@@ -2661,7 +5477,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2669,7 +5493,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.json({ message: 'Cart item updated' });
+
+
+
+
 
 
 
@@ -2677,7 +5509,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(404).json({ message: 'Cart item not found' });
+
+
+
+
 
 
 
@@ -2685,7 +5525,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -2693,7 +5541,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to update cart' });
+
+
+
+
 
 
 
@@ -2701,7 +5557,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2713,7 +5581,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2721,7 +5597,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const currentUserId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -2729,7 +5613,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (userId !== currentUserId) {
+
+
+
+
 
 
 
@@ -2737,7 +5629,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2749,7 +5653,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2757,7 +5669,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.json({ message: 'Cart item removed' });
+
+
+
+
 
 
 
@@ -2765,7 +5685,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         res.status(404).json({ message: 'Cart item not found' });
+
+
+
+
 
 
 
@@ -2773,7 +5701,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -2781,7 +5717,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to remove from cart' });
+
+
+
+
 
 
 
@@ -2789,7 +5733,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2801,7 +5757,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2809,7 +5773,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const currentUserId = req.user?.sub || req.user?.id;
+
+
+
+
 
 
 
@@ -2817,7 +5789,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (userId !== currentUserId) {
+
+
+
+
 
 
 
@@ -2825,7 +5805,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2837,7 +5829,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.json({ message: `Cart cleared, removed ${deletedCount} items` });
+
+
+
+
 
 
 
@@ -2845,7 +5845,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.error('Error clearing cart:', error);
+
+
+
+
 
 
 
@@ -2853,11 +5861,27 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     }
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2869,7 +5893,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   app.get('/api/orders/:userId', authenticateToken, async (req: any, res: any) => {
+
+
+
+
 
 
 
@@ -2877,7 +5909,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const { userId } = req.params;
+
+
+
+
 
 
 
@@ -2885,7 +5925,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2893,7 +5941,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('🔍 Orders API - Current userId:', currentUserId);
+
+
+
+
 
 
 
@@ -2901,7 +5957,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       // TEMPORARY: Allow test user to access any orders during development
+
+
+
+
 
 
 
@@ -2909,7 +5973,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         console.log('⚠️ TEMP: Allowing test user to access orders');
+
+
+
+
 
 
 
@@ -2917,7 +5989,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         console.log('❌ Orders API - Forbidden: User IDs do not match');
+
+
+
+
 
 
 
@@ -2925,7 +6005,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -2937,7 +6029,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       console.log('📦 Orders API - Retrieved orders:', orders.length);
+
+
+
+
 
 
 
@@ -2945,7 +6045,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -2953,7 +6061,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to fetch orders' });
+
+
+
+
 
 
 
@@ -2961,7 +6077,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -2973,7 +6101,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     try {
+
+
+
+
 
 
 
@@ -2981,11 +6117,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       let userId = req.user?.sub || req.user?.id;
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -2993,7 +6141,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId && req.body.userId) {
+
+
+
+
 
 
 
@@ -3001,11 +6157,23 @@ export async function registerRoutes(
 
 
 
+
+
+
+
         userId = req.body.userId;
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -3013,7 +6181,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       if (!userId) {
+
+
+
+
 
 
 
@@ -3021,7 +6197,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -3033,7 +6221,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       const newOrder = await ordersStorage.createOrder(userId, orderData);
+
+
+
+
 
 
 
@@ -3041,7 +6237,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
     } catch (error) {
+
+
+
+
 
 
 
@@ -3049,7 +6253,15 @@ export async function registerRoutes(
 
 
 
+
+
+
+
       res.status(500).json({ message: 'Failed to create order' });
+
+
+
+
 
 
 
@@ -3057,7 +6269,19 @@ export async function registerRoutes(
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
 
 
 
@@ -3066,91 +6290,180 @@ export async function registerRoutes(
 
 
   app.get('/api/admin/orders', async (req: any, res: any) => {
+
     try {
+
       console.log('🔍 Admin Orders API - Fetching all orders');
+
       const orders = await ordersStorage.getAllOrders();
+
       console.log('📦 Admin Orders API - Retrieved orders:', orders.length);
+
       res.json(orders);
+
     } catch (error) {
+
       console.error('Error fetching admin orders:', error);
+
       res.status(500).json({ message: 'Failed to fetch orders' });
+
     }
+
   });
+
+
 
   // Admin Dashboard API - Returns real analytics data
+
   app.get('/api/admin/dashboard', async (req: any, res: any) => {
+
     try {
+
       console.log('🔍 Admin Dashboard API - Fetching analytics data');
+
       
+
       // Get all orders
+
       const allOrders = await ordersStorage.getAllOrders();
+
       console.log(`📊 Found ${allOrders.length} orders for analytics`);
 
+
+
       // Calculate total revenue only from orders with completed payment status
+
       const revenue = allOrders
+
         .filter((order: any) => order.paymentStatus?.toLowerCase() === 'completed')
+
         .reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0);
 
+
+
       // Get unique customers
+
       const uniqueCustomers = new Set(allOrders.map((o: any) => o.userId).filter(Boolean)).size;
 
+
+
       // Get total products
+
       const allProducts = await storage.getProducts();
 
+
+
       // Get recent orders (last 5) with full details
+
       const recentOrders = allOrders
+
         .slice(-5)
+
         .reverse()
+
         .map((order: any) => ({
+
           id: order.id,
+
           orderNumber: order.orderNumber || `#${order.id.slice(-4).toUpperCase()}`,
+
           status: order.status || 'pending',
+
           totalAmount: order.totalAmount || 0,
+
           createdAt: order.createdAt || new Date().toISOString(),
+
           items: order.items || [],
+
           shippingAddress: order.shippingAddress || {},
+
           paymentMethod: order.paymentMethod || 'Credit Card',
+
           paymentStatus: order.paymentStatus || 'pending',
+
           userId: order.userId
+
         }));
 
+
+
       const dashboardData = {
+
         summary: {
+
           totalOrders: allOrders.length,
+
           totalRevenue: revenue,
+
           totalCustomers: uniqueCustomers,
+
           totalProducts: allProducts.length,
+
           trends: { ordersChange: null, revenueChange: null, customersChange: null, productsChange: null }
+
         },
+
         recentOrders,
+
         topProducts: []
+
       };
 
+
+
       console.log('✅ Admin Dashboard API - Data prepared');
+
       res.json(dashboardData);
+
     } catch (error) {
+
       console.error('❌ Error fetching admin dashboard:', error);
+
       res.status(500).json({ message: 'Failed to fetch dashboard data' });
+
     }
+
   });
+
+
 
   app.patch('/api/orders/:orderId/status', authenticateToken, async (req: any, res: any) => {
+
     try {
+
       const { orderId } = req.params;
+
       const { status } = req.body;
+
       
+
       const updated = await ordersStorage.updateOrderStatus(orderId, status);
+
       
+
       if (updated) {
+
         res.json({ message: 'Order status updated successfully' });
+
       } else {
+
         res.status(404).json({ message: 'Order not found' });
+
       }
+
     } catch (error) {
+
       console.error('Error updating order status:', error);
+
       res.status(500).json({ message: 'Failed to update order status' });
+
     }
+
   });
 
+
+
   return httpServer;
+
 }
+

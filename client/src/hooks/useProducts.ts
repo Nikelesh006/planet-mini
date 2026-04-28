@@ -277,7 +277,7 @@ export const useBabyCareProducts = () => {
 
     category: 'home',
 
-    subcategory: 'Baby Care Essentials'
+    subcategory: 'New Arrivals'
 
   });
 
@@ -291,7 +291,7 @@ export const useMuslinProducts = () => {
 
     category: 'home',
 
-    subcategory: 'Muslin Clothings'
+    subcategory: 'Trending Products'
 
   });
 
@@ -305,7 +305,7 @@ export const useComboProducts = () => {
 
     category: 'home',
 
-    subcategory: 'Combo Offers'
+    subcategory: "Blockbuster Combo's"
 
   });
 

@@ -16,7 +16,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel, isUserLoggedIn } = useAuthGuard();
   const { toast } = useToast();
   
-  const isWishlisted = likedProducts.some(p => p.id === product.id.toString());
+  const isWishlisted = likedProducts.some(p => p.id === Number(product.id));
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   // Use a fallback placeholder if the URL is broken
@@ -65,19 +65,21 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     executeWithAuth(() => {
       // Convert product to the format expected by toggleLike
       const productForWishlist = {
-        id: product.id.toString(),
+        id: Number(product.id),
         name: product.name,
         price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
         image: product.image,
         category: product.category,
-        subcategory: product.subcategory || undefined,
+        subcategory: product.subcategory || null,
         slug: product.slug,
         rating: product.rating,
         reviews: product.reviews,
-        inStock: product.inStock === null ? undefined : product.inStock,
-        isNew: product.isNew === null ? undefined : product.isNew,
+        inStock: product.inStock === null ? null : product.inStock,
+        isNew: product.isNew === null ? null : product.isNew,
         description: product.description,
+        colors: product.colors || null,
+        sizes: product.sizes || null,
       };
       
       toggleLike(productForWishlist);

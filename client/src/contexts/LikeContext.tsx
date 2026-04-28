@@ -158,7 +158,7 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const isLiked = (productId: number) => {
+  const isLiked = (productId: string | number) => {
     return likedProducts.some(p => p.id === productId);
   };
 
