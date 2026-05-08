@@ -39,6 +39,8 @@ interface Order {
   trackingNumber?: string;
   items: OrderItem[];
   shippingAddress: {
+    fullName?: string;
+    phone?: string;
     street: string;
     city: string;
     state: string;
@@ -262,7 +264,13 @@ export default function AdminOrders() {
                               <div className="flex items-start gap-1">
                                 <MapPin className="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" />
                                 <div className="truncate">
-                                  <p className="font-medium truncate">
+                                  <p className="font-semibold text-sm truncate">
+                                    {order.shippingAddress.fullName || 'N/A'}
+                                  </p>
+                                  <p className="text-gray-500 text-xs truncate">
+                                    {order.shippingAddress.phone || 'N/A'}
+                                  </p>
+                                  <p className="font-medium truncate mt-1">
                                     {order.shippingAddress.street || 'N/A'}
                                   </p>
                                   <p className="text-gray-600 text-xs truncate">
@@ -455,7 +463,13 @@ export default function AdminOrders() {
                       <div className="flex items-start gap-3">
                         <MapPin className="w-5 h-5 text-gray-400 mt-1" />
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-semibold text-gray-900">
+                            {selectedOrder.shippingAddress.fullName || 'N/A'}
+                          </p>
+                          <p className="text-gray-500 text-sm">
+                            {selectedOrder.shippingAddress.phone || 'N/A'}
+                          </p>
+                          <p className="font-medium text-gray-900 mt-1">
                             {selectedOrder.shippingAddress.street}
                           </p>
                           <p className="text-gray-600">
