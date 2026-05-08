@@ -382,7 +382,7 @@ export default function CartPage() {
                   >
                     {addresses.map((address) => (
                       <option key={address._id} value={address._id}>
-                        {address.street}, {address.city}, {address.state}, {address.pincode}
+                        {address.fullName} - {address.phone} | {address.street}, {address.city}, {address.state}, {address.pincode}
                       </option>
                     ))}
                   </select>
