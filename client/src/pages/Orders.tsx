@@ -170,6 +170,14 @@ interface Order {
 
 
 
+    fullName?: string;
+
+
+
+    phone?: string;
+
+
+
     street: string;
 
 
@@ -1102,7 +1110,31 @@ export default function Orders() {
 
 
 
-                                  <p className="font-medium truncate">
+                                  <p className="font-semibold text-sm truncate">
+
+
+
+                                    {order.shippingAddress.fullName || 'N/A'}
+
+
+
+                                  </p>
+
+
+
+                                  <p className="text-gray-500 text-xs truncate">
+
+
+
+                                    {order.shippingAddress.phone || 'N/A'}
+
+
+
+                                  </p>
+
+
+
+                                  <p className="font-medium truncate mt-1">
 
 
 
@@ -2070,7 +2102,31 @@ export default function Orders() {
 
 
 
-                          <p className="font-medium text-gray-900 text-sm sm:text-base truncate">
+                          <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+
+
+
+                            {selectedOrder.shippingAddress.fullName || 'N/A'}
+
+
+
+                          </p>
+
+
+
+                          <p className="text-gray-500 text-xs sm:text-sm">
+
+
+
+                            {selectedOrder.shippingAddress.phone || 'N/A'}
+
+
+
+                          </p>
+
+
+
+                          <p className="font-medium text-gray-900 text-sm sm:text-base truncate mt-1">
 
 
 
