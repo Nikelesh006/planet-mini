@@ -30,43 +30,65 @@ export default function Footer() {
               Welcome to the planet where every mini matters.
             </p>
             <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
+              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-secondary hover:text-secondary-foreground transition-colors">
+              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors">
+              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
             </div>
           </div>
           
-          <div>
-            <h4 className="font-display font-bold text-lg mb-4">Shop</h4>
-            <ul className="flex flex-col gap-2">
-              <li><Link href="/shop/age" className="text-muted-foreground hover:text-primary transition-colors text-sm">Shop by Age</Link></li>
-              <li><Link href="/shop/care" className="text-muted-foreground hover:text-primary transition-colors text-sm">Baby Care Essentials</Link></li>
-              <li><Link href="/shop/new" className="text-muted-foreground hover:text-primary transition-colors text-sm">New Arrivals</Link></li>
-            </ul>
+          <div className="flex flex-row md:flex-col gap-8 md:gap-0">
+            <div className="flex-1">
+              <h4 className="font-display font-bold text-lg mb-4">Shop</h4>
+              <ul className="flex flex-col gap-2">
+                <li><Link href="/shop" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">All Products</Link></li>
+                <li><a href="/#shop-by-style" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Shop by Style</a></li>
+                <li><a href="/#new-arrivals" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">New Arrivals</a></li>
+                <li><a href="/#trending-products" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Trending Products</a></li>
+                <li><a href="/#blockbuster-combos" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Blockbuster Combos</a></li>
+                <li><a href="/#gifting" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Gifting</a></li>
+              </ul>
+            </div>
+
+            <div className="flex-1 md:mt-8 md:hidden">
+              <h4 className="font-display font-bold text-lg mb-4">Support</h4>
+              <ul className="flex flex-col gap-2">
+                <li><Link href="/contact" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Contact Us</Link></li>
+                <li><Link href="/faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</Link></li>
+                <li><Link href="/terms" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Privacy Policy</Link></li>
+              </ul>
+            </div>
           </div>
 
-          <div>
+          <div className="hidden md:block">
             <h4 className="font-display font-bold text-lg mb-4">Support</h4>
             <ul className="flex flex-col gap-2">
-              <li><Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors text-sm">Contact Us</Link></li>
-              <li><Link href="/faq" className="text-muted-foreground hover:text-primary transition-colors text-sm">FAQs</Link></li>
+              <li><Link href="/contact" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Contact Us</Link></li>
+              <li><Link href="/faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</Link></li>
+              <li><Link href="/terms" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Terms of Service</Link></li>
+              <li><Link href="/privacy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
         
         <div className="pt-4 border-t border-red-200 dark:border-red-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-muted-foreground text-sm">© {new Date().getFullYear()} Planet Mini. All rights reserved.</p>
-          <p className="text-muted-foreground text-sl">Powered by <a href="https://codecraftnet.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Code Craft</a></p>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Privacy Policy</Link>
-            <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Terms of Service</Link>
+          <div className="flex flex-col gap-2">
+            <p className="text-muted-foreground text-sm">© {new Date().getFullYear()} Planet Mini. All rights reserved.</p>
+                
           </div>
+          <p className="text-muted-foreground text-sm">Powered by <a href="https://codecraftnet.com" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Code Craft</a></p>
+          <div className="flex items-center gap-4 transition-all">
+              <img src="/visa.png" alt="Visa" className="h-10 w-auto object-contain" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-7 w-auto object-contain" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-5 w-auto object-contain" />
+              <img src="/payment.png" alt="RuPay" className="h-14 w-auto object-contain" />
+            </div>
         </div>
       </div>
     </footer>

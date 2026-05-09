@@ -27,9 +27,32 @@ import { useState, useEffect, useRef } from "react";
 
 export default function Home() {
 
-  // Scroll to top when component mounts
+  // Handle anchor links and hash changes
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const handleHashScroll = () => {
+      const hash = window.location.hash;
+      if (hash) {
+        // Small timeout to ensure content is rendered
+        setTimeout(() => {
+          const element = document.querySelector(hash);
+          if (element) {
+            const navbarHeight = 128; // Standard navbar height (pt-32)
+            const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+            window.scrollTo({
+              top: elementPosition - navbarHeight - 20, // Add extra padding
+              behavior: "smooth"
+            });
+          }
+        }, 300);
+      }
+    };
+
+    // Run on mount
+    handleHashScroll();
+
+    // Listen for hash changes
+    window.addEventListener('hashchange', handleHashScroll);
+    return () => window.removeEventListener('hashchange', handleHashScroll);
   }, []);
 
   // Combo info modal state
@@ -699,7 +722,7 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="flex items-center justify-center gap-4 mb-4" id="shop-by-style">
               <h2 className="text-2xl sm:text-4xl font-bold text-black">Shop by Style</h2>
               <img 
                 src="/babies.png" 
@@ -945,7 +968,7 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-16 mb-4">
+            <div className="flex items-center justify-center gap-16 mb-4" id="new-arrivals">
               <div className="flex-1 h-px bg-black"></div>
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-4xl font-bold text-black">New Arrivals</h2>
@@ -1059,7 +1082,7 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4 sm:gap-16">
+            <div className="flex items-center justify-center gap-4 mb-4 sm:gap-16" id="trending-products">
               <div className="hidden sm:block flex-1 h-px bg-black"></div>
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-4xl font-bold text-black">Trending Products</h2>
@@ -1172,7 +1195,7 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center gap-3 mb-4" id="blockbuster-combos">
               <h2 className="text-2xl sm:text-4xl font-bold ">Blockbuster Combo's</h2>
               <img
                 src="/puzzle.png"
@@ -1296,7 +1319,7 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-16 mb-4">
+            <div className="flex items-center justify-center gap-16 mb-4" id="gifting">
               <div className="flex-1 h-px bg-black"></div>
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-4xl font-bold text-black">Gifting</h2>

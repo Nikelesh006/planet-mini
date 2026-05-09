@@ -26,33 +26,57 @@ export default function Contact() {
 
   const faqData: FAQItem[] = [
     {
-      question: "What materials are used in your baby clothes?",
-      answer: "We use only the softest, safest materials for your baby's delicate skin. Our clothes are made from 100% organic cotton, bamboo fabric, and other hypoallergenic materials that are free from harmful chemicals and dyes.",
+      question: "How can I track my order?",
+      answer: "You can track your order using the tracking link shared via email/SMS once your order is shipped.",
       category: "products",
       icon: Package
     },
     {
-      question: "How do I choose the right size for my baby?",
-      answer: "We offer a comprehensive size guide on each product page. Our sizes are based on both age and weight ranges. If you're between sizes, we recommend sizing up for longer wear.",
+      question: "How can I cancel my order?",
+      answer: "Yes, changes can be requested before the order is shipped. Please contact our customer support team as soon as possible.",
       category: "products",
       icon: Package
     },
     {
-      question: "What are your shipping options and costs?",
-      answer: "We offer Standard Shipping (5-7 days), Express Shipping (2-3 days), and Next Day Delivery. Shipping costs vary by location. Free shipping is available on orders over $50. We also ship internationally to 15+ countries.",
-      category: "shipping",
-      icon: Truck
+      question: "What if the product I ordered is out of stock?",
+      answer: "In rare cases of stock unavailability, our team will contact you and process a refund or replacement based on your preference.",
+      category: "products",
+      icon: Package
     },
     {
       question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, Apple Pay, Google Pay, and Buy Now Pay Later options like Klarna. All transactions are secure and encrypted.",
+      answer: " Debit Cards ,Credit Cards , UPI payments , Net Banking , Wallet Payments",
       category: "payment",
       icon: CreditCard
     },
     {
-      question: "What is your return policy?",
-      answer: "We offer a 30-day return policy for unused items in original packaging. Simply contact our customer service to initiate a return. Refunds are processed within 5-7 business days. Exchanges for different sizes are always free!",
+      question: "Do I have to pay shipping charges?",
+      answer: "Shipping charges may vary based on order value and delivery location. Free shipping may be available on eligible orders.",
+      category: "shipping",
+      icon: RefreshCw
+    },
+    {
+      question: "By when will I receive my order?",
+      answer: "Orders are typically delivered within 3-7 business days, depending on your location.",
+      category: "shipping",
+      icon: RefreshCw
+    },
+    {
+      question: "What if I receive a damaged item?",
+      answer: "Please contact us within 48 hours of delivery with product images, and our support team will assist you with a replacement or resolution.",
       category: "returns",
+      icon: RefreshCw
+    },
+    {
+      question: "Do you ship internationally?",
+      answer: "Currently, we ship within India. International shipping may be introduced in the future.",
+      category: "shipping",
+      icon: RefreshCw
+    },
+    {
+      question: "What happens if I am unavailable during delivery?",
+      answer: "Our delivery partner will usually attempt re-delivery or contact you for further assistance.",
+      category: "shipping",
       icon: RefreshCw
     }
   ];

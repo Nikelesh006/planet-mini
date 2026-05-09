@@ -30,7 +30,7 @@ import { LikeProvider } from "@/contexts/LikeContext";
 
 
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 
 
@@ -127,7 +127,18 @@ import NotFound from "@/pages/not-found";
 
 
 
+import TermsOfService from "./pages/TermsOfService";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { Layout } from "./components/Layout";
+
+
+
+
+
+
+
+import { AnimatePresence } from "framer-motion";
+import LoadingScreen from "@/components/LoadingScreen";
 
 
 
@@ -164,8 +175,8 @@ function Router() {
         <Route path="/add-address" component={AddAddressPage} />
         <Route path="/search" component={Search} />
         <Route path="/products/:slug" component={ProductDetailPage} />
-        <Route path="/privacy" component={Home} />
-        <Route path="/terms" component={Home} />
+        <Route path="/privacy" component={PrivacyPolicy} />
+        <Route path="/terms" component={TermsOfService} />
         <Route component={NotFound} />
       </Switch>
     </Layout>
@@ -177,17 +188,25 @@ function Router() {
 
 
 function App() {
-
-
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Lock scroll when loading
+    if (isLoading) {
+      document.body.style.overflow = 'hidden';
+      window.scrollTo(0, 0);
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [isLoading]);
 
+  useEffect(() => {
+    // Show loading screen for 3.5 seconds
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3500);
 
-
-    // Initialize animations when component mounts
-
-
-
+    // Existing animation initialization
     animations.init();
 
 
@@ -263,6 +282,9 @@ function App() {
 
 
 
+              <AnimatePresence>
+                {isLoading && <LoadingScreen key="loader" />}
+              </AnimatePresence>
               <Toaster />
 
 
