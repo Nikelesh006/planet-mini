@@ -15,8 +15,8 @@ export default function FAQ() {
 
   const faqData: FAQItem[] = [
     {
-      question: "What materials are used in your baby clothes?",
-      answer: "We use only the softest, safest materials for your baby's delicate skin. Our clothes are made from 100% organic cotton, bamboo fabric, and other hypoallergenic materials that are free from harmful chemicals and dyes.",
+      question: "How do I know if my order is confirmed?",
+      answer: "You'll receive an email confirmation with your order details within a few minutes of placing your order. You'll also receive another email with tracking information once your order ships.",
       category: "products",
       icon: Package
     },
