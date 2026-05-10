@@ -4,10 +4,15 @@ import { Link } from "wouter";
 import { Shield, FileText, Scale, Lock, Clock, Info } from "lucide-react";
 
 export default function TermsOfService() {
-  // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5 }
+  };
 
   const sections = [
     {
@@ -43,92 +48,66 @@ export default function TermsOfService() {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Hero Section */}
-      <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-10 sm:py-16 md:py-20">
-        <div className="text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6"
-          >
-            <Scale className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6"
-          >
-            Terms of Service
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-700 max-w-3xl mx-auto"
-          >
-            Please read these terms carefully before using Planet Mini.
-          </motion.p>
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-full text-sm font-medium border-2 border-black"
-          >
-            <Clock className="w-4 h-4" />
-            Last updated: May 2026
-          </motion.div>
-        </div>
-      </section>
+    <div className="min-h-screen bg-[#FFF8F3] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header Section */}
+        <motion.div 
+          className="text-center mb-12 relative"
+          {...fadeIn}
+        >
+          <div className="flex justify-center mb-4">
+             <img 
+                src="/Planet-mini-logo.png" 
+                alt="Planet Mini Logo" 
+                className="h-16 w-auto object-contain"
+              />
+          </div>
+          <p className="text-[#FF7B9C] font-medium tracking-wide mb-2 uppercase text-sm">Premium Baby & Kids Wear</p>
+          <h1 className="text-4xl md:text-5xl font-display font-bold text-[#1D3557] mb-4">Terms of Service</h1>
+          <p className="text-[#4A5568] text-lg">Please read these terms carefully before using Planet Mini.</p>
+        </motion.div>
 
-      {/* Content Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto pb-20">
+        {/* Sections */}
         <div className="space-y-8">
           {sections.map((section, index) => (
-            <motion.div
+            <motion.div 
               key={index}
+              className="bg-white p-8 rounded-3xl border border-[#E2E8F0] shadow-sm hover:shadow-md transition-shadow"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-black shadow-lg hover:shadow-xl transition-all duration-300 group"
             >
-              <div className="flex items-start gap-4 sm:gap-6">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                  <section.icon className="w-6 h-6 sm:w-7 sm:h-7 text-red-500" />
+              <div className="flex items-start gap-6">
+                <div className="w-12 h-12 bg-[#FEE2E2] rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <section.icon className="w-6 h-6 text-[#EF4444]" />
                 </div>
-                <div className="flex-1">
-                  <h2 className="text-xl sm:text-2xl font-bold text-black mb-4 group-hover:text-red-600 transition-colors">
-                    {section.title}
-                  </h2>
-                  <p className="text-sm sm:text-base md:text-lg text-gray-700 leading-relaxed">
-                    {section.content}
-                  </p>
+                <div>
+                  <h2 className="text-2xl font-bold text-[#1D3557] mb-4">{section.title}</h2>
+                  <p className="text-[#4A5568] text-lg leading-relaxed">{section.content}</p>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Support Callout */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-16 bg-red-50 rounded-3xl p-8 border-2 border-black text-center"
+        {/* Footer Info */}
+        <motion.div 
+          className="mt-12 text-center bg-white/50 p-8 rounded-3xl border border-[#E2E8F0]"
+          {...fadeIn}
+          transition={{ delay: 0.6 }}
         >
-          <h3 className="text-xl sm:text-2xl font-bold text-black mb-4">Questions about our Terms?</h3>
-          <p className="text-gray-700 mb-8">
-            If you have any questions regarding these Terms of Service, please contact our support team.
-          </p>
+          <p className="text-[#4A5568] mb-6 font-medium">Questions about our Terms?</p>
+          <p className="text-[#4A5568] mb-8">If you have any questions regarding these Terms of Service, please contact our support team.</p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 bg-red-100 text-red-600 px-8 py-4 rounded-2xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-black"
+            className="inline-flex items-center gap-2 bg-[#FEE2E2] text-[#EF4444] px-8 py-4 rounded-2xl font-semibold hover:bg-[#FECACA] transition-all duration-300 transform hover:scale-105"
           >
             Contact Support
           </Link>
         </motion.div>
-      </section>
+      </div>
     </div>
   );
 }
+

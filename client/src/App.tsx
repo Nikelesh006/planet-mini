@@ -129,6 +129,7 @@ import NotFound from "@/pages/not-found";
 
 import TermsOfService from "./pages/TermsOfService";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ReturnPolicy from "./pages/ReturnPolicy";
 import { Layout } from "./components/Layout";
 
 
@@ -176,6 +177,7 @@ function Router() {
         <Route path="/search" component={Search} />
         <Route path="/products/:slug" component={ProductDetailPage} />
         <Route path="/privacy" component={PrivacyPolicy} />
+        <Route path="/return-policy" component={ReturnPolicy} />
         <Route path="/terms" component={TermsOfService} />
         <Route component={NotFound} />
       </Switch>

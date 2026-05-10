@@ -66,7 +66,11 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
               onClick={(e) => e.stopPropagation()}
             >
               {/* Clean modern card */}
-              <div className="relative overflow-hidden rounded-2xl bg-white shadow-xl border border-gray-200">
+              <div className="relative overflow-hidden rounded-2xl bg-[#FBFDF9] shadow-xl border border-[#B4C49A]/40">
+                {/* Sage Green Accents */}
+                <div className="absolute top-0 left-0 w-full h-2 bg-[#B4C49A]" />
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#B4C49A]/10 rounded-full blur-3xl" />
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#B4C49A]/10 rounded-full blur-3xl" />
                 
                 {/* Content */}
                 <div className="relative z-10 p-6 sm:p-8">
@@ -81,7 +85,7 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                   {/* Header */}
                   <div className="text-center mb-8">
                     {/* Planet Mini Logo */}
-                    <div className="mx-auto w-32 h-32 mb-5">
+                    <div className="mx-auto w-32 h-32 mb-5 p-2 bg-white rounded-2xl shadow-sm border border-[#B4C49A]/20">
                       <img
                         src="/Planet-mini-logo.png"
                         alt="Planet Mini Logo"
@@ -89,10 +93,10 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                         draggable={false}
                       />
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-2xl font-bold text-[#1D3557] mb-2">
                       {mode === 'signin' ? 'Welcome Back' : 'Join Planet Mini'}
                     </h2>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-[#4A5568] text-sm">
                       {mode === 'signin' 
                         ? 'Sign in to access your profile, orders & wishlist'
                         : 'Create your account to start shopping and save your favorites'
@@ -101,27 +105,27 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                   </div>
 
                   {/* Mode Toggle */}
-                  <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
+                  <div className="flex bg-[#F1F5EB] rounded-xl p-1 mb-6">
                     <button
                       onClick={() => setMode('signin')}
                       className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm transition-all ${
                         mode === 'signin'
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-700'
+                          ? 'bg-white text-[#1D3557] shadow-sm'
+                          : 'text-[#4A5568] hover:text-[#1D3557]'
                       }`}
                     >
-                      <LogIn className="w-4 h-4" />
+                      <LogIn className={`w-4 h-4 ${mode === 'signin' ? 'text-[#B4C49A]' : ''}`} />
                       Sign In
                     </button>
                     <button
                       onClick={() => setMode('signup')}
                       className={`flex-1 flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg font-medium text-sm transition-all ${
                         mode === 'signup'
-                          ? 'bg-white text-gray-900 shadow-sm'
-                          : 'text-gray-500 hover:text-gray-700'
+                          ? 'bg-white text-[#1D3557] shadow-sm'
+                          : 'text-[#4A5568] hover:text-[#1D3557]'
                       }`}
                     >
-                      <UserPlus className="w-4 h-4" />
+                      <UserPlus className={`w-4 h-4 ${mode === 'signup' ? 'text-[#B4C49A]' : ''}`} />
                       Sign Up
                     </button>
                   </div>
@@ -129,7 +133,7 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                   {/* Google Auth Button */}
                   <button
                     onClick={handleGoogleAuth}
-                    className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200"
+                    className="w-full flex items-center justify-center gap-3 px-6 py-3 bg-white border border-[#B4C49A]/30 rounded-xl hover:bg-[#F1F5EB] hover:border-[#B4C49A] transition-all duration-200 shadow-sm"
                   >
                     {/* Google Logo */}
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -153,7 +157,7 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
                       }
                       <button
                         onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
-                        className="text-gray-900 hover:text-gray-700 font-medium ml-1"
+                        className="text-[#1D3557] hover:text-[#B4C49A] font-medium ml-1 transition-colors"
                       >
                         {mode === 'signin' ? 'Sign up' : 'Sign in'}
                       </button>
