@@ -62,6 +62,7 @@ export default function Footer() {
                 <li><Link href="/faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</Link></li>
                 <li><Link href="/terms" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Terms of Service</Link></li>
                 <li><Link href="/privacy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Privacy Policy</Link></li>
+                <li><Link href="/return-policy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Return Policy</Link></li>
               </ul>
             </div>
           </div>
@@ -73,6 +74,7 @@ export default function Footer() {
               <li><Link href="/faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</Link></li>
               <li><Link href="/terms" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Terms of Service</Link></li>
               <li><Link href="/privacy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Privacy Policy</Link></li>
+              <li><Link href="/return-policy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Return Policy</Link></li>
             </ul>
           </div>
         </div>

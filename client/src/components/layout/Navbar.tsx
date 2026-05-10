@@ -145,7 +145,7 @@ export default function Navbar() {
   return (
     <>
       {/* Announcement Bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gray-300 text-black py-3 overflow-hidden">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-[#B4C49A] text-black py-3 overflow-hidden">
         <div className="flex items-center overflow-hidden">
           <div className="animate-marquee whitespace-nowrap">
             <span className="text-base font-semibold inline-block">

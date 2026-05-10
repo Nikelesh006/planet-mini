@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Heart, Shield, Truck, Award, Users, Globe } from "lucide-react";
+import { Heart, Shield, Truck, Award, Users, Globe, Leaf, Crown, CloudRain, ShieldCheck, Factory } from "lucide-react";
 
 export default function About() {
   return (
@@ -132,6 +132,124 @@ export default function About() {
               <p className="text-xs sm:text-sm text-gray-600 transition-colors duration-300 hover:text-black">{value.description}</p>
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      {/* Why Choose Planet Mini Section */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16 bg-[#FFF8F3] rounded-3xl mb-16 overflow-hidden relative">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            className="z-10"
+          >
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-full border border-dashed border-[#1D3557] flex items-center justify-center">
+                <span className="text-[#1D3557] text-xs">🪐</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-[#1D3557]">
+                WHY CHOOSE <br /> PLANET MINI?
+              </h2>
+            </div>
+            <div className="flex items-center gap-2 mb-8">
+              <Heart className="w-4 h-4 text-[#FF7B9C] fill-[#FF7B9C]" />
+              <p className="text-[#4A5568] text-lg italic">
+                Because your little one deserves the very best.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <div className="w-16 h-16 bg-[#F1F9F1] rounded-full flex items-center justify-center mb-4 border border-[#E4F4E4]">
+                  <Leaf className="w-8 h-8 text-[#2D6A4F]" />
+                </div>
+                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">OEKO-TEX® CERTIFIED</h4>
+                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                  Fabrics tested for harmful substances. Safe for baby's delicate skin.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <div className="w-16 h-16 bg-[#FFF9F1] rounded-full flex items-center justify-center mb-4 border border-[#FEF2E4]">
+                  <Crown className="w-8 h-8 text-[#D97706]" />
+                </div>
+                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">PREMIUM QUALITY</h4>
+                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                  Made with high quality fabrics for long-lasting comfort.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <div className="w-16 h-16 bg-[#EEF4FB] rounded-full flex items-center justify-center mb-4 border border-[#DCE8F6]">
+                  <CloudRain className="w-8 h-8 text-[#3182CE]" />
+                </div>
+                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">ULTRA SOFT & BREATHABLE</h4>
+                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                  Gentle, breathable materials for all-day comfort.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <div className="w-16 h-16 bg-[#FFF1F1] rounded-full flex items-center justify-center mb-4 border border-[#FFE4E4]">
+                  <Heart className="w-8 h-8 text-[#E63946]" />
+                </div>
+                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">SKIN FRIENDLY</h4>
+                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                  Soft and gentle on sensitive and delicate baby skin.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <div className="w-16 h-16 bg-[#F2FAF2] rounded-full flex items-center justify-center mb-4 border border-[#E6F4E6]">
+                  <ShieldCheck className="w-8 h-8 text-[#2D6A4F]" />
+                </div>
+                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">SAFE & NON-TOXIC</h4>
+                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                  Free from harmful chemicals and irritants.
+                </p>
+              </div>
+
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <div className="w-16 h-16 bg-[#EEF4FB] rounded-full flex items-center justify-center mb-4 border border-[#DCE8F6]">
+                  <Factory className="w-8 h-8 text-[#1D3557]" />
+                </div>
+                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">TRUSTED MANUFACTURER</h4>
+                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                  Crafted with care by Tricircle Group with strict quality standards.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="relative hidden lg:block"
+          >
+            <div className="aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl relative">
+              <img 
+                src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&q=80&w=800"
+                alt="Happy baby in Planet Mini clothes" 
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#FFF8F3]/40 to-transparent"></div>
+            </div>
+            {/* Stylized elements matching the image */}
+            <div className="absolute -top-6 -right-6 w-12 h-12 text-[#FFDADA] opacity-50">
+               <span className="text-4xl">⭐</span>
+            </div>
+            <div className="absolute top-1/2 -left-8 w-10 h-10 text-[#FFDADA] opacity-50">
+               <span className="text-3xl">✨</span>
+            </div>
+            <div className="absolute -bottom-4 -right-4 w-16 h-16 text-[#FFDADA] opacity-30">
+               <Heart className="w-full h-full fill-current" />
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="mt-16 bg-[#B4C49A] py-3 px-8 rounded-full flex items-center justify-between text-white text-xs sm:text-sm font-medium">
+           <p>Thoughtfully designed. Carefully crafted. Perfect for your little world.</p>
+           <Heart className="w-3 h-3 fill-white" />
         </div>
       </section>
 

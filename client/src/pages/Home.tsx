@@ -1457,7 +1457,7 @@ export default function Home() {
       </section>
 
       {/* Announcement Slider */}
-      <section className="w-full bg-gradient-to-r from-primary to-secondary py-4 sm:py-6 md:py-8 overflow-hidden">
+      <section className="w-full bg-[#B4C49A] py-4 sm:py-6 md:py-8 overflow-hidden">
         <div className="relative">
           <div className="flex animate-scroll whitespace-nowrap">
             {/* First set of announcements */}
