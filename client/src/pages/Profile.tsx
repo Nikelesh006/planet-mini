@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { useState, useEffect } from "react";
 import { Loader2, User, Settings, ShoppingBag, Heart, Package, LogOut, Edit, Camera, MapPin, Phone, Mail, Calendar, Plus, Trash2, AlertCircle, CheckCircle, X } from "lucide-react";
-import { useProfile, useUpdateProfile, useAddBabyInfo, useDeleteBabyInfo } from "../hooks/useProfile";
+import { useProfile, useUpdateProfile, useAddBabyInfo, useDeleteBabyInfo, useUpdateProfileImage } from "../hooks/useProfile";
+import { useCloudinary } from "../hooks/useCloudinary";
 import { useOrders } from "../hooks/useOrders";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -25,9 +26,29 @@ export default function Profile() {
   const updateProfile = useUpdateProfile(userId);
   const addBabyInfo = useAddBabyInfo(userId);
   const deleteBabyInfo = useDeleteBabyInfo(userId);
+  const updateProfileImage = useUpdateProfileImage(userId);
+  const { uploadImage, isUploading: isUploadingImage } = useCloudinary();
 
   const totalOrders = orders?.length || 0;
   const totalSpent = orders?.reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0) || 0;
+
+  // Helper function to format relative time
+  const getRelativeTime = (date: string | Date) => {
+    const now = new Date();
+    const then = new Date(date);
+    const diffInSeconds = Math.floor((now.getTime() - then.getTime()) / 1000);
+    
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 172800) return 'Yesterday';
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    return then.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  };
+
+  // Get the most recent activity
+  const recentOrder = orders?.[0];
+  const profileUpdatedAt = profile?.updatedAt || profile?.createdAt;
 
   const handleSaveProfile = async (formData: any) => {
     try {
@@ -75,6 +96,20 @@ export default function Profile() {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const imageData = await uploadImage(file);
+      if (imageData?.url) {
+        await updateProfileImage.mutateAsync(imageData.url);
+      }
+    } catch (error) {
+      console.error('Failed to upload profile image:', error);
+    }
+  };
+
   if (isLoading || authLoading) return (
     <div className="min-h-screen flex items-center justify-center">
       <Loader2 className="w-8 h-8 animate-spin" />
@@ -119,19 +154,37 @@ export default function Profile() {
               {/* User Info */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6 sm:mb-8 text-center sm:text-left">
                 <div className="relative flex-shrink-0">
-                  {authUser?.image ? (
+                  {profile?.image || authUser?.image || authUser?.picture ? (
                     <img
-                      src={authUser.image}
+                      src={profile?.image || authUser?.image || authUser?.picture}
                       alt="Profile"
                       className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                      onError={(e) => {
+                        // Fallback to initials if image fails to load
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
                     />
                   ) : (
                     <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center text-white text-2xl sm:text-3xl font-bold border-4 border-white shadow-lg">
                       {initials}
                     </div>
                   )}
-                  <button className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 bg-gray-800 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300">
-                    <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    id="profileImageInput"
+                  />
+                  <button 
+                    onClick={() => document.getElementById('profileImageInput')?.click()}
+                    className="absolute bottom-0 right-0 w-9 h-9 sm:w-10 sm:h-10 bg-gray-800 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300"
+                  >
+                    {isUploadingImage ? (
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                    ) : (
+                      <Camera className="w-4 h-4 sm:w-5 sm:h-5" />
+                    )}
                   </button>
                 </div>
                 <div className="flex-1">
@@ -228,7 +281,7 @@ export default function Profile() {
                       handleSaveProfile(formData);
                     }}
                     disabled={updateProfile.isPending}
-                    className="mt-4 sm:mt-6 w-full sm:w-auto bg-gray-800 text-white px-4 sm:px-6 py-3 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
+                    className="mt-4 sm:mt-6 w-full sm:w-auto bg-gray-800 text-white px-4 sm:px-6 py-2 rounded-xl font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
                   >
                     {updateProfile.isPending ? (
                       <>
@@ -319,7 +372,6 @@ export default function Profile() {
                         <option value="">Select Gender</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
-                        <option value="other">Other</option>
                       </select>
                     </div>
                     <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row gap-3 sm:gap-4">
@@ -411,20 +463,34 @@ export default function Profile() {
             <div className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-4 sm:p-6 lg:p-8 border border-primary/20 hover:shadow-xl transition-all duration-300">
               <h3 className="text-xl sm:text-2xl font-bold text-black mb-4 sm:mb-6">Recent Activity</h3>
               <div className="space-y-3 sm:space-y-4">
-                <div className="flex items-center gap-3 sm:gap-4 p-3 bg-white/50 rounded-xl">
-                  <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-black truncate">Order #1234 delivered</p>
-                    <p className="text-xs text-gray-500">2 days ago</p>
+                {recentOrder && (
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 bg-white/50 rounded-xl">
+                    <div className="w-3 h-3 bg-green-500 rounded-full flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-black truncate">
+                        Order #{recentOrder.orderNumber || recentOrder.id?.slice(-6)} {recentOrder.status}
+                      </p>
+                      <p className="text-xs text-gray-500">{getRelativeTime(recentOrder.createdAt)}</p>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-3 sm:gap-4 p-3 bg-white/50 rounded-xl">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs sm:text-sm font-medium text-black truncate">Profile updated</p>
-                    <p className="text-xs text-gray-500">5 days ago</p>
+                )}
+                {profileUpdatedAt && (
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 bg-white/50 rounded-xl">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-black truncate">Profile updated</p>
+                      <p className="text-xs text-gray-500">{getRelativeTime(profileUpdatedAt)}</p>
+                    </div>
                   </div>
-                </div>
+                )}
+                {!recentOrder && !profileUpdatedAt && (
+                  <div className="flex items-center gap-3 sm:gap-4 p-3 bg-white/50 rounded-xl">
+                    <div className="w-3 h-3 bg-gray-400 rounded-full flex-shrink-0"></div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs sm:text-sm font-medium text-gray-500 truncate">No recent activity</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </motion.div>

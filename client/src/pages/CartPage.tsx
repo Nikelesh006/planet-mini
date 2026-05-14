@@ -6,6 +6,7 @@ import { Confetti, useConfetti } from "@/components/ui/Confetti";
 import { ChevronDown, ArrowLeft, Minus, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
+import { useRazorpay } from '@/hooks/useRazorpay';
 
 export default function CartPage() {
   const { state, removeFromCart, increaseQuantity, decreaseQuantity, clearCart } = useCart();
@@ -15,6 +16,7 @@ export default function CartPage() {
   const [location] = useLocation();
   const [promoCode, setPromoCode] = useState('');
   const { showConfetti, triggerConfetti } = useConfetti();
+  const { initializePayment, isLoading: isPaymentLoading, error: paymentError } = useRazorpay();
 
   console.log('🔍 Cart state:', state);
   console.log('🔍 Cart items:', state.items);
@@ -112,7 +114,32 @@ export default function CartPage() {
         return;
       }
 
-      // Prepare order data
+      const currentUserId = user?.id || user?.sub;
+      const totalAmount = subtotal;
+
+      // Step 1: Create Razorpay order
+      const orderResponse = await fetch('/api/payment/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'x-user-id': currentUserId || ''
+        },
+        body: JSON.stringify({
+          amount: totalAmount,
+          currency: 'INR',
+          receipt: `receipt_${Date.now()}`
+        })
+      });
+
+      if (!orderResponse.ok) {
+        const errorData = await orderResponse.json();
+        throw new Error(errorData.error || 'Failed to create payment order');
+      }
+
+      const { order_id } = await orderResponse.json();
+
+      // Step 2: Prepare order data for after payment
       const orderData = {
         items: state.items.map(item => ({
           productId: item.id,
@@ -124,86 +151,112 @@ export default function CartPage() {
           quantity: item.quantity
         })),
         shippingAddressId: selectedAddressId,
-        total: state.totalPrice
+        total: totalAmount
       };
 
-      // Send order to backend
-      const token = localStorage.getItem('token');
-      const currentUserId = user?.id || user?.sub;
-      
-      console.log('🔍 Placing order for user:', currentUserId);
-      
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-          'x-user-id': currentUserId || ''
+      // Step 3: Initialize Razorpay payment
+      const paymentResponse = await initializePayment({
+        amount: totalAmount * 100, // Convert to paise
+        currency: 'INR',
+        name: 'Planet Mini',
+        description: `Payment for ${state.totalItems} item(s)`,
+        order_id: order_id,
+        prefill: {
+          name: user?.name || 'Customer',
+          email: user?.email || 'customer@example.com',
+          contact: getSelectedAddress()?.phone || ''
         },
-        body: JSON.stringify({
-          ...orderData,
-          userId: currentUserId // Include userId in order data
-        })
+        handler: async (response) => {
+          try {
+            // Step 4: Verify payment and create order
+            const verifyResponse = await fetch('/api/payment/verify', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                'x-user-id': currentUserId || ''
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderData: {
+                  ...orderData,
+                  userId: currentUserId,
+                  paymentId: response.razorpay_payment_id,
+                  orderId: response.razorpay_order_id
+                }
+              })
+            });
+
+            if (verifyResponse.ok) {
+              const verifyResult = await verifyResponse.json();
+              console.log('Payment verified:', verifyResult);
+
+              // Create actual order after successful payment
+              const orderResponse = await fetch('/api/orders', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                  'x-user-id': currentUserId || ''
+                },
+                body: JSON.stringify({
+                  ...orderData,
+                  userId: currentUserId,
+                  paymentId: response.razorpay_payment_id,
+                  paymentStatus: 'paid',
+                  status: 'completed'
+                })
+              });
+
+              if (orderResponse.ok) {
+                const order = await orderResponse.json();
+                console.log('Order created:', order);
+
+                // Clear cart
+                clearCart();
+                
+                // Trigger confetti animation
+                triggerConfetti();
+                
+                // Show success message
+                console.log(`Order placed successfully! Order Number: ${order.orderNumber}`);
+                
+                // Redirect to orders page
+                setTimeout(() => {
+                  window.location.href = '/profile/orders';
+                }, 2000);
+              } else {
+                throw new Error('Failed to create order after payment');
+              }
+            } else {
+              throw new Error('Payment verification failed');
+            }
+          } catch (error) {
+            console.error('Error after payment:', error);
+            alert('Payment successful but order creation failed. Please contact support.');
+          }
+        },
+        modal: {
+          ondismiss: () => {
+            console.log('Payment modal dismissed');
+          }
+        }
       });
 
-      console.log('REQUEST SENT - Status:', response.status);
-      console.log('REQUEST SENT - OK:', response.ok);
-      console.log('REQUEST HEADERS - Content-Type:', response.headers.get('content-type'));
-
-      if (response.ok) {
-        const order = await response.json();
-        console.log('SUCCESS: Order response received:', JSON.stringify(order, null, 2));
-        
-        // Check if order has required fields
-        if (!order.orderNumber) {
-          console.error('RESPONSE VALIDATION FAILED: Missing orderNumber in response');
-          console.error('Full response object:', order);
-          alert('Order was created but missing order number. Please contact support.');
-          return;
-        }
-        
-        console.log('SUCCESS: Order has required fields - proceeding with cart clear');
-        
-        // Clear cart
-        clearCart();
-        
-        // Trigger confetti animation
-        triggerConfetti();
-        
-        // Show success message
-        console.log(`Order placed successfully! Order Number: ${order.orderNumber}`);
-        
-        // Redirect to orders page
-        setTimeout(() => {
-          window.location.href = '/profile/orders';
-        }, 2000);
-      } else {
-        // Handle non-OK responses
-        const responseText = await response.text();
-        console.error('REQUEST FAILED: Response status:', response.status);
-        console.error('REQUEST FAILED: Response text:', responseText);
-        
-        // Try to parse as JSON for better error handling
-        let errorData;
-        try {
-          errorData = JSON.parse(responseText);
-        } catch (parseError) {
-          console.error('JSON Parse Error:', parseError);
-          errorData = { message: responseText };
-        }
-        
-        console.error('REQUEST FAILED: Parsed error:', JSON.stringify(errorData, null, 2));
-        alert(`Failed to place order: ${errorData.message || 'Unknown error'}`);
+      if (!paymentResponse) {
+        throw new Error('Payment initialization failed');
       }
+
     } catch (error) {
       console.error('Error placing order:', error);
-      alert('An error occurred while placing your order. Please try again.');
+      alert(`Payment failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   };
 
   const subtotal = state.totalPrice;
-  const tax = Math.round(subtotal * 0.05);
-  const total = subtotal + tax;
+  const total = subtotal;
 
   if (state.items.length === 0) {
     return (
@@ -426,10 +479,25 @@ export default function CartPage() {
               {/* Place Order Button */}
               <button 
                 onClick={handlePlaceOrder}
-                className="w-full bg-black text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
+                disabled={isPaymentLoading}
+                className="w-full bg-black text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
-                Place Order
+                {isPaymentLoading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin inline-block mr-2"></div>
+                    Processing Payment...
+                  </>
+                ) : (
+                  'Place Order'
+                )}
               </button>
+
+              {/* Payment Error Display */}
+              {paymentError && (
+                <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-xl">
+                  <p className="text-red-600 text-sm">{paymentError}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

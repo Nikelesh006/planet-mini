@@ -715,6 +715,53 @@ router.get('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
   }
 });
 
+// 9. POST /api/profile/:userId/image  ← Update profile image
+router.post('/:userId/image', requireAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.params.userId;
+    const { image } = req.body;
+
+    if (req.user.id !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    if (!image) {
+      return res.status(400).json({ error: 'Image URL is required' });
+    }
+
+    // Validate image URL format (basic validation)
+    try {
+      new URL(image);
+    } catch {
+      return res.status(400).json({ error: 'Invalid image URL format' });
+    }
+
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    // Update profile with new image
+    profile.image = image;
+    profile.updatedAt = new Date();
+    await profile.save();
+
+    console.log('✅ Profile image updated for user:', userId);
+    res.json({ 
+      success: true, 
+      image: profile.image,
+      message: 'Profile image updated successfully' 
+    });
+
+  } catch (error: any) {
+    console.error('❌ Error updating profile image:', error);
+    res.status(500).json({ 
+      error: 'Failed to update profile image',
+      details: error.message 
+    });
+  }
+});
+
 // 9. DELETE /api/profile/:userId/wishlist/:productId  ← Remove from wishlist
 router.delete('/:userId/wishlist/:productId', requireAuth, async (req: any, res: any) => {
   try {
@@ -749,7 +796,7 @@ router.delete('/:userId/wishlist/:productId', requireAuth, async (req: any, res:
 router.post('/:userId/orders', requireAuth, async (req: any, res: any) => {
   try {
     const userId = req.params.userId;
-    const { items, total } = req.body;
+    const { items, total, status = 'pending', paymentId, paymentStatus, shippingAddressId } = req.body;
 
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Unauthorized' });
@@ -768,7 +815,10 @@ router.post('/:userId/orders', requireAuth, async (req: any, res: any) => {
       orderId,
       items,
       total,
-      status: 'pending',
+      status,
+      paymentId,
+      paymentStatus,
+      shippingAddressId,
       createdAt: new Date()
     };
 

@@ -116,3 +116,24 @@ export function useDeleteBabyInfo(userId: string) {
     },
   });
 }
+
+export function useUpdateProfileImage(userId: string) {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (imageUrl: string) => {
+      const response = await fetch(`${API_BASE}/${userId}/image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageUrl }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update profile image');
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['profile', userId] });
+    },
+  });
+}

@@ -80,7 +80,7 @@ import uploadRoutes from "./routes/upload";
 
 import addressRoutes from "./routes/addresses";
 
-import bannerRoutes from "./routes/banners";
+import paymentRoutes from "./routes/payment";
 
 
 
@@ -2650,6 +2650,7 @@ export async function registerRoutes(
 
 
   app.use('/api/profile', profileRoutes);
+  app.use('/api/payment', paymentRoutes);
 
 
 
@@ -2724,40 +2725,7 @@ export async function registerRoutes(
   app.use('/api/addresses', addressRoutes);
 
 
-
-
-
-
-
-  // Banner routes
-
-
-
-
-
-
-
-  app.use('/api/banners', bannerRoutes);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // Debug endpoint to check token
-
-
-
-
 
 
 

@@ -362,11 +362,8 @@ export default function AdminOrders() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">
-                      Order #{selectedOrder.orderNumber}
+                      Order Details
                     </h2>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Customer: {selectedOrder.userId}
-                    </p>
                   </div>
                   <button
                     onClick={() => setShowOrderDetails(false)}
@@ -526,10 +523,6 @@ export default function AdminOrders() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-200">
-                  <button className="flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-all duration-300">
-                    <Download className="w-5 h-5" />
-                    Download Invoice
-                  </button>
                   <button className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors">
                     <HelpCircle className="w-5 h-5" />
                     Need Help?

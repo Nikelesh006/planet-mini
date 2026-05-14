@@ -9,6 +9,7 @@ import { twMerge } from "tailwind-merge";
 import { useAuth } from "@/contexts/AuthContext";
 import { useAuthModal } from "@/hooks/useAuthModal";
 import { isUserAdminAuthorized } from "@/lib/admin-auth";
+import { useProfile } from "@/hooks/useProfile";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useProducts } from "@/hooks/useProducts";
 
@@ -30,6 +31,7 @@ export default function Navbar() {
   const { user, isLoading, logout } = useAuth();
   const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
   const { likedProducts, toggleLike, isLiked } = useLikes();
+  const { data: profile } = useProfile(user?.id || '');
 
   // Fetch all products for search
   const { data: allProducts } = useProducts();
@@ -369,8 +371,8 @@ export default function Navbar() {
                   {isLoading ? (
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
                   ) : user ? (
-                    user.image ? (
-                      <img src={user.image} alt="Avatar" className="w-5 h-5 rounded-full" draggable={false} />
+                    profile?.image || user.image ? (
+                      <img src={profile?.image || user.image} alt="Avatar" className="w-5 h-5 rounded-full" draggable={false} />
                     ) : (
                       <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                         <span className="text-white text-xs font-bold">
@@ -394,8 +396,8 @@ export default function Navbar() {
                   >
                     {/* User Header */}
                     <div className="flex items-center gap-3 p-4 border-b border-gray-100">
-                      {user.image ? (
-                        <img src={user.image} alt="Avatar" className="w-10 h-10 rounded-full object-cover" draggable={false} />
+                      {profile?.image || user.image ? (
+                        <img src={profile?.image || user.image} alt="Avatar" className="w-10 h-10 rounded-full object-cover" draggable={false} />
                       ) : (
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                           <span className="text-white text-lg font-bold">
@@ -549,8 +551,8 @@ export default function Navbar() {
                   {isLoading ? (
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
                   ) : user ? (
-                    user.image ? (
-                      <img src={user.image} alt="Avatar" className="w-6 h-6 rounded-full" draggable={false} />
+                    profile?.image || user.image ? (
+                      <img src={profile?.image || user.image} alt="Avatar" className="w-6 h-6 rounded-full" draggable={false} />
                     ) : (
                       <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                         <span className="text-white text-xs font-bold">

@@ -337,12 +337,6 @@ Thank you for shopping with Planet Mini!
               </div>
               <span className="font-medium text-gray-700 text-sm text-center group-hover:text-primary transition-colors">Orders</span>
             </Link>
-            <Link href="/admin/add-banner" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-primary/20">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Image className="w-6 h-6 text-black" />
-              </div>
-              <span className="font-medium text-sm text-center group-hover:text-primary transition-colors">Add Banner</span>
-            </Link>
           </div>
         </motion.div>
       </div>
@@ -372,12 +366,11 @@ Thank you for shopping with Planet Mini!
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-8">
           {/* Recent Orders */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="lg:col-span-2"
           >
             <div className="bg-white rounded-2xl shadow-sm">
               <div className="p-6 border-b border-gray-200">
@@ -517,20 +510,13 @@ Thank you for shopping with Planet Mini!
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">
-                    Order {selectedOrder.orderNumber}
+                    Order Details
                   </h2>
                   <p className="text-sm text-gray-600 mt-1">
                     Placed on {new Date(selectedOrder.createdAt).toLocaleDateString('en-IN')}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => downloadInvoice(selectedOrder)}
-                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download Invoice
-                  </button>
                   <button
                     onClick={() => setShowOrderDetails(false)}
                     className="text-gray-400 hover:text-gray-600 transition-colors"

@@ -63,7 +63,6 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 
 import AddProduct from "./pages/AddProduct";
-import AddBanner from "./pages/AddBanner";
 
 
 
@@ -159,7 +158,6 @@ function Router() {
         <Route path="/faq" component={FAQ} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin/add-product" component={AddProduct} />
-        <Route path="/admin/add-banner" component={AddBanner} />
         <Route path="/admin/product-list" component={ProductList} />
         <Route path="/admin/orders" component={AdminOrders} />
         <Route path="/account" component={Profile} />

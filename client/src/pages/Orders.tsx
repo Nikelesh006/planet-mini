@@ -2102,7 +2102,7 @@ export default function Orders() {
 
 
 
-                          <p className="font-semibold text-gray-900 text-sm sm:text-base truncate">
+                          <p className="font-semibold text-gray-900 text-sm sm:text-base">
 
 
 
@@ -2126,7 +2126,7 @@ export default function Orders() {
 
 
 
-                          <p className="font-medium text-gray-900 text-sm sm:text-base truncate mt-1">
+                          <p className="font-medium text-gray-900 text-sm sm:text-base mt-1">
 
 
 
@@ -2353,22 +2353,6 @@ export default function Orders() {
 
 
                 <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-200">
-
-
-
-                  <button className="flex items-center justify-center gap-2 bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base">
-
-
-
-                    <Download className="w-4 h-4 sm:w-5 sm:h-5" />
-
-
-
-                    Download Invoice
-
-
-
-                  </button>
 
 
 
