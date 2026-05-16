@@ -144,7 +144,7 @@ router.get("/google/callback",
 
     const token = jwt.sign(
 
-      { sub: user.id, email: user.email, name: user.name, picture: user.picture },
+      { id: user.id, email: user.email, name: user.name, image: user.picture },
 
       process.env.JWT_SECRET!,
 
