@@ -66,7 +66,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // CORS + cookies
 
-app.use(cors({ origin: "http://localhost:5002", credentials: true }));
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5002";
+
+app.use(cors({ origin: frontendUrl, credentials: true }));
 
 app.use(cookieParser());
 
@@ -170,7 +172,7 @@ app.get("/api/auth/google", (req: Request, res: Response) => {
 
   const redirectUri = encodeURIComponent(
 
-    "http://localhost:5002/api/auth/google/callback",
+    `${frontendUrl}/api/auth/google/callback`,
 
   );
 
@@ -208,7 +210,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
   if (!code) {
 
-    return res.redirect("http://localhost:5002?error=missing_code");
+    return res.redirect(`${frontendUrl}?error=missing_code`);
 
   }
 
@@ -234,7 +236,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
         grant_type: "authorization_code",
 
-        redirect_uri: "http://localhost:5002/api/auth/google/callback",
+        redirect_uri: `${frontendUrl}/api/auth/google/callback`,
 
       }),
 
@@ -248,7 +250,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
       console.error("Google token error:", tokenJson.error);
 
-      return res.redirect("http://localhost:5002?error=token_error");
+      return res.redirect(`${frontendUrl}?error=token_error`);
 
     }
 
@@ -314,13 +316,13 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
 
 
-    return res.redirect("http://localhost:5002/");
+    return res.redirect(`${frontendUrl}/`);
 
   } catch (err) {
 
     console.error("Google callback error:", err);
 
-    return res.redirect("http://localhost:5002?error=auth_failed");
+    return res.redirect(`${frontendUrl}?error=auth_failed`);
 
   }
 
