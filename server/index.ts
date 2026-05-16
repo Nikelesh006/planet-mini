@@ -315,15 +315,14 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
 
     // Set cookie
-
+    // For cross-origin requests (Vercel frontend + Railway backend), we need secure: true and sameSite: "none"
+    // Do NOT set domain for cross-origin cookies - let it default to the exact domain that set it
+    console.log("🍪 Setting JWT cookie with secure: true, sameSite: none");
     res.cookie("jwt", jwtToken, {
-
       httpOnly: true,
-
-      sameSite: "lax",
-
+      secure: true, // Required for cross-origin cookies
+      sameSite: "none", // Required for cross-origin cookies
       maxAge: 24 * 60 * 60 * 1000,
-
     });
 
 
@@ -345,13 +344,13 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 // GET /api/auth/session → verify JWT and return user
 
 app.get("/api/auth/session", (req: Request, res: Response) => {
-
+  console.log("🔍 /api/auth/session - Cookies:", req.cookies);
+  console.log("🔍 /api/auth/session - Headers:", req.headers.cookie);
   const token = req.cookies?.jwt;
 
   if (!token) {
-
+    console.log("❌ /api/auth/session - No JWT token found in cookies");
     return res.status(401).json({ user: null });
-
   }
 
 
@@ -391,8 +390,12 @@ app.get("/api/auth/session", (req: Request, res: Response) => {
 // POST /api/auth/logout → clear cookie
 
 app.post("/api/auth/logout", (req: Request, res: Response) => {
-
-  res.clearCookie("jwt");
+  console.log("🍪 Clearing JWT cookie with secure: true, sameSite: none");
+  res.clearCookie("jwt", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
 
   return res.json({ success: true });
 
