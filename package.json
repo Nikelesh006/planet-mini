@@ -90,6 +90,8 @@
 
     "@types/multer": "^2.1.0",
 
+    "@vercel/node": "^5.8.2",
+
     "axios": "^1.13.6",
 
     "bcryptjs": "^3.0.3",

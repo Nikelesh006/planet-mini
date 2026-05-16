@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { apiFetch } from '../lib/api';
 
 type User = {
   id: string;
@@ -36,9 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchSession = async () => {
     try {
       console.log('🔍 AuthContext - Fetching session...');
-      const res = await fetch("/api/auth/session", {
-        credentials: "include",
-      });
+      const res = await apiFetch("/api/auth/session");
       if (!res.ok) {
         console.log('❌ AuthContext - Session fetch failed:', res.status);
         setUser(null);
@@ -89,9 +88,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      await fetch("/api/auth/logout", {
+      await apiFetch("/api/auth/logout", {
         method: "POST",
-        credentials: "include",
       });
       setUser(null);
       setPreviousUser(null);

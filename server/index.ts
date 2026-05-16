@@ -437,4 +437,11 @@ if (!process.env.VERCEL) {
   });
 }
 
+// For Vercel serverless deployment
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
+
 export default app;

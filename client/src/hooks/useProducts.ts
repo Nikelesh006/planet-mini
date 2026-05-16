@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 import type { ProductResponse } from "@shared/routes";
+import { apiFetch } from '../lib/api';
 
 
 
@@ -38,7 +39,7 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
   
 
-  const response = await fetch(url);
+  const response = await apiFetch(url);
 
   if (!response.ok) {
 
@@ -58,7 +59,7 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 const fetchProduct = async (slug: string): Promise<ProductResponse> => {
 
-  const response = await fetch(`/api/products/${slug}`);
+  const response = await apiFetch(`/api/products/${slug}`);
 
   if (!response.ok) {
 
@@ -78,7 +79,7 @@ const fetchProduct = async (slug: string): Promise<ProductResponse> => {
 
 const fetchProductById = async (id: string): Promise<ProductResponse> => {
 
-  const response = await fetch(`/api/products/id/${id}`);
+  const response = await apiFetch(`/api/products/id/${id}`);
 
   if (!response.ok) {
 
@@ -98,7 +99,7 @@ const fetchProductById = async (id: string): Promise<ProductResponse> => {
 
 const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undefined> => {
 
-  const response = await fetch(`/api/products/${slug}`);
+  const response = await apiFetch(`/api/products/${slug}`);
 
   if (!response.ok) {
 
@@ -375,7 +376,7 @@ export const useDeleteProduct = () => {
 
   return async (productId: string) => {
 
-    const response = await fetch(`/api/products/${productId}`, {
+    const response = await apiFetch(`/api/products/${productId}`, {
 
       method: 'DELETE',
 
