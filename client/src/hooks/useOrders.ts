@@ -1,15 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from '../lib/api';
 
 async function fetchOrders(userId: string) {
   if (!userId) return [];
   
   console.log(`🔍 Fetching orders for userId: ${userId}`);
   
-  const response = await fetch(`/api/orders/${userId}`, {
-    credentials: "include",
+  const response = await apiFetch(`/api/orders/${userId}`, {
     headers: {
-      'x-user-id': userId,
-      'Content-Type': 'application/json'
+      'x-user-id': userId
     }
   });
   

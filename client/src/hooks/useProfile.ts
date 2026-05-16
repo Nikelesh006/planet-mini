@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { apiFetch } from '../lib/api';
 
 const API_BASE = '/api/profile';
 
@@ -6,7 +7,7 @@ export function useProfile(userId: string) {
   return useQuery({
     queryKey: ['profile', userId],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE}/${userId}`);
+      const response = await apiFetch(`${API_BASE}/${userId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch profile');
       }
@@ -21,9 +22,8 @@ export function useUpdateProfile(userId: string) {
   
   return useMutation({
     mutationFn: async (data: any) => {
-      const response = await fetch(`${API_BASE}/${userId}`, {
+      const response = await apiFetch(`${API_BASE}/${userId}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
       if (!response.ok) {
@@ -42,9 +42,8 @@ export function useUpdateWishlist(userId: string) {
   
   return useMutation({
     mutationFn: async (productId: string) => {
-      const response = await fetch(`${API_BASE}/${userId}/wishlist`, {
+      const response = await apiFetch(`${API_BASE}/${userId}/wishlist`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ productId }),
       });
       if (!response.ok) {
@@ -63,7 +62,7 @@ export function useRemoveFromWishlist(userId: string) {
   
   return useMutation({
     mutationFn: async (productId: string) => {
-      const response = await fetch(`${API_BASE}/${userId}/wishlist/${productId}`, {
+      const response = await apiFetch(`${API_BASE}/${userId}/wishlist/${productId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -82,9 +81,8 @@ export function useAddBabyInfo(userId: string) {
   
   return useMutation({
     mutationFn: async (babyData: { name: string; age: number; gender: string }) => {
-      const response = await fetch(`${API_BASE}/${userId}/baby`, {
+      const response = await apiFetch(`${API_BASE}/${userId}/baby`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(babyData),
       });
       if (!response.ok) {
@@ -103,7 +101,7 @@ export function useDeleteBabyInfo(userId: string) {
   
   return useMutation({
     mutationFn: async (babyIndex: number) => {
-      const response = await fetch(`${API_BASE}/${userId}/baby/${babyIndex}`, {
+      const response = await apiFetch(`${API_BASE}/${userId}/baby/${babyIndex}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -122,9 +120,8 @@ export function useUpdateProfileImage(userId: string) {
   
   return useMutation({
     mutationFn: async (imageUrl: string) => {
-      const response = await fetch(`${API_BASE}/${userId}/image`, {
+      const response = await apiFetch(`${API_BASE}/${userId}/image`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageUrl }),
       });
       if (!response.ok) {

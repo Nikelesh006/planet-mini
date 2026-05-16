@@ -1,5 +1,6 @@
 // Address API helper functions
 import { toast } from 'react-hot-toast';
+import { apiFetch } from '../lib/api';
 
 export interface Address {
   _id: string;
@@ -78,9 +79,8 @@ export const addressApi = {
         headers['x-user-id'] = userId;
       }
       
-      const response = await fetch('/api/addresses', {
+      const response = await apiFetch('/api/addresses', {
         method: 'GET',
-        credentials: 'include',
         headers,
       });
 
@@ -122,9 +122,8 @@ export const addressApi = {
         headers['x-user-id'] = userId;
       }
       
-      const response = await fetch('/api/addresses', {
+      const response = await apiFetch('/api/addresses', {
         method: 'POST',
-        credentials: 'include',
         headers,
         body: JSON.stringify(addressData),
       });
@@ -173,9 +172,8 @@ export const addressApi = {
         headers['x-user-id'] = userId;
       }
       
-      const response = await fetch(`/api/addresses/${addressId}`, {
+      const response = await apiFetch(`/api/addresses/${addressId}`, {
         method: 'PUT',
-        credentials: 'include',
         headers,
         body: JSON.stringify(addressData),
       });
@@ -219,9 +217,8 @@ export const addressApi = {
         headers['x-user-id'] = userId;
       }
       
-      const response = await fetch(`/api/addresses/${addressId}`, {
+      const response = await apiFetch(`/api/addresses/${addressId}`, {
         method: 'DELETE',
-        credentials: 'include',
         headers,
       });
 

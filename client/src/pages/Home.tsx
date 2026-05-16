@@ -22,6 +22,7 @@ import ProductGrid from "@/components/ProductGrid";
 import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift, ChevronLeft, ChevronRight, Mail, Leaf, Shield } from "lucide-react";
 
 import { useState, useEffect, useRef } from "react";
+import { apiFetch } from "@/lib/api";
 
 
 
@@ -195,7 +196,7 @@ export default function Home() {
   useEffect(() => {
     const fetchBanners = async () => {
       try {
-        const response = await fetch('/api/banners');
+        const response = await apiFetch('/api/banners');
         if (response.ok) {
           const result = await response.json();
           if (result.data && result.data.length > 0) {

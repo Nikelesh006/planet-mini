@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { apiFetch } from '../lib/api';
 
 type User = {
   sub?: string;
@@ -26,9 +27,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchSession = async () => {
     try {
-      const res = await fetch("/api/auth/session", {
-        credentials: "include",
-      });
+      const res = await apiFetch("/api/auth/session");
       if (!res.ok) {
         setUser(null);
       } else {

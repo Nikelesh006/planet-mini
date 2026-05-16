@@ -1,14 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from '../lib/api';
 
 async function fetchAllOrders() {
   console.log('🔍 Fetching all orders for admin');
   
-  const response = await fetch('/api/admin/orders', {
-    credentials: "include",
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
+  const response = await apiFetch('/api/admin/orders');
   
   console.log(`📡 Admin Orders API response status: ${response.status}`);
   

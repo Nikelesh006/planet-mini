@@ -66,9 +66,19 @@ app.use(express.urlencoded({ extended: false }));
 
 // CORS + cookies
 
-const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5002";
+const allowedOrigins = [
+  process.env.FRONTEND_URL || "http://localhost:5002",
+  "https://planet-mini.vercel.app",
+  // Add your Railway backend URL here if needed for local development
+  // "http://localhost:5001"
+];
 
-app.use(cors({ origin: frontendUrl, credentials: true }));
+app.use(cors({ 
+  origin: allowedOrigins, 
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 app.use(cookieParser());
 
@@ -160,12 +170,6 @@ app.use((req, res, next) => {
 
 
 
-// ---------- ROOT ROUTE FOR HEALTHCHECK ----------
-
-app.get('/', (req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
-
 // ---------- GOOGLE OAUTH ROUTES ----------
 
 
@@ -176,9 +180,10 @@ app.get("/api/auth/google", (req: Request, res: Response) => {
 
   const clientId = process.env.GOOGLE_CLIENT_ID as string;
 
+  const backendUrl = process.env.BACKEND_URL || `http://localhost:${process.env.PORT || "5001"}`;
   const redirectUri = encodeURIComponent(
 
-    `${frontendUrl}/api/auth/google/callback`,
+    `${backendUrl}/api/auth/google/callback`,
 
   );
 
@@ -216,6 +221,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
   if (!code) {
 
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5002";
     return res.redirect(`${frontendUrl}?error=missing_code`);
 
   }
@@ -242,7 +248,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
         grant_type: "authorization_code",
 
-        redirect_uri: `${frontendUrl}/api/auth/google/callback`,
+        redirect_uri: `${process.env.FRONTEND_URL || "http://localhost:5002"}/api/auth/google/callback`,
 
       }),
 
@@ -256,7 +262,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
       console.error("Google token error:", tokenJson.error);
 
-      return res.redirect(`${frontendUrl}?error=token_error`);
+      return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5002"}?error=token_error`);
 
     }
 
@@ -322,13 +328,13 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
 
 
-    return res.redirect(`${frontendUrl}/`);
+    return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5002"}/`);
 
   } catch (err) {
 
     console.error("Google callback error:", err);
 
-    return res.redirect(`${frontendUrl}?error=auth_failed`);
+    return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5002"}?error=auth_failed`);
 
   }
 
@@ -396,58 +402,83 @@ app.post("/api/auth/logout", (req: Request, res: Response) => {
 
 // ---------- EXISTING BOOTSTRAP FLOW ----------
 
-let isInitialized = false;
 
-export const initApp = async () => {
-  if (isInitialized) return app;
+
+
+
+(async () => {
 
   await registerRoutes(httpServer, app);
+
   await connectDB();
 
+
+
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+
     const status = err.status || err.statusCode || 500;
+
     const message = err.message || "Internal Server Error";
+
+
 
     console.error("Internal Server Error:", err);
 
+
+
     if (res.headersSent) {
+
       return next(err);
+
     }
 
+
+
     return res.status(status).json({ message });
+
   });
 
-  if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
+
+
+  if (process.env.NODE_ENV === "production") {
+
     serveStatic(app);
-  } else if (process.env.NODE_ENV !== "production") {
+
+  } else {
+
     const { setupVite } = await import("./vite");
+
     await setupVite(httpServer, app);
+
   }
 
-  isInitialized = true;
-  return app;
-};
 
-if (!process.env.VERCEL) {
-  initApp().then(() => {
-    const port = parseInt(process.env.PORT || "5001", 10);
-    httpServer.listen(
-      {
-        port,
-        host: "0.0.0.0",
-      },
-      () => {
-        log(`serving on port ${port}`);
-      },
-    );
-  });
-}
 
-// For Vercel serverless deployment
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+  // (You already call connectDB above; this second call is redundant, but left as-is per your code)
 
-export default app;
+  await connectDB();
+
+
+
+  const port = parseInt(process.env.PORT || "5001", 10);
+
+  httpServer.listen(
+
+    {
+
+      port,
+
+      host: "0.0.0.0",
+
+    },
+
+    () => {
+
+      log(`serving on port ${port}`);
+
+    },
+
+  );
+
+})();
+

@@ -7,6 +7,7 @@ import { ChevronDown, ArrowLeft, Minus, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
 import { useRazorpay } from '@/hooks/useRazorpay';
+import { apiFetch } from '@/lib/api';
 
 export default function CartPage() {
   const { state, removeFromCart, increaseQuantity, decreaseQuantity, clearCart } = useCart();
@@ -118,10 +119,9 @@ export default function CartPage() {
       const totalAmount = subtotal;
 
       // Step 1: Create Razorpay order
-      const orderResponse = await fetch('/api/payment/create-order', {
+      const orderResponse = await apiFetch('/api/payment/create-order', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'x-user-id': currentUserId || ''
         },
@@ -169,23 +169,15 @@ export default function CartPage() {
         handler: async (response) => {
           try {
             // Step 4: Verify payment and create order
-            const verifyResponse = await fetch('/api/payment/verify', {
+            const verifyResponse = await apiFetch('/api/payment/verify', {
               method: 'POST',
               headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 'x-user-id': currentUserId || ''
               },
               body: JSON.stringify({
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-                orderData: {
-                  ...orderData,
-                  userId: currentUserId,
-                  paymentId: response.razorpay_payment_id,
-                  orderId: response.razorpay_order_id
-                }
+                razorpay_signature: response.razorpay_signature
               })
             });
 
@@ -194,18 +186,16 @@ export default function CartPage() {
               console.log('Payment verified:', verifyResult);
 
               // Create actual order after successful payment
-              const orderResponse = await fetch('/api/orders', {
+              const orderResponse = await apiFetch('/api/orders', {
                 method: 'POST',
                 headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${localStorage.getItem('token')}`,
                   'x-user-id': currentUserId || ''
                 },
                 body: JSON.stringify({
                   ...orderData,
                   userId: currentUserId,
                   paymentId: response.razorpay_payment_id,
-                  paymentStatus: 'paid',
+                  orderId: response.razorpay_order_id,
                   status: 'completed'
                 })
               });
