@@ -3,15 +3,11 @@
   "outputDirectory": "dist/public",
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://planet-mini-production.up.railway.app/api/$1"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
   "env": {
-    "VITE_API_URL": "/api"
+    "VITE_API_URL": "https://planet-mini-production.up.railway.app"
   }
 }

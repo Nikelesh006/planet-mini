@@ -140,11 +140,11 @@ router.get("/google/callback",
 
     console.log('🔥 Google callback - User:', user);
 
-    
+
 
     const token = jwt.sign(
 
-      { id: user.id, email: user.email, name: user.name, image: user.picture },
+      { sub: user.id, email: user.email, name: user.name, picture: user.picture },
 
       process.env.JWT_SECRET!,
 
@@ -228,7 +228,7 @@ router.get("/google/callback",
 
     });
 
-    
+
 
     console.log('✅ Google callback - Token set, redirecting to /');
 
@@ -246,7 +246,7 @@ router.get("/google/callback",
 
 // Get current user - with better error handling
 
-router.get("/me", 
+router.get("/me",
 
   passport.authenticate("jwt", { session: false }),
 
@@ -264,7 +264,7 @@ router.get("/me",
 
 // Get current session (for useAuth hook)
 
-router.get("/session", 
+router.get("/session",
 
   passport.authenticate("jwt", { session: false }),
 
