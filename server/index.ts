@@ -388,83 +388,51 @@ app.post("/api/auth/logout", (req: Request, res: Response) => {
 
 // ---------- EXISTING BOOTSTRAP FLOW ----------
 
+let isInitialized = false;
 
-
-
-
-(async () => {
-
+export const initApp = async () => {
+  if (isInitialized) return app;
+  
   await registerRoutes(httpServer, app);
-
   await connectDB();
 
-
-
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-
     const status = err.status || err.statusCode || 500;
-
     const message = err.message || "Internal Server Error";
-
-
 
     console.error("Internal Server Error:", err);
 
-
-
     if (res.headersSent) {
-
       return next(err);
-
     }
 
-
-
     return res.status(status).json({ message });
-
   });
 
-
-
-  if (process.env.NODE_ENV === "production") {
-
+  if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
     serveStatic(app);
-
-  } else {
-
+  } else if (process.env.NODE_ENV !== "production") {
     const { setupVite } = await import("./vite");
-
     await setupVite(httpServer, app);
-
   }
 
+  isInitialized = true;
+  return app;
+};
 
+if (!process.env.VERCEL) {
+  initApp().then(() => {
+    const port = parseInt(process.env.PORT || "5001", 10);
+    httpServer.listen(
+      {
+        port,
+        host: "0.0.0.0",
+      },
+      () => {
+        log(`serving on port ${port}`);
+      },
+    );
+  });
+}
 
-  // (You already call connectDB above; this second call is redundant, but left as-is per your code)
-
-  await connectDB();
-
-
-
-  const port = parseInt(process.env.PORT || "5001", 10);
-
-  httpServer.listen(
-
-    {
-
-      port,
-
-      host: "0.0.0.0",
-
-    },
-
-    () => {
-
-      log(`serving on port ${port}`);
-
-    },
-
-  );
-
-})();
-
+export default app;
