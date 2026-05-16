@@ -160,6 +160,12 @@ app.use((req, res, next) => {
 
 
 
+// ---------- ROOT ROUTE FOR HEALTHCHECK ----------
+
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
+
 // ---------- GOOGLE OAUTH ROUTES ----------
 
 
