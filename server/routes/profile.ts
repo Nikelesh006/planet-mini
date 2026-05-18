@@ -10,14 +10,14 @@ const router = express.Router();
 const requireAuth = (req: any, res: any, next: any) => {
   // Check cookie first, then Authorization header
   let token = req.cookies?.jwt;
-  
+
   if (!token) {
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.substring(7);
     }
   }
-  
+
   if (!token) {
     return res.status(401).json({ error: 'No token provided' });
   }
@@ -40,7 +40,7 @@ router.get('/:userId', requireAuth, async (req: any, res: any) => {
 
     const userId = req.params.userId;
 
-    
+
 
     // Security: only allow own profile
 
@@ -50,30 +50,34 @@ router.get('/:userId', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
 
-    let profile = await Profile.findOne({ userId });
 
-    
+    // Find profile by either userId or email to handle merges/migrations
+    let profile = await Profile.findOne({
+      $or: [
+        { userId },
+        { email: req.user.email }
+      ]
+    });
 
-    // Auto-create if missing (your 27min requirement)
-
-    if (!profile) {
-
+    if (profile) {
+      // If profile exists but userId is different (e.g. Google OAuth migrating an old local session), merge them!
+      if (profile.userId !== userId) {
+        console.log(`🔄 Merging profile for email ${profile.email}. Updating userId from ${profile.userId} to ${userId}`);
+        profile.userId = userId;
+        await profile.save();
+        console.log('✅ Profile merged successfully!');
+      }
+    } else {
+      // Auto-create if missing (your 27min requirement)
       try {
         profile = await Profile.create({
-
           userId,
-
           firstName: req.user.name?.split(' ')[0] || 'User',
-
           lastName: req.user.name?.split(' ').slice(1).join(' ') || '',
-
           email: req.user.email,
-
           wishlist: [],
           cartItems: []
-
         });
       } catch (createError: any) {
         // Handle duplicate key error by finding existing profile
@@ -103,7 +107,7 @@ router.get('/:userId', requireAuth, async (req: any, res: any) => {
       }
     }
 
-    
+
 
     // Calculate orders stats
     const orders = profile.orders || [];
@@ -134,7 +138,7 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
     const userId = req.params.userId;
 
-    
+
 
     console.log('=== PROFILE UPDATE REQUEST START ===');
 
@@ -144,7 +148,7 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
     console.log('req.body:', req.body);
 
-    
+
 
     if (req.user.id !== userId) {
 
@@ -152,7 +156,7 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
+
 
     // First try to find existing profile by userId or email to handle cross-auth merges
     let existingProfile = await Profile.findOne({
@@ -163,7 +167,7 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
     });
 
     console.log('Existing profile:', existingProfile);
-    
+
     if (existingProfile && existingProfile.userId !== userId) {
       console.log(`🔄 Merging profile in POST: Updating userId from ${existingProfile.userId} to ${userId}`);
       existingProfile.userId = userId;
@@ -208,7 +212,7 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
       existingProfile.updatedAt = new Date();
 
-      
+
 
       await existingProfile.save();
 
@@ -216,7 +220,7 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
+
 
     res.json(existingProfile);
 
@@ -244,7 +248,7 @@ router.post('/:userId/baby', requireAuth, async (req: any, res: any) => {
 
     const userId = req.params.userId;
 
-    
+
 
     if (req.user.id !== userId) {
 
@@ -252,7 +256,7 @@ router.post('/:userId/baby', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
+
 
     const profile = await Profile.findOneAndUpdate(
 
@@ -264,7 +268,7 @@ router.post('/:userId/baby', requireAuth, async (req: any, res: any) => {
 
     );
 
-    
+
 
     res.json(profile);
 
@@ -287,7 +291,7 @@ router.delete('/:userId/baby/:index', requireAuth, async (req: any, res: any) =>
     const userId = req.params.userId;
     const index = parseInt(req.params.index);
 
-    
+
 
     if (req.user.id !== userId) {
 
@@ -295,7 +299,7 @@ router.delete('/:userId/baby/:index', requireAuth, async (req: any, res: any) =>
 
     }
 
-    
+
     const profile = await Profile.findOne({ userId });
     if (!profile) {
       return res.status(404).json({ error: 'Profile not found' });
@@ -332,7 +336,7 @@ router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     const userId = req.params.userId;
 
-    
+
 
     if (req.user.id !== userId) {
 
@@ -340,11 +344,11 @@ router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
+
 
     let profile = await Profile.findOne({ userId });
 
-    
+
 
     // Auto-create profile if not found
 
@@ -370,7 +374,7 @@ router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
+
 
     // Check if item already exists in cart
     const existingItemIndex = profile.cartItems.findIndex((item: any) => item.id === req.body.id);
@@ -409,7 +413,7 @@ router.get('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     const userId = req.params.userId;
 
-    
+
 
     if (req.user.id !== userId) {
 
@@ -417,11 +421,11 @@ router.get('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
+
 
     let profile = await Profile.findOne({ userId });
 
-    
+
 
     // Auto-create profile if not found
 
@@ -455,7 +459,7 @@ router.get('/:userId/cart', requireAuth, async (req: any, res: any) => {
             } catch (indexError: any) {
               console.log('ℹ️ Index drop failed:', indexError?.message || indexError);
             }
-            
+
             profile = await Profile.create({
               userId,
               firstName: req.user.name?.split(' ')[0] || 'User',
@@ -474,7 +478,7 @@ router.get('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     }
 
-    
+
 
     res.json(profile.cartItems || []);
 
@@ -496,7 +500,7 @@ router.delete('/:userId/cart/:itemId', requireAuth, async (req: any, res: any) =
 
     const { userId, itemId } = req.params;
 
-    
+
 
     if (req.user.id !== userId) {
 
@@ -504,7 +508,7 @@ router.delete('/:userId/cart/:itemId', requireAuth, async (req: any, res: any) =
 
     }
 
-    
+
 
     const profile = await Profile.findOne({ userId });
 
@@ -514,7 +518,7 @@ router.delete('/:userId/cart/:itemId', requireAuth, async (req: any, res: any) =
 
     }
 
-    
+
     // Remove item from cartItems array
     profile.cartItems = profile.cartItems.filter((item: any) => item.id !== itemId);
     const updatedProfile = await profile.save();
@@ -621,7 +625,7 @@ router.post('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
   try {
     const userId = req.params.userId;
     const { productId } = req.body;
-    
+
     const tokenUserId = req.user.sub || req.user.id;
     if (tokenUserId !== userId) {
       return res.status(403).json({ error: 'Unauthorized' });
@@ -666,11 +670,11 @@ router.post('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
 router.get('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
   try {
     const userId = req.params.userId;
-    
+
     if (req.user.id !== userId) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
-    
+
     // Find profile by either userId or email to handle merges/migrations
     let profile = await Profile.findOne({
       $or: [
@@ -710,7 +714,7 @@ router.get('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
             } catch (indexError: any) {
               console.log('ℹ️ Index drop failed:', indexError?.message || indexError);
             }
-            
+
             profile = await Profile.create({
               userId,
               firstName: req.user.name?.split(' ')[0] || 'User',
@@ -725,7 +729,7 @@ router.get('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
         }
       }
     }
-    
+
     res.json(profile.wishlist || []);
   } catch (error) {
     console.error('❌ Failed to fetch wishlist:', error);
@@ -765,17 +769,17 @@ router.post('/:userId/image', requireAuth, async (req: any, res: any) => {
     await profile.save();
 
     console.log('✅ Profile image updated for user:', userId);
-    res.json({ 
-      success: true, 
+    res.json({
+      success: true,
       image: profile.image,
-      message: 'Profile image updated successfully' 
+      message: 'Profile image updated successfully'
     });
 
   } catch (error: any) {
     console.error('❌ Error updating profile image:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to update profile image',
-      details: error.message 
+      details: error.message
     });
   }
 });
@@ -784,7 +788,7 @@ router.post('/:userId/image', requireAuth, async (req: any, res: any) => {
 router.delete('/:userId/wishlist/:productId', requireAuth, async (req: any, res: any) => {
   try {
     const { userId, productId } = req.params;
-    
+
     const tokenUserId = req.user.sub || req.user.id;
     if (tokenUserId !== userId) {
       return res.status(403).json({ error: 'Unauthorized' });
@@ -796,13 +800,13 @@ router.delete('/:userId/wishlist/:productId', requireAuth, async (req: any, res:
       { $pull: { wishlist: productId } },
       { returnDocument: 'after', runValidators: false }
     );
-    
+
     if (!updatedProfile) {
       return res.status(404).json({ error: 'Profile not found' });
     }
-    
+
     console.log('🗑️ Removed from wishlist:', productId, 'Updated wishlist:', updatedProfile.wishlist);
-    
+
     res.json({ success: true, wishlist: updatedProfile.wishlist });
   } catch (error) {
     console.error('❌ Failed to remove from wishlist:', error);
