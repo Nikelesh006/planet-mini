@@ -37,6 +37,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchSession = async () => {
     try {
       console.log('🔍 AuthContext - Fetching session...');
+      
+      // Check if there is a JWT token in the URL query string (redirected from Google OAuth callback)
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get('token');
+      if (urlToken) {
+        console.log('🔑 Found JWT token in URL query parameter! Saving to localStorage...');
+        localStorage.setItem('jwtToken', urlToken);
+        
+        // Scrub token from URL address bar for clean UX
+        params.delete('token');
+        const cleanQuery = params.toString() ? '?' + params.toString() : '';
+        window.history.replaceState({}, '', window.location.pathname + cleanQuery);
+      }
+
       const res = await apiFetch("/api/auth/session");
       if (!res.ok) {
         console.log('❌ AuthContext - Session fetch failed:', res.status);
@@ -93,15 +107,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       setUser(null);
       setPreviousUser(null);
-      // Clear welcome flags on logout
+      // Clear welcome flags and token on logout
       localStorage.removeItem('hasSeenWelcome');
       localStorage.removeItem('lastSeenUserId');
+      localStorage.removeItem('jwtToken');
     } catch (error) {
       console.error("Logout error:", error);
       setUser(null);
       setPreviousUser(null);
       localStorage.removeItem('hasSeenWelcome');
       localStorage.removeItem('lastSeenUserId');
+      localStorage.removeItem('jwtToken');
     }
   };
 

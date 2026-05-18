@@ -327,7 +327,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
 
 
-    return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5002"}/`);
+    return res.redirect(`${process.env.FRONTEND_URL || "http://localhost:5002"}/?token=${jwtToken}`);
 
   } catch (err) {
 
@@ -346,43 +346,36 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 app.get("/api/auth/session", (req: Request, res: Response) => {
   console.log("🔍 /api/auth/session - Cookies:", req.cookies);
   console.log("🔍 /api/auth/session - Headers:", req.headers.cookie);
-  const token = req.cookies?.jwt;
+  
+  // Accept token from cookie or Authorization header
+  let token = req.cookies?.jwt;
+  
+  if (!token) {
+    const authHeader = req.headers['authorization'];
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+    }
+  }
 
   if (!token) {
-    console.log("❌ /api/auth/session - No JWT token found in cookies");
+    console.log("❌ /api/auth/session - No JWT token found in cookies or headers");
     return res.status(401).json({ user: null });
   }
-
-
 
   try {
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
-
     return res.json({
-
       user: {
-
         id: decoded.id,
-
         email: decoded.email,
-
         name: decoded.name,
-
         image: decoded.avatar,
-
       },
-
     });
-
   } catch (err) {
-
     res.clearCookie("jwt");
-
     return res.status(401).json({ user: null });
-
   }
-
 });
 
 
