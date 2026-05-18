@@ -154,20 +154,24 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
     
 
-    // First try to find existing profile
-
-    let existingProfile = await Profile.findOne({ userId });
+    // First try to find existing profile by userId or email to handle cross-auth merges
+    let existingProfile = await Profile.findOne({
+      $or: [
+        { userId },
+        { email: req.body.email || req.user.email }
+      ]
+    });
 
     console.log('Existing profile:', existingProfile);
-
     
+    if (existingProfile && existingProfile.userId !== userId) {
+      console.log(`🔄 Merging profile in POST: Updating userId from ${existingProfile.userId} to ${userId}`);
+      existingProfile.userId = userId;
+    }
 
     if (!existingProfile) {
-
       // Create new profile if doesn't exist
-
       existingProfile = new Profile({
-
         userId,
 
         firstName: req.body.firstName,
@@ -667,10 +671,24 @@ router.get('/:userId/wishlist', requireAuth, async (req: any, res: any) => {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     
-    let profile = await Profile.findOne({ userId });
-    
-    // Auto-create profile if not found
-    if (!profile) {
+    // Find profile by either userId or email to handle merges/migrations
+    let profile = await Profile.findOne({
+      $or: [
+        { userId },
+        { email: req.user.email }
+      ]
+    });
+
+    if (profile) {
+      // If profile exists but userId is different (e.g. Google OAuth migrating an old local session), merge them!
+      if (profile.userId !== userId) {
+        console.log(`🔄 Merging profile for email ${profile.email}. Updating userId from ${profile.userId} to ${userId}`);
+        profile.userId = userId;
+        await profile.save();
+        console.log('✅ Profile merged successfully!');
+      }
+    } else {
+      // Auto-create if missing (your 27min requirement)
       try {
         profile = await Profile.create({
           userId,
