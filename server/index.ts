@@ -248,7 +248,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
         grant_type: "authorization_code",
 
-        redirect_uri: `${process.env.FRONTEND_URL || "http://localhost:5002"}/api/auth/google/callback`,
+        redirect_uri: `${process.env.BACKEND_URL || `http://localhost:${process.env.PORT || "5001"}`}/api/auth/google/callback`,
 
       }),
 
