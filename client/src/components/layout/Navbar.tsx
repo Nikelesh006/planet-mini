@@ -537,36 +537,52 @@ export default function Navbar() {
                   )}
                 </Link>
                 <div className="h-px bg-gray-200 my-4" />
-                <Link
-                  href="/profile"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={cn(
-                    "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
-                    "hover:bg-gray-100 hover:text-black active:bg-gray-200",
-                    location === '/profile'
-                      ? "text-black bg-gray-100"
-                      : "text-gray-700"
-                  )}
-                >
-                  {isLoading ? (
-                    <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
-                  ) : user ? (
-                    profile?.image || user.image ? (
-                      <img src={profile?.image || user.image} alt="Avatar" className="w-6 h-6 rounded-full" draggable={false} />
+                {user ? (
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={cn(
+                      "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                      "hover:bg-gray-100 hover:text-black active:bg-gray-200",
+                      location === '/profile'
+                        ? "text-black bg-gray-100"
+                        : "text-gray-700"
+                    )}
+                  >
+                    {profile?.image || user.image ? (
+                      <img src={profile?.image || user.image} alt="Avatar" className="w-6 h-6 rounded-full object-cover" draggable={false} />
                     ) : (
                       <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                         <span className="text-white text-xs font-bold">
                           {user.name?.charAt(0) || 'U'}
                         </span>
                       </div>
-                    )
-                  ) : (
-                    <User className="w-5 h-5" />
-                  )}
-                  <span className="text-sm sm:text-base font-medium">
-                    {isLoading ? '' : user ? user.name || 'Profile' : 'Profile'}
-                  </span>
-                </Link>
+                    )}
+                    <span className="text-sm sm:text-base font-medium">
+                      {user.name || 'Profile'}
+                    </span>
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openSignInModal();
+                    }}
+                    className={cn(
+                      "w-full text-left text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                      "hover:bg-gray-100 hover:text-black active:bg-gray-200 text-gray-700"
+                    )}
+                  >
+                    {isLoading ? (
+                      <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
+                    ) : (
+                      <User className="w-5 h-5" />
+                    )}
+                    <span className="text-sm sm:text-base font-medium">
+                      Profile
+                    </span>
+                  </button>
+                )}
                 <Link
                   href="/orders"
                   onClick={() => setMobileMenuOpen(false)}
