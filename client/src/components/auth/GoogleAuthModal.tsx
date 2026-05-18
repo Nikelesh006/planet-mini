@@ -2,6 +2,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, UserPlus, LogIn } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../../lib/api';
 
 interface GoogleAuthModalProps {
   isOpen: boolean;
@@ -33,7 +34,7 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
   }, [initialMode]);
 
   const handleGoogleAuth = () => {
-    window.location.href = '/api/auth/google';
+    window.location.href = `${API_BASE_URL}/api/auth/google`;
   };
 
   return (
