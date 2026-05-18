@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_BASE_URL } from "../lib/api";
 
 // This is a test component to create sample orders
 export default function OrdersTest() {
@@ -31,10 +32,12 @@ export default function OrdersTest() {
         trackingNumber: "TRACK123456789"
       };
 
-      const response = await fetch("/api/orders", {
+      const token = localStorage.getItem('jwtToken');
+      const response = await fetch(`${API_BASE_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         },
         credentials: "include",
         body: JSON.stringify(sampleOrder),

@@ -31,6 +31,7 @@ import { useCloudinary } from "@/hooks/useCloudinary";
 
 
 import { useProduct, useProductById } from "@/hooks/useProducts";
+import { API_BASE_URL } from "@/lib/api";
 
 
 
@@ -1578,7 +1579,8 @@ export default function AddProduct() {
 
 
 
-        const response = await fetch(`/api/products/${editId}`, {
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch(`${API_BASE_URL}/api/products/${editId}`, {
 
 
 
@@ -1603,6 +1605,7 @@ export default function AddProduct() {
 
 
             'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
 
 
 
@@ -1858,7 +1861,8 @@ export default function AddProduct() {
 
 
 
-        const response = await fetch('/api/products', {
+        const token = localStorage.getItem('jwtToken');
+        const response = await fetch(`${API_BASE_URL}/api/products`, {
 
 
 
@@ -1883,6 +1887,7 @@ export default function AddProduct() {
 
 
             'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
 
 
 

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { API_BASE_URL } from '../lib/api';
 
 // Fast compression - optimized for 1-second upload
 const compressImage = (file: File, maxWidth: number = 600, quality: number = 0.65): Promise<Blob> => {
@@ -120,12 +121,14 @@ export const useCloudinary = () => {
 
       setUploadProgress(40); // Start upload
 
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.post<UploadResponse>(
-        '/api/upload/images',
+        `${API_BASE_URL}/api/upload/images`,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
           },
           onUploadProgress: (progressEvent) => {
             const progress = progressEvent.total
@@ -174,12 +177,14 @@ export const useCloudinary = () => {
 
       setUploadProgress(40);
 
+      const token = localStorage.getItem('jwtToken');
       const response = await axios.post<SingleUploadResponse>(
-        '/api/upload/image',
+        `${API_BASE_URL}/api/upload/image`,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
           },
           onUploadProgress: (progressEvent) => {
             const progress = progressEvent.total

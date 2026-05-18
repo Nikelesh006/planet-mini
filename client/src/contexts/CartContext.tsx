@@ -1,8 +1,6 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-
-
-
 import { useAuth } from './AuthContext';
+import { API_BASE_URL } from '../lib/api';
 
 
 
@@ -352,7 +350,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { user } = useAuth();
 
   const getAuthToken = () => {
-    return document.cookie.split('; ').find(row => row.startsWith('jwt='))?.split('=')[1];
+    return document.cookie.split('; ').find(row => row.startsWith('jwt='))?.split('=')[1] || localStorage.getItem('jwtToken');
   };
 
   // Load cart from Profile API on mount or when user changes
@@ -374,7 +372,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/cart`, {
+      const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/cart`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -394,7 +392,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/cart`, {
+      const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -420,7 +418,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/cart/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/cart/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -466,7 +464,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      const url = `/api/profile/${user.id}/cart/${id}/increase`;
+      const url = `${API_BASE_URL}/api/profile/${user.id}/cart/${id}/increase`;
       console.log('Making PATCH request to:', url);
       console.log('Token present:', !!token);
 
@@ -532,7 +530,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      const url = `/api/profile/${user.id}/cart/${id}/decrease`;
+      const url = `${API_BASE_URL}/api/profile/${user.id}/cart/${id}/decrease`;
       console.log('Making PATCH request to:', url);
 
       const response = await fetch(url, {
@@ -565,7 +563,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/cart`, {
+      const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/cart`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, boolean, real } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, real } from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -14,8 +14,8 @@ export const products = sqliteTable("products", {
   image: text("image").notNull(),
   rating: real("rating").notNull(),
   reviews: integer("reviews").notNull(),
-  inStock: integer("in_stock", { mode: "boolean" }).default(1),
-  isNew: integer("is_new", { mode: "boolean" }).default(0),
+  inStock: integer("in_stock", { mode: "boolean" }).default(true),
+  isNew: integer("is_new", { mode: "boolean" }).default(false),
   colors: text("colors"), // JSON string for SQLite
   sizes: text("sizes"), // JSON string for SQLite
 });

@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { toast } from 'react-hot-toast';
 import { useAuth } from './AuthContext';
+import { API_BASE_URL } from '../lib/api';
 
 interface LikedProduct {
   id: number;
@@ -36,7 +37,7 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
 
   const getAuthToken = () => {
-    return document.cookie.split('; ').find(row => row.startsWith('jwt='))?.split('=')[1];
+    return document.cookie.split('; ').find(row => row.startsWith('jwt='))?.split('=')[1] || localStorage.getItem('jwtToken');
   };
 
   // Load liked products from Profile API on mount or when user changes
@@ -58,7 +59,7 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/wishlist`, {
+      const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/wishlist`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -69,7 +70,7 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
         
         // Fetch full product details for each wishlist item
         const productPromises = wishlistIds.map(async (productId: string) => {
-          const productResponse = await fetch(`/api/products/id/${productId}`);
+          const productResponse = await fetch(`${API_BASE_URL}/api/products/id/${productId}`);
           if (productResponse.ok) {
             return await productResponse.json();
           }
@@ -116,7 +117,7 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/wishlist`, {
+      const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/wishlist`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -167,7 +168,7 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const token = getAuthToken();
-      const response = await fetch(`/api/profile/${user.id}/wishlist/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/wishlist/${productId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
