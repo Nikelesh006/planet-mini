@@ -7,9 +7,9 @@ export async function apiFetch(endpoint: string, options?: RequestInit) {
   const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
   
   const token = localStorage.getItem('jwtToken');
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options?.headers,
+    ...(options?.headers as Record<string, string>),
   };
 
   if (token) {
