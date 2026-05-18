@@ -221,7 +221,7 @@ export default function Profile() {
                     <input
                       type="tel"
                       placeholder="Phone"
-                      defaultValue=""
+                      defaultValue={profile?.phone || ''}
                       className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="phone"
                     />
@@ -237,28 +237,28 @@ export default function Profile() {
                     <input
                       type="text"
                       placeholder="Street Address"
-                      defaultValue=""
+                      defaultValue={profile?.address?.street || ''}
                       className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="street"
                     />
                     <input
                       type="text"
                       placeholder="City"
-                      defaultValue=""
+                      defaultValue={profile?.address?.city || ''}
                       className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="city"
                     />
                     <input
                       type="text"
                       placeholder="State"
-                      defaultValue=""
+                      defaultValue={profile?.address?.state || ''}
                       className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-primary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="state"
                     />
                     <input
                       type="text"
                       placeholder="Pincode"
-                      defaultValue=""
+                      defaultValue={profile?.address?.pincode || ''}
                       className="p-3 sm:p-4 border-2 border-gray-200 rounded-xl focus:border-secondary focus:outline-none transition-colors text-black text-sm sm:text-base"
                       id="pincode"
                     />
