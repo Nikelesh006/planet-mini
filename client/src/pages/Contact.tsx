@@ -141,7 +141,8 @@ export default function Contact() {
 
       {/* Contact Content */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-0 sm:py-16">
-        <div className="grid lg:grid-cols-3 gap-12">
+        <div className="bg-gray-100 rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-200 shadow-inner shadow-gray-200/70">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
           {/* Contact Information */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -154,29 +155,29 @@ export default function Contact() {
               </div>
               
               <div className="space-y-6">
-                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-sm hover:border-[#B4C49A] transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/80 hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Mail className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#F3F6EC] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Mail className="w-5 h-5 sm:w-7 sm:h-7 text-[#6F7F54]" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Email</h3>
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Email</h3>
                       <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">hello@planetmini.com</p>
                       <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
-                        <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                        <span className="w-2 h-2 bg-[#B4C49A] rounded-full animate-pulse"></span>
                         We respond within 24 hours
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-sm hover:border-[#B4C49A] transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/80 hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Phone className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#F3F6EC] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Phone className="w-5 h-5 sm:w-7 sm:h-7 text-[#6F7F54]" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Phone</h3>
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Phone</h3>
                       <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">+1 (555) 123-4567</p>
                       <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
@@ -186,13 +187,13 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-sm hover:border-[#B4C49A] transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/80 hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <MapPin className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#F3F6EC] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <MapPin className="w-5 h-5 sm:w-7 sm:h-7 text-[#6F7F54]" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Address</h3>
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Address</h3>
                       <p className="text-sm sm:text-base text-gray-700 font-medium">123 Baby Street</p>
                       <p className="text-sm sm:text-base text-gray-700 font-medium">New York, NY 10001</p>
                       <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
@@ -203,24 +204,24 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="group bg-white rounded-2xl p-4 sm:p-6 border-2 border-black hover:border-gray-700 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="group bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-sm hover:border-[#B4C49A] transition-all duration-300 hover:shadow-xl hover:shadow-gray-200/80 hover:-translate-y-1 cursor-pointer">
                   <div className="flex items-start gap-3 sm:gap-4">
-                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-red-100 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
-                      <Clock className="w-5 h-5 sm:w-7 sm:h-7 text-red-500" />
+                    <div className="w-10 h-10 sm:w-14 sm:h-14 bg-[#F3F6EC] rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+                      <Clock className="w-5 h-5 sm:w-7 sm:h-7 text-[#6F7F54]" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-red-600 transition-colors">Business Hours</h3>
+                      <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Business Hours</h3>
                       <div className="space-y-1">
                         <p className="text-sm sm:text-base text-gray-700 font-medium flex items-center gap-2">
-                          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Mon-Fri</span>
+                          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Mon-Fri</span>
                           9AM - 6PM
                         </p>
                         <p className="text-sm sm:text-base text-gray-700 font-medium flex items-center gap-2">
-                          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Saturday</span>
+                          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Saturday</span>
                           10AM - 4PM
                         </p>
                         <p className="text-sm sm:text-base text-gray-700 font-medium flex items-center gap-2">
-                          <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Sunday</span>
+                          <span className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded-full">Sunday</span>
                           Closed
                         </p>
                       </div>
@@ -237,10 +238,10 @@ export default function Contact() {
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
           >
-            <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 border-2 border-black shadow-lg hover:shadow-xl transition-all duration-300">
+            <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-100 shadow-xl shadow-gray-200/70 transition-all duration-300">
               <div className="text-center mb-6 sm:mb-8">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#F3F6EC] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 text-[#6F7F54]" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-bold text-black mb-2">
                   Get in Touch
@@ -251,13 +252,13 @@ export default function Contact() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="relative group">
-                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                    <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-[#6F7F54] transition-colors">
                       Your Name *
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <div className="w-5 h-5 bg-red-100 rounded-full flex items-center justify-center">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
+                        <div className="w-5 h-5 bg-[#F3F6EC] rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-[#B4C49A] rounded-full"></div>
                         </div>
                       </div>
                       <input
@@ -267,19 +268,19 @@ export default function Contact() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-sm hover:shadow-md"
+                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25 focus:bg-white focus:outline-none transition-all duration-300 placeholder-gray-400"
                         placeholder="John Doe"
                       />
                     </div>
                   </div>
                   
                   <div className="relative group">
-                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-[#6F7F54] transition-colors">
                       Email Address *
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <Mail className="w-5 h-5 text-gray-400 group-focus-within:text-red-600 transition-colors" />
+                        <Mail className="w-5 h-5 text-gray-400 group-focus-within:text-[#6F7F54] transition-colors" />
                       </div>
                       <input
                         type="email"
@@ -288,7 +289,7 @@ export default function Contact() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400"
+                        className="w-full pl-12 pr-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25 focus:bg-white focus:outline-none transition-all duration-300 placeholder-gray-400"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -296,12 +297,12 @@ export default function Contact() {
                 </div>
 
                 <div className="relative group">
-                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                  <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-[#6F7F54] transition-colors">
                     Subject *
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <HelpCircle className="w-5 h-5 text-gray-400 group-focus-within:text-red-600 transition-colors" />
+                      <HelpCircle className="w-5 h-5 text-gray-400 group-focus-within:text-[#6F7F54] transition-colors" />
                     </div>
                     <input
                       type="text"
@@ -310,19 +311,19 @@ export default function Contact() {
                       value={formData.subject}
                       onChange={handleChange}
                       required
-                      className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 placeholder-gray-400 shadow-md hover:shadow-lg"
+                      className="w-full pl-12 pr-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25 focus:bg-white focus:outline-none transition-all duration-300 placeholder-gray-400"
                       placeholder="How can we help you?"
                     />
                   </div>
                 </div>
 
                 <div className="relative group">
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-red-600 transition-colors">
+                  <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2 group-focus-within:text-[#6F7F54] transition-colors">
                     Message *
                   </label>
                   <div className="relative">
                     <div className="absolute top-4 left-4 pointer-events-none">
-                      <MessageCircle className="w-5 h-5 text-gray-400 group-focus-within:text-red-600 transition-colors" />
+                      <MessageCircle className="w-5 h-5 text-gray-400 group-focus-within:text-[#6F7F54] transition-colors" />
                     </div>
                     <textarea
                       id="message"
@@ -331,7 +332,7 @@ export default function Contact() {
                       onChange={handleChange}
                       required
                       rows={5}
-                      className="w-full pl-12 pr-4 py-3 sm:py-4 bg-white border-2 border-black focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none transition-all duration-300 hover:border-gray-700 resize-none placeholder-gray-400 shadow-md hover:shadow-lg"
+                      className="w-full pl-12 pr-4 py-3 sm:py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25 focus:bg-white focus:outline-none transition-all duration-300 resize-none placeholder-gray-400"
                       placeholder="Tell us more about your question or concern..."
                     />
                   </div>
@@ -339,29 +340,31 @@ export default function Contact() {
 
                 <div className="flex items-center justify-between pt-4">
                   <div className="flex items-center gap-2">
-                    <Shield className="w-4 h-4 text-green-500" />
+                    <Shield className="w-4 h-4 text-[#6F7F54]" />
                     <p className="text-sm text-gray-600">
                       Your information is secure and encrypted
                     </p>
                   </div>
                   <button
                     type="submit"
-                    className="group relative inline-flex items-center gap-2 bg-red-100 text-red-600 px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 hover:shadow-xl border-2 border-black"
+                    className="group relative inline-flex items-center gap-2 bg-[#9CAF7D] text-black px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold hover:bg-[#8EA06F] transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-[#9CAF7D]/35"
                   >
-                    <div className="absolute inset-0 bg-red-200 rounded-2xl opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                    <Send className="w-4 h-4 relative z-10 text-red-600 group-hover:translate-x-1 transition-transform duration-300" />
-                    <span className="relative z-10 text-red-600">Send Message</span>
+                    <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                    <Send className="w-4 h-4 relative z-10 text-black group-hover:translate-x-1 transition-transform duration-300" />
+                    <span className="relative z-10 text-black">Send Message</span>
                   </button>
                 </div>
               </form>
             </div>
           </motion.div>
+          </div>
         </div>
       </section>
 
       {/* FAQ Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
-        <div className="grid lg:grid-cols-4 gap-8">
+        <div className="bg-gray-100 rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-200 shadow-inner shadow-gray-200/70">
+          <div className="grid lg:grid-cols-4 gap-8">
           {/* Category Sidebar */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -369,10 +372,10 @@ export default function Contact() {
             className="lg:col-span-1"
           >
             <div className="sticky top-24">
-              <div className="bg-white rounded-2xl p-4 sm:p-6 border-2 border-black">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-lg shadow-gray-200/60">
                 <div className="text-center mb-4 sm:mb-6">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                    <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#F3F6EC] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <HelpCircle className="w-6 h-6 sm:w-8 sm:h-8 text-[#6F7F54]" />
                   </div>
                   <h2 className="text-xl sm:text-2xl font-bold text-black">
                     Categories
@@ -385,33 +388,33 @@ export default function Contact() {
                       onClick={() => setActiveCategory(category.id)}
                       className={`group w-full flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-3 sm:py-4 rounded-2xl text-left transition-all duration-300 transform hover:scale-105 ${
                         activeCategory === category.id
-                          ? "bg-red-100 text-red-600 shadow-lg border-2 border-black"
-                          : "bg-white hover:bg-red-50 text-gray-700 hover:shadow-md border-2 border-black hover:border-gray-700"
+                          ? "bg-[#F3F6EC] text-[#6F7F54] shadow-md border border-[#DDE6CC]"
+                          : "bg-white hover:bg-gray-50 text-gray-700 hover:shadow-md border border-gray-100 hover:border-[#B4C49A]"
                       }`}
                     >
                       <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         activeCategory === category.id
-                          ? "bg-white/20"
-                          : "bg-red-100 group-hover:bg-red-200"
+                          ? "bg-white"
+                          : "bg-gray-100 group-hover:bg-[#F3F6EC]"
                       }`}>
                         <category.icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
-                          activeCategory === category.id ? "text-red-600" : "text-red-500 group-hover:text-red-600"
+                          activeCategory === category.id ? "text-[#6F7F54]" : "text-gray-500 group-hover:text-[#6F7F54]"
                         }`} />
                       </div>
                       <div className="flex-1">
                         <div className={`font-bold text-sm ${
-                          activeCategory === category.id ? "text-red-600" : "text-gray-900 group-hover:text-red-600"
+                          activeCategory === category.id ? "text-[#6F7F54]" : "text-gray-900 group-hover:text-[#6F7F54]"
                         }`}>
                           {category.name}
                         </div>
                         <div className={`text-xs ${
-                          activeCategory === category.id ? "text-red-600/80" : "text-gray-500"
+                          activeCategory === category.id ? "text-[#6F7F54]/80" : "text-gray-500"
                         }`}>
                           {category.count} questions
                         </div>
                       </div>
                       {activeCategory === category.id && (
-                        <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+                        <div className="w-2 h-2 bg-[#B4C49A] rounded-full animate-pulse"></div>
                       )}
                     </button>
                   ))}
@@ -432,8 +435,8 @@ export default function Contact() {
                 animate={{ opacity: 1, y: 0 }}
                 className="text-center mb-12"
               >
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                  <HelpCircle className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F3F6EC] rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <HelpCircle className="w-8 h-8 sm:w-10 sm:h-10 text-[#6F7F54]" />
                 </div>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">
                   Frequently Asked Questions
@@ -450,38 +453,38 @@ export default function Contact() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className={`group rounded-2xl overflow-hidden border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
+                    className={`group rounded-2xl overflow-hidden border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
                       expandedItems.includes(index)
-                        ? "bg-red-50 border-black"
-                        : "bg-white border-black hover:border-gray-700"
+                        ? "bg-white border-[#DDE6CC] shadow-gray-200/60"
+                        : "bg-white border-gray-100 hover:border-[#B4C49A]"
                     }`}
                   >
                     <button
                       onClick={() => toggleExpanded(index)}
-                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between transition-all duration-300 group-hover:bg-red-50"
+                      className="w-full px-4 sm:px-6 py-4 sm:py-5 text-left flex items-center justify-between transition-all duration-300 group-hover:bg-gray-50"
                     >
                       <div className="flex items-center gap-3 sm:gap-4">
                         <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                           expandedItems.includes(index)
-                            ? "bg-red-100"
-                            : "bg-red-100 group-hover:bg-red-200"
+                            ? "bg-[#F3F6EC]"
+                            : "bg-gray-100 group-hover:bg-[#F3F6EC]"
                         }`}>
                           <faq.icon className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${
-                            expandedItems.includes(index) ? "text-red-600" : "text-red-500 group-hover:text-red-600"
+                            expandedItems.includes(index) ? "text-[#6F7F54]" : "text-gray-500 group-hover:text-[#6F7F54]"
                           }`} />
                         </div>
                         <h3 className={`font-bold text-base sm:text-lg pr-4 ${
                           expandedItems.includes(index)
-                            ? "text-red-600"
-                            : "text-gray-900 group-hover:text-red-600"
+                            ? "text-[#6F7F54]"
+                            : "text-gray-900 group-hover:text-[#6F7F54]"
                         }`}>
                           {faq.question}
                         </h3>
                       </div>
                       <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         expandedItems.includes(index)
-                          ? "bg-red-100 text-red-600"
-                          : "bg-gray-100 group-hover:bg-red-100 text-gray-400 group-hover:text-red-500"
+                          ? "bg-[#F3F6EC] text-[#6F7F54]"
+                          : "bg-gray-100 group-hover:bg-[#F3F6EC] text-gray-400 group-hover:text-[#6F7F54]"
                       }`}>
                         {expandedItems.includes(index) ? (
                           <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -497,9 +500,9 @@ export default function Contact() {
                         exit={{ height: 0, opacity: 0 }}
                         className="px-4 sm:px-6 pb-4 sm:pb-5"
                       >
-                        <div className="pl-12 sm:pl-16 text-gray-700 leading-relaxed bg-red-50 rounded-xl p-4 sm:p-6 border-2 border-black">
+                        <div className="pl-12 sm:pl-16 text-gray-700 leading-relaxed bg-white rounded-xl p-4 sm:p-6 border border-gray-100">
                           <div className="flex items-start gap-3">
-                            <div className="w-2 h-2 bg-red-500 rounded-full mt-2 flex-shrink-0"></div>
+                            <div className="w-2 h-2 bg-[#B4C49A] rounded-full mt-2 flex-shrink-0"></div>
                             <p className="text-sm sm:text-base text-gray-700">{faq.answer}</p>
                           </div>
                         </div>
@@ -520,7 +523,7 @@ export default function Contact() {
                 </p>
                 <a 
                   href="mailto:hello@planetmini.com" 
-                  className="inline-flex items-center gap-2 bg-red-100 text-red-600 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold hover:bg-red-200 transition-colors border-2 border-black"
+                  className="inline-flex items-center gap-2 bg-[#9CAF7D] text-black px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold hover:bg-[#8EA06F] transition-colors shadow-md shadow-[#9CAF7D]/25"
                 >
                   <Mail className="w-4 h-4" />
                   Contact Support
@@ -528,25 +531,26 @@ export default function Contact() {
               </motion.div>
             </div>
           </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* About Planet Mini Section */}
+      {/* Hospital Orders Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-red-50 rounded-3xl p-6 sm:p-8 md:p-12 border-2 border-red-200 shadow-xl"
+          className="bg-gray-100 rounded-3xl p-6 sm:p-8 md:p-12 border border-gray-200 shadow-inner shadow-gray-200/70"
         >
           <div className="text-center mb-6 sm:mb-10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Home className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F3F6EC] rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Building className="w-8 h-8 sm:w-10 sm:h-10 text-[#6F7F54]" />
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">
-              Welcome to Planet Mini
+              Hospital Orders
             </h2>
             <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-3xl mx-auto">
-              Your trusted destination for premium baby products and essentials
+              Bulk baby supplies for hospitals, maternity wards, and newborn care teams
             </p>
           </div>
 
@@ -555,14 +559,14 @@ export default function Contact() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-center"
+              className="text-center bg-white rounded-2xl p-5 sm:p-6 border border-gray-100 shadow-lg shadow-gray-200/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gray-200/80"
             >
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#F3F6EC] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <Package className="w-6 h-6 sm:w-8 sm:h-8 text-[#6F7F54]" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Premium Quality</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Baby Dress Sets</h3>
               <p className="text-sm sm:text-base text-gray-600">
-                Carefully curated selection of baby products made from the safest, highest-quality materials for your little ones.
+                Soft newborn dress sets and daily wear essentials for maternity wards, nursery units, and discharge kits.
               </p>
             </motion.div>
 
@@ -570,14 +574,14 @@ export default function Contact() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-center"
+              className="text-center bg-white rounded-2xl p-5 sm:p-6 border border-gray-100 shadow-lg shadow-gray-200/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gray-200/80"
             >
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#F3F6EC] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <Shield className="w-6 h-6 sm:w-8 sm:h-8 text-[#6F7F54]" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Safety First</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Beds & Linen</h3>
               <p className="text-sm sm:text-base text-gray-600">
-                All our products meet strict safety standards and are tested to ensure they're perfect for your baby's development.
+                Baby beds, blankets, towels, and linen supplies selected for comfort, hygiene, and repeated hospital use.
               </p>
             </motion.div>
 
@@ -585,14 +589,14 @@ export default function Contact() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-center"
+              className="text-center bg-white rounded-2xl p-5 sm:p-6 border border-gray-100 shadow-lg shadow-gray-200/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-gray-200/80"
             >
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Truck className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" />
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-[#F3F6EC] rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm">
+                <Truck className="w-6 h-6 sm:w-8 sm:h-8 text-[#6F7F54]" />
               </div>
-              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Fast Delivery</h3>
+              <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Nappies & Essentials</h3>
               <p className="text-sm sm:text-base text-gray-600">
-                Quick and reliable delivery across the country, ensuring you get what you need when you need it most.
+                Nappies, wipes, wraps, and everyday newborn care items available for planned hospital supply orders.
               </p>
             </motion.div>
           </div>
@@ -601,26 +605,35 @@ export default function Contact() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="text-center bg-white rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-black"
+            className="text-center bg-white rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-100 shadow-lg shadow-gray-200/60"
           >
-            <h3 className="text-xl sm:text-2xl font-bold text-black mb-4">Our Promise to Parents</h3>
+            <h3 className="text-xl sm:text-2xl font-bold text-black mb-4">Reliable Supply for Newborn Care</h3>
             <p className="text-sm sm:text-base text-gray-700 leading-relaxed max-w-4xl mx-auto mb-6">
-              At Planet Mini, we understand that every parent wants the very best for their baby. That's why we've made it our mission to provide a carefully selected range of baby products that combine safety, comfort, and style. From organic cotton clothing to eco-friendly toys, every item in our collection is chosen with love and care. We work with trusted brands and innovative creators to bring you products that make parenting easier and more joyful.
+              Planet Mini supports hospitals with dependable baby product ordering for newborn care. From dresses and beds to nappies, towels, blankets, and basic care essentials, our team can help coordinate supply needs for maternity departments, nursery rooms, and hospital discharge kits.
             </p>
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-              <div className="flex items-center gap-2 bg-green-100 text-green-700 px-3 sm:px-4 py-2 rounded-full">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                100% Safe Products
+              <div className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 sm:px-4 py-2 rounded-full">
+                <div className="w-2 h-2 bg-[#B4C49A] rounded-full"></div>
+                Bulk Supply Support
               </div>
-              <div className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 sm:px-4 py-2 rounded-full">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                Eco-Friendly Options
+              <div className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 sm:px-4 py-2 rounded-full">
+                <div className="w-2 h-2 bg-[#B4C49A] rounded-full"></div>
+                Newborn Essentials
               </div>
-              <div className="flex items-center gap-2 bg-purple-100 text-purple-700 px-3 sm:px-4 py-2 rounded-full">
-                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                Parent Approved
+              <div className="flex items-center gap-2 bg-gray-100 text-gray-700 px-3 sm:px-4 py-2 rounded-full">
+                <div className="w-2 h-2 bg-[#B4C49A] rounded-full"></div>
+                Hospital Ready
               </div>
             </div>
+            <a
+              href="https://mail.google.com/mail/?view=cm&fs=1&to=planetmini.care@gmail.com&su=Hospital%20Supplies&body=Hospital%20name%3A%0AAddress%3A%0A"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 bg-[#B4C49A] text-black px-5 sm:px-6 py-3 rounded-xl font-semibold hover:bg-[#A4B586] transition-all duration-300 shadow-md shadow-[#B4C49A]/20"
+            >
+              <Mail className="w-4 h-4" />
+              Contact Us
+            </a>
           </motion.div>
         </motion.div>
       </section>
@@ -630,11 +643,11 @@ export default function Contact() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          className="bg-red-50 rounded-3xl p-6 sm:p-8 md:p-12 border-2 border-red-200 shadow-xl"
+          className="bg-gray-100 rounded-3xl p-6 sm:p-8 md:p-12 border border-gray-200 shadow-inner shadow-gray-200/70"
         >
           <div className="text-center mb-6 sm:mb-10">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-red-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-              <Building className="w-8 h-8 sm:w-10 sm:h-10 text-red-500" />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-[#F3F6EC] rounded-3xl flex items-center justify-center mx-auto mb-6">
+              <Building className="w-8 h-8 sm:w-10 sm:h-10 text-[#6F7F54]" />
             </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">
               Sell on Planet Mini
@@ -652,8 +665,8 @@ export default function Contact() {
             >
               <h3 className="text-xl sm:text-2xl font-bold text-black mb-6">Why Partner With Us?</h3>
               <div className="space-y-4">
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="flex items-start gap-3 sm:gap-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gray-200/80">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#B4C49A] rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                     <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
@@ -662,8 +675,8 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="flex items-start gap-3 sm:gap-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gray-200/80">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#B4C49A] rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                     <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
@@ -672,8 +685,8 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-primary to-secondary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="flex items-start gap-3 sm:gap-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gray-200/80">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#B4C49A] rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                     <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
@@ -682,8 +695,8 @@ export default function Contact() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-3 sm:gap-4">
-                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-gradient-to-br from-secondary to-primary rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
+                <div className="flex items-start gap-3 sm:gap-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-gray-200/80">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 bg-[#B4C49A] rounded-xl flex items-center justify-center flex-shrink-0 mt-1">
                     <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-white rounded-full"></div>
                   </div>
                   <div>
@@ -698,7 +711,7 @@ export default function Contact() {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border-2 border-black"
+              className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-100 shadow-lg shadow-gray-200/60"
             >
               <h3 className="text-lg sm:text-xl font-bold text-black mb-6">Ready to Get Started?</h3>
               <form className="space-y-4">
@@ -706,7 +719,7 @@ export default function Contact() {
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Brand Name *</label>
                   <input
                     type="text"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors"
                     placeholder="Your brand name"
                   />
                 </div>
@@ -714,13 +727,13 @@ export default function Contact() {
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Contact Email *</label>
                   <input
                     type="email"
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors"
                     placeholder="business@example.com"
                   />
                 </div>
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Product Category *</label>
-                  <select className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors">
+                  <select className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors">
                     <option value="">Select category</option>
                     <option value="clothing">Baby Clothing</option>
                     <option value="toys">Toys & Games</option>
@@ -735,13 +748,13 @@ export default function Contact() {
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Tell us about your products</label>
                   <textarea
                     rows={3}
-                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-200 rounded-xl focus:border-red-500 focus:outline-none transition-colors resize-none"
+                    className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors resize-none"
                     placeholder="Brief description of your products and what makes them special..."
                   />
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-red-100 text-red-600 px-4 sm:px-6 py-3 sm:py-4 rounded-xl font-semibold hover:bg-red-200 transition-all duration-300 transform hover:scale-105 shadow-lg border-2 border-black"
+                  className="w-full bg-[#B4C49A] text-black px-4 sm:px-6 py-3 sm:py-4 rounded-xl font-semibold hover:bg-[#A4B586] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#B4C49A]/30"
                 >
                   Apply to Sell on Planet Mini
                 </button>
@@ -755,22 +768,22 @@ export default function Contact() {
             transition={{ delay: 0.3 }}
             className="text-center"
           >
-            <div className="bg-white rounded-2xl p-4 sm:p-6 border-2 border-black">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 shadow-lg shadow-gray-200/60">
               <h3 className="text-lg sm:text-xl font-bold text-black mb-3">Join Our Growing Community</h3>
               <p className="text-sm sm:text-base text-gray-700 mb-4">
                 Become part of Planet Mini's trusted network of baby product vendors. Together, we're making parenting easier and more joyful for families everywhere.
               </p>
               <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-[#B4C49A] rounded-full"></div>
                   <span className="font-medium">500+ Active Vendors</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-[#B4C49A] rounded-full"></div>
                   <span className="font-medium">10,000+ Products Listed</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                  <div className="w-3 h-3 bg-[#B4C49A] rounded-full"></div>
                   <span className="font-medium">98% Vendor Satisfaction</span>
                 </div>
               </div>
