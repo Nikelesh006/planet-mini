@@ -46,8 +46,8 @@ export default function Footer() {
             <div className="flex-1">
               <h4 className="font-display font-bold text-lg mb-4">Shop</h4>
               <ul className="flex flex-col gap-2">
-                <li><Link href="/shop" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">All Products</Link></li>
                 <li><a href="/#shop-by-style" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Shop by Style</a></li>
+                <li><a href="/#hospital-bags" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Hospital Bags</a></li>
                 <li><a href="/#new-arrivals" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">New Arrivals</a></li>
                 <li><a href="/#trending-products" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Trending Products</a></li>
                 <li><a href="/#blockbuster-combos" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Blockbuster Combos</a></li>

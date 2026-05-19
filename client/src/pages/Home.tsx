@@ -950,6 +950,120 @@ export default function Home() {
       </section>
 
 
+      {/* Hospital Bags Section */}
+
+      <section className="w-full py-12">
+
+        <div className="px-4 sm:px-6 lg:px-8">
+
+          <motion.div 
+
+            initial={{ opacity: 0, y: 20 }}
+
+            whileInView={{ opacity: 1, y: 0 }}
+
+            className="text-center"
+
+          >
+
+            <div className="flex items-center justify-center gap-4 sm:gap-8 mb-4" id="hospital-bags">
+              <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
+              <div className="flex items-center gap-3">
+                <h2 className="text-2xl sm:text-4xl font-bold">Hospital Bags</h2>
+                <img
+                  src="/online-shopping.png"
+                  alt="Hospital Bags"
+                  className="w-8 h-8 sm:w-16 sm:h-16 object-contain"
+                  draggable={false}
+                />
+              </div>
+              <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
+            </div>
+
+            <p className="text-gray-600 text-lg">Ready-to-pack essentials for hospital stays and first days</p>
+
+            <div className="flex justify-center gap-2 mt-4">
+
+              <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
+
+              <div className="w-8 h-1 sm:w-12 sm:h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
+
+              <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
+
+            </div>
+
+          </motion.div>
+
+          <div className="mt-16">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
+              {/* Hospital Bag Image 1 */}
+              <Link href="/shopstyle">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/gifting1.png"
+                      alt="Hospital Bag 1"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </motion.div>
+              </Link>
+              {/* Hospital Bag Image 2 */}
+              <Link href="/shopstyle">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/gifting2.png"
+                      alt="Hospital Bag 2"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </motion.div>
+              </Link>
+              {/* Hospital Bag Image 3 */}
+              <Link href="/shopstyle">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
+                  <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                    <img
+                      src="/gifting3.png"
+                      alt="Hospital Bag 3"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      draggable={false}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  </div>
+                </motion.div>
+              </Link>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+
 
       {/*New Arrivals Section */}
 
@@ -970,7 +1084,7 @@ export default function Home() {
           >
 
             <div className="flex items-center justify-center gap-16 mb-4" id="new-arrivals">
-              <div className="flex-1 h-px bg-black"></div>
+              <div className="flex-1 h-0.5 bg-black"></div>
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-4xl font-bold text-black">New Arrivals</h2>
                 <img 
@@ -980,7 +1094,7 @@ export default function Home() {
                   draggable={false}
                 />
               </div>
-              <div className="flex-1 h-px bg-black"></div>
+              <div className="flex-1 h-0.5 bg-black"></div>
             </div>
 
             <p className="text-gray-600 text-lg">Everything you need for your baby's daily care routine</p>
@@ -1084,7 +1198,7 @@ export default function Home() {
           >
 
             <div className="flex items-center justify-center gap-4 mb-4 sm:gap-16" id="trending-products">
-              <div className="hidden sm:block flex-1 h-px bg-black"></div>
+              <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-4xl font-bold text-black">Trending Products</h2>
                 <img 
@@ -1094,7 +1208,7 @@ export default function Home() {
                   draggable={false}
                 />
               </div>
-              <div className="hidden sm:block flex-1 h-px bg-black"></div>
+              <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
             </div>
             
 
