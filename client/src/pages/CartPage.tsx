@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Confetti, useConfetti } from "@/components/ui/Confetti";
-import { ChevronDown, ArrowLeft, Minus, Plus } from 'lucide-react';
+import { ChevronDown, ArrowLeft, Minus, Plus, MapPin, Check } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
 import { useRazorpay } from '@/hooks/useRazorpay';
@@ -18,6 +18,7 @@ export default function CartPage() {
   const [promoCode, setPromoCode] = useState('');
   const { showConfetti, triggerConfetti } = useConfetti();
   const { initializePayment, isLoading: isPaymentLoading, error: paymentError } = useRazorpay();
+  const [showAddressDropdown, setShowAddressDropdown] = useState(false);
 
   console.log('🔍 Cart state:', state);
   console.log('🔍 Cart items:', state.items);
@@ -400,52 +401,108 @@ export default function CartPage() {
             <div className="bg-gray-50 rounded-3xl shadow-lg p-6 sm:p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 lg:sticky lg:top-24">
               <h2 className="text-xl sm:text-2xl font-bold text-black mb-6">Order Summary</h2>
               
-              {/* SELECT ADDRESS */}
-              <div className="mb-6">
-                <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
-                  Shipping Address
-                </label>
-                <div className="relative">
-                  <select
-                    value={selectedAddressId}
-                    onChange={(e) => {
-                      console.log('Select onChange triggered, value:', e.target.value);
-                      handleAddressChange(e.target.value);
-                    }}
-                    onBlur={(e) => {
-                      console.log('Select onBlur triggered, value:', e.target.value);
-                      if (e.target.value === 'NEW') {
-                        handleAddressChange('NEW');
-                      }
-                    }}
-                    onClick={(e) => {
-                      console.log('Select clicked');
-                    }}
-                    className="w-full px-3 py-2 sm:px-4 sm:py-3 pr-10 border-2 border-gray-200 rounded-xl appearance-none bg-white text-black font-semibold focus:outline-none focus:border-black focus:ring-2 focus:ring-black/20 cursor-pointer text-sm sm:text-base"
-                  >
-                    {addresses.map((address) => (
-                      <option key={address._id} value={address._id}>
-                        {address.fullName} - {address.phone} | {address.street}, {address.city}, {address.state}, {address.pincode}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <ChevronDown className="w-4 h-4 text-gray-400 pointer-events-none" />
-                  </div>
+              {/* SHIPPING ADDRESS */}
+              <div className="mb-6 relative">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Shipping Address
+                  </label>
+                  {addresses.length > 0 && (
+                    <button
+                      onClick={() => setShowAddressDropdown(!showAddressDropdown)}
+                      className="text-xs font-bold text-pink-500 hover:text-pink-600 flex items-center gap-0.5 transition-colors"
+                    >
+                      {showAddressDropdown ? 'Close' : 'Change'}
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${showAddressDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+                  )}
                 </div>
-              </div>
 
-              {/* Add New Address Button */}
-              <div className="mb-4">
-                <button 
-                  onClick={() => {
-                    console.log('Add New Address button clicked');
-                    window.location.href = '/add-address';
-                  }}
-                  className="w-full bg-black text-white px-4 py-2 sm:px-4 sm:py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base"
-                >
-                  + Add New Address
-                </button>
+                {addresses.length === 0 ? (
+                  <div 
+                    onClick={() => window.location.href = '/add-address'}
+                    className="border-2 border-dashed border-gray-200 rounded-2xl p-5 text-center bg-white hover:border-black hover:bg-gray-50/50 transition-all cursor-pointer group"
+                  >
+                    <MapPin className="w-8 h-8 text-gray-400 group-hover:text-black mx-auto mb-2 transition-colors" />
+                    <span className="block text-sm font-bold text-black mb-1">No Shipping Address</span>
+                    <span className="block text-[11px] text-gray-500 mb-3">Add a shipping address to complete your checkout</span>
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-pink-500 bg-pink-50 px-3 py-1.5 rounded-xl group-hover:bg-pink-100 transition-colors">
+                      <Plus className="w-3.5 h-3.5" /> Add Address
+                    </span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Selected Address Card */}
+                    <div className="bg-white border border-gray-200 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+                      {getSelectedAddress() ? (
+                        <div className="flex items-start gap-3">
+                          <div className="bg-pink-50 p-2 rounded-xl text-pink-500 mt-0.5 shrink-0">
+                            <MapPin className="w-4 h-4" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-bold text-black text-sm truncate">
+                              {getSelectedAddress()?.fullName}
+                            </h4>
+                            <p className="text-xs text-gray-500 mt-0.5 font-medium">
+                              {getSelectedAddress()?.phone}
+                            </p>
+                            <p className="text-xs text-gray-600 mt-2 leading-relaxed">
+                              {getSelectedAddress()?.street}, {getSelectedAddress()?.city}, {getSelectedAddress()?.state} - {getSelectedAddress()?.pincode}
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <p className="text-xs text-gray-500">Loading selected address...</p>
+                      )}
+                    </div>
+
+                    {/* Custom Address Dropdown */}
+                    {showAddressDropdown && (
+                      <div className="absolute left-0 right-0 mt-2 bg-white border border-gray-200 rounded-2xl shadow-xl z-30 max-h-60 overflow-y-auto p-2 space-y-1">
+                        {addresses.map((address) => {
+                          const isSelected = address._id === selectedAddressId;
+                          return (
+                            <div
+                              key={address._id}
+                              onClick={() => {
+                                setSelectedAddressId(address._id);
+                                setShowAddressDropdown(false);
+                              }}
+                              className={`p-3 rounded-xl cursor-pointer transition-colors text-left flex items-start justify-between gap-3 border ${
+                                isSelected 
+                                  ? 'bg-pink-50/50 border-pink-200 text-black' 
+                                  : 'hover:bg-gray-50 border-transparent text-gray-700'
+                              }`}
+                            >
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-bold truncate">
+                                    {address.fullName}
+                                  </span>
+                                  <span className="text-[10px] text-gray-500 font-medium font-mono shrink-0">
+                                    {address.phone}
+                                  </span>
+                                </div>
+                                <p className="text-[11px] text-gray-500 truncate mt-1">
+                                  {address.street}, {address.city}, {address.state}
+                                </p>
+                              </div>
+                              {isSelected && (
+                                <Check className="w-4 h-4 text-pink-500 shrink-0 mt-0.5" />
+                              )}
+                            </div>
+                          );
+                        })}
+                        <div 
+                          onClick={() => window.location.href = '/add-address'}
+                          className="p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors text-left border-t border-gray-100 flex items-center gap-2 text-pink-500 hover:text-pink-600 font-semibold text-xs mt-1"
+                        >
+                          <Plus className="w-3.5 h-3.5" /> Add New Address
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
 
               {/* Price Breakdown */}
