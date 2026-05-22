@@ -141,6 +141,7 @@ export default function CartPage() {
       const { order_id } = await orderResponse.json();
 
       // Step 2: Prepare order data for after payment
+      const selectedAddress = getSelectedAddress();
       const orderData = {
         items: state.items.map(item => ({
           productId: item.id,
@@ -151,6 +152,14 @@ export default function CartPage() {
           color: item.color || 'N/A',
           quantity: item.quantity
         })),
+        shippingAddress: selectedAddress ? {
+          fullName: selectedAddress.fullName,
+          phone: selectedAddress.phone,
+          street: selectedAddress.street,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          pincode: selectedAddress.pincode
+        } : undefined,
         shippingAddressId: selectedAddressId,
         total: totalAmount
       };
@@ -197,7 +206,8 @@ export default function CartPage() {
                   userId: currentUserId,
                   paymentId: response.razorpay_payment_id,
                   orderId: response.razorpay_order_id,
-                  status: 'completed'
+                  status: 'completed',
+                  paymentStatus: 'paid'
                 })
               });
 

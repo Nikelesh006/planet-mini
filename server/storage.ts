@@ -1076,6 +1076,8 @@ export const ordersStorage = {
 
             shippingAddress = {
 
+              fullName: addressDoc.fullName,
+
               street: addressDoc.street,
 
               city: addressDoc.city,

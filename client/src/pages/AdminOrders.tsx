@@ -413,7 +413,10 @@ export default function AdminOrders() {
                 <div className="mb-8">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h3>
                   <div className="space-y-4">
-                    {selectedOrder.items.map((item) => (
+                    {selectedOrder.items.map((item) => {
+                      console.log('🔍 Order item:', item);
+                      console.log('🔍 Item slug:', item.slug);
+                      return (
                       <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-gray-50 rounded-xl">
                         <img 
                           src={item.image} 
@@ -433,7 +436,7 @@ export default function AdminOrders() {
                           {item.slug ? (
                             <Link href={`/products/${item.slug}`} className="block w-full sm:w-auto">
                               <button 
-                                className="w-full sm:w-auto bg-yellow-100 hover:bg-yellow-200 border-yellow-300 text-yellow-800 px-3 py-1 rounded-md text-sm font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
+                                className="w-full sm:w-auto bg-yellow-100 hover:bg-yellow-200 border-yellow-300 text-yellow-800 px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
                                 aria-label={`View product details for ${item.name}`}
                               >
                                 View Product
@@ -442,7 +445,7 @@ export default function AdminOrders() {
                           ) : (
                             <button 
                               disabled
-                              className="w-full sm:w-auto bg-gray-100 border-gray-300 text-gray-500 px-3 py-1 rounded-md text-sm font-medium cursor-not-allowed opacity-60"
+                              className="w-full sm:w-auto bg-gray-100 border-gray-300 text-gray-500 px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium cursor-not-allowed opacity-60"
                               aria-label="Product details unavailable"
                             >
                               Details unavailable
@@ -450,7 +453,8 @@ export default function AdminOrders() {
                           )}
                         </div>
                       </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 

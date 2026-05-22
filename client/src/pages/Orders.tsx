@@ -142,7 +142,7 @@ interface Order {
 
 
 
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'completed';
 
 
 
@@ -326,6 +326,16 @@ const statusConfig = {
 
 
 
+  },
+
+
+
+  completed: {
+    icon: CheckCircle,
+    color: 'text-green-600',
+    bgColor: 'bg-green-50',
+    borderColor: 'border-green-200',
+    label: 'Paid'
   },
 
 
