@@ -124,7 +124,10 @@ export default function AdminOrders() {
     setShowOrderDetails(true);
   };
 
-  const getStatusConfig = (status: Order['status']) => statusConfig[status];
+  const getStatusConfig = (status: string | undefined | null) => {
+    const key = (status || 'pending').toLowerCase() as keyof typeof statusConfig;
+    return statusConfig[key] || statusConfig.pending;
+  };
 
   if (isLoading) {
     return (
@@ -259,21 +262,21 @@ export default function AdminOrders() {
                           )}
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900 max-w-xs">
+                          <div className="text-sm text-gray-900">
                             {order.shippingAddress && Object.keys(order.shippingAddress).length > 0 ? (
                               <div className="flex items-start gap-1">
                                 <MapPin className="w-3 h-3 text-gray-400 mt-0.5 flex-shrink-0" />
-                                <div className="truncate">
-                                  <p className="font-semibold text-sm truncate">
+                                <div>
+                                  <p className="font-semibold text-sm">
                                     {order.shippingAddress.fullName || 'N/A'}
                                   </p>
-                                  <p className="text-gray-500 text-xs truncate">
+                                  <p className="text-gray-500 text-xs">
                                     {order.shippingAddress.phone || 'N/A'}
                                   </p>
-                                  <p className="font-medium truncate mt-1">
+                                  <p className="font-medium mt-1">
                                     {order.shippingAddress.street || 'N/A'}
                                   </p>
-                                  <p className="text-gray-600 text-xs truncate">
+                                  <p className="text-gray-600 text-xs">
                                     {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode || ''}
                                   </p>
                                 </div>

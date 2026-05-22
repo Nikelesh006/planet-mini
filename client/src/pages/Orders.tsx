@@ -542,7 +542,10 @@ export default function Orders() {
 
 
 
-  const getStatusConfig = (status: Order['status']) => statusConfig[status];
+  const getStatusConfig = (status: string | undefined | null) => {
+    const key = (status || 'pending').toLowerCase() as keyof typeof statusConfig;
+    return statusConfig[key] || statusConfig.pending;
+  };
 
 
 
@@ -1090,7 +1093,7 @@ export default function Orders() {
 
 
 
-                          <div className="text-sm text-gray-900 max-w-xs">
+                          <div className="text-sm text-gray-900">
 
 
 
@@ -1106,11 +1109,11 @@ export default function Orders() {
 
 
 
-                                <div className="truncate">
+                                <div>
 
 
 
-                                  <p className="font-semibold text-sm truncate">
+                                  <p className="font-semibold text-sm">
 
 
 
@@ -1122,7 +1125,7 @@ export default function Orders() {
 
 
 
-                                  <p className="text-gray-500 text-xs truncate">
+                                  <p className="text-gray-500 text-xs">
 
 
 
@@ -1134,7 +1137,7 @@ export default function Orders() {
 
 
 
-                                  <p className="font-medium truncate mt-1">
+                                  <p className="font-medium mt-1">
 
 
 
@@ -1146,7 +1149,7 @@ export default function Orders() {
 
 
 
-                                  <p className="text-gray-600 text-xs truncate">
+                                  <p className="text-gray-600 text-xs">
 
 
 
@@ -1391,33 +1394,15 @@ export default function Orders() {
 
 
                       {order.shippingAddress && Object.keys(order.shippingAddress).length > 0 && (
-
-
-
                         <div className="flex items-start gap-2">
-
-
-
                           <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-
-
-
-                          <span className="text-gray-600 truncate">
-
-
-
-                            {order.shippingAddress.city}, {order.shippingAddress.state}
-
-
-
-                          </span>
-
-
-
+                          <div className="text-xs text-gray-600 space-y-0.5">
+                            <p className="font-semibold text-gray-900">{order.shippingAddress.fullName || 'N/A'}</p>
+                            <p className="text-gray-500">{order.shippingAddress.phone || 'N/A'}</p>
+                            <p className="font-medium">{order.shippingAddress.street || 'N/A'}</p>
+                            <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode || ''}</p>
+                          </div>
                         </div>
-
-
-
                       )}
 
 
