@@ -24,6 +24,8 @@ async function inspect() {
       console.log('  shippingAddressId:', order.shippingAddressId);
       console.log('  shippingAddress:', JSON.stringify(order.shippingAddress));
       console.log('  address:', JSON.stringify(order.address));
+      console.log('  status:', order.status);
+      console.log('  paymentStatus:', order.paymentStatus);
     });
 
     const addresses = await db.collection("addresses").find({}).limit(5).toArray();

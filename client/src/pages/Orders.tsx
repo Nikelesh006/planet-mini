@@ -331,11 +331,29 @@ const statusConfig = {
 
 
   completed: {
+
+
+
     icon: CheckCircle,
+
+
+
     color: 'text-green-600',
+
+
+
     bgColor: 'bg-green-50',
+
+
+
     borderColor: 'border-green-200',
-    label: 'Paid'
+
+
+
+    label: 'Completed'
+
+
+
   },
 
 
@@ -555,6 +573,32 @@ export default function Orders() {
   const getStatusConfig = (status: string | undefined | null) => {
     const key = (status || 'pending').toLowerCase() as keyof typeof statusConfig;
     return statusConfig[key] || statusConfig.pending;
+  };
+
+  const getPaymentStatusConfig = (status: string | undefined | null) => {
+    const s = (status || '').toLowerCase();
+    if (s === 'paid' || s === 'completed' || s === 'paid successfully' || s === 'success') {
+      return {
+        label: 'Paid Successfully',
+        dotClass: 'bg-green-500',
+        textClass: 'text-green-700',
+        badgeClass: 'bg-green-50 text-green-700 border-green-200 border'
+      };
+    }
+    if (s === 'pending') {
+      return {
+        label: 'Pending',
+        dotClass: 'bg-yellow-500',
+        textClass: 'text-yellow-700',
+        badgeClass: 'bg-yellow-50 text-yellow-700 border-yellow-200 border'
+      };
+    }
+    return {
+      label: 'Failed',
+      dotClass: 'bg-red-500',
+      textClass: 'text-red-700',
+      badgeClass: 'bg-red-50 text-red-700 border-red-200 border'
+    };
   };
 
 
@@ -1243,14 +1287,15 @@ export default function Orders() {
 
 
 
-                          <div className="text-xs text-green-600">
-
-
-
-                            {order.paymentStatus || 'Paid'}
-
-
-
+                          <div className="mt-1">
+                            {(() => {
+                              const payConfig = getPaymentStatusConfig(order.paymentStatus);
+                              return (
+                                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${payConfig.badgeClass}`}>
+                                  {payConfig.label}
+                                </span>
+                              );
+                            })()}
                           </div>
 
 
@@ -2199,39 +2244,17 @@ export default function Orders() {
 
 
 
-                      <div className="flex items-center gap-2">
-
-
-
-                        <div className={`w-2 h-2 rounded-full ${
-
-
-
-                          selectedOrder.paymentStatus === 'paid' ? 'bg-green-500' :
-
-
-
-                          selectedOrder.paymentStatus === 'pending' ? 'bg-yellow-500' : 'bg-red-500'
-
-
-
-                        }`}></div>
-
-
-
-                        <span className="text-xs sm:text-sm text-gray-600 capitalize">
-
-
-
-                          {selectedOrder.paymentStatus}
-
-
-
-                        </span>
-
-
-
-                      </div>
+                      {(() => {
+                        const payConfig = getPaymentStatusConfig(selectedOrder.paymentStatus);
+                        return (
+                          <div className="flex items-center gap-2">
+                            <div className={`w-2 h-2 rounded-full ${payConfig.dotClass}`}></div>
+                            <span className={`text-xs sm:text-sm font-semibold ${payConfig.textClass}`}>
+                              {payConfig.label}
+                            </span>
+                          </div>
+                        );
+                      })()}
 
 
 

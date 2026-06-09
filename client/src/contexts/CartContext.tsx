@@ -559,6 +559,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const clearCart = async () => {
+    // Clear local state immediately (optimistic update)
+    dispatch({ type: 'CLEAR_CART' });
+
     if (!user) return;
 
     try {
@@ -571,10 +574,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (response.ok) {
-        dispatch({ type: 'CLEAR_CART' });
+        console.log('🗑️ Cart cleared on server');
+      } else {
+        console.error('Failed to clear cart on server, status:', response.status);
       }
     } catch (error) {
-      console.error('Error clearing cart:', error);
+      console.error('Error clearing cart on server:', error);
     }
   };
 

@@ -492,7 +492,33 @@ router.get('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
 
 
-// 6. DELETE /api/profile/:userId/cart/:itemId  ← Remove item from cart
+// 6a. DELETE /api/profile/:userId/cart  ← Clear entire cart (used after order placement)
+router.delete('/:userId/cart', requireAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.params.userId;
+
+    if (req.user.id !== userId) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    const profile = await Profile.findOne({ userId });
+    if (!profile) {
+      return res.status(404).json({ error: 'Profile not found' });
+    }
+
+    const clearedCount = profile.cartItems.length;
+    profile.cartItems = [];
+    await profile.save();
+
+    console.log('🗑️ Cleared entire cart for user:', userId, `(${clearedCount} items removed)`);
+    res.json({ success: true, cartItems: [], clearedCount });
+  } catch (error) {
+    console.error('❌ Failed to clear cart:', error);
+    res.status(500).json({ error: 'Failed to clear cart' });
+  }
+});
+
+// 6b. DELETE /api/profile/:userId/cart/:itemId  ← Remove single item from cart
 
 router.delete('/:userId/cart/:itemId', requireAuth, async (req: any, res: any) => {
 

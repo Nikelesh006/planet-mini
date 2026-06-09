@@ -6302,9 +6302,10 @@ export async function registerRoutes(
       // Calculate total revenue only from orders with completed payment status
 
       const revenue = allOrders
-
-        .filter((order: any) => order.paymentStatus?.toLowerCase() === 'completed')
-
+        .filter((order: any) => {
+          const pStatus = (order.paymentStatus || '').toLowerCase();
+          return pStatus === 'completed' || pStatus === 'paid' || pStatus === 'paid successfully' || pStatus === 'success';
+        })
         .reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0);
 
 
