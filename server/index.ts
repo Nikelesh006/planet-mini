@@ -314,14 +314,16 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
 
 
-    // Set cookie
-    // For cross-origin requests (Vercel frontend + Railway backend), we need secure: true and sameSite: "none"
-    // Do NOT set domain for cross-origin cookies - let it default to the exact domain that set it
-    console.log("🍪 Setting JWT cookie with secure: true, sameSite: none");
+    const isProduction = process.env.NODE_ENV === "production";
+
+    // Localhost runs over HTTP, so secure cross-site cookies are ignored by the browser.
+    console.log(
+      `Setting JWT cookie with secure: ${isProduction}, sameSite: ${isProduction ? "none" : "lax"}`,
+    );
     res.cookie("jwt", jwtToken, {
       httpOnly: true,
-      secure: true, // Required for cross-origin cookies
-      sameSite: "none", // Required for cross-origin cookies
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
 
@@ -383,11 +385,15 @@ app.get("/api/auth/session", (req: Request, res: Response) => {
 // POST /api/auth/logout → clear cookie
 
 app.post("/api/auth/logout", (req: Request, res: Response) => {
-  console.log("🍪 Clearing JWT cookie with secure: true, sameSite: none");
+  const isProduction = process.env.NODE_ENV === "production";
+
+  console.log(
+    `Clearing JWT cookie with secure: ${isProduction}, sameSite: ${isProduction ? "none" : "lax"}`,
+  );
   res.clearCookie("jwt", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: isProduction,
+    sameSite: isProduction ? "none" : "lax",
   });
 
   return res.json({ success: true });

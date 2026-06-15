@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
 
 import { Link } from "wouter";
 
@@ -60,7 +59,6 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
   const { addToCart } = useCart();
   const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel, isUserLoggedIn } = useAuthGuard();
   const { toast } = useToast();
-  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
 
   const formatPrice = (price: number | string) => {
     const num = typeof price === 'string' ? parseFloat(price) : price;
@@ -72,25 +70,6 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
     const orig = typeof original === 'string' ? parseFloat(original) : original;
     const curr = typeof current === 'string' ? parseFloat(current) : current;
     return Math.round(((orig - curr) / orig) * 100);
-  };
-
-  const toggleDescription = (e: React.MouseEvent, productId: string) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setExpandedCards(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(productId)) {
-        newSet.delete(productId);
-      } else {
-        newSet.add(productId);
-      }
-      return newSet;
-    });
-  };
-
-  const truncateDescription = (description: string, maxLength: number = 100) => {
-    if (description.length <= maxLength) return description;
-    return description.substring(0, maxLength) + '...';
   };
 
   const handleQuickAdd = (e: React.MouseEvent, product: Product) => {
@@ -283,14 +262,6 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                   <h3 className="font-display font-bold text-lg text-black">
                     {product.name}
                   </h3>
-
-                  {/* Description */}
-                  <p 
-                    className="text-sm text-muted-foreground font-bold cursor-pointer line-clamp-1"
-                    onClick={(e) => toggleDescription(e, product.id.toString())}
-                  >
-                    {product.description || 'Premium quality product for your little one'}
-                  </p>
 
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-black">₹{Number(product.price || 0).toFixed(2)}</span>

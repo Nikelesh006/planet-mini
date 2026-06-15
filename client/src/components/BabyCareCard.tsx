@@ -253,11 +253,6 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
               {product.name}
             </h3>
 
-            {/* Product Description */}
-            <p className="text-xs sm:text-base text-gray-600 mb-2">
-              {product.description || 'Perfect for your baby\'s daily care needs'}
-            </p>
-
             {/* Price Section */}
             <div className="flex items-center justify-center gap-2">
               <span className="text-sm sm:text-base font-bold text-gray-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>

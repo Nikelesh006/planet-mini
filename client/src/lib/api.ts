@@ -1,6 +1,8 @@
 // API Configuration
-// Change this URL to your Railway backend URL after deployment
-export const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// Leave empty in local dev so requests go to the same Express/Vite host.
+// Set VITE_API_URL to your deployed backend origin, for example:
+// https://your-railway-backend.up.railway.app
+export const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 // Helper function to make API calls
 export async function apiFetch(endpoint: string, options?: RequestInit) {

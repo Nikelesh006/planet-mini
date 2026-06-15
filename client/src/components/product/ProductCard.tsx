@@ -1,7 +1,6 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { Star, ShoppingCart, Heart, ShoppingBag } from "lucide-react";
-import { useState } from "react";
 import type { Product } from "@shared/schema";
 
 import { useLikes } from "@/contexts/LikeContext";
@@ -17,20 +16,12 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   const { toast } = useToast();
   
   const isWishlisted = likedProducts.some(p => p.id === Number(product.id));
-  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-
   // Use a fallback placeholder if the URL is broken
   const imageUrl = product.image || "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=500&h=600&fit=crop";
 
   const colors: string[] = Array.isArray(product.colors)
     ? product.colors
     : (typeof product.colors === 'string' ? [product.colors] : []);
-
-  const toggleDescription = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsDescriptionExpanded(!isDescriptionExpanded);
-  };
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -144,14 +135,6 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             <h3 className="font-display font-bold text-lg text-black">
               {product.name}
             </h3>
-
-            {/* Description */}
-            <p 
-              className="text-sm text-muted-foreground font-bold cursor-pointer line-clamp-1"
-              onClick={toggleDescription}
-            >
-              {product.description || 'Premium quality product for your little one'}
-            </p>
 
             <div className="flex items-center gap-2">
               <span className="font-semibold text-black">₹{Number(product.price || 0).toFixed(2)}</span>

@@ -332,7 +332,7 @@ export default function Navbar() {
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-secondary/80 to-primary text-white rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-white shadow-lg"
+                      className="absolute -top-1 -right-1 w-4 h-4 bg-red-600 text-white rounded-full text-[10px] font-bold flex items-center justify-center"
                     >
                       {likedProducts.length > 9 ? '9+' : likedProducts.length}
                     </motion.div>
@@ -357,7 +357,7 @@ export default function Navbar() {
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-0 right-0 w-4 h-4 bg-blue-500 text-primary-foreground rounded-full text-[10px] font-bold flex items-center justify-center border-2 border-background"
+                    className="absolute top-0 right-0 w-4 h-4 bg-red-600 text-white rounded-full text-[10px] font-bold flex items-center justify-center"
                   >
                     {state.totalItems > 99 ? '99+' : state.totalItems}
                   </motion.div>
@@ -531,7 +531,7 @@ export default function Navbar() {
                   <Heart className={`w-5 h-5 ${location === '/likes' ? 'fill-current' : ''}`} />
                   <span>Liked Products</span>
                   {likedProducts.length > 0 && (
-                    <span className="ml-auto bg-gradient-to-r from-secondary/80 to-primary text-white rounded-full text-xs font-bold px-2.5 py-1">
+                    <span className="ml-auto bg-red-600 text-white rounded-full text-xs font-bold px-2.5 py-1">
                       {likedProducts.length > 9 ? '9+' : likedProducts.length}
                     </span>
                   )}
@@ -611,7 +611,7 @@ export default function Navbar() {
                     <span className="text-base sm:text-lg font-semibold text-gray-700">Cart</span>
                   </div>
                   {state.totalItems > 0 && (
-                    <span className="bg-black text-white rounded-full text-xs font-bold px-2.5 py-1">
+                    <span className="bg-red-600 text-white rounded-full text-xs font-bold px-2.5 py-1">
                       {state.totalItems > 99 ? '99+' : state.totalItems}
                     </span>
                   )}

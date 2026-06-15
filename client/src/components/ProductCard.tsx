@@ -289,13 +289,6 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           </h3>
 
-          {/* Description */}
-          <p 
-            className="text-sm text-muted-foreground font-bold line-clamp-1"
-          >
-            {product.description || 'Premium quality product for your little one'}
-          </p>
-
           <div className="flex items-center gap-2">
 
             <span className="font-semibold text-black">₹{Number(product.price || 0).toFixed(2)}</span>
