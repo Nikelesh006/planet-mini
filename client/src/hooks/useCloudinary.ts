@@ -2,11 +2,11 @@ import { useState } from 'react';
 import axios from 'axios';
 import { API_BASE_URL } from '../lib/api';
 
-// Fast compression - optimized for 1-second upload
-const compressImage = (file: File, maxWidth: number = 600, quality: number = 0.65): Promise<Blob> => {
+// Preserve enough source detail for large product pages and hover zoom.
+const compressImage = (file: File, maxWidth: number = 1800, quality: number = 0.92): Promise<Blob> => {
   return new Promise((resolve, reject) => {
-    // Skip compression for small files (< 200KB)
-    if (file.size < 200 * 1024) {
+    // Skip compression for small files (< 500KB)
+    if (file.size < 500 * 1024) {
       resolve(file);
       return;
     }
@@ -22,7 +22,7 @@ const compressImage = (file: File, maxWidth: number = 600, quality: number = 0.6
         let width = img.width;
         let height = img.height;
         
-        // Aggressive downscaling for speed
+        // Keep a high-resolution source so product detail images do not pixelate.
         if (width > maxWidth) {
           height = Math.round((height * maxWidth) / width);
           width = maxWidth;
@@ -39,11 +39,10 @@ const compressImage = (file: File, maxWidth: number = 600, quality: number = 0.6
         
         if (ctx) {
           ctx.imageSmoothingEnabled = true;
-          ctx.imageSmoothingQuality = 'low'; // Fastest quality
+          ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, width, height);
         }
         
-        // Fast blob conversion with lower quality
         canvas.toBlob(
           (blob) => {
             if (blob) {
@@ -91,16 +90,16 @@ export const useCloudinary = () => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  // Upload multiple images with compression - optimized for speed
+  // Upload multiple images with quality-preserving compression
   const uploadImages = async (files: File[]): Promise<UploadResponse['data']> => {
     setIsUploading(true);
     setUploadProgress(0);
     setError(null);
 
     try {
-      // Fast parallel compression - all at once
+      // Parallel compression with enough resolution for product detail views
       const compressionPromises = files.map((file, index) => 
-        compressImage(file, 600, 0.65).then(blob => ({ blob, index }))
+        compressImage(file, 1800, 0.92).then(blob => ({ blob, index }))
       );
       
       setUploadProgress(10); // Quick start
@@ -164,9 +163,9 @@ export const useCloudinary = () => {
     setError(null);
 
     try {
-      // Fast compression for single image
+      // Quality-preserving compression for single image
       setUploadProgress(15);
-      const compressedBlob = await compressImage(file, 600, 0.65);
+      const compressedBlob = await compressImage(file, 1800, 0.92);
       
       const formData = new FormData();
       const compressedFile = new File([compressedBlob], file.name, {

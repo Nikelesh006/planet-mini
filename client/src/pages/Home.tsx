@@ -219,7 +219,7 @@ export default function Home() {
 
   // Use admin banners if available, otherwise use fallback images
   const sliderImages = banners.length > 0 ? banners : [
-    "/banner-hero.jpg",
+    "/banner-hero1.png",
     "/banner-hero2.png",
     "/banner-hero3.png",
     "/banner-hero4.png"

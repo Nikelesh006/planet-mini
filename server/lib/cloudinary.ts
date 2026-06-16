@@ -24,13 +24,7 @@ export const uploadImage = async (file: Buffer, folder: string = 'products'): Pr
         folder,
         resource_type: 'auto',
         allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-        max_file_size: 5000000, // 5MB
-        transformation: [
-          {
-            quality: 'auto:good',
-            fetch_format: 'auto'
-          }
-        ]
+        max_file_size: 10000000, // 10MB
       },
       (error, result) => {
         if (error) {

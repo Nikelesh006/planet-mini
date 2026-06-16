@@ -2,12 +2,21 @@ import { motion } from "framer-motion";
 import { useParams, Link } from "wouter";
 import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
+import type { MouseEvent } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useProduct, useProductById, useProducts } from "@/hooks/useProducts";
 import { BabyCareCard } from "@/components/BabyCareCard";
+
+const getCloudinaryImageUrl = (url: string, transformation: string) => {
+  if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
+    return url;
+  }
+
+  return url.replace("/image/upload/", `/image/upload/${transformation}/`);
+};
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -61,6 +70,8 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedImage, setSelectedImage] = useState(0);
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
   const [openInfoSection, setOpenInfoSection] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
@@ -102,6 +113,15 @@ export default function ProductDetailPage() {
   const additionalImages = (product as any)?.images || [];
   const allImages = [mainImage, ...additionalImages].filter(Boolean);
   const productImages = Array.from(new Set(allImages));
+  const selectedProductImage = productImages[selectedImage] || "";
+  const detailImage = getCloudinaryImageUrl(
+    selectedProductImage,
+    "f_auto,q_auto:best,dpr_auto,c_limit,w_1800"
+  );
+  const zoomImage = getCloudinaryImageUrl(
+    selectedProductImage,
+    "f_auto,q_auto:best,dpr_auto,c_limit,w_2400"
+  );
 
   // Image navigation functions
   const goToPreviousImage = () => {
@@ -114,6 +134,17 @@ export default function ProductDetailPage() {
     setSelectedImage((prev) =>
       prev === productImages.length - 1 ? 0 : prev + 1
     );
+  };
+
+  const handleMainImageMouseMove = (event: MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+    setZoomPosition({
+      x: Math.min(Math.max(x, 0), 100),
+      y: Math.min(Math.max(y, 0), 100),
+    });
   };
 
   useEffect(() => {
@@ -269,15 +300,39 @@ export default function ProductDetailPage() {
               {/* Left Column - Images */}
               <div className="space-y-4">
                 {/* Main Image */}
-                <div className="aspect-square bg-gray-50 rounded-2xl overflow-hidden relative">
+                <div
+                  className="aspect-square bg-gray-50 rounded-2xl overflow-hidden relative cursor-zoom-in"
+                  onMouseEnter={() => setIsImageZoomed(true)}
+                  onMouseMove={handleMainImageMouseMove}
+                  onMouseLeave={() => setIsImageZoomed(false)}
+                >
                   <img
-                    src={productImages[selectedImage]}
+                    src={detailImage}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain pointer-events-none select-none"
+                    loading="eager"
+                    decoding="async"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23F3F4F6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%236B7280' font-size='12' font-family='Arial'%3EProduct Image%3C/text%3E%3C/svg%3E";
                     }}
                   />
+
+                  {/* Hover Magnifier */}
+                  {isImageZoomed && zoomImage && (
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute hidden h-44 w-44 rounded-full bg-white shadow-2xl ring-1 ring-black/10 md:block"
+                      style={{
+                        left: `${zoomPosition.x}%`,
+                        top: `${zoomPosition.y}%`,
+                        transform: "translate(-50%, -50%)",
+                        backgroundImage: `url(${zoomImage})`,
+                        backgroundRepeat: "no-repeat",
+                        backgroundSize: "700% 700%",
+                        backgroundPosition: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                      }}
+                    />
+                  )}
 
                   {/* Image Navigation Arrows - Only show if multiple images */}
                   {productImages.length > 1 && (
@@ -312,7 +367,7 @@ export default function ProductDetailPage() {
                         }`}
                       >
                         <img
-                          src={image}
+                          src={getCloudinaryImageUrl(image, "f_auto,q_auto:good,dpr_auto,c_fill,w_240,h_240")}
                           alt={`${product.name} view ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {

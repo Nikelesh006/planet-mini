@@ -225,6 +225,56 @@ interface ProductFormData {
 
   originalPrice: string;
 
+  size: string;
+
+  fabric: string;
+
+  genericName: string;
+
+  netQuantity: string;
+
+  color: string;
+
+  collectionPrintName: string;
+
+  sku: string;
+
+  ageGroup: string;
+
+  costPrice: string;
+
+  stockQuantity: string;
+
+  lowStockAlert: string;
+
+  descriptionTemplate: string;
+
+  printName: string;
+
+  sleeveType: string;
+
+  neckType: string;
+
+  closureType: string;
+
+  careInstructions: string;
+
+  countryOfOrigin: string;
+
+  productStatus: string;
+
+  showOnWebsite: boolean;
+
+  newArrival: boolean;
+
+  featuredProduct: boolean;
+
+  bestSeller: boolean;
+
+  recommendedProduct: boolean;
+
+  relatedProducts: string;
+
 
 
 
@@ -489,6 +539,56 @@ export default function AddProduct() {
 
     originalPrice: '',
 
+    size: '',
+
+    fabric: '',
+
+    genericName: '',
+
+    netQuantity: '',
+
+    color: '',
+
+    collectionPrintName: '',
+
+    sku: '',
+
+    ageGroup: '',
+
+    costPrice: '',
+
+    stockQuantity: '',
+
+    lowStockAlert: '',
+
+    descriptionTemplate: '',
+
+    printName: '',
+
+    sleeveType: '',
+
+    neckType: '',
+
+    closureType: '',
+
+    careInstructions: '',
+
+    countryOfOrigin: '',
+
+    productStatus: 'Active',
+
+    showOnWebsite: true,
+
+    newArrival: false,
+
+    featuredProduct: false,
+
+    bestSeller: false,
+
+    recommendedProduct: false,
+
+    relatedProducts: '',
+
 
 
 
@@ -665,6 +765,56 @@ export default function AddProduct() {
 
       originalPrice: '',
 
+      size: '',
+
+      fabric: '',
+
+      genericName: '',
+
+      netQuantity: '',
+
+      color: '',
+
+      collectionPrintName: '',
+
+      sku: '',
+
+      ageGroup: '',
+
+      costPrice: '',
+
+      stockQuantity: '',
+
+      lowStockAlert: '',
+
+      descriptionTemplate: '',
+
+      printName: '',
+
+      sleeveType: '',
+
+      neckType: '',
+
+      closureType: '',
+
+      careInstructions: '',
+
+      countryOfOrigin: '',
+
+      productStatus: 'Active',
+
+      showOnWebsite: true,
+
+      newArrival: false,
+
+      featuredProduct: false,
+
+      bestSeller: false,
+
+      recommendedProduct: false,
+
+      relatedProducts: '',
+
 
 
 
@@ -840,6 +990,56 @@ export default function AddProduct() {
 
 
         originalPrice: productData.originalPrice?.toString() || '',
+
+        size: (productData as any).size || '',
+
+        fabric: (productData as any).fabric || '',
+
+        genericName: (productData as any).genericName || '',
+
+        netQuantity: (productData as any).netQuantity || '',
+
+        color: (productData as any).color || '',
+
+        collectionPrintName: (productData as any).collectionPrintName || '',
+
+        sku: (productData as any).sku || '',
+
+        ageGroup: (productData as any).ageGroup || '',
+
+        costPrice: (productData as any).costPrice?.toString() || '',
+
+        stockQuantity: (productData as any).stockQuantity?.toString() || '',
+
+        lowStockAlert: (productData as any).lowStockAlert?.toString() || '',
+
+        descriptionTemplate: (productData as any).descriptionTemplate || '',
+
+        printName: (productData as any).printName || '',
+
+        sleeveType: (productData as any).sleeveType || '',
+
+        neckType: (productData as any).neckType || '',
+
+        closureType: (productData as any).closureType || '',
+
+        careInstructions: (productData as any).careInstructions || '',
+
+        countryOfOrigin: (productData as any).countryOfOrigin || '',
+
+        productStatus: (productData as any).productStatus || 'Active',
+
+        showOnWebsite: (productData as any).showOnWebsite ?? true,
+
+        newArrival: (productData as any).newArrival || false,
+
+        featuredProduct: (productData as any).featuredProduct || false,
+
+        bestSeller: (productData as any).bestSeller || false,
+
+        recommendedProduct: (productData as any).recommendedProduct || false,
+
+        relatedProducts: (productData as any).relatedProducts || '',
 
 
 
@@ -1127,7 +1327,7 @@ export default function AddProduct() {
 
 
 
-    console.log('📁 Selected files:', files?.length);
+    console.log('?? Selected files:', files?.length);
 
 
 
@@ -1139,7 +1339,7 @@ export default function AddProduct() {
 
 
 
-      console.log('❌ No files selected');
+      console.log('? No files selected');
 
 
 
@@ -1159,7 +1359,7 @@ export default function AddProduct() {
 
 
 
-      console.log('⬆️ Starting upload for', files.length, 'files');
+      console.log('?? Starting upload for', files.length, 'files');
 
 
 
@@ -1167,7 +1367,7 @@ export default function AddProduct() {
 
 
 
-      console.log('✅ Upload successful:', imageUrls);
+      console.log('? Upload successful:', imageUrls);
 
 
 
@@ -1263,7 +1463,7 @@ export default function AddProduct() {
 
 
 
-      console.error('❌ Image upload failed:', error);
+      console.error('? Image upload failed:', error);
 
 
 
@@ -4015,7 +4215,7 @@ export default function AddProduct() {
 
 
 
-                  Price (₹) <span className="text-red-500">*</span>
+                  Price (?) <span className="text-red-500">*</span>
 
 
 
@@ -4039,7 +4239,7 @@ export default function AddProduct() {
 
 
 
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">?</span>
 
 
 
@@ -4231,7 +4431,7 @@ export default function AddProduct() {
 
 
 
-                  Original Price (₹) <span className="text-gray-400 text-xs">(Optional)</span>
+                  Original Price (?) <span className="text-gray-400 text-xs">(Optional)</span>
 
 
 
@@ -4255,7 +4455,7 @@ export default function AddProduct() {
 
 
 
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">₹</span>
+                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">?</span>
 
 
 
