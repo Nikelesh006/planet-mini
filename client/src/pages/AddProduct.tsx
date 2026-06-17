@@ -1,6001 +1,874 @@
-import { useState, useEffect } from "react";
-
-
-
-
-
-
-
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-
-
-
-
-
-
-
 import { Link, useLocation, useSearch } from "wouter";
-
-
-
-
-
-
-
+import {
+  ArrowLeft,
+  BadgeIndianRupee,
+  Check,
+  Eye,
+  Image as ImageIcon,
+  Package,
+  Plus,
+  Save,
+  Star,
+  Tag,
+  Trash2,
+  Upload,
+  X,
+} from "lucide-react";
 import { useCloudinary } from "@/hooks/useCloudinary";
-
-
-
-
-
-
-
 import { useProduct, useProductById } from "@/hooks/useProducts";
 import { API_BASE_URL } from "@/lib/api";
-
-
-
-
-
-
-
 import { useToast } from "@/hooks/use-toast";
 
-
-
-
-
-
-
-import { 
-
-
-
-
-
-
-
-  ArrowLeft, 
-
-
-
-
-
-
-
-  Save, 
-
-
-
-
-
-
-
-  Upload, 
-
-
-
-
-
-
-
-  X, 
-
-
-
-
-
-
-
-  Plus,
-
-
-
-
-
-
-
-  Package,
-
-
-
-
-
-
-
-  DollarSign,
-
-
-
-
-
-
-
-  Tag,
-
-
-
-
-
-
-
-  FileText,
-
-
-
-
-
-
-
-  Image as ImageIcon,
-
-
-
-
-
-
-
-  Star,
-
-
-
-
-
-
-
-  Check,
-
-
-
-
-
-
-
-  Edit3
-
-
-
-
-
-
-
-} from "lucide-react";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 interface ProductFormData {
-
-
-
-
-
-
-
   id?: string;
-
-
-
-
-
-
-
   name: string;
-
-
-
-
-
-
-
   slug: string;
-
-
-
-
-
-
-
+  productClassification: string;
+  collectionName: string;
   description: string;
-
-
-
-
-
-
-
   price: string;
-
-
-
-
-
-
-
   originalPrice: string;
-
-  size: string;
-
-  fabric: string;
-
-  genericName: string;
-
-  netQuantity: string;
-
-  color: string;
-
-  collectionPrintName: string;
-
-  sku: string;
-
-  ageGroup: string;
-
-  costPrice: string;
-
-  stockQuantity: string;
-
-  lowStockAlert: string;
-
-  descriptionTemplate: string;
-
-  printName: string;
-
-  sleeveType: string;
-
-  neckType: string;
-
-  closureType: string;
-
-  careInstructions: string;
-
-  countryOfOrigin: string;
-
-  productStatus: string;
-
-  showOnWebsite: boolean;
-
-  newArrival: boolean;
-
-  featuredProduct: boolean;
-
-  bestSeller: boolean;
-
-  recommendedProduct: boolean;
-
-  relatedProducts: string;
-
-
-
-
-
-
-
-  category: "" | "style" | "home" | "care" | "offers";
-
-
-
-
-
-
-
+  category: "" | "style" | "home";
   subcategory: string;
-
-
-
-
-
-
-
   images: string[];
-
-
-
-
-
-
-
   rating: number;
-
-
-
-
-
-
-
   reviews: number;
-
-
-
-
-
-
-
   inStock: boolean;
-
-
-
-
-
-
-
   isNew: boolean;
-
-
-
-
-
-
-
 }
 
+interface ComboItem {
+  id: string;
+  product: string;
+  variant: string;
+  quantity: number;
+  selected: boolean;
+}
 
+interface ProductDetailFields {
+  ageGroup: string;
+  gender: string;
+  occasion: string;
+  fabric: string;
+  colorTheme: string;
+  careInstructions: string;
+}
 
+interface InventoryFields {
+  stockQuantity: string;
+  lowStockAlert: string;
+}
 
+const emptyForm: ProductFormData = {
+  name: "",
+  slug: "",
+  productClassification: "Hospital Combo",
+  collectionName: "",
+  description: "",
+  price: "",
+  originalPrice: "",
+  category: "",
+  subcategory: "",
+  images: [],
+  rating: 4.5,
+  reviews: 0,
+  inStock: true,
+  isNew: false,
+};
 
+const subcategoryOptions: Record<string, string[]> = {
+  style: [],
+  home: ["New Arrivals", "Trending Products"],
+};
 
+const fieldClass =
+  "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25";
+const errorFieldClass = "border-red-400 focus:border-red-400 focus:ring-red-100";
 
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
+const Section = ({
+  title,
+  icon: Icon,
+  children,
+  className = "",
+}: {
+  title: string;
+  icon: typeof Package;
+  children: React.ReactNode;
+  className?: string;
+}) => (
+  <motion.section
+    initial={{ opacity: 0, y: 16 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`rounded-lg border border-slate-200 bg-white p-4 shadow-sm ${className}`}
+  >
+    <div className="mb-4 flex items-center gap-2">
+      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F1F5EB] text-[#5F6F46]">
+        <Icon className="h-4 w-4" />
+      </span>
+      <h2 className="text-sm font-semibold text-slate-950">{title}</h2>
+    </div>
+    {children}
+  </motion.section>
+);
 
-
-
-
-
-
+const Label = ({ children, required = false }: { children: React.ReactNode; required?: boolean }) => (
+  <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+    {children} {required && <span className="text-red-500">*</span>}
+  </label>
+);
 
 export default function AddProduct() {
-
-
-
-
-
-
-
-  const { uploadImages, isUploading, uploadProgress, error, clearError } = useCloudinary();
-
-
-
-
-
-
-
+  const { uploadImages, isUploading, uploadProgress } = useCloudinary();
+  const [, setLocation] = useLocation();
   const search = useSearch();
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-  // Parse edit query parameter from URL
-
-
-
-
-
-
-
   const searchParams = new URLSearchParams(search);
-
-
-
-
-
-
-
-  const editId = searchParams.get('edit');
-
-
-
-
-
-
-
-  const viewId = searchParams.get('view');
-
-
-
-
-
-
-
+  const editId = searchParams.get("edit");
+  const viewId = searchParams.get("view");
   const isEdit = !!editId;
-
-
-
-
-
-
-
   const productId = editId || viewId;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Fetch product data when in edit or view mode
-
-
-
-
-
-
-
-  const { data: productDataBySlug, isLoading: isLoadingBySlug } = useProduct(productId || '');
-
-
-
-
-
-
-
-  const { data: productDataById, isLoading: isLoadingById } = useProductById(editId || '');
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-  const productData = editId ? productDataById : productDataBySlug;
-
-
-
-
-
-
-
-  const isLoadingProduct = editId ? isLoadingById : isLoadingBySlug;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const [formData, setFormData] = useState<ProductFormData>({
-
-
-
-
-
-
-
-    name: '',
-
-
-
-
-
-
-
-    slug: '',
-
-
-
-
-
-
-
-    description: '',
-
-
-
-
-
-
-
-    price: '',
-
-
-
-
-
-
-
-    originalPrice: '',
-
-    size: '',
-
-    fabric: '',
-
-    genericName: '',
-
-    netQuantity: '',
-
-    color: '',
-
-    collectionPrintName: '',
-
-    sku: '',
-
-    ageGroup: '',
-
-    costPrice: '',
-
-    stockQuantity: '',
-
-    lowStockAlert: '',
-
-    descriptionTemplate: '',
-
-    printName: '',
-
-    sleeveType: '',
-
-    neckType: '',
-
-    closureType: '',
-
-    careInstructions: '',
-
-    countryOfOrigin: '',
-
-    productStatus: 'Active',
-
-    showOnWebsite: true,
-
-    newArrival: false,
-
-    featuredProduct: false,
-
-    bestSeller: false,
-
-    recommendedProduct: false,
-
-    relatedProducts: '',
-
-
-
-
-
-
-
-    category: '',
-
-
-
-
-
-
-
-    subcategory: '',
-
-
-
-
-
-
-
-    images: [],
-
-
-
-
-
-
-
-    rating: 4.5,
-
-
-
-
-
-
-
-    reviews: 0,
-
-
-
-
-
-
-
-    inStock: true,
-
-
-
-
-
-
-
-    isNew: false
-
-
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const [errors, setErrors] = useState<Partial<Record<keyof ProductFormData, string>>>({});
-
-
-
-
-
-
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-
-
-
-
-
-
-  const [showSuccess, setShowSuccess] = useState(false);
-
-
-
-
-
-
-
   const { toast } = useToast();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Reset form to initial empty state
-
-
-
-
-
-
-
-  const resetForm = () => {
-
-
-
-
-
-
-
-    setFormData({
-
-
-
-
-
-
-
-      name: '',
-
-
-
-
-
-
-
-      slug: '',
-
-
-
-
-
-
-
-      description: '',
-
-
-
-
-
-
-
-      price: '',
-
-
-
-
-
-
-
-      originalPrice: '',
-
-      size: '',
-
-      fabric: '',
-
-      genericName: '',
-
-      netQuantity: '',
-
-      color: '',
-
-      collectionPrintName: '',
-
-      sku: '',
-
-      ageGroup: '',
-
-      costPrice: '',
-
-      stockQuantity: '',
-
-      lowStockAlert: '',
-
-      descriptionTemplate: '',
-
-      printName: '',
-
-      sleeveType: '',
-
-      neckType: '',
-
-      closureType: '',
-
-      careInstructions: '',
-
-      countryOfOrigin: '',
-
-      productStatus: 'Active',
-
-      showOnWebsite: true,
-
-      newArrival: false,
-
-      featuredProduct: false,
-
-      bestSeller: false,
-
-      recommendedProduct: false,
-
-      relatedProducts: '',
-
-
-
-
-
-
-
-      category: '',
-
-
-
-
-
-
-
-      subcategory: '',
-
-
-
-
-
-
-
-      images: [],
-
-
-
-
-
-
-
-      rating: 4.5,
-
-
-
-
-
-
-
-      reviews: 0,
-
-
-
-
-
-
-
-      inStock: true,
-
-
-
-
-
-
-
-      isNew: false
-
-
-
-
-
-
-
-    });
-
-
-
-
-
-
-
-    setErrors({});
-
-
-
-
-
-
-
-    setShowSuccess(false);
-
-
-
-
-
-
-
-  };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // Pre-fill form when product data is loaded
-
-
-
-
-
-
+  const { data: productDataBySlug, isLoading: isLoadingBySlug } = useProduct(productId || "");
+  const { data: productDataById, isLoading: isLoadingById } = useProductById(editId || "");
+  const productData = editId ? productDataById : productDataBySlug;
+  const isLoadingProduct = editId ? isLoadingById : isLoadingBySlug;
+
+  const [formData, setFormData] = useState<ProductFormData>(emptyForm);
+  const [errors, setErrors] = useState<Partial<Record<keyof ProductFormData, string>>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [comboItems, setComboItems] = useState<ComboItem[]>([
+    { id: "knot-jabla", product: "Belle Scribbles Knot Jabla", variant: "Newborn (0-1M)", quantity: 2, selected: true },
+    { id: "muslin-cap", product: "Muslin Cap - White", variant: "Newborn", quantity: 1, selected: true },
+    { id: "muslin-mittens", product: "Muslin Mittens - White", variant: "Newborn", quantity: 1, selected: true },
+    { id: "muslin-booties", product: "Muslin Booties - White", variant: "Newborn", quantity: 1, selected: true },
+  ]);
+  const [productDetails, setProductDetails] = useState<ProductDetailFields>({
+    ageGroup: "Newborn (0-1M)",
+    gender: "Unisex",
+    occasion: "Daily Use",
+    fabric: "100% Muslin Cotton",
+    colorTheme: "Multi Print",
+    careInstructions: "Machine Wash",
+  });
+  const [inventory, setInventory] = useState<InventoryFields>({
+    stockQuantity: "50",
+    lowStockAlert: "5",
+  });
 
   useEffect(() => {
-
-
-
-
-
-
-
     if (productData && (isEdit || viewId)) {
-
-
-
-
-
-
-
       setFormData({
-
-
-
-
-
-
-
-        id: productData.id?.toString() || '',
-
-
-
-
-
-
-
-        name: productData.name || '',
-
-
-
-
-
-
-
-        slug: productData.slug || '',
-
-
-
-
-
-
-
-        description: productData.description || '',
-
-
-
-
-
-
-
-        price: productData.price != null ? String(productData.price) : '',
-
-
-
-
-
-
-
-        originalPrice: productData.originalPrice?.toString() || '',
-
-        size: (productData as any).size || '',
-
-        fabric: (productData as any).fabric || '',
-
-        genericName: (productData as any).genericName || '',
-
-        netQuantity: (productData as any).netQuantity || '',
-
-        color: (productData as any).color || '',
-
-        collectionPrintName: (productData as any).collectionPrintName || '',
-
-        sku: (productData as any).sku || '',
-
-        ageGroup: (productData as any).ageGroup || '',
-
-        costPrice: (productData as any).costPrice?.toString() || '',
-
-        stockQuantity: (productData as any).stockQuantity?.toString() || '',
-
-        lowStockAlert: (productData as any).lowStockAlert?.toString() || '',
-
-        descriptionTemplate: (productData as any).descriptionTemplate || '',
-
-        printName: (productData as any).printName || '',
-
-        sleeveType: (productData as any).sleeveType || '',
-
-        neckType: (productData as any).neckType || '',
-
-        closureType: (productData as any).closureType || '',
-
-        careInstructions: (productData as any).careInstructions || '',
-
-        countryOfOrigin: (productData as any).countryOfOrigin || '',
-
-        productStatus: (productData as any).productStatus || 'Active',
-
-        showOnWebsite: (productData as any).showOnWebsite ?? true,
-
-        newArrival: (productData as any).newArrival || false,
-
-        featuredProduct: (productData as any).featuredProduct || false,
-
-        bestSeller: (productData as any).bestSeller || false,
-
-        recommendedProduct: (productData as any).recommendedProduct || false,
-
-        relatedProducts: (productData as any).relatedProducts || '',
-
-
-
-
-
-
-
-        category: (productData.category as "" | "style" | "home" | "care" | "offers") || '',
-
-
-
-
-
-
-
-        subcategory: productData.subcategory || '',
-
-
-
-
-
-
-
-        images: (productData as any).images || (productData.image ? [productData.image] : []) || [],
-
-
-
-
-
-
-
+        id: productData.id?.toString() || "",
+        name: productData.name || "",
+        slug: productData.slug || "",
+        productClassification: (productData as any).productClassification || "Hospital Combo",
+        collectionName: (productData as any).collectionName || (productData as any).collectionPrintName || productData.name || "",
+        description: productData.description || "",
+        price: productData.price != null ? String(productData.price) : "",
+        originalPrice: productData.originalPrice?.toString() || "",
+        category: (productData.category as ProductFormData["category"]) || "",
+        subcategory: productData.subcategory || "",
+        images: (productData as any).images || (productData.image ? [productData.image] : []),
         rating: productData.rating || 4.5,
-
-
-
-
-
-
-
         reviews: productData.reviews || 0,
-
-
-
-
-
-
-
         inStock: productData.inStock ?? true,
-
-
-
-
-
-
-
-        isNew: productData.isNew || false
-
-
-
-
-
-
-
+        isNew: productData.isNew || false,
       });
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
   }, [productData, isEdit, viewId]);
 
+  const discount = useMemo(() => {
+    const original = Number(formData.originalPrice);
+    const current = Number(formData.price);
+    if (!original || !current || original <= current) return null;
+    return {
+      amount: original - current,
+      percent: Math.round(((original - current) / original) * 100),
+    };
+  }, [formData.originalPrice, formData.price]);
 
+  const previewCategory = formData.category === "home" ? "Home" : formData.category === "style" ? "Shop by Style" : "Category";
+  const previewSubcategory = formData.subcategory || "No subcategory";
+  const generatedSlug = formData.slug || slugify(formData.name || formData.collectionName);
+  const previewSku = generatedSlug
+    ? `PM-${generatedSlug.toUpperCase().replace(/[^A-Z0-9]+/g, "-").replace(/^-|-$/g, "")}`
+    : "Auto-generated";
+  const selectedComboItems = comboItems.filter((item) => item.selected);
+  const comboTotalQuantity = selectedComboItems.reduce((total, item) => total + Number(item.quantity || 0), 0);
 
-
-
-
-
-
-
-
-
-
-
-
-
-  const subcategoryOptions: Record<string, string[]> = {
-
-
-
-
-
-
-
-    style: [],
-
-
-
-
-
-
-
-    home: ["New Arrivals", "Trending Products"]
-
-
-
-
-
-
-
+  const resetForm = () => {
+    setFormData(emptyForm);
+    setErrors({});
+    setShowSuccess(false);
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const colorOptions = []; // Remove predefined colors - only use custom colors
-
-
-
-
-
-
-
-  const sizeOptions = ["0-6M", "6-12M", "1-2Y", "2-3Y", "3-4Y"];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-
-
-
-
-
-
-
     const { name, value, type } = e.target;
-
-
-
-
-
-
-
     const checked = (e.target as HTMLInputElement).checked;
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-    setFormData(prev => ({
-
-
-
-
-
-
-
+    setFormData((prev) => ({
       ...prev,
-
-
-
-
-
-
-
-      [name]: type === 'checkbox' ? checked : value
-
-
-
-
-
-
-
+      [name]: type === "checkbox" ? checked : value,
+      ...(name === "category" ? { subcategory: "" } : {}),
+      ...(name === "name" && !isEdit ? { slug: slugify(value) } : {}),
+      ...(name === "collectionName" && !isEdit && !prev.name ? { slug: slugify(value) } : {}),
     }));
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-    // Clear error when user starts typing
-
-
-
-
-
-
 
     if (errors[name as keyof ProductFormData]) {
-
-
-
-
-
-
-
-      setErrors(prev => ({ ...prev, [name]: '' }));
-
-
-
-
-
-
-
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
-
-
-
-
-
-
-
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-
-
-
     const files = e.target.files;
-
-
-
-    console.log('?? Selected files:', files?.length);
-
-
-
-
-
-
-
-    if (!files || files.length === 0) {
-
-
-
-      console.log('? No files selected');
-
-
-
-      return;
-
-
-
-    }
-
-
-
-
-
-
+    if (!files || files.length === 0) return;
 
     try {
-
-
-
-      console.log('?? Starting upload for', files.length, 'files');
-
-
-
       const imageUrls = await uploadImages(Array.from(files));
-
-
-
-      console.log('? Upload successful:', imageUrls);
-
-
-
-
-
-
-
       if (imageUrls && imageUrls.length > 0) {
-
-
-
-        // Extract URLs from the Cloudinary response objects
-
-
-
-        const newImageUrls = imageUrls.map((img: any) => 
-
-
-
-          typeof img === 'string' ? img : img.url
-
-
-
-        );
-
-
-
-
-
-
-
-        setFormData(prev => ({ 
-
-
-
-          ...prev, 
-
-
-
-          images: [...prev.images, ...newImageUrls].slice(0, 5)
-
-
-
+        const newImageUrls = imageUrls.map((img: any) => (typeof img === "string" ? img : img.url));
+        setFormData((prev) => ({
+          ...prev,
+          images: [...prev.images, ...newImageUrls].slice(0, 5),
         }));
-
-
-
-
-
-
-
         toast({
-
-
-
           title: "Image Uploaded!",
-
-
-
           description: `${newImageUrls.length} image(s) added successfully.`,
-
-
-
-          variant: "success"
-
-
-
+          variant: "success",
         });
-
-
-
-
-
-
-
-        if (errors.images) {
-
-
-
-          setErrors(prev => ({ ...prev, images: '' }));
-
-
-
-        }
-
-
-
+        setErrors((prev) => ({ ...prev, images: "" }));
       }
-
-
-
     } catch (error: any) {
-
-
-
-      console.error('? Image upload failed:', error);
-
-
-
       toast({
-
-
-
         title: "Upload Failed",
-
-
-
         description: error.message || "Failed to upload image. Please try again.",
-
-
-
-        variant: "destructive"
-
-
-
+        variant: "destructive",
       });
-
-
-
     }
-
-
-
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const removeImage = (index: number) => {
-
-
-
-
-
-
-
-    setFormData(prev => ({
-
-
-
-
-
-
-
+    setFormData((prev) => ({
       ...prev,
-
-
-
-
-
-
-
-      images: prev.images.filter((_, i) => i !== index)
-
-
-
-
-
-
-
+      images: prev.images.filter((_, i) => i !== index),
     }));
-
-
-
-
-
-
-
   };
 
+  const handleComboQuantityChange = (id: string, quantity: string) => {
+    setComboItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: Math.max(0, Number(quantity) || 0) } : item,
+      ),
+    );
+  };
 
+  const toggleComboItem = (id: string) => {
+    setComboItems((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, selected: !item.selected } : item)),
+    );
+  };
 
+  const removeComboItem = (id: string) => {
+    setComboItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
+  const handleProductDetailChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setProductDetails((prev) => ({ ...prev, [name]: value }));
+  };
 
-
-
-
-
-
-
-
-
-
+  const handleInventoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setInventory((prev) => ({ ...prev, [name]: value }));
+  };
 
   const validateForm = () => {
-
-
-
-
-
-
-
     const newErrors: Partial<Record<keyof ProductFormData, string>> = {};
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-    if (!formData.name.trim()) newErrors.name = 'Product name is required';
-
-
-
-
-
-
-
-    if (!formData.slug.trim()) newErrors.slug = 'Slug is required';
-
-
-
-
-
-
-
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
-
-
-
-
-
-
-
-    if (!formData.price || parseFloat(formData.price) <= 0) newErrors.price = 'Valid price is required';
-
-
-
-
-
-
-
-    if (!formData.category) newErrors.category = 'Category is required';
-
-
-
-
-
-
-
-    // Subcategory is now optional - no validation required
-
-
-
-
-
-
-
-    if (!formData.images || formData.images.length === 0) newErrors.images = 'At least one product image is required';
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
+    if (!formData.name.trim()) newErrors.name = "Product name is required";
+    if (!formData.description.trim()) newErrors.description = "Description is required";
+    if (!formData.price || parseFloat(formData.price) <= 0) newErrors.price = "Valid price is required";
+    if (!formData.category) newErrors.category = "Category is required";
+    if (!formData.images || formData.images.length === 0) newErrors.images = "At least one product image is required";
     setErrors(newErrors);
-
-
-
-
-
-
-
     return Object.keys(newErrors).length === 0;
-
-
-
-
-
-
-
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  const productPayload = {
+    slug: formData.slug || slugify(formData.name || formData.collectionName),
+    name: formData.name,
+    description: formData.description,
+    price: isEdit ? parseFloat(formData.price) : formData.price,
+    originalPrice: isEdit
+      ? formData.originalPrice
+        ? parseFloat(formData.originalPrice)
+        : null
+      : formData.originalPrice || null,
+    category: formData.category,
+    subcategory: formData.subcategory || null,
+    image: formData.images[0] || "",
+    rating: formData.rating,
+    reviews: formData.reviews,
+    inStock: formData.inStock,
+    isNew: formData.isNew,
+    images: formData.images,
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-
-
-
-
-
-
-
     e.preventDefault();
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-    if (!validateForm()) {
-
-
-
-
-
-
-
-      return;
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
     try {
-
-
-
-
-
-
-
-      if (isEdit && editId) {
-
-
-
-
-
-
-
-        // UPDATE existing product
-
-
-
-
-
-
-
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch(`${API_BASE_URL}/api/products/${editId}`, {
-
-
-
-
-
-
-
-          method: 'PUT',
-
-
-
-
-
-
-
-          headers: {
-
-
-
-
-
-
-
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-
-
-
-
-
-
-
-          },
-
-
-
-
-
-
-
-          body: JSON.stringify({
-
-
-
-
-
-
-
-            slug: formData.slug,
-
-
-
-
-
-
-
-            name: formData.name,
-
-
-
-
-
-
-
-            description: formData.description,
-
-
-
-
-
-
-
-            price: parseFloat(formData.price),
-
-
-
-
-
-
-
-            originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : null,
-
-
-
-
-
-
-
-            category: formData.category,
-
-
-
-
-
-
-
-            subcategory: formData.subcategory,
-
-
-
-
-
-
-
-            images: formData.images,
-
-
-
-
-
-
-
-            image: formData.images[0] || '',
-
-
-
-
-
-
-
-            rating: formData.rating,
-
-
-
-
-
-
-
-            reviews: formData.reviews,
-
-
-
-
-
-
-
-            inStock: formData.inStock,
-
-
-
-
-
-
-
-            isNew: formData.isNew
-
-
-
-
-
-
-
-          }),
-
-
-
-
-
-
-
-        });
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        if (!response.ok) {
-
-
-
-
-
-
-
-          throw new Error('Failed to update product');
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        setShowSuccess(true);
-
-
-
-
-
-
-
-        toast({
-
-
-
-
-
-
-
-          title: "Product Updated Successfully!",
-
-
-
-
-
-
-
-          description: "Your product has been updated and is now live on the store.",
-
-
-
-
-
-
-
-          variant: "success"
-
-
-
-
-
-
-
-        });
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-      } else {
-
-
-
-
-
-
-
-        // CREATE NEW (Universal Template Pattern)
-
-
-
-
-
-
-
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch(`${API_BASE_URL}/api/products`, {
-
-
-
-
-
-
-
-          method: 'POST',
-
-
-
-
-
-
-
-          headers: {
-
-
-
-
-
-
-
-            'Content-Type': 'application/json',
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-
-
-
-
-
-
-
-          },
-
-
-
-
-
-
-
-          body: JSON.stringify({
-
-
-
-
-
-
-
-            slug: formData.slug,
-
-
-
-
-
-
-
-            name: formData.name,
-
-
-
-
-
-
-
-            description: formData.description,
-
-
-
-
-
-
-
-            price: formData.price,
-
-
-
-
-
-
-
-            originalPrice: formData.originalPrice || null,
-
-
-
-
-
-
-
-            category: formData.category,
-
-
-
-
-
-
-
-            subcategory: formData.subcategory || null, // Send null if empty
-
-
-
-
-
-
-
-            image: formData.images[0] || '', // Use first image as primary
-
-
-
-
-
-
-
-            rating: formData.rating,
-
-
-
-
-
-
-
-            reviews: formData.reviews,
-
-
-
-
-
-
-
-            inStock: formData.inStock,
-
-
-
-
-
-
-
-            isNew: formData.isNew,
-
-
-
-
-
-
-
-            images: formData.images // Include all images for future use
-
-
-
-
-
-
-
-          }),
-
-
-
-
-
-
-
-        });
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        if (!response.ok) {
-
-
-
-
-
-
-
-          throw new Error('Failed to create product');
-
-
-
-
-
-
-
-        }
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        setShowSuccess(true);
-
-
-
-
-
-
-
-        toast({
-
-
-
-
-
-
-
-          title: "Product Added Successfully!",
-
-
-
-
-
-
-
-          description: "Your new product has been added and is now live on the store.",
-
-
-
-
-
-
-
-          variant: "success"
-
-
-
-
-
-
-
-        });
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-        // Reset form to empty state after successful addition
-
-
-
-
-
-
-
-        resetForm();
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
-    } catch (error) {
-
-
-
-
-
-
-
-      console.error('Error creating product:', error);
-
-
-
-
-
-
-
-      toast({
-
-
-
-
-
-
-
-        title: "Error",
-
-
-
-
-
-
-
-        description: "Failed to create product. Please try again.",
-
-
-
-
-
-
-
-        variant: "destructive",
-
-
-
-
-
-
-
+      const token = localStorage.getItem("jwtToken");
+      const response = await fetch(`${API_BASE_URL}/api/products${isEdit && editId ? `/${editId}` : ""}`, {
+        method: isEdit && editId ? "PUT" : "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(productPayload),
       });
 
+      if (!response.ok) {
+        throw new Error(isEdit ? "Failed to update product" : "Failed to create product");
+      }
 
+      setShowSuccess(true);
+      toast({
+        title: isEdit ? "Product Updated Successfully!" : "Product Added Successfully!",
+        description: isEdit ? "Your product has been updated and is now live on the store." : "Your new product has been added and is now live on the store.",
+        variant: "success",
+      });
 
-
-
-
-
+      if (!isEdit) resetForm();
+    } catch (error) {
+      console.error("Error saving product:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save product. Please try again.",
+        variant: "destructive",
+      });
     } finally {
-
-
-
-
-
-
-
       setIsSubmitting(false);
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  if (isLoadingProduct && (isEdit || viewId)) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="text-sm font-medium text-slate-600">Loading product details...</div>
+      </div>
+    );
+  }
 
   return (
-
-
-
-
-
-
-
-    <div className="min-h-screen bg-gray-50">
-
-
-
-
-
-
-
-      {/* Header */}
-
-
-
-
-
-
-
-      <div className="bg-white shadow-sm border-b">
-
-
-
-
-
-
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-
-
-
-
-
-
-          <div className="flex items-center justify-between h-16">
-
-
-
-
-
-
-
-            <div className="flex items-center gap-4">
-
-
-
-
-
-
-
-              <Link 
-
-
-
-
-
-
-
-                href="/admin" 
-
-
-
-
-
-
-
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
-
-
-
-
-
-
-
-              >
-
-
-
-
-
-
-
-                <ArrowLeft className="w-5 h-5" />
-
-
-
-
-
-
-
-                <span>Back to Admin</span>
-
-
-
-
-
-
-
-              </Link>
-
-
-
-
-
-
-
-              <h1 className="text-xl font-semibold text-gray-900">{isEdit ? 'Edit Product' : 'Add New Product'}</h1>
-
-
-
-
-
-
-
-            </div>
-
-
-
-
-
-
-
+    <div className="min-h-screen bg-slate-50">
+      <div className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-4">
+            <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-slate-950">
+              <ArrowLeft className="h-4 w-4" />
+              Back to Admin
+            </Link>
+            <div className="h-6 w-px bg-slate-200" />
+            <h1 className="text-lg font-semibold text-slate-950">{isEdit ? "Edit Product" : "Add Product"}</h1>
           </div>
-
-
-
-
-
-
-
+          <div className="hidden items-center gap-2 text-xs font-medium text-slate-500 sm:flex">
+            <Eye className="h-4 w-4" />
+            Store-ready product setup
+          </div>
         </div>
-
-
-
-
-
-
-
       </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      {/* Success Message */}
-
-
-
-
-
-
 
       {showSuccess && (
-
-
-
-
-
-
-
         <motion.div
-
-
-
-
-
-
-
           initial={{ opacity: 0, y: -20 }}
-
-
-
-
-
-
-
           animate={{ opacity: 1, y: 0 }}
-
-
-
-
-
-
-
-          className="fixed top-20 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-2"
-
-
-
-
-
-
-
+          className="fixed right-4 top-20 z-50 flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg"
         >
-
-
-
-
-
-
-
-          <Check className="w-5 h-5" />
-
-
-
-
-
-
-
-          {isEdit ? 'Product updated successfully!' : 'Product created successfully!'}
-
-
-
-
-
-
-
+          <Check className="h-4 w-4" />
+          {isEdit ? "Product updated successfully!" : "Product created successfully!"}
         </motion.div>
-
-
-
-
-
-
-
       )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      {/* Form */}
-
-
-
-
-
-
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-
-
-
-
-
-
-        <form onSubmit={handleSubmit} className="space-y-8 pointer-events-auto" style={{ pointerEvents: 'auto' }}>
-
-
-
-
-
-
-
-          {/* Product Image */}
-
-
-
-
-
-
-
-          <motion.div
-
-
-
-
-
-
-
-            initial={{ opacity: 0, y: 20 }}
-
-
-
-
-
-
-
-            animate={{ opacity: 1, y: 0 }}
-
-
-
-
-
-
-
-            className="bg-white rounded-xl shadow-sm p-6"
-
-
-
-
-
-
-
-          >
-
-
-
-
-
-
-
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-
-
-
-
-
-
-
-              <ImageIcon className="w-5 h-5 text-primary" />
-
-
-
-
-
-
-
-              Product Image
-
-
-
-
-
-
-
-            </h2>
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-            <div className="space-y-4">
-
-
-
-
-
-
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-
-
-
-
-
-
-
-                {/* Show 5 image slots */}
-
-
-
-
-
-
-
-                {[0, 1, 2, 3, 4].map((index) => (
-
-
-
-
-
-
-
-                  <div key={index} className="relative">
-
-
-
-
-
-
-
-                    {formData.images[index] ? (
-
-
-
-
-
-
-
-                      <div className="relative w-full h-32 bg-gray-100 rounded-lg overflow-hidden group">
-
-
-
-
-
-
-
-                        <img
-
-
-
-
-
-
-
-                          src={formData.images[index]}
-
-
-
-
-
-
-
-                          alt={`Product image ${index + 1}`}
-
-
-
-
-
-
-
-                          className="w-full h-full object-cover"
-
-
-
-
-
-
-
-                        />
-
-
-
-
-
-
-
-                        <button
-
-
-
-
-
-
-
-                          type="button"
-
-
-
-
-
-
-
-                          onClick={() => removeImage(index)}
-
-
-
-
-
-
-
-                          className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-
-
-
-
-
-
-
-                        >
-
-
-
-
-
-
-
-                          <X className="w-3 h-3" />
-
-
-
-
-
-
-
-                        </button>
-
-
-
-
-
-
-
-                        <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-
-
-
-
-
-
-
-                          {index + 1}
-
-
-
-
-
-
-
-                        </div>
-
-
-
-
-
-
-
-                      </div>
-
-
-
-
-
-
-
-                    ) : isUploading && index === formData.images.length ? (
-
-
-
-
-
-
-
-                      // Show progress for current upload slot
-
-
-
-
-
-
-
-                      <div className="border-2 border-dashed border-primary rounded-lg p-4 h-32 flex flex-col items-center justify-center bg-primary/5">
-
-
-
-
-
-
-
-                        <div className="w-12 h-12 relative">
-
-
-
-
-
-
-
-                          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
-
-
-
-
-
-
-
-                            <path
-
-
-
-
-
-
-
-                              className="text-gray-200"
-
-
-
-
-
-
-
-                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-
-
-
-
-
-
-
-                              fill="none"
-
-
-
-
-
-
-
-                              stroke="currentColor"
-
-
-
-
-
-
-
-                              strokeWidth="3"
-
-
-
-
-
-
-
-                            />
-
-
-
-
-
-
-
-                            <path
-
-
-
-
-
-
-
-                              className="text-primary"
-
-
-
-
-
-
-
-                              strokeDasharray={`${uploadProgress}, 100`}
-
-
-
-
-
-
-
-                              d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-
-
-
-
-
-
-
-                              fill="none"
-
-
-
-
-
-
-
-                              stroke="currentColor"
-
-
-
-
-
-
-
-                              strokeWidth="3"
-
-
-
-
-
-
-
-                            />
-
-
-
-
-
-
-
-                          </svg>
-
-
-
-
-
-
-
-                          <span className="absolute inset-0 flex items-center justify-center text-xs font-semibold text-primary">
-
-
-
-
-
-
-
-                            {uploadProgress}%
-
-
-
-
-
-
-
-                          </span>
-
-
-
-
-
-
-
-                        </div>
-
-
-
-
-
-
-
-                        <span className="text-xs text-gray-600 mt-2 text-center">
-
-
-
-
-
-
-
-                          {uploadProgress < 40 ? 'Compressing...' : uploadProgress < 90 ? 'Uploading...' : 'Processing...'}
-
-
-
-
-
-
-
-                        </span>
-
-
-
-
-
-
-
-                      </div>
-
-
-
-
-
-
-
-                    ) : (
-
-
-
-
-
-
-
-                      <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 h-32 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors">
-
-
-
-
-
-
-
-                        <input
-
-
-
-
-
-
-
-                          type="file"
-
-
-
-
-
-
-
-                          accept="image/*"
-
-
-
-
-
-
-
-                          onChange={(e) => {
-
-
-
-
-
-
-
-                            const file = e.target.files?.[0];
-
-
-
-
-
-
-
-                            if (file) {
-
-
-
-
-
-
-
-                              handleImageUpload(e);
-
-
-
-
-
-
-
-                              e.target.value = ''; // Reset input
-
-
-
-
-
-
-
-                            }
-
-
-
-
-
-
-
-                          }}
-
-
-
-
-
-
-
-                          disabled={isUploading || formData.images.length >= 5}
-
-
-
-
-
-
-
-                          className="hidden"
-
-
-
-
-
-
-
-                          id={`image-upload-${index}`}
-
-
-
-
-
-
-
-                        />
-
-
-
-
-
-
-
-                        <label htmlFor={`image-upload-${index}`} className="cursor-pointer flex flex-col items-center">
-
-
-
-
-
-
-
-                          <Upload className="w-6 h-6 text-gray-400 mb-2" />
-
-
-
-
-
-
-
-                          <span className="text-xs text-gray-600 text-center">
-
-
-
-
-
-
-
-                            {formData.images.length >= 5 ? 'Max 5 images' : 'Upload Image'}
-
-
-
-
-
-
-
-                          </span>
-
-
-
-
-
-
-
-                        </label>
-
-
-
-
-
-
-
-                      </div>
-
-
-
-
-
-
-
-                    )}
-
-
-
-
-
-
-
+      <form onSubmit={handleSubmit} className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:px-6 lg:grid-cols-12 lg:px-8">
+        <Section title="Basic Information" icon={Package} className="lg:col-span-8">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <Label required>Category</Label>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                className={`${fieldClass} ${errors.category ? errorFieldClass : ""}`}
+              >
+                <option value="">Select category</option>
+                <option value="style">Shop by Style</option>
+                <option value="home">Home</option>
+              </select>
+              {errors.category && <p className="mt-1 text-xs text-red-500">{errors.category}</p>}
+            </div>
+
+            <div>
+              <Label>Sub Category</Label>
+              <select
+                name="subcategory"
+                value={formData.subcategory}
+                onChange={handleInputChange}
+                disabled={!formData.category || formData.category === "style"}
+                className={`${fieldClass} disabled:bg-slate-100 disabled:text-slate-400`}
+              >
+                {formData.category === "style" ? (
+                  <option value="">No subcategories</option>
+                ) : (
+                  <>
+                    <option value="">Select subcategory</option>
+                    {subcategoryOptions[formData.category || "none"]?.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </>
+                )}
+              </select>
+            </div>
+
+            <div>
+              <Label required>Product Classification</Label>
+              <select
+                name="productClassification"
+                value={formData.productClassification}
+                onChange={handleInputChange}
+                className={fieldClass}
+              >
+                <option value="Hospital Combo">Hospital Combo</option>
+                <option value="Essential Set">Essential Set</option>
+                <option value="Gift Combo">Gift Combo</option>
+                <option value="Single Product">Single Product</option>
+              </select>
+              <p className="mt-1 text-xs text-slate-500">Frontend-only classification for admin organization.</p>
+            </div>
+
+            <div>
+              <Label required>Product Name</Label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                autoComplete="off"
+                className={`${fieldClass} ${errors.name ? errorFieldClass : ""}`}
+                placeholder="Welcome to Planet Mini Set"
+              />
+              {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+            </div>
+
+            <div>
+              <Label>Collection / Print Name</Label>
+              <input
+                type="text"
+                name="collectionName"
+                value={formData.collectionName}
+                onChange={handleInputChange}
+                autoComplete="off"
+                className={fieldClass}
+                placeholder="Welcome to Planet Mini"
+              />
+              <p className="mt-1 text-xs text-slate-500">For sorting and collection pages. Not sent to backend.</p>
+            </div>
+
+            <div>
+              <Label>SKU (Auto-generated)</Label>
+              <div className="flex min-h-[38px] items-center rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">
+                {previewSku}
+              </div>
+              <p className="mt-1 text-xs text-slate-500">Generated from the product name for admin reference.</p>
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Pricing" icon={BadgeIndianRupee} className="lg:col-span-4">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            <div>
+              <Label required>Selling Price</Label>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                step="0.01"
+                min="0"
+                className={`${fieldClass} ${errors.price ? errorFieldClass : ""}`}
+                placeholder="999"
+              />
+              {errors.price && <p className="mt-1 text-xs text-red-500">{errors.price}</p>}
+            </div>
+            <div>
+              <Label>MRP</Label>
+              <input
+                type="number"
+                name="originalPrice"
+                value={formData.originalPrice}
+                onChange={handleInputChange}
+                step="0.01"
+                min="0"
+                className={fieldClass}
+                placeholder="1249"
+              />
+            </div>
+          </div>
+          {discount && (
+            <div className="mt-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+              <p className="font-semibold">You save Rs {discount.amount.toLocaleString("en-IN")} ({discount.percent}% OFF)</p>
+              <p className="mt-1 text-xs text-emerald-700">Discount is calculated automatically for the admin preview.</p>
+            </div>
+          )}
+        </Section>
+
+        <Section title="Product Images" icon={ImageIcon} className="lg:col-span-7">
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-5">
+            {[0, 1, 2, 3, 4].map((index) => (
+              <div key={index} className="relative">
+                {formData.images[index] ? (
+                  <div className="group relative aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                    <img src={formData.images[index]} alt="Product upload" className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(index)}
+                      className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white opacity-0 transition group-hover:opacity-100"
+                      aria-label="Remove image"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
                   </div>
-
-
-
-
-
-
-
-                ))}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-              {errors.images && (
-
-
-
-
-
-
-
-                <p className="text-red-500 text-sm">{errors.images}</p>
-
-
-
-
-
-
-
-              )}
-
-
-
-
-
-
-
-              
-
-
-
-
-
-
-
-              <div className="text-sm text-gray-500">
-
-
-
-
-
-
-
-                {formData.images.length}/5 images uploaded. Add up to 5 product images.
-
-
-
-
-
-
-
-                {isUploading && (
-
-
-
-
-
-
-
-                  <span className="ml-2 text-primary">Uploading... {uploadProgress}%</span>
-
-
-
-
-
-
-
-                )}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-            </div>
-
-
-
-
-
-
-
-          </motion.div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* Basic Information */}
-
-
-
-
-
-
-
-          <motion.div
-
-
-
-
-
-
-
-            initial={{ opacity: 0, y: 20 }}
-
-
-
-
-
-
-
-            animate={{ opacity: 1, y: 0 }}
-
-
-
-
-
-
-
-            transition={{ delay: 0.1 }}
-
-
-
-
-
-
-
-            className="bg-white rounded-xl shadow-sm p-6"
-
-
-
-
-
-
-
-          >
-
-
-
-
-
-
-
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-
-
-
-
-
-
-
-              <Package className="w-5 h-5 text-primary" />
-
-
-
-
-
-
-
-              Basic Information
-
-
-
-
-
-
-
-            </h2>
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-            <div className="grid md:grid-cols-2 gap-6">
-
-
-
-
-
-
-
-              <div>
-
-
-
-
-
-
-
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                  Product Name <span className="text-red-500">*</span>
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-                <input
-
-
-
-
-
-
-
-                  type="text"
-
-
-
-
-
-
-
-                  name="name"
-
-
-
-
-
-
-
-                  value={formData.name}
-
-
-
-
-
-
-
-                  onChange={handleInputChange}
-
-
-
-
-
-
-
-                  disabled={false}
-
-
-
-
-
-
-
-                  readOnly={false}
-
-
-
-
-
-
-
-                  autoComplete="off"
-
-
-
-
-
-
-
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none pointer-events-auto ${
-
-
-
-
-
-
-
-                    errors.name ? 'border-red-500' : 'border-gray-300'
-
-
-
-
-
-
-
-                  }`}
-
-
-
-
-
-
-
-                  placeholder="Enter product name"
-
-
-
-
-
-
-
-                />
-
-
-
-
-
-
-
-                {errors.name && (
-
-
-
-
-
-
-
-                  <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-
-
-
-
-
-
-
-                )}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div>
-
-
-
-
-
-
-
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                  Slug <span className="text-red-500">*</span>
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-                <input
-
-
-
-
-
-
-
-                  type="text"
-
-
-
-
-
-
-
-                  name="slug"
-
-
-
-
-
-
-
-                  value={formData.slug}
-
-
-
-
-
-
-
-                  onChange={handleInputChange}
-
-
-
-
-
-
-
-                  disabled={false}
-
-
-
-
-
-
-
-                  readOnly={false}
-
-
-
-
-
-
-
-                  autoComplete="off"
-
-
-
-
-
-
-
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none pointer-events-auto ${
-
-
-
-
-
-
-
-                    errors.slug ? 'border-red-500' : 'border-gray-300'
-
-
-
-
-
-
-
-                  }`}
-
-
-
-
-
-
-
-                  placeholder="product-slug"
-
-
-
-
-
-
-
-                />
-
-
-
-
-
-
-
-                {errors.slug && (
-
-
-
-
-
-
-
-                  <p className="text-red-500 text-sm mt-1">{errors.slug}</p>
-
-
-
-
-
-
-
-                )}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div className="md:col-span-2">
-
-
-
-
-
-
-
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                  Description <span className="text-red-500">*</span>
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-                <textarea
-
-
-
-
-
-
-
-                  name="description"
-
-
-
-
-
-
-
-                  value={formData.description}
-
-
-
-
-
-
-
-                  onChange={handleInputChange}
-
-
-
-
-
-
-
-                  disabled={false}
-
-
-
-
-
-
-
-                  readOnly={false}
-
-
-
-
-
-
-
-                  rows={4}
-
-
-
-
-
-
-
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none pointer-events-auto ${
-
-
-
-
-
-
-
-                    errors.description ? 'border-red-500' : 'border-gray-300'
-
-
-
-
-
-
-
-                  }`}
-
-
-
-
-
-
-
-                  placeholder="Describe your product..."
-
-
-
-
-
-
-
-                />
-
-
-
-
-
-
-
-                {errors.description && (
-
-
-
-
-
-
-
-                  <p className="text-red-500 text-sm mt-1">{errors.description}</p>
-
-
-
-
-
-
-
-                )}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div>
-
-
-
-
-
-
-
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                  Price (?) <span className="text-red-500">*</span>
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-                <div className="relative">
-
-
-
-
-
-
-
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">?</span>
-
-
-
-
-
-
-
-                  <input
-
-
-
-
-
-
-
-                    type="number"
-
-
-
-
-
-
-
-                    name="price"
-
-
-
-
-
-
-
-                    value={formData.price}
-
-
-
-
-
-
-
-                    onChange={handleInputChange}
-
-
-
-
-
-
-
-                    disabled={false}
-
-
-
-
-
-
-
-                    readOnly={false}
-
-
-
-
-
-
-
-                    step="0.01"
-
-
-
-
-
-
-
-                    min="0"
-
-
-
-
-
-
-
-                    autoComplete="off"
-
-
-
-
-
-
-
-                    className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none pointer-events-auto ${
-
-
-
-
-
-
-
-                      errors.price ? 'border-red-500' : 'border-gray-300'
-
-
-
-
-
-
-
-                    }`}
-
-
-
-
-
-
-
-                    placeholder="0.00"
-
-
-
-
-
-
-
-                  />
-
-
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
-                {errors.price && (
-
-
-
-
-
-
-
-                  <p className="text-red-500 text-sm mt-1">{errors.price}</p>
-
-
-
-
-
-
-
-                )}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div>
-
-
-
-
-
-
-
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                  Original Price (?) <span className="text-gray-400 text-xs">(Optional)</span>
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-                <div className="relative">
-
-
-
-
-
-
-
-                  <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-lg">?</span>
-
-
-
-
-
-
-
-                  <input
-
-
-
-
-
-
-
-                    type="number"
-
-
-
-
-
-
-
-                    name="originalPrice"
-
-
-
-
-
-
-
-                    value={formData.originalPrice}
-
-
-
-
-
-
-
-                    onChange={handleInputChange}
-
-
-
-
-
-
-
-                    step="0.01"
-
-
-
-
-
-
-
-                    min="0"
-
-
-
-
-
-
-
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-
-
-
-
-
-
-
-                    placeholder="0.00"
-
-
-
-
-
-
-
-                  />
-
-
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-            </div>
-
-
-
-
-
-
-
-          </motion.div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* Product Details */}
-
-
-
-
-
-
-
-          <motion.div
-
-
-
-
-
-
-
-            initial={{ opacity: 0, y: 20 }}
-
-
-
-
-
-
-
-            animate={{ opacity: 1, y: 0 }}
-
-
-
-
-
-
-
-            transition={{ delay: 0.2 }}
-
-
-
-
-
-
-
-            className="bg-white rounded-xl shadow-sm p-6"
-
-
-
-
-
-
-
-          >
-
-
-
-
-
-
-
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-
-
-
-
-
-
-
-              <Tag className="w-5 h-5 text-primary" />
-
-
-
-
-
-
-
-              Product Details
-
-
-
-
-
-
-
-            </h2>
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-            <div className="grid md:grid-cols-2 gap-6">
-
-
-
-
-
-
-
-              <div>
-
-
-
-
-
-
-
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                  Category <span className="text-red-500">*</span>
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-                <select
-
-
-
-
-
-
-
-                  name="category"
-
-
-
-
-
-
-
-                  value={formData.category}
-
-
-
-
-
-
-
-                  onChange={handleInputChange}
-
-
-
-
-
-
-
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none ${
-
-
-
-
-
-
-
-                    errors.category ? 'border-red-500' : 'border-gray-300'
-
-
-
-
-
-
-
-                  }`}
-
-
-
-
-
-
-
-                >
-
-
-
-
-
-
-
-                  <option value="">Select category</option>
-
-
-
-
-
-
-
-                  <option value="style">Shop by Style</option>
-
-
-
-
-
-
-
-                  <option value="home">Home</option>
-
-
-
-
-
-
-
-                </select>
-
-
-
-
-
-
-
-                {errors.category && (
-
-
-
-
-
-
-
-                  <p className="text-red-500 text-sm mt-1">{errors.category}</p>
-
-
-
-
-
-
-
-                )}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div>
-
-
-
-
-
-
-
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                  Subcategory
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-                <select
-
-
-
-
-
-
-
-                  name="subcategory"
-
-
-
-
-
-
-
-                  value={formData.subcategory}
-
-
-
-
-
-
-
-                  onChange={handleInputChange}
-
-
-
-
-
-
-
-                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none ${
-
-
-
-
-
-
-
-                    errors.subcategory ? 'border-red-500' : 'border-gray-300'
-
-
-
-
-
-
-
-                  }`}
-
-
-
-
-
-
-
-                  disabled={!formData.category}
-
-
-
-
-
-
-
-                >
-
-
-
-
-
-
-
-                  {formData.category === 'style' ? (
-
-
-
-
-
-
-
-                    <option value="">No categories</option>
-
-
-
-
-
-
-
-                  ) : (
-
-
-
-
-
-
-
-                    <>
-
-
-
-
-
-
-
-                      <option value="">Select subcategory</option>
-
-
-
-
-
-
-
-                      {subcategoryOptions[formData.category || 'none']?.map((option: string) => (
-
-
-
-
-
-
-
-                        <option key={option} value={option}>{option}</option>
-
-
-
-
-
-
-
-                      ))}
-
-
-
-
-
-
-
-                    </>
-
-
-
-
-
-
-
-                  )}
-
-
-
-
-
-
-
-                </select>
-
-
-
-
-
-
-
-                {errors.subcategory && (
-
-
-
-
-
-
-
-                  <p className="text-red-500 text-sm mt-1">{errors.subcategory}</p>
-
-
-
-
-
-
-
-                )}
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div className="flex items-center gap-3">
-
-
-
-
-
-
-
-                <input
-
-
-
-
-
-
-
-                  type="checkbox"
-
-
-
-
-
-
-
-                  name="inStock"
-
-
-
-
-
-
-
-                  id="inStock"
-
-
-
-
-
-
-
-                  checked={formData.inStock}
-
-
-
-
-
-
-
-                  onChange={handleInputChange}
-
-
-
-
-
-
-
-                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-
-
-
-
-
-
-
-                />
-
-
-
-
-
-
-
-                <label htmlFor="inStock" className="text-sm font-medium text-gray-700">
-
-
-
-
-
-
-
-                  In Stock
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div className="flex items-center gap-3">
-
-
-
-
-
-
-
-                <input
-
-
-
-
-
-
-
-                  type="checkbox"
-
-
-
-
-
-
-
-                  name="isNew"
-
-
-
-
-
-
-
-                  id="isNew"
-
-
-
-
-
-
-
-                  checked={formData.isNew}
-
-
-
-
-
-
-
-                  onChange={handleInputChange}
-
-
-
-
-
-
-
-                  className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-
-
-
-
-
-
-
-                />
-
-
-
-
-
-
-
-                <label htmlFor="isNew" className="text-sm font-medium text-gray-700">
-
-
-
-
-
-
-
-                  Mark as New
-
-
-
-
-
-
-
-                </label>
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-            </div>
-
-
-
-
-
-
-
-          </motion.div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* Advanced Options */}
-
-
-
-
-
-
-
-          <motion.div
-
-
-
-
-
-
-
-            initial={{ opacity: 0, y: 20 }}
-
-
-
-
-
-
-
-            animate={{ opacity: 1, y: 0 }}
-
-
-
-
-
-
-
-            transition={{ delay: 0.3 }}
-
-
-
-
-
-
-
-            className="bg-white rounded-xl shadow-sm p-6"
-
-
-
-
-
-
-
-          >
-
-
-
-
-
-
-
-            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-
-
-
-
-
-
-
-              <Star className="w-5 h-5 text-primary" />
-
-
-
-
-
-
-
-              Advanced Options
-
-
-
-
-
-
-
-            </h2>
-
-
-
-
-
-
-
-            
-
-
-
-
-
-
-
-            <div className="space-y-6">
-
-
-
-
-
-
-
-              <div className="grid md:grid-cols-2 gap-6">
-
-
-
-
-
-
-
-                <div>
-
-
-
-
-
-
-
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                    Rating (1-5)
-
-
-
-
-
-
-
+                ) : isUploading && index === formData.images.length ? (
+                  <div className="flex aspect-square flex-col items-center justify-center rounded-lg border border-dashed border-[#B4C49A] bg-[#F1F5EB] text-[#5F6F46]">
+                    <span className="text-sm font-semibold">{uploadProgress}%</span>
+                    <span className="mt-1 text-xs">Uploading</span>
+                  </div>
+                ) : (
+                  <label className="flex aspect-square cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-500 transition hover:border-[#B4C49A] hover:bg-[#F1F5EB] hover:text-[#5F6F46]">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          handleImageUpload(e);
+                          e.target.value = "";
+                        }
+                      }}
+                      disabled={isUploading || formData.images.length >= 5}
+                      className="hidden"
+                    />
+                    <Upload className="mb-2 h-5 w-5" />
+                    <span className="text-xs font-medium">Upload</span>
                   </label>
-
-
-
-
-
-
-
-                  <input
-
-
-
-
-
-
-
-                    type="number"
-
-
-
-
-
-
-
-                    name="rating"
-
-
-
-
-
-
-
-                    value={formData.rating}
-
-
-
-
-
-
-
-                    onChange={handleInputChange}
-
-
-
-
-
-
-
-                    min="1"
-
-
-
-
-
-
-
-                    max="5"
-
-
-
-
-
-
-
-                    step="0.1"
-
-
-
-
-
-
-
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-
-
-
-
-
-
-
-                  />
-
-
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                <div>
-
-
-
-
-
-
-
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-
-
-
-
-
-
-
-                    Reviews Count
-
-
-
-
-
-
-
-                  </label>
-
-
-
-
-
-
-
-                  <input
-
-
-
-
-
-
-
-                    type="number"
-
-
-
-
-
-
-
-                    name="reviews"
-
-
-
-
-
-
-
-                    value={formData.reviews}
-
-
-
-
-
-
-
-                    onChange={handleInputChange}
-
-
-
-
-
-
-
-                    min="0"
-
-
-
-
-
-
-
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none"
-
-
-
-
-
-
-
-                  />
-
-
-
-
-
-
-
-                </div>
-
-
-
-
-
-
-
+                )}
               </div>
+            ))}
+          </div>
+          {errors.images && <p className="mt-2 text-xs text-red-500">{errors.images}</p>}
+          <p className="mt-3 text-xs text-slate-500">{formData.images.length}/5 images uploaded. The first image is used as the main product image.</p>
+        </Section>
 
+        <Section title="Combo Details" icon={Package} className="lg:col-span-12">
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <Label required>Combo Type</Label>
+              <select
+                name="productClassification"
+                value={formData.productClassification}
+                onChange={handleInputChange}
+                className={fieldClass}
+              >
+                <option value="Hospital Combo">Hospital Combo</option>
+                <option value="Essential Set">Essential Set</option>
+                <option value="Gift Combo">Gift Combo</option>
+                <option value="Single Product">Single Product</option>
+              </select>
+            </div>
+            <div>
+              <Label required>Combo Name</Label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className={fieldClass}
+                placeholder="Welcome to Planet Mini Set"
+              />
+            </div>
+          </div>
 
-
-
-
-
-
+          <div className="mt-4">
+            <Label required>Included Products</Label>
+            <div className="overflow-x-auto rounded-lg border border-slate-200">
+              <div className="min-w-[720px]">
+                <div className="grid grid-cols-[1.4fr_1fr_120px_72px] bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  <span>Product</span>
+                  <span>Size / Variant</span>
+                  <span>Quantity</span>
+                  <span className="text-center">Action</span>
+                </div>
+                <div className="divide-y divide-slate-100 bg-white">
+                  {comboItems.map((item) => (
+                    <div key={item.id} className="grid grid-cols-[1.4fr_1fr_120px_72px] items-center gap-3 px-3 py-2 text-sm text-slate-800">
+                      <label className="flex min-w-0 items-center gap-3">
+                        <input
+                          type="checkbox"
+                          checked={item.selected}
+                          onChange={() => toggleComboItem(item.id)}
+                          className="h-4 w-4 rounded border-slate-300 text-[#B4C49A] focus:ring-[#B4C49A]"
+                        />
+                        <span className="truncate font-medium">{item.product}</span>
+                      </label>
+                      <span className="truncate text-slate-600">{item.variant}</span>
+                      <input
+                        type="number"
+                        min="0"
+                        value={item.quantity}
+                        onChange={(e) => handleComboQuantityChange(item.id, e.target.value)}
+                        className="w-24 rounded-md border border-slate-200 px-3 py-1.5 text-sm outline-none focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeComboItem(item.id)}
+                        className="mx-auto inline-flex h-8 w-8 items-center justify-center rounded-md text-rose-500 transition hover:bg-rose-50"
+                        aria-label={`Remove ${item.product}`}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-
-
-
-
-
-
-          </motion.div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          {/* Form Actions */}
-
-
-
-
-
-
-
-          <motion.div
-
-
-
-
-
-
-
-            initial={{ opacity: 0, y: 20 }}
-
-
-
-
-
-
-
-            animate={{ opacity: 1, y: 0 }}
-
-
-
-
-
-
-
-            transition={{ delay: 0.4 }}
-
-
-
-
-
-
-
-            className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200"
-
-
-
-
-
-
-
-          >
-
-
-
-
-
-
-
-            <button
-
-
-
-
-
-
-
-              type="button"
-
-
-
-
-
-
-
-              onClick={() => window.location.href = '/admin'}
-
-
-
-
-
-
-
-              className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-
-
-
-
-
-
-
-            >
-
-
-
-
-
-
-
-              Cancel
-
-
-
-
-
-
-
-            </button>
-
-
-
-
-
-
-
-            <button
-
-
-
-
-
-
-
-              type="submit"
-
-
-
-
-
-
-
-              disabled={isSubmitting}
-
-
-
-
-
-
-
-              className="flex items-center gap-2 bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-
-
-
-
-
-
-
-            >
-
-
-
-
-
-
-
-              {isSubmitting ? (
-
-
-
-
-
-
-
-                <>
-
-
-
-
-
-
-
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-
-
-
-
-
-
-
-                  {isEdit ? 'Updating...' : 'Saving...'}
-
-
-
-
-
-
-
-                </>
-
-
-
-
-
-
-
+            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="button"
+                onClick={() =>
+                  setComboItems((prev) => [
+                    ...prev,
+                    {
+                      id: `combo-item-${Date.now()}`,
+                      product: "Additional Combo Product",
+                      variant: "Newborn",
+                      quantity: 1,
+                      selected: true,
+                    },
+                  ])
+                }
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#B4C49A] bg-[#F1F5EB] px-4 py-2 text-sm font-semibold text-[#5F6F46] transition hover:bg-[#E6EEDC]"
+              >
+                <Plus className="h-4 w-4" />
+                Add More Products
+              </button>
+              <div className="flex flex-wrap gap-3 text-sm font-semibold text-slate-800">
+                <span>Total Items: {comboTotalQuantity}</span>
+                <span>Total Quantity: {comboTotalQuantity}</span>
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Product Details" icon={Tag} className="lg:col-span-7">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <Label>Age Group</Label>
+              <select name="ageGroup" value={productDetails.ageGroup} onChange={handleProductDetailChange} className={fieldClass}>
+                <option value="Newborn (0-1M)">Newborn (0-1M)</option>
+                <option value="0-3M">0-3M</option>
+                <option value="3-6M">3-6M</option>
+                <option value="6-12M">6-12M</option>
+              </select>
+            </div>
+            <div>
+              <Label>Gender</Label>
+              <select name="gender" value={productDetails.gender} onChange={handleProductDetailChange} className={fieldClass}>
+                <option value="Unisex">Unisex</option>
+                <option value="Baby Girl">Baby Girl</option>
+                <option value="Baby Boy">Baby Boy</option>
+              </select>
+            </div>
+            <div>
+              <Label>Occasion</Label>
+              <select name="occasion" value={productDetails.occasion} onChange={handleProductDetailChange} className={fieldClass}>
+                <option value="Daily Use">Daily Use</option>
+                <option value="Hospital Bag">Hospital Bag</option>
+                <option value="Gifting">Gifting</option>
+                <option value="Travel">Travel</option>
+              </select>
+            </div>
+            <div>
+              <Label>Fabric</Label>
+              <select name="fabric" value={productDetails.fabric} onChange={handleProductDetailChange} className={fieldClass}>
+                <option value="100% Muslin Cotton">100% Muslin Cotton</option>
+                <option value="Organic Cotton">Organic Cotton</option>
+                <option value="Cotton Blend">Cotton Blend</option>
+              </select>
+            </div>
+            <div>
+              <Label>Colour / Theme</Label>
+              <select name="colorTheme" value={productDetails.colorTheme} onChange={handleProductDetailChange} className={fieldClass}>
+                <option value="Multi Print">Multi Print</option>
+                <option value="Pastel Print">Pastel Print</option>
+                <option value="White">White</option>
+                <option value="Soft Neutrals">Soft Neutrals</option>
+              </select>
+            </div>
+            <div>
+              <Label>Care Instructions</Label>
+              <select name="careInstructions" value={productDetails.careInstructions} onChange={handleProductDetailChange} className={fieldClass}>
+                <option value="Machine Wash">Machine Wash</option>
+                <option value="Hand Wash">Hand Wash</option>
+                <option value="Gentle Cycle">Gentle Cycle</option>
+              </select>
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Inventory" icon={Package} className="lg:col-span-5">
+          <div className="space-y-4">
+            <div>
+              <Label required>Stock Quantity</Label>
+              <input
+                type="number"
+                min="0"
+                name="stockQuantity"
+                value={inventory.stockQuantity}
+                onChange={handleInventoryChange}
+                className={fieldClass}
+                placeholder="50"
+              />
+            </div>
+            <div>
+              <Label required>Low Stock Alert</Label>
+              <input
+                type="number"
+                min="0"
+                name="lowStockAlert"
+                value={inventory.lowStockAlert}
+                onChange={handleInventoryChange}
+                className={fieldClass}
+                placeholder="5"
+              />
+              <p className="mt-2 text-xs leading-5 text-slate-500">
+                You will be notified when stock is less than or equal to this number.
+              </p>
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Description" icon={Tag} className="lg:col-span-7">
+          <Label required>Description</Label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            rows={8}
+            className={`${fieldClass} min-h-[190px] resize-y ${errors.description ? errorFieldClass : ""}`}
+            placeholder="Describe the product for the store page..."
+          />
+          {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description}</p>}
+        </Section>
+
+        <Section title="Visibility" icon={Star} className="lg:col-span-5">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
+              <span>
+                <span className="block text-sm font-semibold text-slate-900">In Stock</span>
+                <span className="text-xs text-slate-500">Product can be purchased</span>
+              </span>
+              <input type="checkbox" name="inStock" checked={formData.inStock} onChange={handleInputChange} className="h-4 w-4 rounded border-slate-300 text-[#B4C49A] focus:ring-[#B4C49A]" />
+            </label>
+            <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
+              <span>
+                <span className="block text-sm font-semibold text-slate-900">New Arrival</span>
+                <span className="text-xs text-slate-500">Show new product badge</span>
+              </span>
+              <input type="checkbox" name="isNew" checked={formData.isNew} onChange={handleInputChange} className="h-4 w-4 rounded border-slate-300 text-[#B4C49A] focus:ring-[#B4C49A]" />
+            </label>
+            <div>
+              <Label>Rating</Label>
+              <input type="number" name="rating" value={formData.rating} onChange={handleInputChange} min="1" max="5" step="0.1" className={fieldClass} />
+            </div>
+            <div>
+              <Label>Reviews Count</Label>
+              <input type="number" name="reviews" value={formData.reviews} onChange={handleInputChange} min="0" className={fieldClass} />
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Store Preview" icon={Eye} className="lg:col-span-12">
+          <div className="grid gap-4 lg:grid-cols-[180px_1fr_auto] lg:items-center">
+            <div className="aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+              {formData.images[0] ? (
+                <img src={formData.images[0]} alt="Product preview" className="h-full w-full object-cover" />
               ) : (
-
-
-
-
-
-
-
-                <>
-
-
-
-
-
-
-
-                  <Save className="w-4 h-4" />
-
-
-
-
-
-
-
-                  {isEdit ? 'Update Product' : 'Save Product'}
-
-
-
-
-
-
-
-                </>
-
-
-
-
-
-
-
+                <div className="flex h-full w-full items-center justify-center text-slate-400">
+                  <ImageIcon className="h-8 w-8" />
+                </div>
               )}
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#5F6F46]">{previewCategory} / {previewSubcategory}</p>
+              <h3 className="mt-1 text-xl font-semibold text-slate-950">{formData.name || "Product name preview"}</h3>
+              <p className="mt-2 line-clamp-2 max-w-3xl text-sm text-slate-600">{formData.description || "Product description preview appears here once you start typing."}</p>
+              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-medium">
+                <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">{formData.inStock ? "In stock" : "Out of stock"}</span>
+                {formData.isNew && <span className="rounded-full bg-[#F1F5EB] px-3 py-1 text-[#5F6F46]">New arrival</span>}
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{formData.rating} rating</span>
+              </div>
+            </div>
+            <div className="min-w-[160px] rounded-lg border border-slate-200 bg-slate-50 p-4 text-right">
+              <p className="text-2xl font-bold text-slate-950">Rs {Number(formData.price || 0).toLocaleString("en-IN")}</p>
+              {formData.originalPrice && <p className="mt-1 text-sm text-slate-500 line-through">Rs {Number(formData.originalPrice).toLocaleString("en-IN")}</p>}
+              {discount && <p className="mt-1 text-sm font-semibold text-emerald-700">{discount.percent}% off</p>}
+            </div>
+          </div>
+        </Section>
 
-
-
-
-
-
-
+        <div className="sticky bottom-0 z-10 -mx-4 border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:col-span-12 lg:-mx-8 lg:px-8">
+          <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+            <button
+              type="button"
+              onClick={() => {
+                setLocation("/admin");
+              }}
+              className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            >
+              Cancel
             </button>
-
-
-
-
-
-
-
-          </motion.div>
-
-
-
-
-
-
-
-        </form>
-
-
-
-
-
-
-
-      </div>
-
-
-
-
-
-
-
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#B4C49A] px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-[#A4B68A] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-b-white" />
+                  {isEdit ? "Updating..." : "Saving..."}
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  {isEdit ? "Update Product" : "Save Product"}
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-
-
-
-
-
-
-
   );
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-

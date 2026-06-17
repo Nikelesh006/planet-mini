@@ -68,9 +68,9 @@ const statusConfig = {
   },
   shipped: {
     icon: Truck,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
-    borderColor: 'border-purple-200',
+    color: 'text-[#5F6F46]',
+    bgColor: 'bg-[#F1F5EB]',
+    borderColor: 'border-[#B4C49A]',
     label: 'Shipped'
   },
   delivered: {
@@ -166,7 +166,7 @@ export default function AdminOrders() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-[#B4C49A] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600">Loading all orders...</p>
         </div>
       </div>
@@ -183,7 +183,7 @@ export default function AdminOrders() {
           <p className="text-gray-600 mb-4">Failed to load orders</p>
           <button 
             onClick={() => window.location.reload()}
-            className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+            className="bg-[#B4C49A] text-black px-6 py-2 rounded-lg hover:bg-[#A4B68A] transition-colors"
           >
             Try Again
           </button>
@@ -204,7 +204,7 @@ export default function AdminOrders() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <Users className="w-8 h-8 text-primary" />
+                <Users className="w-8 h-8 text-[#5F6F46]" />
                 <h1 className="text-3xl font-bold text-gray-900">All Orders</h1>
               </div>
               <p className="text-gray-600">
@@ -212,7 +212,7 @@ export default function AdminOrders() {
               </p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-primary">
+              <div className="text-2xl font-bold text-[#5F6F46]">
                 {orders?.length || 0}
               </div>
               <div className="text-sm text-gray-600">Total Orders</div>
@@ -344,7 +344,7 @@ export default function AdminOrders() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
                             onClick={() => handleViewOrder(order)}
-                            className="text-primary hover:text-primary/80 font-medium"
+                            className="text-[#5F6F46] hover:text-[#4F5E39] font-medium"
                           >
                             View Details
                           </button>
@@ -468,7 +468,7 @@ export default function AdminOrders() {
                           <p className="text-sm text-gray-500">
                             Quantity: {item.quantity}
                           </p>
-                          <p className="text-sm font-semibold text-primary">
+                          <p className="text-sm font-semibold text-[#5F6F46]">
                             {formatPrice(item.price * item.quantity)}
                           </p>
                         </div>
@@ -572,7 +572,7 @@ export default function AdminOrders() {
 
                 {/* Actions */}
                 <div className="flex items-center gap-4 mt-8 pt-6 border-t border-gray-200">
-                  <button className="flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors">
+                  <button className="flex items-center gap-2 text-[#5F6F46] hover:text-[#4F5E39] font-medium transition-colors">
                     <HelpCircle className="w-5 h-5" />
                     Need Help?
                   </button>

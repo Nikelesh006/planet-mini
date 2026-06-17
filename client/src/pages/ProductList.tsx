@@ -164,7 +164,7 @@ const handleProductSelect = (productId: number) => {
       <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-pink-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#B4C49A]"></div>
           </div>
         </div>
       </div>
@@ -191,7 +191,7 @@ const handleProductSelect = (productId: number) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-4">
-              <Link href="/admin" className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors">
+              <Link href="/admin" className="flex items-center gap-2 text-gray-600 hover:text-[#5F6F46] transition-colors">
                 <ArrowLeft className="w-5 h-5" />
                 <span>Back to Admin</span>
               </Link>
@@ -210,7 +210,7 @@ const handleProductSelect = (productId: number) => {
               )}
               <button
                 onClick={handleAddProduct}
-                className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-2 bg-[#B4C49A] text-black px-4 py-2 rounded-lg hover:bg-[#A4B68A] transition-colors"
               >
                 <Plus className="w-4 h-4" />
                 Add New Product
@@ -269,8 +269,8 @@ const handleProductSelect = (productId: number) => {
                   {products.filter(p => p.inStock).length}
                 </p>
               </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-[#F1F5EB] rounded-lg flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-[#5F6F46]" />
               </div>
             </div>
           </motion.div>
@@ -375,8 +375,8 @@ const handleProductSelect = (productId: number) => {
                         onClick={() => handleProductSelect(product.id)}
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all transform hover:scale-110 ${
                           selectedProducts.has(product.id)
-                            ? 'bg-blue-600 border-blue-600 shadow-lg'
-                            : 'bg-white border-gray-400 hover:border-blue-500 shadow-md'
+                            ? 'bg-[#B4C49A] border-[#B4C49A] shadow-lg'
+                            : 'bg-white border-gray-400 hover:border-[#B4C49A] shadow-md'
                         }`}
                       >
                         {selectedProducts.has(product.id) && <Check className="w-3 h-3 text-white" />}
@@ -480,7 +480,7 @@ const handleProductSelect = (productId: number) => {
               {!searchTerm && filterCategory === "all" && (
                 <button
                   onClick={handleAddProduct}
-                  className="inline-flex items-center gap-2 mt-4 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center gap-2 mt-4 bg-[#B4C49A] text-black px-4 py-2 rounded-lg hover:bg-[#A4B68A] transition-colors"
                 >
                   <Plus className="w-4 h-4" />
                   Add New Product

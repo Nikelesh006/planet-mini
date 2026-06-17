@@ -59,7 +59,7 @@ export default function Footer() {
               <h4 className="font-display font-bold text-lg mb-4">Support</h4>
               <ul className="flex flex-col gap-2">
                 <li><Link href="/contact" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Contact Us</Link></li>
-                <li><Link href="/faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</Link></li>
+                <li><a href="/contact#faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</a></li>
                 <li><Link href="/terms" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Terms of Service</Link></li>
                 <li><Link href="/privacy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Privacy Policy</Link></li>
                 <li><Link href="/return-policy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Return Policy</Link></li>
@@ -71,7 +71,7 @@ export default function Footer() {
             <h4 className="font-display font-bold text-lg mb-4">Support</h4>
             <ul className="flex flex-col gap-2">
               <li><Link href="/contact" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Contact Us</Link></li>
-              <li><Link href="/faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</Link></li>
+              <li><a href="/contact#faq" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">FAQs</a></li>
               <li><Link href="/terms" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Terms of Service</Link></li>
               <li><Link href="/privacy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Privacy Policy</Link></li>
               <li><Link href="/return-policy" className="text-muted-foreground hover:text-gray-900 transition-colors text-sm">Return Policy</Link></li>

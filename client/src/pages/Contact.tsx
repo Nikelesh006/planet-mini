@@ -362,7 +362,7 @@ export default function Contact() {
       </section>
 
       {/* FAQ Section */}
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
+      <section id="faq" className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <div className="bg-gray-100 rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-200 shadow-inner shadow-gray-200/70">
           <div className="grid lg:grid-cols-4 gap-8">
           {/* Category Sidebar */}

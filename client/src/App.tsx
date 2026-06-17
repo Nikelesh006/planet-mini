@@ -188,7 +188,23 @@ function Router() {
 
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => {
+    // Check if this is an explicit page reload
+    const navEntries = performance.getEntriesByType("navigation");
+    const isReload = navEntries.length > 0 && (navEntries[0] as PerformanceNavigationTiming).type === "reload";
+    
+    // Check if user has already seen the loading screen in this session
+    const hasSeenLoading = sessionStorage.getItem('hasSeenLoading');
+    
+    // Show loading screen if it's a reload OR if it's their first time entering the site
+    if (isReload || !hasSeenLoading) {
+      sessionStorage.setItem('hasSeenLoading', 'true');
+      return true;
+    }
+    
+    // Don't show for normal page navigations (e.g. clicking <a> tags that cause full reloads)
+    return false;
+  });
 
   useEffect(() => {
     // Lock scroll when loading

@@ -175,8 +175,8 @@ export default function Navbar() {
             : "shadow-md py-5 top-10"
         )}
       >
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center">
+        <div className="w-full px-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
             {/* Mobile Menu Toggle */}
             <button
               className="lg:hidden p-2 text-foreground hover:bg-muted rounded-full transition-colors mr-4"
@@ -188,12 +188,12 @@ export default function Navbar() {
             {/* Logo */}
             <Link
               href="/"
-              className="flex items-center justify-start hover:opacity-80 transition-opacity flex-shrink-0"
+              className="flex items-center justify-start hover:opacity-80 transition-opacity flex-shrink overflow-hidden max-w-[45vw] sm:max-w-none"
             >
               <img
                 src="/Planet-mini-logo.png"
                 alt="Planet Mini Logo"
-                className="h-12 lg:h-14 w-auto object-contain block"
+                className="h-10 sm:h-12 lg:h-14 w-auto object-contain block"
                 draggable={false}
                 onError={(e) => {
                   // Fallback to original logo if image fails to load
@@ -228,7 +228,7 @@ export default function Navbar() {
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 sm:gap-2 ml-auto">
+            <div className="flex items-center gap-1 sm:gap-2 ml-auto flex-shrink-0">
               <div className="relative hidden sm:block" ref={searchDropdownRef}>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
