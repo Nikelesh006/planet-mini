@@ -1,149 +1,111 @@
 import { motion } from "framer-motion";
-import { Package, Heart, ThumbsUp } from "lucide-react";
+import { Rocket, Star } from "lucide-react";
 
 export default function LoadingScreen() {
   return (
-    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center backdrop-blur-xl bg-white/30">
+    <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-white/70 backdrop-blur-lg border-white/50">
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-        className="relative flex flex-col items-center justify-center text-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
+        className="relative flex flex-col items-center justify-center"
       >
-        {/* Animated Gift Box Container */}
-        <div className="relative w-40 h-40 mb-8 flex items-center justify-center">
-          <motion.div
-            animate={{
-              y: [0, -20, 0],
-              rotate: [0, -5, 5, 0],
-            }}
-            transition={{
-              duration: 3,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            className="relative z-10"
+        {/* Premium but Baby-friendly Planet/Orbit Animation */}
+        <div className="relative w-56 h-56 md:w-64 md:h-64 mb-12 flex items-center justify-center">
+          
+          {/* Central Planet */}
+          <motion.div 
+            className="relative w-20 h-20 md:w-24 md:h-24 bg-gradient-to-tr from-pink-400 to-blue-400 rounded-full z-20 shadow-[0_0_40px_rgba(236,72,153,0.3)] overflow-hidden border border-black/5"
+            initial={{ scale: 0 }}
+            animate={{ scale: [0, 1.05, 1], opacity: [0, 1, 1] }}
+            transition={{ duration: 2, times: [0, 0.7, 1], ease: "easeOut" }}
           >
-            <Package className="w-24 h-24 text-red-500 stroke-[1.5]" />
-            
-            {/* Pop-out elements */}
-            <motion.div
-              animate={{
-                y: [0, -60, -80],
-                x: [0, -30, -40],
-                scale: [0, 1.2, 0],
-                opacity: [0, 1, 0],
-                rotate: [0, -15, -30],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeOut",
-                delay: 0.5,
-              }}
-              className="absolute -top-4 -left-4"
-            >
-              <Heart className="w-10 h-10 text-red-400 fill-red-400" />
-            </motion.div>
+            {/* Crater details for a cute planet look */}
+            <div className="absolute top-4 right-5 w-4 h-4 bg-white/30 rounded-full" />
+            <div className="absolute bottom-5 left-4 w-5 h-5 bg-white/30 rounded-full" />
+            <div className="absolute top-10 left-6 w-3 h-3 bg-white/30 rounded-full" />
+          </motion.div>
 
-            <motion.div
-              animate={{
-                y: [0, -55, -75],
-                x: [0, 35, 45],
-                scale: [0, 1.2, 0],
-                opacity: [0, 1, 0],
-                rotate: [0, 15, 30],
-              }}
-              transition={{
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeOut",
-                delay: 1.2,
-              }}
-              className="absolute -top-2 -right-4"
-            >
-              <ThumbsUp className="w-10 h-10 text-blue-400 fill-blue-400" />
-            </motion.div>
+          {/* First orbit ring - Rocket */}
+          <motion.div
+            className="absolute inset-0 border border-gray-300/80 rounded-full"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1, rotate: 360 }}
+            transition={{ 
+              scale: { duration: 1.5, ease: "easeOut" },
+              opacity: { duration: 1.5, ease: "easeOut" },
+              rotate: { duration: 10, repeat: Infinity, ease: "linear" } 
+            }}
+          >
+            {/* Orbiting Rocket */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1.5 shadow-[0_0_15px_rgba(96,165,250,0.4)] rotate-45 text-blue-500 border border-gray-200">
+               <Rocket className="w-5 h-5 md:w-6 md:h-6" strokeWidth={1.5} />
+            </div>
+          </motion.div>
 
-            {/* Extra heart for more activity */}
-            <motion.div
-              animate={{
-                y: [0, -70, -90],
-                x: [0, 5, 10],
-                scale: [0, 1, 0],
-                opacity: [0, 1, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeOut",
-                delay: 0.8,
-              }}
-              className="absolute -top-8 left-1/2 -translate-x-1/2"
-            >
-              <Heart className="w-6 h-6 text-red-300 fill-red-300" />
-            </motion.div>
+          {/* Second orbit ring - Stars */}
+          <motion.div
+            className="absolute inset-8 border border-gray-200/80 rounded-full"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1, rotate: -360 }}
+            transition={{ 
+              scale: { duration: 1.5, delay: 0.2, ease: "easeOut" },
+              opacity: { duration: 1.5, delay: 0.2, ease: "easeOut" },
+              rotate: { duration: 15, repeat: Infinity, ease: "linear" } 
+            }}
+          >
+             {/* Orbiting Star 1 */}
+             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-white rounded-full p-1 text-yellow-500 shadow-[0_0_10px_rgba(250,204,21,0.3)] border border-gray-100">
+               <Star className="w-4 h-4 md:w-5 md:h-5 fill-yellow-400/50" strokeWidth={1.5} />
+             </div>
+             {/* Orbiting Star 2 */}
+             <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1 text-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)] border border-gray-100">
+               <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-300/50" strokeWidth={1.5} />
+             </div>
           </motion.div>
           
-          {/* Animated rings around the package */}
-          <motion.div
-            className="absolute inset-0 border-4 border-red-100 rounded-full"
-            animate={{ scale: [0.8, 1.3, 0.8], opacity: [0.3, 0, 0.3] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute inset-0 border-2 border-red-50 rounded-full"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0, 0.2] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+          {/* Soft central glow */}
+          <motion.div 
+            className="absolute inset-0 bg-gradient-to-tr from-pink-500/10 to-blue-500/10 rounded-full blur-3xl z-0"
+            animate={{ scale: [0.8, 1.2, 0.8], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
         </div>
 
-        {/* Text and Progress */}
-        <div className="text-center">
-          <motion.h2
-            className="text-2xl font-bold text-black mb-4"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+        {/* Elegant Typography */}
+        <div className="text-center overflow-hidden flex flex-col items-center">
+          <motion.h1
+            className="text-base md:text-xl uppercase tracking-[0.4em] text-gray-800 font-medium mb-4 ml-[0.4em] drop-shadow-sm"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
           >
-            Welcome to Planet Mini
-          </motion.h2>
+            Planet Mini
+          </motion.h1>
           
-          <div className="w-48 h-1.5 bg-gray-100 rounded-full mx-auto overflow-hidden border border-black/5">
-            <motion.div
-              className="h-full bg-gradient-to-r from-red-400 to-red-600"
-              initial={{ width: "0%" }}
-              animate={{ width: "100%" }}
-              transition={{ duration: 3, ease: "easeInOut" }}
-            />
-          </div>
-          <p className="mt-2 text-sm text-gray-500 font-medium">Preparing small wonders...</p>
+          {/* Very thin expanding line */}
+          <motion.div 
+            className="h-[1px] bg-gradient-to-r from-transparent via-gray-400 to-transparent"
+            initial={{ width: "0%", opacity: 0 }}
+            animate={{ width: "100%", opacity: 1 }}
+            transition={{ duration: 1.5, delay: 0.8, ease: "easeInOut" }}
+            style={{ minWidth: "160px" }}
+          />
+
+          {/* Baby-friendly loading text */}
+          <motion.p
+            className="mt-4 text-xs md:text-sm text-gray-500 font-medium tracking-wider"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 0.5, 1] }}
+            transition={{ 
+              opacity: { duration: 2, repeat: Infinity, ease: "easeInOut", delay: 1.2 } 
+            }}
+          >
+            Loading content... gathering cute little things
+          </motion.p>
         </div>
       </motion.div>
-
-      {/* Decorative floating elements */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(6)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-4 h-4 bg-red-100 rounded-full"
-            initial={{
-              x: Math.random() * 100 + "%",
-              y: "110%",
-              opacity: 0.3
-            }}
-            animate={{
-              y: "-10%",
-              rotate: 360,
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-              ease: "linear"
-            }}
-          />
-        ))}
-      </div>
     </div>
   );
 }

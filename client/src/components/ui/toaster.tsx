@@ -18,7 +18,7 @@ export function Toaster() {
         const getIcon = () => {
           switch (variant) {
             case 'success':
-              return <div className="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+              return <div className="w-8 h-8 bg-gradient-to-br from-[#B4C49A] to-[#8EA06F] rounded-full flex items-center justify-center shadow-lg">
                 <Check className="w-5 h-5 text-white" />
               </div>
             case 'destructive':

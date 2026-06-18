@@ -116,11 +116,11 @@ export default function ProductDetailPage() {
   const selectedProductImage = productImages[selectedImage] || "";
   const detailImage = getCloudinaryImageUrl(
     selectedProductImage,
-    "f_auto,q_auto:best,dpr_auto,c_limit,w_1800"
+    "f_auto,q_100,dpr_auto"
   );
   const zoomImage = getCloudinaryImageUrl(
     selectedProductImage,
-    "f_auto,q_auto:best,dpr_auto,c_limit,w_2400"
+    "f_auto,q_100,dpr_auto"
   );
 
   // Image navigation functions
@@ -367,7 +367,7 @@ export default function ProductDetailPage() {
                         }`}
                       >
                         <img
-                          src={getCloudinaryImageUrl(image, "f_auto,q_auto:good,dpr_auto,c_fill,w_240,h_240")}
+                          src={getCloudinaryImageUrl(image, "f_auto,q_100,dpr_auto,c_fill,w_240,h_240")}
                           alt={`${product.name} view ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {

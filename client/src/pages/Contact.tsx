@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Building, Home, Truck, ChevronDown, ChevronUp, HelpCircle, Package, Shield, CreditCard, RefreshCw, Globe, Heart, ShoppingBag } from "lucide-react";
+import { Mail, Phone, MapPin, Clock, Send, MessageCircle, Building, Home, Truck, ChevronDown, ChevronUp, HelpCircle, Package, Shield, CreditCard, RefreshCw, Globe, Heart, ShoppingBag, Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface FAQItem {
   question: string;
@@ -10,6 +11,10 @@ interface FAQItem {
 }
 
 export default function Contact() {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isVendorSubmitting, setIsVendorSubmitting] = useState(false);
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -95,10 +100,100 @@ export default function Contact() {
     ? faqData 
     : faqData.filter(item => item.category === activeCategory);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle form submission here
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/planetmini.care@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...formData,
+          _captcha: "false",
+          _autoresponse: "Thank you for your message! Our team at Planet Mini will get back to you shortly."
+        })
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Message Sent Successfully!",
+          description: "We will get back to you soon.",
+          className: "bg-white text-gray-900 border border-gray-100 border-l-4 border-l-[#B4C49A] shadow-xl",
+          variant: "success",
+          duration: 3000,
+        });
+        
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        throw new Error("Failed to send message");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send message. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleVendorSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsVendorSubmitting(true);
+    
+    const form = e.currentTarget;
+    const vendorData = {
+      brand: (form.elements.namedItem('brand') as HTMLInputElement).value,
+      email: (form.elements.namedItem('email') as HTMLInputElement).value,
+      category: (form.elements.namedItem('category') as HTMLSelectElement).value,
+      description: (form.elements.namedItem('description') as HTMLTextAreaElement).value,
+    };
+    
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/planetmini.care@gmail.com", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          ...vendorData,
+          _subject: "New Vendor Partnership Application",
+          _captcha: "false"
+        })
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Application Sent Successfully!",
+          description: "We will get back to you soon.",
+          className: "bg-white text-gray-900 border border-gray-100 border-l-4 border-l-[#B4C49A] shadow-xl",
+          variant: "success",
+          duration: 3000,
+        });
+        form.reset();
+      } else {
+        throw new Error("Failed to send application");
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to send application. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsVendorSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -162,11 +257,9 @@ export default function Contact() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Email</h3>
-                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">hello@planetmini.com</p>
-                      <div className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
-                        <span className="w-2 h-2 bg-[#B4C49A] rounded-full animate-pulse"></span>
-                        We respond within 24 hours
-                      </div>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">planetmini.care@gmail.com</p>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">tricirclegroup@gmail.com</p>
+                      
                     </div>
                   </div>
                 </div>
@@ -178,7 +271,7 @@ export default function Contact() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Phone</h3>
-                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">+1 (555) 123-4567</p>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">+91 82202 94678</p>
                       <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         Mon-Fri: 9AM-6PM EST
@@ -237,6 +330,7 @@ export default function Contact() {
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             className="lg:col-span-2"
+            id="contact-form"
           >
             <div className="bg-white rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-100 shadow-xl shadow-gray-200/70 transition-all duration-300">
               <div className="text-center mb-6 sm:mb-8">
@@ -347,11 +441,18 @@ export default function Contact() {
                   </div>
                   <button
                     type="submit"
-                    className="group relative inline-flex items-center gap-2 bg-[#9CAF7D] text-black px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold hover:bg-[#8EA06F] transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-[#9CAF7D]/35"
+                    disabled={isSubmitting}
+                    className="group relative inline-flex items-center gap-2 bg-[#9CAF7D] text-black px-6 sm:px-8 py-3 sm:py-4 rounded-2xl font-semibold hover:bg-[#8EA06F] transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-[#9CAF7D]/35 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     <div className="absolute inset-0 bg-white rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                    <Send className="w-4 h-4 relative z-10 text-black group-hover:translate-x-1 transition-transform duration-300" />
-                    <span className="relative z-10 text-black">Send Message</span>
+                    {isSubmitting ? (
+                      <Loader2 className="w-4 h-4 relative z-10 text-black animate-spin" />
+                    ) : (
+                      <Send className="w-4 h-4 relative z-10 text-black group-hover:translate-x-1 transition-transform duration-300" />
+                    )}
+                    <span className="relative z-10 text-black">
+                      {isSubmitting ? "Sending..." : "Send Message"}
+                    </span>
                   </button>
                 </div>
               </form>
@@ -521,13 +622,13 @@ export default function Contact() {
                 <p className="text-sm sm:text-base text-gray-600 mb-4">
                   Still have questions? Our customer service team is here to help!
                 </p>
-                <a 
-                  href="mailto:hello@planetmini.com" 
+                <button 
+                  onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
                   className="inline-flex items-center gap-2 bg-[#9CAF7D] text-black px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold hover:bg-[#8EA06F] transition-colors shadow-md shadow-[#9CAF7D]/25"
                 >
                   <Mail className="w-4 h-4" />
                   Contact Support
-                </a>
+                </button>
               </motion.div>
             </div>
           </motion.div>
@@ -625,15 +726,13 @@ export default function Contact() {
                 Hospital Ready
               </div>
             </div>
-            <a
-              href="https://mail.google.com/mail/?view=cm&fs=1&to=planetmini.care@gmail.com&su=Hospital%20Supplies&body=Hospital%20name%3A%0AAddress%3A%0A"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}
               className="mt-6 inline-flex items-center gap-2 bg-[#B4C49A] text-black px-5 sm:px-6 py-3 rounded-xl font-semibold hover:bg-[#A4B586] transition-all duration-300 shadow-md shadow-[#B4C49A]/20"
             >
               <Mail className="w-4 h-4" />
               Contact Us
-            </a>
+            </button>
           </motion.div>
         </motion.div>
       </section>
@@ -714,11 +813,13 @@ export default function Contact() {
               className="bg-white rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-100 shadow-lg shadow-gray-200/60"
             >
               <h3 className="text-lg sm:text-xl font-bold text-black mb-6">Ready to Get Started?</h3>
-              <form className="space-y-4">
+              <form onSubmit={handleVendorSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Brand Name *</label>
                   <input
                     type="text"
+                    name="brand"
+                    required
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors"
                     placeholder="Your brand name"
                   />
@@ -727,13 +828,15 @@ export default function Contact() {
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Contact Email *</label>
                   <input
                     type="email"
+                    name="email"
+                    required
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors"
                     placeholder="business@example.com"
                   />
                 </div>
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Product Category *</label>
-                  <select className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors">
+                  <select name="category" required className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors">
                     <option value="">Select category</option>
                     <option value="clothing">Baby Clothing</option>
                     <option value="toys">Toys & Games</option>
@@ -747,6 +850,8 @@ export default function Contact() {
                 <div>
                   <label className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">Tell us about your products</label>
                   <textarea
+                    name="description"
+                    required
                     rows={3}
                     className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gray-50 border border-gray-200 rounded-xl focus:border-[#B4C49A] focus:bg-white focus:outline-none transition-colors resize-none"
                     placeholder="Brief description of your products and what makes them special..."
@@ -754,9 +859,17 @@ export default function Contact() {
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-[#B4C49A] text-black px-4 sm:px-6 py-3 sm:py-4 rounded-xl font-semibold hover:bg-[#A4B586] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#B4C49A]/30"
+                  disabled={isVendorSubmitting}
+                  className="w-full bg-[#B4C49A] text-black px-4 sm:px-6 py-3 sm:py-4 rounded-xl font-semibold hover:bg-[#A4B586] transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-[#B4C49A]/30 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
-                  Apply to Sell on Planet Mini
+                  {isVendorSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    "Apply to Sell on Planet Mini"
+                  )}
                 </button>
               </form>
             </motion.div>
@@ -773,20 +886,7 @@ export default function Contact() {
               <p className="text-sm sm:text-base text-gray-700 mb-4">
                 Become part of Planet Mini's trusted network of baby product vendors. Together, we're making parenting easier and more joyful for families everywhere.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs sm:text-sm">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-[#B4C49A] rounded-full"></div>
-                  <span className="font-medium">500+ Active Vendors</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-[#B4C49A] rounded-full"></div>
-                  <span className="font-medium">10,000+ Products Listed</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-[#B4C49A] rounded-full"></div>
-                  <span className="font-medium">98% Vendor Satisfaction</span>
-                </div>
-              </div>
+              
             </div>
           </motion.div>
         </motion.div>

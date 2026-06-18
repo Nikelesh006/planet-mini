@@ -9,6 +9,14 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import type { ProductResponse } from "@shared/routes";
 
+const getCloudinaryImageUrl = (url: string, transformation: string) => {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
+    return url;
+  }
+  return url.replace("/image/upload/", `/image/upload/${transformation}/`);
+};
+
 interface MuslinCardProps {
   product: ProductResponse;
   index: number;
@@ -108,7 +116,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
           {/* Large Product Image */}
           <div className="aspect-[2/3] sm:aspect-[3/4] flex items-center justify-center relative bg-transparent">
             <img
-              src={product.image}
+              src={getCloudinaryImageUrl(product.image, "f_auto,q_100,dpr_auto")}
               alt={product.name}
               className="w-full h-full object-cover rounded-3xl transition-all duration-300"
             />

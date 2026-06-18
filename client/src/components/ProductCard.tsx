@@ -17,6 +17,14 @@ import type { ProductResponse } from "@shared/routes";
 
 
 
+const getCloudinaryImageUrl = (url: string, transformation: string) => {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
+    return url;
+  }
+  return url.replace("/image/upload/", `/image/upload/${transformation}/`);
+};
+
 interface ProductCardProps {
 
   product: ProductResponse;
@@ -204,7 +212,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           <img
 
-            src={product.image}
+            src={getCloudinaryImageUrl(product.image, "f_auto,q_100,dpr_auto")}
 
             alt={product.name}
 

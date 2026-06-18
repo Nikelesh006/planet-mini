@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Instagram, Twitter, Facebook } from "lucide-react";
+import { Instagram, AtSign, Facebook } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -30,14 +30,14 @@ export default function Footer() {
               Welcome to the planet where every mini matters.
             </p>
             <div className="flex items-center gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
+              <a href="https://www.instagram.com/planetmini_babywear?igsh=MW42MGRlZ29kZ2plbg%3D%3D&utm_source=qr" className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
+              <a href="https://www.facebook.com/share/1CwwE5Mn6G/?mibextid=wwXIfr" className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
-                <Twitter className="w-5 h-5" />
+              <a href="https://www.threads.net/@planetmini_babywear?igshid=NTc4MTIwNjQ2YQ==" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-muted-foreground hover:bg-gray-200 hover:text-gray-900 transition-colors">
+                <AtSign className="w-5 h-5" />
               </a>
             </div>
           </div>

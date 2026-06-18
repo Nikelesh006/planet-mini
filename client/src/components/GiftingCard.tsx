@@ -9,6 +9,14 @@ import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useToast } from "@/hooks/use-toast";
 import type { ProductResponse } from "@shared/routes";
 
+const getCloudinaryImageUrl = (url: string, transformation: string) => {
+  if (!url || typeof url !== 'string') return url;
+  if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
+    return url;
+  }
+  return url.replace("/image/upload/", `/image/upload/${transformation}/`);
+};
+
 interface GiftingCardProps {
   product: ProductResponse;
   index: number;
@@ -109,7 +117,7 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
           {/* Product Image */}
           <div className="aspect-square bg-gray-50 p-4 flex items-center justify-center">
             <img
-              src={product.image}
+              src={getCloudinaryImageUrl(product.image, "f_auto,q_100,dpr_auto")}
               alt={product.name}
               className="max-w-full max-h-full object-contain"
             />
