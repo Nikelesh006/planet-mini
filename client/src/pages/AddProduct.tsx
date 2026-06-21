@@ -37,6 +37,11 @@ interface ProductFormData {
   reviews: number;
   inStock: boolean;
   isNew: boolean;
+  status: string;
+  showOnWebsite: boolean;
+  featuredProduct: boolean;
+  bestSeller: boolean;
+  recommendedProduct: boolean;
 }
 
 interface ComboItem {
@@ -76,6 +81,11 @@ const emptyForm: ProductFormData = {
   reviews: 0,
   inStock: true,
   isNew: false,
+  status: "Active",
+  showOnWebsite: true,
+  featuredProduct: false,
+  bestSeller: false,
+  recommendedProduct: false,
 };
 
 const subcategoryOptions: Record<string, string[]> = {
@@ -108,7 +118,7 @@ const Section = ({
   <motion.section
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    className={`rounded-lg border border-slate-200 bg-white p-4 shadow-sm ${className}`}
+    className={`rounded-lg border border-slate-200 bg-white p-4 shadow-sm min-w-0 w-full ${className}`}
   >
     <div className="mb-4 flex items-center gap-2">
       <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F1F5EB] text-[#5F6F46]">
@@ -183,6 +193,11 @@ export default function AddProduct() {
         reviews: productData.reviews || 0,
         inStock: productData.inStock ?? true,
         isNew: productData.isNew || false,
+        status: (productData as any).status || "Active",
+        showOnWebsite: (productData as any).showOnWebsite ?? true,
+        featuredProduct: (productData as any).featuredProduct || false,
+        bestSeller: (productData as any).bestSeller || false,
+        recommendedProduct: (productData as any).recommendedProduct || false,
       });
     }
   }, [productData, isEdit, viewId]);
@@ -319,6 +334,11 @@ export default function AddProduct() {
     reviews: formData.reviews,
     inStock: formData.inStock,
     isNew: formData.isNew,
+    status: formData.status,
+    showOnWebsite: formData.showOnWebsite,
+    featuredProduct: formData.featuredProduct,
+    bestSeller: formData.bestSeller,
+    recommendedProduct: formData.recommendedProduct,
     images: formData.images,
   };
 
@@ -534,8 +554,8 @@ export default function AddProduct() {
           )}
         </Section>
 
-        <Section title="Product Images" icon={ImageIcon} className="lg:col-span-7">
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-5">
+        <Section title="Product Images" icon={ImageIcon} className="lg:col-span-12">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
             {[0, 1, 2, 3, 4].map((index) => (
               <div key={index} className="relative">
                 {formData.images[index] ? (
@@ -681,6 +701,38 @@ export default function AddProduct() {
           </div>
         </Section>
 
+        <Section title="Inventory" icon={Package} className="lg:col-span-5">
+          <div className="space-y-4">
+            <div>
+              <Label required>Stock Quantity</Label>
+              <input
+                type="number"
+                min="0"
+                name="stockQuantity"
+                value={inventory.stockQuantity}
+                onChange={handleInventoryChange}
+                className={fieldClass}
+                placeholder="50"
+              />
+            </div>
+            <div>
+              <Label required>Low Stock Alert</Label>
+              <input
+                type="number"
+                min="0"
+                name="lowStockAlert"
+                value={inventory.lowStockAlert}
+                onChange={handleInventoryChange}
+                className={fieldClass}
+                placeholder="5"
+              />
+              <p className="mt-2 text-xs leading-5 text-slate-500">
+                You will be notified when stock is less than or equal to this number.
+              </p>
+            </div>
+          </div>
+        </Section>
+
         <Section title="Product Details" icon={Tag} className="lg:col-span-7">
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
@@ -737,81 +789,121 @@ export default function AddProduct() {
           </div>
         </Section>
 
-        <Section title="Inventory" icon={Package} className="lg:col-span-5">
-          <div className="space-y-4">
-            <div>
-              <Label required>Stock Quantity</Label>
-              <input
-                type="number"
-                min="0"
-                name="stockQuantity"
-                value={inventory.stockQuantity}
-                onChange={handleInventoryChange}
-                className={fieldClass}
-                placeholder="50"
-              />
-            </div>
-            <div>
-              <Label required>Low Stock Alert</Label>
-              <input
-                type="number"
-                min="0"
-                name="lowStockAlert"
-                value={inventory.lowStockAlert}
-                onChange={handleInventoryChange}
-                className={fieldClass}
-                placeholder="5"
-              />
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                You will be notified when stock is less than or equal to this number.
-              </p>
-            </div>
-          </div>
-        </Section>
-
-        <Section title="Description" icon={Tag} className="lg:col-span-7">
+        <Section title="Description" icon={Tag} className="lg:col-span-6 flex flex-col">
           <Label required>Description</Label>
           <textarea
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            rows={8}
-            className={`${fieldClass} min-h-[190px] resize-y ${errors.description ? errorFieldClass : ""}`}
+            rows={14}
+            className={`${fieldClass} min-h-[320px] h-full resize-y ${errors.description ? errorFieldClass : ""}`}
             placeholder="Describe the product for the store page..."
           />
           {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description}</p>}
         </Section>
-
-        <Section title="Visibility" icon={Star} className="lg:col-span-5">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
-              <span>
-                <span className="block text-sm font-semibold text-slate-900">In Stock</span>
-                <span className="text-xs text-slate-500">Product can be purchased</span>
-              </span>
-              <input type="checkbox" name="inStock" checked={formData.inStock} onChange={handleInputChange} className="h-4 w-4 rounded border-slate-300 text-[#B4C49A] focus:ring-[#B4C49A]" />
-            </label>
-            <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-3">
-              <span>
-                <span className="block text-sm font-semibold text-slate-900">New Arrival</span>
-                <span className="text-xs text-slate-500">Show new product badge</span>
-              </span>
-              <input type="checkbox" name="isNew" checked={formData.isNew} onChange={handleInputChange} className="h-4 w-4 rounded border-slate-300 text-[#B4C49A] focus:ring-[#B4C49A]" />
-            </label>
+        <Section title="Status" icon={Star} className="lg:col-span-6">
+          <div className="space-y-6">
             <div>
-              <Label>Rating</Label>
-              <input type="number" name="rating" value={formData.rating} onChange={handleInputChange} min="1" max="5" step="0.1" className={fieldClass} />
+              <Label required>Product Status</Label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className={fieldClass}
+              >
+                <option value="Active">Active</option>
+                <option value="Draft">Draft</option>
+                <option value="Archived">Archived</option>
+              </select>
+              <p className="mt-2 text-xs text-slate-500">
+                Product will be visible on website
+              </p>
             </div>
+
             <div>
-              <Label>Reviews Count</Label>
-              <input type="number" name="reviews" value={formData.reviews} onChange={handleInputChange} min="0" className={fieldClass} />
+              <Label>Visibility</Label>
+              <div className="mt-3 space-y-3">
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="showOnWebsite"
+                    checked={formData.showOnWebsite}
+                    onChange={handleInputChange}
+                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                  />
+                  <span className="text-sm font-semibold text-slate-800">Show on Website</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="isNew"
+                    checked={formData.isNew}
+                    onChange={handleInputChange}
+                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                  />
+                  <span className="text-sm font-semibold text-slate-800">New Arrival</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="featuredProduct"
+                    checked={formData.featuredProduct}
+                    onChange={handleInputChange}
+                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                  />
+                  <span className="text-sm font-semibold text-slate-800">Featured Product</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="bestSeller"
+                    checked={formData.bestSeller}
+                    onChange={handleInputChange}
+                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                  />
+                  <span className="text-sm font-semibold text-slate-800">Best Seller</span>
+                </label>
+                <label className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    name="recommendedProduct"
+                    checked={formData.recommendedProduct}
+                    onChange={handleInputChange}
+                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                  />
+                  <span className="text-sm font-semibold text-slate-800">Recommended Product</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Other existing fields like Rating, Reviews, In Stock that we still might want to keep, 
+                but they were inside the old Visibility section. The image only shows the checkboxes.
+                We can put them here or below. */}
+            <div className="pt-4 border-t border-slate-100">
+               <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 mb-4">
+                <span>
+                  <span className="block text-sm font-semibold text-slate-900">In Stock</span>
+                  <span className="text-xs text-slate-500">Product can be purchased</span>
+                </span>
+                <input type="checkbox" name="inStock" checked={formData.inStock} onChange={handleInputChange} className="h-4 w-4 rounded border-slate-300 text-[#B4C49A] focus:ring-[#B4C49A]" />
+              </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label>Rating</Label>
+                  <input type="number" name="rating" value={formData.rating} onChange={handleInputChange} min="1" max="5" step="0.1" className={fieldClass} />
+                </div>
+                <div>
+                  <Label>Reviews Count</Label>
+                  <input type="number" name="reviews" value={formData.reviews} onChange={handleInputChange} min="0" className={fieldClass} />
+                </div>
+              </div>
             </div>
           </div>
         </Section>
 
         <Section title="Store Preview" icon={Eye} className="lg:col-span-12">
-          <div className="grid gap-4 lg:grid-cols-[180px_1fr_auto] lg:items-center">
-            <div className="aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center lg:grid lg:grid-cols-[180px_1fr_auto]">
+            <div className="mx-auto aspect-square w-32 shrink-0 sm:mx-0 sm:w-32 lg:w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
               {formData.images[0] ? (
                 <img src={formData.images[0]} alt="Product preview" className="h-full w-full object-cover" />
               ) : (

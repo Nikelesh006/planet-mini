@@ -29,12 +29,7 @@ export function ComboCard({ product, index }: ComboCardProps) {
   const { toast } = useToast();
   const isWishlisted = likedProducts.some(p => p.id === product.id);
   
-  // Image navigation state (for future multiple images support)
-  // const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-  // For now, we'll work with single image but prepare for multiple images
-  // This can be extended when additionalImages field is added to the schema
-  const productImages = [product.image]; // Single image for now
+  const productImages = [product.image];
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -102,8 +97,8 @@ export function ComboCard({ product, index }: ComboCardProps) {
           {/* Discount Badge */}
           {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
             <div className="absolute top-4 left-4 z-20">
-              <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                -{Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}%
+              <div className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
+                {Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}% OFF
               </div>
             </div>
           )}
@@ -148,15 +143,15 @@ export function ComboCard({ product, index }: ComboCardProps) {
           {/* Product Content - Text Below Image */}
           <div className="p-4 bg-white text-center">
             {/* Product Name */}
-            <h3 className="font-medium text-gray-900 mb-2 line-clamp-3 leading-relaxed text-base">
+            <h3 className="font-semibold text-gray-900 mb-2 line-clamp-3 leading-relaxed text-lg">
               {product.name}
             </h3>
 
             {/* Price Section */}
-            <div className="flex items-center justify-center gap-2">
-              <span className="text-base font-bold text-gray-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-xl font-extrabold text-slate-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>
               {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-sm font-medium text-slate-500 line-through">
                   &#8377;{Number(product.originalPrice).toFixed(2)}
                 </span>
               )}

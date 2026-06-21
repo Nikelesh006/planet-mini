@@ -12,6 +12,7 @@ import { GiftingCard } from "@/components/GiftingCard";
 import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useMuslinProducts, useComboProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts } from "@/hooks/useProducts";
 
 import { motion } from "framer-motion";
+import { WelcomeModal } from "@/components/WelcomeModal";
 
 import Slider from "@/components/Slider";
 
@@ -2324,6 +2325,7 @@ export default function Home() {
           </motion.div>
         </div>
       )}
+      <WelcomeModal />
     </motion.div>
   );
 

@@ -101,8 +101,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                 const currentPrice = Number(product.price || 0);
                 const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
                 return (
-                  <span className="px-3 py-1 text-xs font-semibold bg-secondary text-black rounded-full shadow-sm">
-                    -{discountPercentage}%
+                  <span className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
+                    {discountPercentage}% OFF
                   </span>
                 );
               })()}
@@ -132,13 +132,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           </div>
 
           <div className="px-2 flex flex-col gap-3 flex-1 pt-3 pb-2">
-            <h3 className="font-display font-bold text-lg text-black">
+            <h3 className="font-display font-bold text-xl text-black">
               {product.name}
             </h3>
 
-            <div className="flex items-center gap-2">
-              <span className="font-semibold text-black">₹{Number(product.price || 0).toFixed(2)}</span>
-              <span className="text-sm text-muted-foreground line-through">
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl font-extrabold text-slate-900">₹{Number(product.price || 0).toFixed(2)}</span>
+              <span className="text-sm font-medium text-slate-500 line-through">
                 ₹{Number(product.originalPrice || product.price || 0).toFixed(2)}
               </span>
             </div>

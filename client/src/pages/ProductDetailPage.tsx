@@ -1,6 +1,6 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useParams, Link } from "wouter";
-import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy } from "lucide-react";
+import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy, Trash2 } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import type { MouseEvent } from "react";
 import { useCart } from "@/contexts/CartContext";
@@ -63,7 +63,8 @@ export default function ProductDetailPage() {
 
   console.log('🔍 ProductDetail Product Data:', { product, isLoading, error });
 
-  const { addToCart } = useCart();
+  const { state, addToCart, removeFromCart } = useCart();
+  const isProductInCart = product ? state.items.some(item => item.id === product.id.toString()) : false;
   const { toggleLike, isLiked } = useLikes();
   const { showAuthModal, executeWithAuth, handleAuthSuccess, handleAuthCancel } = useAuthGuard();
 
@@ -75,6 +76,22 @@ export default function ProductDetailPage() {
   const [openInfoSection, setOpenInfoSection] = useState<string | null>(null);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const [isStickyBarDismissed, setIsStickyBarDismissed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show sticky bar almost immediately when scrolled down
+      if (window.scrollY > 100) {
+        setShowStickyBar(true);
+      } else {
+        setShowStickyBar(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Get related products for "Pairs well with" section
   const relatedProducts = useMemo(() => {
@@ -617,6 +634,106 @@ export default function ProductDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Sticky Bottom Bar */}
+      <AnimatePresence>
+        {showStickyBar && !isStickyBarDismissed && (
+          <motion.div
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed bottom-0 left-0 right-0 z-[100] bg-[#FBFDF9] border-t-[3px] border-[#B4C49A] shadow-[0_-10px_40px_rgba(180,196,154,0.25)] py-4 px-4 sm:px-6 lg:px-8 hidden md:block"
+          >
+            <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+              {/* Product Info */}
+              <div className="flex items-center gap-5 flex-1 min-w-0">
+                <div className="w-20 h-20 rounded-xl overflow-hidden border-2 border-[#B4C49A]/40 shrink-0 bg-white flex items-center justify-center shadow-md relative -mt-8">
+                  <img 
+                    src={getCloudinaryImageUrl(mainImage || "", "f_auto,q_100,w_150,h_150,c_fill")} 
+                    alt={product.name} 
+                    className="w-full h-full object-cover scale-[1.6] origin-center"
+                  />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <h3 className="font-bold text-[#1D3557] truncate text-base lg:text-lg leading-tight">
+                    {product.name}
+                  </h3>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="font-extrabold text-[#1D3557]">₹{Number(product.price).toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center gap-4 shrink-0">
+                {product.sizes && typeof product.sizes === 'string' && product.sizes.trim() !== '' && (
+                  <div className="relative min-w-[200px]">
+                    <select 
+                      value={selectedSize}
+                      onChange={(e) => setSelectedSize(e.target.value)}
+                      className="appearance-none w-full bg-white border border-[#B4C49A]/40 rounded-full px-4 py-2.5 pr-10 text-sm font-medium text-gray-700 hover:border-[#B4C49A] focus:outline-none focus:ring-2 focus:ring-[#B4C49A]/30 shadow-sm transition-all cursor-pointer"
+                    >
+                      {product.sizes.split(',').map((size, index) => (
+                        <option key={index} value={size.trim()}>
+                          {size.trim()} - Rs. {Number(product.price).toFixed(2)}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#B4C49A]">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex items-center gap-3 bg-white rounded-full px-4 py-2 border border-[#B4C49A]/40 shadow-sm">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#B4C49A] transition-colors cursor-pointer"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="w-6 text-center font-medium text-sm text-[#1D3557]">{quantity}</span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#B4C49A] transition-colors cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {isProductInCart && (
+                  <button
+                    onClick={() => removeFromCart(product.id.toString())}
+                    className="w-10 h-10 flex items-center justify-center rounded-full border border-red-200 text-red-500 hover:bg-red-50 hover:border-red-300 transition-colors ml-2 cursor-pointer shrink-0 bg-white shadow-sm"
+                    aria-label="Remove from cart"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+                <button
+                  onClick={isProductInCart ? () => window.location.href = '/cart' : handleAddToCart}
+                  disabled={!product.inStock}
+                  className="bg-[#B4C49A] text-black px-8 py-2.5 rounded-full text-sm font-bold hover:bg-[#97A97D] transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shadow-md ml-2 cursor-pointer transform hover:-translate-y-0.5"
+                >
+                  {isProductInCart ? (
+                    state.totalItems > 1 
+                      ? `Checkout (${state.totalItems} items • ₹${state.totalPrice.toFixed(2)})` 
+                      : "Checkout"
+                  ) : "Add To Cart"}
+                </button>
+                <button 
+                  onClick={() => setIsStickyBarDismissed(true)}
+                  className="w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors ml-1 cursor-pointer shrink-0"
+                  aria-label="Dismiss bar"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Google Auth Modal */}
       <GoogleAuthModal

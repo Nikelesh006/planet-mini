@@ -90,9 +90,9 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
         >
           {/* Discount Badge */}
           {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
-            <div className="absolute top-2 left-2 z-20">
-              <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
-                -{Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}%
+            <div className="absolute top-4 left-4 z-20">
+              <div className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
+                {Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}% OFF
               </div>
             </div>
           )}
@@ -126,15 +126,15 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
           {/* Product Content */}
           <div className="p-4">
             {/* Product Name */}
-            <h3 className="font-medium text-gray-900 mb-2 line-clamp-2 min-h-[3rem]">
+            <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 min-h-[3rem] text-lg">
               {product.name}
             </h3>
 
             {/* Price Section */}
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg font-bold text-gray-900">₹{Number(product.price || 0).toFixed(2)}</span>
+            <div className="flex items-baseline gap-2 mb-3">
+              <span className="text-xl font-extrabold text-slate-900">₹{Number(product.price || 0).toFixed(2)}</span>
               {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
-                <span className="text-sm text-gray-500 line-through">
+                <span className="text-sm font-medium text-slate-500 line-through">
                   ₹{Number(product.originalPrice).toFixed(2)}
                 </span>
               )}
