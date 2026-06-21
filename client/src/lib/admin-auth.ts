@@ -9,7 +9,8 @@
 export const AUTHORIZED_ADMIN_EMAILS = [
   "nikelesh2006@gmail.com",
   "codecraft2k@gmail.com", 
-  "planetmini.care@gmail.com"
+  "planetmini.care@gmail.com",
+  "vimaljai1994@gmail.com"
 ] as const;
 
 /**
