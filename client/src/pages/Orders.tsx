@@ -95,33 +95,15 @@ import { useOrders } from "../hooks/useOrders";
 
 
 interface OrderItem {
-
-
-
   id: string;
-
-
-
   name: string;
-
-
-
-  price: number;
-
-
-
+  sellingPrice?: number;
+  price?: number;
   quantity: number;
-
-
-
   image: string;
-
-
-
-  slug?: string; // Made optional with ? for error handling
-
-
-
+  slug?: string;
+  size?: string;
+  color?: string;
 }
 
 
@@ -478,7 +460,7 @@ export default function Orders() {
 
 
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (sellingPrice: number) => {
 
 
 
@@ -502,7 +484,7 @@ export default function Orders() {
 
 
 
-    }).format(price);
+    }).format(sellingPrice);
 
 
 
@@ -514,34 +496,31 @@ export default function Orders() {
 
 
 
-  // Format date
-
-
+// Format date
 
   const formatDate = (dateString: string) => {
 
-
-
     return new Date(dateString).toLocaleDateString('en-IN', {
-
-
 
       year: 'numeric',
 
-
-
       month: 'short',
-
-
 
       day: 'numeric',
 
-
-
     });
 
+  };
 
+  const getItemUnitPrice = (item: OrderItem) => {
+    const value = item.sellingPrice ?? item.price ?? 0;
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : 0;
+  };
 
+  const getItemSize = (item: OrderItem) => {
+    const size = item.size?.trim();
+    return size && size.toLowerCase() !== 'n/a' ? size : null;
   };
 
 
@@ -1990,7 +1969,7 @@ export default function Orders() {
 
 
 
-                            {formatPrice(item.price * item.quantity)}
+                            {formatPrice(item.sellingPrice * item.quantity)}
 
 
 

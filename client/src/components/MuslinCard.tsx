@@ -44,8 +44,8 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
       addToCart({
         id: product.id.toString(),
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : undefined,
         image: product.image,
         category: product.category,
         subcategory: product.subcategory || undefined,
@@ -67,8 +67,8 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
       const productForWishlist = {
         id: product.id,
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : null,
         image: product.image,
         category: product.category,
         subcategory: product.subcategory || null,
@@ -96,16 +96,16 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
           className="group relative transition-all duration-300 overflow-hidden"
         >
           {/* Discount Badge */}
-          {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
+          {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
             <div className="absolute top-4 left-4 z-20">
               <div className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
-                {Math.round(((Number(product.originalPrice) - Number(product.price)) / Number(product.originalPrice)) * 100)}% OFF
+                {Math.round(((Number(product.mrp) - Number(product.sellingPrice)) / Number(product.mrp)) * 100)}% OFF
               </div>
             </div>
           )}
 
           {/* Combo Badge for Muslin - only show if no discount */}
-          {!(product.originalPrice && Number(product.originalPrice) > Number(product.price || 0)) && (
+          {!(product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0)) && (
             <div className="absolute top-4 left-4 z-20">
               <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
                 3 PACK COMBO
@@ -150,10 +150,10 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
 
             {/* Price Section */}
             <div className="flex items-baseline justify-center gap-2">
-              <span className="text-lg sm:text-xl font-extrabold text-slate-900">&#8377;{Number(product.price || 0).toFixed(2)}</span>
-              {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (
+              <span className="text-lg sm:text-xl font-extrabold text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
                 <span className="text-sm font-medium text-slate-500 line-through">
-                  &#8377;{Number(product.originalPrice).toFixed(2)}
+                  &#8377;{Number(product.mrp).toFixed(2)}
                 </span>
               )}
             </div>

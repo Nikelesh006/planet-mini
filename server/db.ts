@@ -80,6 +80,15 @@ export const connectDB = async () => {
 
 let productsCache: any[] = [];
 
+const getNextSkuFromProducts = (products: any[]) => {
+  const maxSkuNumber = products.reduce((max, product) => {
+    const match = typeof product.sku === "string" ? product.sku.match(/^PM-(\d+)$/) : null;
+    return match ? Math.max(max, Number(match[1])) : max;
+  }, 0);
+
+  return `PM-${String(maxSkuNumber + 1).padStart(4, "0")}`;
+};
+
 
 
 
@@ -278,11 +287,10 @@ export const productsStorage = {
 
       if (!db) throw new Error("Database not connected");
 
-
+      const existingProducts = await db.collection("products").find({}, { projection: { sku: 1 } }).toArray();
+      product.sku = getNextSkuFromProducts(existingProducts);
 
       const result = await db.collection("products").insertOne(product);
-
-
 
       return { ...product, _id: result.insertedId };
 
@@ -304,7 +312,11 @@ export const productsStorage = {
 
 
 
-      const newProduct = { ...product, id: productsCache.length + 1 };
+      const newProduct = {
+        ...product,
+        sku: getNextSkuFromProducts(productsCache),
+        id: productsCache.length + 1,
+      };
 
 
 
@@ -348,7 +360,7 @@ export const productsStorage = {
 
 
 
-      
+
 
 
 
@@ -368,7 +380,7 @@ export const productsStorage = {
 
 
 
-      
+
 
 
 
@@ -384,7 +396,7 @@ export const productsStorage = {
 
 
 
-      
+
 
 
 

@@ -32,8 +32,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       addToCart({
         id: product.id.toString(),
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : undefined,
         image: product.image,
         category: product.category,
         subcategory: product.subcategory || undefined,
@@ -58,8 +58,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       const productForWishlist = {
         id: Number(product.id),
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : null,
         image: product.image,
         category: product.category,
         subcategory: product.subcategory || null,
@@ -96,9 +96,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             
             {/* Badges */}
             <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
-              {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (() => {
-                const originalPrice = Number(product.originalPrice);
-                const currentPrice = Number(product.price || 0);
+              {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (() => {
+                const originalPrice = Number(product.mrp);
+                const currentPrice = Number(product.sellingPrice || 0);
                 const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
                 return (
                   <span className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
@@ -137,9 +137,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             </h3>
 
             <div className="flex items-baseline gap-2">
-              <span className="text-xl font-extrabold text-slate-900">₹{Number(product.price || 0).toFixed(2)}</span>
+              <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
               <span className="text-sm font-medium text-slate-500 line-through">
-                ₹{Number(product.originalPrice || product.price || 0).toFixed(2)}
+                ₹{Number(product.mrp || product.sellingPrice || 0).toFixed(2)}
               </span>
             </div>
           </div>

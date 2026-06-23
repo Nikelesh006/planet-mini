@@ -738,13 +738,17 @@ export const ordersStorage = {
 
             name: item.name || item.productName,
 
-            price: item.price,
+            sellingPrice: item.sellingPrice ?? item.price ?? 0,
 
             quantity: item.quantity || 1,
 
             image: item.image || item.productImage,
 
-            slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`
+            slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
+
+            size: item.size,
+
+            color: item.color
 
           };
 
@@ -842,7 +846,7 @@ export const ordersStorage = {
 
             name: 'BMW S1000RR',
 
-            price: 2999,
+            sellingPrice: 2999,
 
             quantity: 1,
 
@@ -896,7 +900,7 @@ export const ordersStorage = {
 
             name: 'Street Triple',
 
-            price: 1599,
+            sellingPrice: 1599,
 
             quantity: 1,
 
@@ -978,13 +982,17 @@ export const ordersStorage = {
 
           name: item.name || item.productName,
 
-          price: item.price,
+          sellingPrice: item.sellingPrice ?? item.price ?? 0,
 
           quantity: item.quantity || 1,
 
           image: item.image || item.productImage,
 
-          slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`
+          slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
+
+          size: item.size,
+
+          color: item.color
 
         }));
 

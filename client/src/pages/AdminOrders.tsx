@@ -23,10 +23,13 @@ import { useAdminOrders } from "../hooks/useAdminOrders";
 interface OrderItem {
   id: string;
   name: string;
-  price: number;
+  sellingPrice?: number;
+  price?: number;
   quantity: number;
   image: string;
   slug?: string;
+  size?: string;
+  color?: string;
 }
 
 interface Order {
@@ -108,13 +111,24 @@ export default function AdminOrders() {
   console.log('🔍 Admin Orders Debug - Orders length:', orders?.length);
 
   // Format price to INR
-  const formatPrice = (price: number) => {
+  const formatPrice = (sellingPrice: number) => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price);
+    }).format(sellingPrice);
+  };
+
+  const getItemUnitPrice = (item: OrderItem) => {
+    const value = item.sellingPrice ?? item.price ?? 0;
+    const numericValue = Number(value);
+    return Number.isFinite(numericValue) ? numericValue : 0;
+  };
+
+  const getItemSize = (item: OrderItem) => {
+    const size = item.size?.trim();
+    return size && size.toLowerCase() !== 'n/a' ? size : null;
   };
 
   // Format date
@@ -465,12 +479,18 @@ export default function AdminOrders() {
                         />
                         <div className="flex-1 w-full">
                           <h4 className="font-medium text-gray-900">{item.name}</h4>
-                          <p className="text-sm text-gray-500">
-                            Quantity: {item.quantity}
-                          </p>
-                          <p className="text-sm font-semibold text-[#5F6F46]">
-                            {formatPrice(item.price * item.quantity)}
-                          </p>
+                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
+                            <span>Quantity: {item.quantity}</span>
+                            {getItemSize(item) && <span>Size: {getItemSize(item)}</span>}
+                          </div>
+                          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                            <span className="font-semibold text-[#5F6F46]">
+                              Price: {formatPrice(getItemUnitPrice(item))}
+                            </span>
+                            <span className="font-semibold text-gray-900">
+                              Total: {formatPrice(getItemUnitPrice(item) * item.quantity)}
+                            </span>
+                          </div>
                         </div>
                         <div className="w-full sm:w-auto flex-shrink-0">
                           {item.slug ? (

@@ -181,10 +181,10 @@ ORDER ITEMS
 
     if (order.items && order.items.length > 0) {
       order.items.forEach((item: any, index: number) => {
-        const itemTotal = (item.price * item.quantity).toFixed(2);
+        const itemTotal = (item.sellingPrice * item.quantity).toFixed(2);
         content += `${index + 1}. ${item.name}
    Quantity: ${item.quantity}
-   Price: ₹${item.price.toFixed(2)}
+   Price: ₹${item.sellingPrice.toFixed(2)}
    Subtotal: ₹${itemTotal}
 \n`;
       });

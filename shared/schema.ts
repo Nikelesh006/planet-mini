@@ -7,9 +7,11 @@ export const products = sqliteTable("products", {
   slug: text("slug").notNull().unique(),
   name: text("name").notNull(),
   description: text("description").notNull(),
-  price: real("price").notNull(),
-  originalPrice: real("original_price"),
+  sku: text("sku").notNull().unique(),
+  sellingPrice: real("selling_price").notNull(),
+  mrp: real("mrp"),
   category: text("category").notNull(), // style, age, care
+  ageGroup: text("age_group"),
   subcategory: text("subcategory"),
   image: text("image").notNull(),
   rating: real("rating").notNull(),
@@ -40,7 +42,7 @@ export type CartItem = z.infer<typeof cartItemSchema>;
 export const orderItemSchema = z.object({
   productId: z.number(),
   quantity: z.number(),
-  price: z.number(),
+  sellingPrice: z.number(),
   color: z.string().optional(),
   size: z.string().optional(),
 });

@@ -74,9 +74,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         name: product.name,
 
-        price: Number(product.price),
+        sellingPrice: Number(product.sellingPrice),
 
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        mrp: product.mrp ? Number(product.mrp) : undefined,
 
         image: product.image,
 
@@ -134,9 +134,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         name: product.name,
 
-        price: Number(product.price),
+        sellingPrice: Number(product.sellingPrice),
 
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
+        mrp: product.mrp ? Number(product.mrp) : null,
 
         image: product.image,
 
@@ -228,9 +228,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
 
-            {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (() => {
-              const originalPrice = Number(product.originalPrice);
-              const currentPrice = Number(product.price || 0);
+            {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (() => {
+              const originalPrice = Number(product.mrp);
+              const currentPrice = Number(product.sellingPrice || 0);
               const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
               return (
                 <span className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
@@ -296,9 +296,9 @@ export function ProductCard({ product, index }: ProductCardProps) {
           </h3>
 
           <div className="flex items-baseline gap-2">
-            <span className="text-xl font-extrabold text-slate-900">₹{Number(product.price || 0).toFixed(2)}</span>
+            <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
             <span className="text-sm font-medium text-slate-500 line-through">
-              ₹{Number(product.originalPrice || product.price || 0).toFixed(2)}
+              {product.mrp ? `₹${Number(product.mrp).toFixed(2)}` : ''}
             </span>
           </div>
         </div>

@@ -8,8 +8,8 @@ interface LikedProduct {
   name: string;
   slug: string;
   description: string;
-  price: number;
-  originalPrice: number | null;
+  sellingPrice: number;
+  mrp: number | null;
   image: string;
   category: string;
   subcategory: string | null;

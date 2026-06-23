@@ -12,7 +12,7 @@ export default function OrdersTest() {
           {
             id: "1",
             name: "BMW S1000RR",
-            price: 2999,
+            sellingPrice: 2999,
             quantity: 1,
             size: "M",
             color: "Blue",

@@ -12,8 +12,8 @@ interface Product {
   name: string;
   slug: string;
   description: string;
-  price: number | string;
-  originalPrice?: number | string | null;
+  sellingPrice: number | string;
+  mrp?: number | string | null;
   image: string;
   rating?: number;
   reviews?: number;
@@ -58,8 +58,8 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
       addToCart({
         id: product.id.toString(),
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : undefined,
         image: product.image,
         category: product.category ?? undefined,
         subcategory: undefined,
@@ -86,8 +86,8 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
       const productForWishlist = {
         id: product.id,
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : null,
         image: product.image,
         category: product.category || 'Uncategorized',
         subcategory: null,
@@ -136,9 +136,9 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                   {/* Coupon Badge - Top Left Corner */}
                   <div className="absolute -top-3 -left-3 bg-red-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg transform rotate-12 border-2 border-white z-10">
                     <span className="text-sm font-bold">
-                      {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (() => {
-                        const originalPrice = Number(product.originalPrice);
-                        const currentPrice = Number(product.price || 0);
+                      {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (() => {
+                        const originalPrice = Number(product.mrp);
+                        const currentPrice = Number(product.sellingPrice || 0);
                         const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
                         return `-${discountPercentage}%`;
                       })() || 'DEAL'}
@@ -152,12 +152,12 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                     </div>
                     <div className="px-3 py-2 text-center">
                       <div className="text-gray-400 text-xs line-through">
-                        {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && 
-                          `₹${Number(product.originalPrice).toFixed(2)}`
+                        {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && 
+                          `₹${Number(product.mrp).toFixed(2)}`
                         }
                       </div>
                       <div className="text-red-600 text-lg font-bold">
-                        ₹{Number(product.price || 0).toFixed(2)}
+                        ₹{Number(product.sellingPrice || 0).toFixed(2)}
                       </div>
                     </div>
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rotate-45 border-l border-b border-gray-400"></div>
@@ -200,9 +200,9 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                   
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
-                    {product.originalPrice && Number(product.originalPrice) > Number(product.price || 0) && (() => {
-                      const originalPrice = Number(product.originalPrice);
-                      const currentPrice = Number(product.price || 0);
+                    {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (() => {
+                      const originalPrice = Number(product.mrp);
+                      const currentPrice = Number(product.sellingPrice || 0);
                       const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
                       return (
                         <span className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
@@ -241,9 +241,9 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                   </h3>
 
                   <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-extrabold text-slate-900">₹{Number(product.price || 0).toFixed(2)}</span>
+                    <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
                     <span className="text-sm font-medium text-slate-500 line-through">
-                      ₹{Number(product.originalPrice || product.price || 0).toFixed(2)}
+                      {product.mrp ? `₹${Number(product.mrp).toFixed(2)}` : ''}
                     </span>
                   </div>
                 </div>

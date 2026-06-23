@@ -135,7 +135,7 @@ export const useCloudinary = () => {
               : 0;
             setUploadProgress(40 + progress); // 40-100% for upload
           },
-          timeout: 30000, // 30 second timeout for faster feedback
+          timeout: 120000, // Cloudinary can take longer on slower networks or large product photos.
         }
       );
 

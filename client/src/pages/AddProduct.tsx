@@ -5,6 +5,7 @@ import {
   ArrowLeft,
   BadgeIndianRupee,
   Check,
+  ChevronDown,
   Eye,
   Image as ImageIcon,
   Package,
@@ -17,19 +18,20 @@ import {
   X,
 } from "lucide-react";
 import { useCloudinary } from "@/hooks/useCloudinary";
-import { useProduct, useProductById } from "@/hooks/useProducts";
+import { useProduct, useProductById, useProducts } from "@/hooks/useProducts";
 import { API_BASE_URL } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
 
 interface ProductFormData {
   id?: string;
+  sku?: string;
   name: string;
   slug: string;
   productClassification: string;
   collectionName: string;
   description: string;
-  price: string;
-  originalPrice: string;
+  sellingPrice: string;
+  mrp: string;
   category: "" | "style" | "home";
   subcategory: string;
   images: string[];
@@ -67,13 +69,14 @@ interface InventoryFields {
 }
 
 const emptyForm: ProductFormData = {
+  sku: "",
   name: "",
   slug: "",
   productClassification: "Hospital Combo",
   collectionName: "",
   description: "",
-  price: "",
-  originalPrice: "",
+  sellingPrice: "",
+  mrp: "",
   category: "",
   subcategory: "",
   images: [],
@@ -92,6 +95,16 @@ const subcategoryOptions: Record<string, string[]> = {
   style: [],
   home: ["New Arrivals", "Trending Products"],
 };
+
+const ageGroupOptions = [
+  "Newborn (0-1M)",
+  "0-3 Months",
+  "3-6 Months",
+  "6-9 Months",
+  "9-12 Months",
+  "12-18 Months",
+  "18-24 Months",
+];
 
 const fieldClass =
   "w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25";
@@ -149,6 +162,7 @@ export default function AddProduct() {
 
   const { data: productDataBySlug, isLoading: isLoadingBySlug } = useProduct(productId || "");
   const { data: productDataById, isLoading: isLoadingById } = useProductById(editId || "");
+  const { data: products = [] } = useProducts();
   const productData = editId ? productDataById : productDataBySlug;
   const isLoadingProduct = editId ? isLoadingById : isLoadingBySlug;
 
@@ -156,6 +170,7 @@ export default function AddProduct() {
   const [errors, setErrors] = useState<Partial<Record<keyof ProductFormData, string>>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isAgeGroupOpen, setIsAgeGroupOpen] = useState(false);
   const [comboItems, setComboItems] = useState<ComboItem[]>([
     { id: "knot-jabla", product: "Belle Scribbles Knot Jabla", variant: "Newborn (0-1M)", quantity: 2, selected: true },
     { id: "muslin-cap", product: "Muslin Cap - White", variant: "Newborn", quantity: 1, selected: true },
@@ -179,13 +194,14 @@ export default function AddProduct() {
     if (productData && (isEdit || viewId)) {
       setFormData({
         id: productData.id?.toString() || "",
+        sku: productData.sku || "",
         name: productData.name || "",
         slug: productData.slug || "",
         productClassification: (productData as any).productClassification || "Hospital Combo",
         collectionName: (productData as any).collectionName || (productData as any).collectionPrintName || productData.name || "",
         description: productData.description || "",
-        price: productData.price != null ? String(productData.price) : "",
-        originalPrice: productData.originalPrice?.toString() || "",
+        sellingPrice: productData.sellingPrice != null ? String(productData.sellingPrice) : "",
+        mrp: productData.mrp?.toString() || "",
         category: (productData.category as ProductFormData["category"]) || "",
         subcategory: productData.subcategory || "",
         images: (productData as any).images || (productData.image ? [productData.image] : []),
@@ -199,25 +215,35 @@ export default function AddProduct() {
         bestSeller: (productData as any).bestSeller || false,
         recommendedProduct: (productData as any).recommendedProduct || false,
       });
+      setProductDetails((prev) => ({
+        ...prev,
+        ageGroup: productData.ageGroup || prev.ageGroup,
+      }));
     }
   }, [productData, isEdit, viewId]);
 
   const discount = useMemo(() => {
-    const original = Number(formData.originalPrice);
-    const current = Number(formData.price);
+    const original = Number(formData.mrp);
+    const current = Number(formData.sellingPrice);
     if (!original || !current || original <= current) return null;
     return {
       amount: original - current,
       percent: Math.round(((original - current) / original) * 100),
     };
-  }, [formData.originalPrice, formData.price]);
+  }, [formData.mrp, formData.sellingPrice]);
 
   const previewCategory = formData.category === "home" ? "Home" : formData.category === "style" ? "Shop by Style" : "Category";
   const previewSubcategory = formData.subcategory || "No subcategory";
-  const generatedSlug = formData.slug || slugify(formData.name || formData.collectionName);
-  const previewSku = generatedSlug
-    ? `PM-${generatedSlug.toUpperCase().replace(/[^A-Z0-9]+/g, "-").replace(/^-|-$/g, "")}`
-    : "Auto-generated";
+  const nextSku = useMemo(() => `PM-${String(products.length + 1).padStart(4, "0")}`, [products.length]);
+  const previewSku = isEdit ? formData.sku || nextSku : nextSku;
+  const selectedAgeGroups = useMemo(
+    () =>
+      productDetails.ageGroup
+        .split(",")
+        .map((ageGroup) => ageGroup.trim())
+        .filter(Boolean),
+    [productDetails.ageGroup],
+  );
   const selectedComboItems = comboItems.filter((item) => item.selected);
   const comboTotalQuantity = selectedComboItems.reduce((total, item) => total + Number(item.quantity || 0), 0);
 
@@ -301,6 +327,23 @@ export default function AddProduct() {
     setProductDetails((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleAgeGroupToggle = (ageGroup: string) => {
+    setProductDetails((prev) => {
+      const currentAgeGroups = prev.ageGroup
+        .split(",")
+        .map((value) => value.trim())
+        .filter(Boolean);
+      const nextAgeGroups = currentAgeGroups.includes(ageGroup)
+        ? currentAgeGroups.filter((value) => value !== ageGroup)
+        : [...currentAgeGroups, ageGroup];
+
+      return {
+        ...prev,
+        ageGroup: nextAgeGroups.join(", "),
+      };
+    });
+  };
+
   const handleInventoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setInventory((prev) => ({ ...prev, [name]: value }));
@@ -310,7 +353,7 @@ export default function AddProduct() {
     const newErrors: Partial<Record<keyof ProductFormData, string>> = {};
     if (!formData.name.trim()) newErrors.name = "Product name is required";
     if (!formData.description.trim()) newErrors.description = "Description is required";
-    if (!formData.price || parseFloat(formData.price) <= 0) newErrors.price = "Valid price is required";
+    if (!formData.sellingPrice || parseFloat(formData.sellingPrice) <= 0) newErrors.sellingPrice = "Valid price is required";
     if (!formData.category) newErrors.category = "Category is required";
     if (!formData.images || formData.images.length === 0) newErrors.images = "At least one product image is required";
     setErrors(newErrors);
@@ -319,14 +362,16 @@ export default function AddProduct() {
 
   const productPayload = {
     slug: formData.slug || slugify(formData.name || formData.collectionName),
+    sku: previewSku,
     name: formData.name,
     description: formData.description,
-    price: isEdit ? parseFloat(formData.price) : formData.price,
-    originalPrice: isEdit
-      ? formData.originalPrice
-        ? parseFloat(formData.originalPrice)
+    sellingPrice: isEdit ? parseFloat(formData.sellingPrice) : formData.sellingPrice,
+    mrp: isEdit
+      ? formData.mrp
+        ? parseFloat(formData.mrp)
         : null
-      : formData.originalPrice || null,
+      : formData.mrp || null,
+    ageGroup: productDetails.ageGroup,
     category: formData.category,
     subcategory: formData.subcategory || null,
     image: formData.images[0] || "",
@@ -511,7 +556,7 @@ export default function AddProduct() {
               <div className="flex min-h-[38px] items-center rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">
                 {previewSku}
               </div>
-              <p className="mt-1 text-xs text-slate-500">Generated from the product name for admin reference.</p>
+              <p className="mt-1 text-xs text-slate-500">Sequential product code saved with the product.</p>
             </div>
           </div>
         </Section>
@@ -522,22 +567,22 @@ export default function AddProduct() {
               <Label required>Selling Price</Label>
               <input
                 type="number"
-                name="price"
-                value={formData.price}
+                name="sellingPrice"
+                value={formData.sellingPrice}
                 onChange={handleInputChange}
                 step="0.01"
                 min="0"
-                className={`${fieldClass} ${errors.price ? errorFieldClass : ""}`}
+                className={`${fieldClass} ${errors.sellingPrice ? errorFieldClass : ""}`}
                 placeholder="999"
               />
-              {errors.price && <p className="mt-1 text-xs text-red-500">{errors.price}</p>}
+              {errors.sellingPrice && <p className="mt-1 text-xs text-red-500">{errors.sellingPrice}</p>}
             </div>
             <div>
               <Label>MRP</Label>
               <input
                 type="number"
-                name="originalPrice"
-                value={formData.originalPrice}
+                name="mrp"
+                value={formData.mrp}
                 onChange={handleInputChange}
                 step="0.01"
                 min="0"
@@ -737,12 +782,54 @@ export default function AddProduct() {
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label>Age Group</Label>
-              <select name="ageGroup" value={productDetails.ageGroup} onChange={handleProductDetailChange} className={fieldClass}>
-                <option value="Newborn (0-1M)">Newborn (0-1M)</option>
-                <option value="0-3M">0-3M</option>
-                <option value="3-6M">3-6M</option>
-                <option value="6-12M">6-12M</option>
-              </select>
+              <div
+                className="relative"
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setIsAgeGroupOpen(false);
+                  }
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setIsAgeGroupOpen((open) => !open)}
+                  className={`${fieldClass} flex min-h-[38px] items-center justify-between gap-2 text-left`}
+                  aria-expanded={isAgeGroupOpen}
+                >
+                  <span className={selectedAgeGroups.length ? "text-slate-900" : "text-slate-400"}>
+                    {selectedAgeGroups.length ? selectedAgeGroups.join(", ") : "Select age group"}
+                  </span>
+                  <ChevronDown
+                    className={`h-4 w-4 shrink-0 text-slate-500 transition-transform ${isAgeGroupOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {isAgeGroupOpen && (
+                  <div className="absolute z-20 mt-2 w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg">
+                    <div className="max-h-64 overflow-y-auto p-2">
+                      {ageGroupOptions.map((ageGroup) => {
+                        const isSelected = selectedAgeGroups.includes(ageGroup);
+
+                        return (
+                          <label
+                            key={ageGroup}
+                            className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 text-sm text-slate-700 hover:bg-[#F1F5EB]"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => handleAgeGroupToggle(ageGroup)}
+                              className="h-4 w-4 rounded border-slate-300 text-[#5F6F46] focus:ring-[#B4C49A]"
+                            />
+                            <span className="flex-1">{ageGroup}</span>
+                            {isSelected && <Check className="h-4 w-4 text-[#5F6F46]" />}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
             <div>
               <Label>Gender</Label>
@@ -880,7 +967,7 @@ export default function AddProduct() {
                 but they were inside the old Visibility section. The image only shows the checkboxes.
                 We can put them here or below. */}
             <div className="pt-4 border-t border-slate-100">
-               <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 mb-4">
+              <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 mb-4">
                 <span>
                   <span className="block text-sm font-semibold text-slate-900">In Stock</span>
                   <span className="text-xs text-slate-500">Product can be purchased</span>
@@ -923,8 +1010,8 @@ export default function AddProduct() {
               </div>
             </div>
             <div className="min-w-[160px] rounded-lg border border-slate-200 bg-slate-50 p-4 text-right">
-              <p className="text-2xl font-bold text-slate-950">Rs {Number(formData.price || 0).toLocaleString("en-IN")}</p>
-              {formData.originalPrice && <p className="mt-1 text-sm text-slate-500 line-through">Rs {Number(formData.originalPrice).toLocaleString("en-IN")}</p>}
+              <p className="text-2xl font-bold text-slate-950">Rs {Number(formData.sellingPrice || 0).toLocaleString("en-IN")}</p>
+              {formData.mrp && <p className="mt-1 text-sm text-slate-500 line-through">Rs {Number(formData.mrp).toLocaleString("en-IN")}</p>}
               {discount && <p className="mt-1 text-sm font-semibold text-emerald-700">{discount.percent}% off</p>}
             </div>
           </div>

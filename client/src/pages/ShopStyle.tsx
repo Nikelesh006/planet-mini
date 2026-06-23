@@ -111,7 +111,7 @@ export default function ShopStyle() {
 
   // Filter products by max price (show products with price <= maxPrice)
   const filteredProducts = products
-    ? products.filter(product => Number(product.price) <= maxPrice)
+    ? products.filter(product => Number(product.sellingPrice) <= maxPrice)
     : [];
 
   return (

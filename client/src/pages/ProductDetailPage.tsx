@@ -139,6 +139,20 @@ export default function ProductDetailPage() {
     selectedProductImage,
     "f_auto,q_100,dpr_auto"
   );
+  const sizeOptions = useMemo(() => {
+    const sizeSource =
+      product?.ageGroup && typeof product.ageGroup === "string" && product.ageGroup.trim() !== ""
+        ? product.ageGroup
+        : product?.sizes;
+
+    if (!sizeSource || typeof sizeSource !== "string") return [];
+
+    return sizeSource
+      .split(",")
+      .map((size) => size.trim())
+      .filter(Boolean);
+  }, [product?.ageGroup, product?.sizes]);
+  const hasMultipleSizeOptions = sizeOptions.length > 1;
 
   // Image navigation functions
   const goToPreviousImage = () => {
@@ -165,11 +179,8 @@ export default function ProductDetailPage() {
   };
 
   useEffect(() => {
-    if (product?.sizes && typeof product.sizes === 'string' && product.sizes.trim() !== '') {
-      const firstSize = product.sizes.split(',')[0]?.trim() || "";
-      setSelectedSize(firstSize);
-    }
-  }, [product]);
+    setSelectedSize(sizeOptions[0] || "");
+  }, [sizeOptions]);
 
   if (isLoading) {
     return (
@@ -203,11 +214,12 @@ export default function ProductDetailPage() {
       addToCart({
         id: product.id.toString(),
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : undefined,
         image: product.image,
         category: product.category,
         subcategory: product.subcategory || undefined,
+        size: selectedSize || undefined,
       });
     });
   };
@@ -219,8 +231,8 @@ export default function ProductDetailPage() {
         name: product.name,
         description: product.description || "",
         slug: product.slug,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : null,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : null,
         image: product.image,
         category: product.category,
         subcategory: product.subcategory || null,
@@ -239,11 +251,12 @@ export default function ProductDetailPage() {
       addToCart({
         id: product.id.toString(),
         name: product.name,
-        price: Number(product.price),
-        originalPrice: product.originalPrice ? Number(product.originalPrice) : undefined,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : undefined,
         image: product.image,
         category: product.category,
         subcategory: product.subcategory || undefined,
+        size: selectedSize || undefined,
       });
       window.location.href = '/cart';
     });
@@ -430,11 +443,11 @@ export default function ProductDetailPage() {
                 <div className="mb-8 flex items-center justify-between gap-4 sm:block">
                   <div className="flex items-center gap-4">
                     <span className="text-xl font-bold text-black sm:text-3xl">
-                      ₹{Number(product.price).toFixed(2)}
+                      ₹{Number(product.sellingPrice).toFixed(2)}
                     </span>
-                    {product.originalPrice && (
+                    {product.mrp && (
                       <span className="text-sm text-gray-500 line-through sm:text-lg">
-                        ₹{Number(product.originalPrice).toFixed(2)}
+                        ₹{Number(product.mrp).toFixed(2)}
                       </span>
                     )}
                   </div>
@@ -487,24 +500,33 @@ export default function ProductDetailPage() {
                 </div>
 
                 {/* Size Selection */}
-                {product.sizes && typeof product.sizes === 'string' && product.sizes.trim() !== '' && (
+                {sizeOptions.length > 0 && (
                   <div>
-                    <h3 className="text-sm font-medium text-gray-900 mb-3">Size</h3>
-                    <div className="flex gap-2">
-                      {product.sizes.split(',').map((size, index) => (
-                        <button
-                          key={index}
-                          onClick={() => setSelectedSize(size.trim())}
-                          className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all ${
-                            selectedSize === size.trim()
-                              ? "border-black bg-black text-white"
-                              : "border-gray-300 text-gray-700 hover:border-gray-400"
-                          }`}
-                        >
-                          {size.trim()}
-                        </button>
-                      ))}
-                    </div>
+                    <h3 className="text-sm font-medium text-gray-900 mb-3">
+                      Size: <span className="font-semibold">{selectedSize || "Select size"}</span>
+                    </h3>
+                    {hasMultipleSizeOptions ? (
+                      <div className="flex flex-wrap gap-2">
+                        {sizeOptions.map((size, index) => (
+                          <button
+                            key={index}
+                            type="button"
+                            onClick={() => setSelectedSize(size.trim())}
+                            className={`px-4 py-2 text-sm font-medium rounded-lg border transition-all ${
+                              selectedSize === size.trim()
+                                ? "border-black bg-black text-white"
+                                : "border-gray-300 text-gray-700 hover:border-gray-400"
+                            }`}
+                          >
+                            {size.trim()}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="inline-flex rounded-lg border border-black bg-black px-4 py-2 text-sm font-medium text-white">
+                        {selectedSize}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -660,29 +682,37 @@ export default function ProductDetailPage() {
                     {product.name}
                   </h3>
                   <div className="flex items-baseline gap-2 mt-1">
-                    <span className="font-extrabold text-[#1D3557]">₹{Number(product.price).toFixed(2)}</span>
+                    <span className="font-extrabold text-[#1D3557]">₹{Number(product.sellingPrice).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
 
               {/* Controls */}
               <div className="flex items-center gap-4 shrink-0">
-                {product.sizes && typeof product.sizes === 'string' && product.sizes.trim() !== '' && (
+                {sizeOptions.length > 0 && (
                   <div className="relative min-w-[200px]">
-                    <select 
-                      value={selectedSize}
-                      onChange={(e) => setSelectedSize(e.target.value)}
-                      className="appearance-none w-full bg-white border border-[#B4C49A]/40 rounded-full px-4 py-2.5 pr-10 text-sm font-medium text-gray-700 hover:border-[#B4C49A] focus:outline-none focus:ring-2 focus:ring-[#B4C49A]/30 shadow-sm transition-all cursor-pointer"
-                    >
-                      {product.sizes.split(',').map((size, index) => (
-                        <option key={index} value={size.trim()}>
-                          {size.trim()} - Rs. {Number(product.price).toFixed(2)}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#B4C49A]">
-                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
-                    </div>
+                    {hasMultipleSizeOptions ? (
+                      <>
+                        <select
+                          value={selectedSize}
+                          onChange={(e) => setSelectedSize(e.target.value)}
+                          className="appearance-none w-full bg-white border border-[#B4C49A]/40 rounded-full px-4 py-2.5 pr-10 text-sm font-medium text-gray-700 hover:border-[#B4C49A] focus:outline-none focus:ring-2 focus:ring-[#B4C49A]/30 shadow-sm transition-all cursor-pointer"
+                        >
+                          {sizeOptions.map((size, index) => (
+                            <option key={index} value={size.trim()}>
+                              {size.trim()} - Rs. {Number(product.sellingPrice).toFixed(2)}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-[#B4C49A]">
+                          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="rounded-full border border-[#B4C49A]/40 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm">
+                        Size: {selectedSize}
+                      </div>
+                    )}
                   </div>
                 )}
 

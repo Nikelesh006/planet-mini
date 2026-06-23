@@ -60,11 +60,11 @@ export default function Navbar() {
 
   // Recommended products data
   const recommendedProducts = [
-    { id: 1, name: "Soft Cotton Jhabla", category: "Jhablas", price: 299 },
-    { id: 2, name: "Premium Bath Towel", category: "Towels", price: 499 },
-    { id: 3, name: "Muslin Swaddle Cloth", category: "Muslin Clothes", price: 399 },
-    { id: 4, name: "Baby Care Combo", category: "Combo", price: 899 },
-    { id: 5, name: "Organic Baby Bib", category: "Muslin Clothes", price: 199 },
+    { id: 1, name: "Soft Cotton Jhabla", category: "Jhablas", sellingPrice: 299 },
+    { id: 2, name: "Premium Bath Towel", category: "Towels", sellingPrice: 499 },
+    { id: 3, name: "Muslin Swaddle Cloth", category: "Muslin Clothes", sellingPrice: 399 },
+    { id: 4, name: "Baby Care Combo", category: "Combo", sellingPrice: 899 },
+    { id: 5, name: "Organic Baby Bib", category: "Muslin Clothes", sellingPrice: 199 },
   ];
 
   useEffect(() => {
@@ -290,7 +290,7 @@ export default function Navbar() {
                               />
                               <div>
                                 <p className="text-sm font-medium text-gray-900">{product.name}</p>
-                                <p className="text-xs text-gray-500">₹{product.price}</p>
+                                <p className="text-xs text-gray-500">₹{product.sellingPrice}</p>
                               </div>
                             </Link>
                           ))}

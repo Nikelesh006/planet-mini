@@ -1489,7 +1489,7 @@ export async function registerRoutes(
 
 
 
-            price: 0,
+            sellingPrice: 0,
 
 
 

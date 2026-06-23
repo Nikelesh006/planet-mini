@@ -406,11 +406,11 @@ const handleProductSelect = (productId: number) => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm text-gray-900">
-                        ₹{Number(product.price).toFixed(2)}
+                        ₹{Number(product.sellingPrice).toFixed(2)}
                       </span>
-                      {product.originalPrice && (
+                      {product.mrp && (
                         <div className="text-sm text-gray-500 line-through">
-                          ₹{Number(product.originalPrice).toFixed(2)}
+                          ₹{Number(product.mrp).toFixed(2)}
                         </div>
                       )}
                     </td>

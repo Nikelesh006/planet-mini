@@ -20,11 +20,8 @@ interface CartItem {
 
 
 
-  price: number;
-
-
-
-  originalPrice?: number;
+  sellingPrice: number;
+  mrp?: number;
 
 
 
@@ -196,7 +193,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         ...state,
         items: newItems,
         totalItems: newItems.reduce((sum, item) => sum + item.quantity, 0),
-        totalPrice: newItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        totalPrice: newItems.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0)
       };
 
 
@@ -213,7 +210,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         ...state,
         items: filteredItems,
         totalItems: filteredItems.reduce((sum, item) => sum + item.quantity, 0),
-        totalPrice: filteredItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        totalPrice: filteredItems.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0)
       };
 
 
@@ -246,7 +243,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         ...state,
         items: increasedItems,
         totalItems: increasedItems.reduce((sum, item) => sum + item.quantity, 0),
-        totalPrice: increasedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        totalPrice: increasedItems.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0)
       };
 
 
@@ -262,7 +259,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         ...state,
         items: decreasedItems,
         totalItems: decreasedItems.reduce((sum, item) => sum + item.quantity, 0),
-        totalPrice: decreasedItems.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+        totalPrice: decreasedItems.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0)
       };
 
 
@@ -292,7 +289,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
         ...state,
         items: action.payload,
         totalItems: action.payload.reduce((sum, item) => sum + item.quantity, 0),
-        totalPrice: action.payload.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+        totalPrice: action.payload.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0),
       };
 
 

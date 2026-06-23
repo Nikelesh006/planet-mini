@@ -90,8 +90,8 @@ export default function CartPage() {
     return addresses.find(addr => addr._id === selectedAddressId);
   };
 
-  const formatPrice = (price: number) => {
-    return `₹${price}`;
+  const formatPrice = (sellingPrice: number) => {
+    return `₹${sellingPrice}`;
   };
 
   const handlePlaceOrder = async () => {
@@ -147,7 +147,7 @@ export default function CartPage() {
           productId: item.id,
           productName: item.name,
           image: item.image,
-          price: item.price,
+          price: item.sellingPrice,
           size: item.size || 'N/A',
           color: item.color || 'N/A',
           quantity: item.quantity
@@ -336,7 +336,7 @@ export default function CartPage() {
 
                   {/* Mobile Price & Quantity Row */}
                   <div className="flex items-center justify-between lg:hidden">
-                    <span className="text-lg font-bold text-black">{formatPrice(item.price)}</span>
+                    <span className="text-lg font-bold text-black">{formatPrice(item.sellingPrice)}</span>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => decreaseQuantity(item.id)}
@@ -358,7 +358,7 @@ export default function CartPage() {
 
                   {/* Desktop Price */}
                   <div className="hidden lg:block lg:col-span-2 lg:text-center">
-                    <span className="text-xl font-bold text-black">{formatPrice(item.price)}</span>
+                    <span className="text-xl font-bold text-black">{formatPrice(item.sellingPrice)}</span>
                   </div>
 
                   {/* Desktop Quantity Controls */}
@@ -383,12 +383,12 @@ export default function CartPage() {
                   {/* Mobile Subtotal */}
                   <div className="flex items-center justify-between pt-4 border-t border-gray-100 lg:hidden">
                     <span className="text-gray-600">Subtotal</span>
-                    <span className="text-lg font-bold text-black">{formatPrice(item.price * item.quantity)}</span>
+                    <span className="text-lg font-bold text-black">{formatPrice(item.sellingPrice * item.quantity)}</span>
                   </div>
 
                   {/* Desktop Subtotal */}
                   <div className="hidden lg:block lg:col-span-2 lg:text-center">
-                    <span className="text-xl font-bold text-black">{formatPrice(item.price * item.quantity)}</span>
+                    <span className="text-xl font-bold text-black">{formatPrice(item.sellingPrice * item.quantity)}</span>
                   </div>
                 </div>
               ))}

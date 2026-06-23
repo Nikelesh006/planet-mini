@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Heart, ShoppingBag, Star, Minus, Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@/store/use-store";
 import type { ProductResponse } from "@shared/routes";
 
@@ -15,7 +15,26 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(product?.colors || "");
-  const [selectedSize, setSelectedSize] = useState(product?.sizes || "");
+  const sizeOptions = useMemo(() => {
+    const sizeSource =
+      product?.ageGroup && typeof product.ageGroup === "string" && product.ageGroup.trim() !== ""
+        ? product.ageGroup
+        : product?.sizes;
+
+    if (!sizeSource || typeof sizeSource !== "string") return [];
+
+    return sizeSource
+      .split(",")
+      .map((size) => size.trim())
+      .filter(Boolean);
+  }, [product?.ageGroup, product?.sizes]);
+  const hasMultipleSizeOptions = sizeOptions.length > 1;
+  const [selectedSize, setSelectedSize] = useState(sizeOptions[0] || "");
+
+  useEffect(() => {
+    setSelectedColor(product?.colors || "");
+    setSelectedSize(sizeOptions[0] || "");
+  }, [product?.colors, sizeOptions]);
 
   if (!product) return null;
 
@@ -27,7 +46,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
       productId: product.id,
       slug: product.slug,
       name: product.name,
-      price: Number(product.price),
+      sellingPrice: Number(product.sellingPrice),
       image: product.image,
       quantity,
       color: selectedColor,
@@ -130,11 +149,11 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                   {/* Price */}
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-3xl font-bold text-gray-900">
-                      ₹{Number(product.price).toFixed(2)}
+                      ₹{Number(product.sellingPrice).toFixed(2)}
                     </span>
-                    {product.originalPrice && (
+                    {product.mrp && (
                       <span className="text-lg text-gray-500 line-through">
-                        ₹{Number(product.originalPrice).toFixed(2)}
+                        ₹{Number(product.mrp).toFixed(2)}
                       </span>
                     )}
                   </div>
@@ -161,14 +180,33 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                   )}
 
                   {/* Size Selection */}
-                  {product.sizes && (
+                  {sizeOptions.length > 0 && (
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900 mb-2">Size</h3>
-                      <div className="flex gap-2">
-                        <span className="px-3 py-1 text-sm rounded-lg border border-primary bg-primary text-primary-foreground">
-                          {product.sizes}
-                        </span>
-                      </div>
+                      <h3 className="text-sm font-medium text-gray-900 mb-2">
+                        Size: <span className="font-semibold">{selectedSize || "Select size"}</span>
+                      </h3>
+                      {hasMultipleSizeOptions ? (
+                        <div className="flex flex-wrap gap-2">
+                          {sizeOptions.map((size) => (
+                            <button
+                              key={size}
+                              type="button"
+                              onClick={() => setSelectedSize(size)}
+                              className={`px-3 py-1 text-sm rounded-lg border ${
+                                selectedSize === size
+                                  ? "border-primary bg-primary text-primary-foreground"
+                                  : "border-gray-300 text-gray-700 hover:border-primary"
+                              }`}
+                            >
+                              {size}
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="inline-flex px-3 py-1 text-sm rounded-lg border border-primary bg-primary text-primary-foreground">
+                          {selectedSize}
+                        </div>
+                      )}
                     </div>
                   )}
 
