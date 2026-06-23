@@ -66,7 +66,7 @@ import authRoutes from "./routes/auth";
 
 
 
-
+import credentialsRoutes from "./routes/credentials";
 
 
 
@@ -2671,6 +2671,10 @@ export async function registerRoutes(
 
 
 
+
+
+
+  app.use('/api/auth', credentialsRoutes);
 
 
 

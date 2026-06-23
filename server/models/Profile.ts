@@ -12,6 +12,8 @@ const profileSchema = new mongoose.Schema({
 
   email: { type: String, required: true, unique: true },
 
+  password: String,
+
   image: String,
 
   phone: String,
