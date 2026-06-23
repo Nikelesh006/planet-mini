@@ -1102,11 +1102,16 @@ export default function Orders() {
 
 
 
-                              {order.items[0].name}
+                            {order.items[0].name}
 
+                            <span className="text-xs text-gray-500">
+                              {(() => {
+                                const size = getItemSize(order.items[0]);
+                                return size ? ` · Size: ${size}` : '';
+                              })()}
+                            </span>
 
-
-                              {order.items.length > 1 && ` +${order.items.length - 1} more`}
+                            {order.items.length > 1 && ` +${order.items.length - 1} more`}
 
 
 
@@ -1421,6 +1426,12 @@ export default function Orders() {
 
                         <span className="text-gray-600">{order.items?.length || 0} items</span>
 
+                        {order.items && order.items.length > 0 && (() => {
+                          const itemSize = getItemSize(order.items[0]);
+                          return itemSize ? (
+                            <span className="text-xs text-gray-500">· Size: {itemSize}</span>
+                          ) : null;
+                        })()}
 
 
                       </div>
@@ -1953,19 +1964,21 @@ export default function Orders() {
 
 
 
-                          <p className="text-xs sm:text-sm text-gray-500">
+                            <p className="text-xs sm:text-sm text-gray-500">
 
+                              Quantity: {item.quantity}
 
+                            </p>
 
-                            Quantity: {item.quantity}
+                            {item.size && item.size.toLowerCase() !== 'n/a' && (
+                              <p className="text-xs sm:text-sm text-gray-500">
 
+                                Size: {item.size}
 
+                              </p>
+                            )}
 
-                          </p>
-
-
-
-                          <p className="text-xs sm:text-sm font-semibold text-primary">
+                            <p className="text-xs sm:text-sm font-semibold text-primary">
 
 
 
