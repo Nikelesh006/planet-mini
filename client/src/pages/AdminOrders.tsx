@@ -254,6 +254,9 @@ export default function AdminOrders() {
                       Order ID
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Product ID
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -283,6 +286,11 @@ export default function AdminOrders() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
                             {order.orderNumber}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm text-gray-900">
+                            {order.items && order.items.length > 0 ? order.items[0].sku : 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -371,6 +379,7 @@ export default function AdminOrders() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-900">{order.orderNumber}</p>
+                        <p className="text-xs text-gray-500">Product ID: {order.items && order.items.length > 0 ? order.items[0].sku : 'N/A'}</p>
                         <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
                       </div>
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bgColor} ${statusConfig.color} flex-shrink-0`}>
@@ -526,6 +535,7 @@ export default function AdminOrders() {
                         />
                         <div className="flex-1 w-full">
                           <h4 className="font-medium text-gray-900">{item.name}</h4>
+                          <p className="text-xs text-gray-500 mt-1">Product ID: {item.sku || 'N/A'}</p>
                           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-gray-500">
                             <span>Quantity: {item.quantity}</span>
                             {getItemSize(item) && <span>Size: {getItemSize(item)}</span>}

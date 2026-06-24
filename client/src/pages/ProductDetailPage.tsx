@@ -20,9 +20,9 @@ const getCloudinaryImageUrl = (url: string, transformation: string) => {
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const sku = params.sku as string;
+  const slug = params.slug as string;
 
-  if (!sku) {
+  if (!slug) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -38,20 +38,12 @@ export default function ProductDetailPage() {
     );
   }
 
-  const productId = sku.startsWith('id/') ? sku.replace('id/', '') : '';
-  const productSku = productId ? '' : sku;
-
   console.log('🔍 ProductDetail Debug:', {
-    originalSku: sku,
-    productId,
-    productSku,
-    isProductId: !!productId
+    slug
   });
 
   // Use the appropriate hook based on the identifier type
-  const { data: product, isLoading, error } = productId
-    ? useProductById(productId)
-    : useProduct(productSku);
+  const { data: product, isLoading, error } = useProduct(slug);
 
   // Fetch all products for related products section
   const { data: allProducts = [] } = useProducts();

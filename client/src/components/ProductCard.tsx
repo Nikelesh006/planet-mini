@@ -186,7 +186,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
       {(() => {
 
-        console.log('🔗 ProductCard: Navigating to:', `/products/${product.sku}`, 'Product:', product.name, 'SKU:', product.sku);
+        console.log('🔗 ProductCard: Navigating to:', `/products/${product.slug}`, 'Product:', product.name, 'Slug:', product.slug);
 
         return null;
 
@@ -194,7 +194,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
       
 
-      <Link href={`/products/${product.sku}`} className="block">
+      <Link href={`/products/${product.slug}`} className="block">
 
         <motion.div
 

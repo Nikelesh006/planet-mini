@@ -89,7 +89,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
 
   return (
     <>
-      <Link href={`/products/${product.sku}`} className="block">
+      <Link href={`/products/${product.slug}`} className="block">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

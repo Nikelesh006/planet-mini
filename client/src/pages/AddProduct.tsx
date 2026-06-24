@@ -117,6 +117,12 @@ const slugify = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
+const generateUniqueSlug = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const shuffled = chars.split('').sort(() => Math.random() - 0.5).join('');
+  return shuffled.substring(0, 12);
+};
+
 const Section = ({
   title,
   icon: Icon,
@@ -240,6 +246,8 @@ export default function AddProduct() {
   const previewSubcategory = formData.subcategory || "No subcategory";
   const nextSku = useMemo(() => `PM-${String(products.length + 1).padStart(4, "0")}`, [products.length]);
   const previewSku = isEdit ? formData.sku || nextSku : nextSku;
+  const nextSlug = useMemo(() => generateUniqueSlug(), []);
+  const previewSlug = isEdit ? formData.slug : nextSlug;
   const selectedAgeGroups = useMemo(
     () =>
       productDetails.ageGroup
@@ -264,8 +272,6 @@ export default function AddProduct() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
       ...(name === "category" ? { subcategory: "" } : {}),
-      ...(name === "name" && !isEdit ? { slug: slugify(value) } : {}),
-      ...(name === "collectionName" && !isEdit && !prev.name ? { slug: slugify(value) } : {}),
     }));
 
     if (errors[name as keyof ProductFormData]) {
@@ -379,7 +385,7 @@ export default function AddProduct() {
     setIsSubmitting(true);
 
     const productPayload = {
-    slug: formData.slug || slugify(formData.name || formData.collectionName),
+    slug: previewSlug,
     sku: previewSku,
     name: formData.name,
     description: formData.description,
@@ -573,6 +579,14 @@ export default function AddProduct() {
                 {previewSku}
               </div>
               <p className="mt-1 text-xs text-slate-500">Sequential product code saved with the product.</p>
+            </div>
+
+            <div>
+              <Label>Slug (Auto-generated)</Label>
+              <div className="flex min-h-[38px] items-center rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-700">
+                {previewSlug}
+              </div>
+              <p className="mt-1 text-xs text-slate-500">Random alphanumeric identifier for unique product identification.</p>
             </div>
           </div>
         </Section>
