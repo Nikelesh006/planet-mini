@@ -726,37 +726,23 @@ export const ordersStorage = {
 
         // Transform items to match frontend expectations
 
-        const transformedItems = (order.items || order.products || []).map((item: any) => {
-
-          console.log('🔍 Raw item data:', item);
-
-          
-
-          const transformedItem = {
-
-            id: item.productId || item.id || item._id,
-
-            name: item.name || item.productName,
-
-            sellingPrice: item.sellingPrice ?? item.price ?? 0,
-
-            quantity: item.quantity || 1,
-
-            image: item.image || item.productImage,
-
-            slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
-
-            size: item.size,
-
-            color: item.color
-
-          };
-
-          
-
-          console.log('🔍 Transformed item:', transformedItem);
-
-          return transformedItem;
+const transformedItems = (order.items || order.products || []).map((item: any) => {
+           console.log('🔍 Raw item data:', item);
+           
+           const transformedItem = {
+             id: item.productId || item.id || item._id,
+             name: item.name || item.productName,
+             sellingPrice: item.sellingPrice ?? item.price ?? 0,
+             quantity: item.quantity || 1,
+             image: item.image || item.productImage,
+             slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
+             sku: item.sku,
+             size: item.size,
+             color: item.color
+           };
+           
+           console.log('🔍 Transformed item:', transformedItem);
+           return transformedItem;
 
         });
 
@@ -976,25 +962,17 @@ export const ordersStorage = {
 
       const formattedOrders = orders.map(order => {
 
-        const transformedItems = (order.items || order.products || []).map((item: any) => ({
-
-          id: item.productId || item.id || item._id,
-
-          name: item.name || item.productName,
-
-          sellingPrice: item.sellingPrice ?? item.price ?? 0,
-
-          quantity: item.quantity || 1,
-
-          image: item.image || item.productImage,
-
-          slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
-
-          size: item.size,
-
-          color: item.color
-
-        }));
+const transformedItems = (order.items || order.products || []).map((item: any) => ({
+           id: item.productId || item.id || item._id,
+           name: item.name || item.productName,
+           sellingPrice: item.sellingPrice ?? item.price ?? 0,
+           quantity: item.quantity || 1,
+           image: item.image || item.productImage,
+           slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
+           sku: item.sku,
+           size: item.size,
+           color: item.color
+         }));
 
 
 

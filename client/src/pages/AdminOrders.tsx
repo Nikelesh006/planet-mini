@@ -27,7 +27,7 @@ interface OrderItem {
   price?: number;
   quantity: number;
   image: string;
-  slug?: string;
+  sku?: string;
   size?: string;
   color?: string;
 }
@@ -245,11 +245,14 @@ export default function AdminOrders() {
               </p>
             </div>
             
-            {/* Table */}
-            <div className="overflow-x-auto">
+            {/* Table - Desktop */}
+            <div className="hidden lg:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Order ID
+                    </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date
                     </th>
@@ -266,9 +269,6 @@ export default function AdminOrders() {
                       Total Amount
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Payment
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
@@ -280,6 +280,11 @@ export default function AdminOrders() {
                     
                     return (
                       <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-gray-900">
+                            {order.orderNumber}
+                          </div>
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
                             {formatDate(order.createdAt)}
@@ -340,21 +345,6 @@ export default function AdminOrders() {
                             {formatPrice(order.totalAmount)}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-900">
-                            {order.paymentMethod || 'Credit Card'}
-                          </div>
-                          <div className="mt-1">
-                            {(() => {
-                              const payConfig = getPaymentStatusConfig(order.paymentStatus);
-                              return (
-                                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${payConfig.badgeClass}`}>
-                                  {payConfig.label}
-                                </span>
-                              );
-                            })()}
-                          </div>
-                        </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           <button
                             onClick={() => handleViewOrder(order)}
@@ -368,6 +358,63 @@ export default function AdminOrders() {
                   })}
                 </tbody>
               </table>
+            </div>
+            
+            {/* Mobile Cards */}
+            <div className="lg:hidden space-y-4 p-4">
+              {orders.map((order: Order) => {
+                const statusConfig = getStatusConfig(order.status);
+                const StatusIcon = statusConfig.icon;
+                
+                return (
+                  <div key={order.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900">{order.orderNumber}</p>
+                        <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
+                      </div>
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bgColor} ${statusConfig.color} flex-shrink-0`}>
+                        <StatusIcon className="w-3 h-3" />
+                        {statusConfig.label}
+                      </span>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Package className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                        <span className="text-gray-600">{order.items?.length || 0} items</span>
+                        {order.items && order.items.length > 0 && (
+                          <span className="text-xs text-gray-500 truncate max-w-[150px]">
+                            {order.items[0].name}
+                            {order.items.length > 1 && ` +${order.items.length - 1} more`}
+                          </span>
+                        )}
+                      </div>
+                      
+                      {order.shippingAddress && Object.keys(order.shippingAddress).length > 0 && (
+                        <div className="flex items-start gap-2">
+                          <MapPin className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                          <div className="text-xs text-gray-600 space-y-0.5">
+                            <p className="font-semibold text-gray-900">{order.shippingAddress.fullName || 'N/A'}</p>
+                            <p className="text-gray-500">{order.shippingAddress.phone || 'N/A'}</p>
+                            <p className="font-medium">{order.shippingAddress.street || 'N/A'}</p>
+                            <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode || ''}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                        <span className="font-semibold text-gray-900">{formatPrice(order.totalAmount)}</span>
+                        <button
+                          onClick={() => handleViewOrder(order)}
+                          className="text-[#5F6F46] hover:text-[#4F5E39] font-medium text-sm"
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
             
             {/* Table Footer */}
@@ -469,7 +516,7 @@ export default function AdminOrders() {
                   <div className="space-y-4">
                     {selectedOrder.items.map((item) => {
                       console.log('🔍 Order item:', item);
-                      console.log('🔍 Item slug:', item.slug);
+                      console.log('🔍 Item sku:', item.sku);
                       return (
                       <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-gray-50 rounded-xl">
                         <img 
@@ -492,9 +539,9 @@ export default function AdminOrders() {
                             </span>
                           </div>
                         </div>
-                        <div className="w-full sm:w-auto flex-shrink-0">
-                          {item.slug ? (
-                            <Link href={`/products/${item.slug}`} className="block w-full sm:w-auto">
+<div className="w-full sm:w-auto flex-shrink-0">
+                           {item.sku ? (
+                             <Link href={`/products/${item.sku}`} className="block w-full sm:w-auto">
                               <button 
                                 className="w-full sm:w-auto bg-yellow-100 hover:bg-yellow-200 border-yellow-300 text-yellow-800 px-3 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
                                 aria-label={`View product details for ${item.name}`}

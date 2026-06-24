@@ -11,6 +11,7 @@ interface Product {
   id: number;
   name: string;
   slug: string;
+  sku?: string;
   description: string;
   sellingPrice: number | string;
   mrp?: number | string | null;
@@ -163,7 +164,7 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rotate-45 border-l border-b border-gray-400"></div>
                   </div>
                   
-                  <Link href={`/products/${product.slug}`} className="block">
+                  <Link href={`/products/${product.sku}`} className="block">
                     <div className="aspect-square overflow-hidden rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-red-200 group-hover:border-red-400 transition-all duration-300 shadow-lg group-hover:shadow-xl group-hover:scale-105">
                       <img
                         src={product.image}
@@ -183,7 +184,7 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
           {products.map((product, index) => (
             <div key={product.id || `product-${index}`} className="w-full">
-              <Link href={`/products/${product.slug}`} className="block">
+              <Link href={`/products/${product.sku}`} className="block">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

@@ -218,6 +218,10 @@ export default function AddProduct() {
       setProductDetails((prev) => ({
         ...prev,
         ageGroup: productData.ageGroup || prev.ageGroup,
+        gender: (productData as any).gender || prev.gender,
+        occasion: (productData as any).occasion || prev.occasion,
+        fabric: (productData as any).fabric || prev.fabric,
+        colorTheme: (productData as any).colorTheme || prev.colorTheme,
       }));
     }
   }, [productData, isEdit, viewId]);
@@ -360,52 +364,64 @@ export default function AddProduct() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const productPayload = {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      toast({
+        title: "Validation Error",
+        description: "Please check the highlighted fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
+
+    const productPayload = {
     slug: formData.slug || slugify(formData.name || formData.collectionName),
     sku: previewSku,
     name: formData.name,
     description: formData.description,
-    sellingPrice: isEdit ? parseFloat(formData.sellingPrice) : formData.sellingPrice,
-    mrp: isEdit
-      ? formData.mrp
-        ? parseFloat(formData.mrp)
-        : null
-      : formData.mrp || null,
-    ageGroup: productDetails.ageGroup,
+    sellingPrice: isEdit ? parseFloat(formData.sellingPrice) : parseFloat(formData.sellingPrice),
+    mrp: formData.mrp ? parseFloat(formData.mrp) : null,
     category: formData.category,
-    subcategory: formData.subcategory || null,
+    ageGroup: selectedAgeGroups.length > 0 ? selectedAgeGroups.join(", ") : null,
+    subcategory: formData.subcategory,
     image: formData.images[0] || "",
-    rating: formData.rating,
-    reviews: formData.reviews,
+    images: JSON.stringify(formData.images),
+    rating: parseFloat(formData.rating.toString()),
+    reviews: parseInt(formData.reviews.toString(), 10),
     inStock: formData.inStock,
     isNew: formData.isNew,
-    status: formData.status,
+    gender: productDetails.gender,
+    occasion: productDetails.occasion,
+    fabric: productDetails.fabric,
+    colorTheme: productDetails.colorTheme,
+    careInstructions: productDetails.careInstructions,
+    productClassification: formData.productClassification,
+    collectionName: formData.collectionName,
     showOnWebsite: formData.showOnWebsite,
     featuredProduct: formData.featuredProduct,
     bestSeller: formData.bestSeller,
     recommendedProduct: formData.recommendedProduct,
-    images: formData.images,
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+  try {
+    const url = isEdit && viewId ? `/api/products/${viewId}` : "/api/products";
+    const method = isEdit ? "PUT" : "POST";
+    
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(productPayload),
+    });
 
-    setIsSubmitting(true);
-    try {
-      const token = localStorage.getItem("jwtToken");
-      const response = await fetch(`${API_BASE_URL}/api/products${isEdit && editId ? `/${editId}` : ""}`, {
-        method: isEdit && editId ? "PUT" : "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(productPayload),
-      });
-
-      if (!response.ok) {
-        throw new Error(isEdit ? "Failed to update product" : "Failed to create product");
-      }
+    if (!response.ok) {
+      throw new Error(isEdit ? "Failed to update product" : "Failed to create product");
+    }
 
       setShowSuccess(true);
       toast({

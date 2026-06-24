@@ -275,6 +275,52 @@ export const productsStorage = {
 
   },
 
+  async getProductBySku(sku: string) {
+
+    console.log(`🔍 getProductBySku called with: "${sku}"`);
+
+    try {
+
+      const db = mongoose.connection.db;
+
+      console.log(`🔍 MongoDB connection db:`, db ? 'connected' : 'null');
+
+      if (!db) {
+
+        console.log(`❌ Database not connected for getProductBySku, using cache`);
+
+        console.log(`🔄 Searching for product with sku: ${sku} in cache (${productsCache.length} items)`);
+
+        return productsCache.find((p: any) => p.sku === sku);
+
+      }
+
+      console.log(`🔍 Querying MongoDB collection "products" with: { sku: "${sku}" }`);
+
+      const product = await db.collection("products").findOne({ sku: sku });
+
+      console.log(`🔍 MongoDB findOne result:`, product ? `Found: ${product.name}` : 'null');
+
+      if (product) {
+
+        return { ...product, id: product._id.toString() };
+
+      }
+
+      return product;
+
+    } catch (error) {
+
+      console.log(`❌ MongoDB error in getProductBySku: ${(error as Error).message}`);
+
+      console.log(`🔄 Using products cache with ${productsCache.length} items`);
+
+      return productsCache.find((p: any) => p.sku === sku);
+
+    }
+
+  },
+
   async createProduct(product: any) {
 
     try {

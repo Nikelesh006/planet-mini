@@ -73,6 +73,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
         category: product.category,
         subcategory: product.subcategory || null,
         slug: product.slug,
+        sku: product.sku,
         rating: product.rating,
         reviews: product.reviews,
         inStock: product.inStock === null ? null : product.inStock,
@@ -88,7 +89,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
 
   return (
     <>
-      <Link href={`/products/${product.slug}`} className="block">
+      <Link href={`/products/${product.sku}`} className="block">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

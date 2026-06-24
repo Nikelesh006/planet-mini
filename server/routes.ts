@@ -1325,26 +1325,46 @@ export async function registerRoutes(
 
 
 
-    } else {
-
-
-
+} else {
+      
+      
+      
       // Normal slug lookup
-
-
-
+      
+      
+      
       console.log('� Slug type: real-slug, querying by slug:', slug);
-
-
-
+      
+      
+      
       product = await storage.getProductBySlug(slug);
-
-
-
+      
+      
+      
       console.log('📦 Found by slug:', slug, product ? product.name : 'Not found');
-
-
-
+      
+      // If not found by slug, try SKU lookup
+      
+      if (!product) {
+      
+        console.log('🔍 Trying SKU lookup for:', slug);
+        
+        try {
+        
+          product = await storage.getProductBySku(slug);
+          
+        } catch (skuError) {
+        
+          console.error('❌ SKU lookup error:', skuError);
+          
+          product = null;
+          
+        }
+        
+        console.log('📦 Found by SKU:', slug, product ? product.name : 'Not found');
+        
+      }
+      
     }
 
 

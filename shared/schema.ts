@@ -20,6 +20,10 @@ export const products = sqliteTable("products", {
   isNew: integer("is_new", { mode: "boolean" }).default(false),
   colors: text("colors"), // JSON string for SQLite
   sizes: text("sizes"), // JSON string for SQLite
+  gender: text("gender"),
+  occasion: text("occasion"),
+  fabric: text("fabric"),
+  colorTheme: text("color_theme"),
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({ id: true });

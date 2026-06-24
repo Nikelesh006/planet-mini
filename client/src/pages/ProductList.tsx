@@ -394,7 +394,7 @@ const handleProductSelect = (productId: number) => {
                             {product.name}
                           </div>
                           <div className="text-sm text-gray-500">
-                            {product.slug}
+                            {product.sku}
                           </div>
                         </div>
                       </div>
@@ -439,7 +439,7 @@ const handleProductSelect = (productId: number) => {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center gap-2">
                         <Link
-                          href={`/products/${product.slug}`}
+                          href={`/products/${product.sku}`}
                           className="text-blue-600 hover:text-blue-900"
                           title="View Product Details"
                         >

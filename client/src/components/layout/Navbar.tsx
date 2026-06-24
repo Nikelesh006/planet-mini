@@ -276,7 +276,7 @@ export default function Navbar() {
                           {searchResults.map((product) => (
                             <Link
                               key={product.id}
-                              href={`/products/${product.slug}`}
+                              href={`/products/${product.sku}`}
                               onClick={() => {
                                 setSearchDropdownOpen(false);
                                 setSearchQuery('');

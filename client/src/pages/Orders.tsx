@@ -101,7 +101,7 @@ interface OrderItem {
   price?: number;
   quantity: number;
   image: string;
-  slug?: string;
+  sku?: string;
   size?: string;
   color?: string;
 }
@@ -818,33 +818,7 @@ export default function Orders() {
 
 
 
-            {/* Table Header */}
-
-
-
-            <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
-
-
-
-              <h2 className="text-lg sm:text-xl font-semibold text-gray-900">Orders Collection</h2>
-
-
-
-              <p className="text-xs sm:text-sm text-gray-600 mt-1">
-
-
-
-                Database records for user: {userId}
-
-
-
-              </p>
-
-
-
-            </div>
-
-
+            {/* Table */}
 
             
 
@@ -862,166 +836,50 @@ export default function Orders() {
 
 
 
-                <thead className="bg-gray-50 border-b border-gray-200">
-
-
-
-                  <tr>
-
-
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-
-
-                      Date
-
-
-
-                    </th>
-
-
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-
-
-                      Status
-
-
-
-                    </th>
-
-
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-
-
-                      Items
-
-
-
-                    </th>
-
-
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-
-
-                      Shipping Address
-
-
-
-                    </th>
-
-
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-
-
-                      Total Amount
-
-
-
-                    </th>
-
-
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-
-
-                      Payment Method
-
-
-
-                    </th>
-
-
-
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-
-
-                      Actions
-
-
-
-                    </th>
-
-
-
-                  </tr>
-
-
-
+<thead className="bg-gray-50 border-b border-gray-200">
+                   <tr>
+                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Order ID
+                     </th>
+                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Date
+                     </th>
+                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Payment
+                     </th>
+                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Items
+                     </th>
+                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Shipping Address
+                     </th>
+                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Total Amount
+                     </th>
+                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                       Actions
+                     </th>
+                   </tr>
                 </thead>
-
-
-
                 <tbody className="bg-white divide-y divide-gray-200">
-
-
-
                   {orders.map((order: Order, index: number) => {
-
-
-
                     const statusConfig = getStatusConfig(order.status);
-
-
-
                     const StatusIcon = statusConfig.icon;
-
-
-
                     
-
-
-
-                    // Debug: Log shipping address data
-
-
-
                     console.log(`🔍 Order ${order.id} shipping address:`, order.shippingAddress);
-
-
-
                     console.log(`🔍 Order ${order.id} shipping address keys:`, order.shippingAddress ? Object.keys(order.shippingAddress) : 'No address object');
-
-
-
                     console.log(`🔍 Order ${order.id} full order data:`, order);
-
-
-
                     
-
-
-
                     return (
-
-
-
                       <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-
-
-
                         <td className="px-6 py-4 whitespace-nowrap">
-
-
-
+<div className="text-sm font-medium text-gray-900">
+                             {order.orderNumber}
+                           </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-
-
-
                             {formatDate(order.createdAt)}
-
-
-
                           </div>
 
 
@@ -1255,36 +1113,6 @@ export default function Orders() {
 
 
 
-                        <td className="px-6 py-4 whitespace-nowrap">
-
-
-
-                          <div className="text-sm text-gray-900">
-
-
-
-                            {order.paymentMethod || 'Credit Card'}
-
-
-
-                          </div>
-
-
-
-                          <div className="mt-1">
-                            {(() => {
-                              const payConfig = getPaymentStatusConfig(order.paymentStatus);
-                              return (
-                                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold ${payConfig.badgeClass}`}>
-                                  {payConfig.label}
-                                </span>
-                              );
-                            })()}
-                          </div>
-
-
-
-                        </td>
 
 
 
@@ -1372,46 +1200,17 @@ export default function Orders() {
 
 
 
-                  <div key={order.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-
-
-
+<div key={order.id} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                     <div className="flex items-start justify-between mb-3">
-
-
-
                       <div className="flex-1 min-w-0">
-
-
-
-                        <p className="text-sm font-semibold text-gray-900">{formatDate(order.createdAt)}</p>
-
-
-
+                        <p className="text-sm font-semibold text-gray-900">{order.orderNumber}</p>
+                        <p className="text-xs text-gray-500">{formatDate(order.createdAt)}</p>
                       </div>
-
-
-
                       <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${statusConfig.bgColor} ${statusConfig.color} flex-shrink-0`}>
-
-
-
                         <StatusIcon className="w-3 h-3" />
-
-
-
                         {statusConfig.label}
-
-
-
                       </span>
-
-
-
                     </div>
-
-
-
                     <div className="space-y-2 text-sm">
 
 
@@ -1452,50 +1251,17 @@ export default function Orders() {
 
 
 
-                      <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-
-
-
+<div className="flex items-center justify-between pt-2 border-t border-gray-200">
                         <span className="font-semibold text-gray-900">{formatPrice(order.totalAmount)}</span>
-
-
-
                         <button
-
-
-
                           onClick={() => handleViewOrder(order)}
-
-
-
                           className="text-primary hover:text-primary/80 font-medium text-sm"
-
-
-
                         >
-
-
-
                           View Details
-
-
-
                         </button>
-
-
-
                       </div>
-
-
-
                     </div>
-
-
-
                   </div>
-
-
-
                 );
 
 
@@ -1982,7 +1748,7 @@ export default function Orders() {
 
 
 
-                            {formatPrice(item.sellingPrice * item.quantity)}
+                            {formatPrice(getItemUnitPrice(item) * item.quantity)}
 
 
 
@@ -1995,14 +1761,8 @@ export default function Orders() {
 
 
                         <div className="w-full sm:w-auto flex-shrink-0">
-
-
-
-                          {item.slug ? (
-
-
-
-                            <Link href={`/products/${item.slug}`} className="block w-full sm:w-auto">
+                          {item.sku ? (
+                            <Link href={`/products/${item.sku}`} className="block w-full sm:w-auto">
 
 
 
@@ -2290,7 +2050,7 @@ export default function Orders() {
 
 
 
-                      <span>${selectedOrder.totalAmount.toFixed(2)}</span>
+                      <span>{formatPrice(selectedOrder.totalAmount)}</span>
 
 
 
@@ -2322,7 +2082,7 @@ export default function Orders() {
 
 
 
-                      <span>$0.00</span>
+                      <span>₹0.00</span>
 
 
 

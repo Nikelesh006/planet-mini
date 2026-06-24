@@ -173,7 +173,7 @@ function Router() {
         <Route path="/likes" component={LikesPage} />
         <Route path="/add-address" component={AddAddressPage} />
         <Route path="/search" component={Search} />
-        <Route path="/products/:slug" component={ProductDetailPage} />
+        <Route path="/products/:sku" component={ProductDetailPage} />
         <Route path="/privacy" component={PrivacyPolicy} />
         <Route path="/return-policy" component={ReturnPolicy} />
         <Route path="/terms" component={TermsOfService} />

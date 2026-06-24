@@ -20,10 +20,9 @@ const getCloudinaryImageUrl = (url: string, transformation: string) => {
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const slug = params.slug as string;
+  const sku = params.sku as string;
 
-  // Handle case where slug is undefined
-  if (!slug) {
+  if (!sku) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -39,24 +38,20 @@ export default function ProductDetailPage() {
     );
   }
 
-  // Check if the slug is actually an ID (starts with "id/")
-  const isProductId = slug.startsWith('id/');
-  const actualSlug = isProductId ? slug.replace('id/', '') : slug;
-  const productId = isProductId ? actualSlug : '';
-  const productSlug = isProductId ? '' : actualSlug;
+  const productId = sku.startsWith('id/') ? sku.replace('id/', '') : '';
+  const productSku = productId ? '' : sku;
 
   console.log('🔍 ProductDetail Debug:', {
-    originalSlug: slug,
-    isProductId,
-    actualSlug,
+    originalSku: sku,
     productId,
-    productSlug
+    productSku,
+    isProductId: !!productId
   });
 
   // Use the appropriate hook based on the identifier type
   const { data: product, isLoading, error } = productId
     ? useProductById(productId)
-    : useProduct(productSlug);
+    : useProduct(productSku);
 
   // Fetch all products for related products section
   const { data: allProducts = [] } = useProducts();
@@ -70,6 +65,49 @@ export default function ProductDetailPage() {
 
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [openInfoSection, setOpenInfoSection] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  const [isStickyBarDismissed, setIsStickyBarDismissed] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show sticky bar almost immediately when scrolled down
+      if (window.scrollY > 100) {
+        setShowStickyBar(true);
+      } else {
+        setShowStickyBar(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Get related products for "Pairs well with" section
+  const relatedProducts = useMemo(() => {
+    if (!product || !allProducts.length) return [];
+
+    const currentProductId = product.id;
+    const currentSubcategory = product.subcategory;
+    const currentCategory = product.category;
+
+    // Filter and sort related products
+    const related = allProducts
+      .filter((p: any) => p.id !== currentProductId) // Exclude current product
+      .sort((a: any, b: any) => {
+        // Priority 1: Same subcategory
+        const aSameSub = a.subcategory === currentSubcategory;
+        const bSameSub = b.subcategory === currentSubcategory;
+        if (aSameSub && !bSameSub) return -1;
+        if (!aSameSub && bSameSub) return 1;
+
+        // Priority 2: Same category
+        const aSameCat = a.category === currentCategory;
   const [selectedImage, setSelectedImage] = useState(0);
   const [isImageZoomed, setIsImageZoomed] = useState(false);
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
@@ -127,7 +165,12 @@ export default function ProductDetailPage() {
   // Get all product images (main image + additional images if available)
   // Deduplicate to prevent showing same image twice
   const mainImage = product?.image;
-  const additionalImages = (product as any)?.images || [];
+  const rawImages = (product as any)?.images;
+  const additionalImages: string[] = Array.isArray(rawImages)
+    ? rawImages
+    : typeof rawImages === "string"
+      ? (() => { try { return JSON.parse(rawImages); } catch { return []; } })()
+      : [];
   const allImages = [mainImage, ...additionalImages].filter(Boolean);
   const productImages = Array.from(new Set(allImages));
   const selectedProductImage = productImages[selectedImage] || "";
@@ -280,7 +323,22 @@ export default function ProductDetailPage() {
     {
       id: "description",
       title: "Description",
-      content: product.description || "Premium quality product thoughtfully made for your little one.",
+      content: (
+        <div className="space-y-4">
+          <p className="whitespace-pre-wrap">{product.description || "Premium quality product thoughtfully made for your little one."}</p>
+          {(product as any).fabric || (product as any).colorTheme || (product as any).gender || (product as any).occasion ? (
+            <div>
+              <h4 className="font-semibold text-gray-900 mb-2">Thoughtful Details You'll Love</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                {(product as any).fabric && <li><span className="font-medium text-gray-900">Fabric :</span> {(product as any).fabric}</li>}
+                {(product as any).colorTheme && <li><span className="font-medium text-gray-900">Color :</span> {(product as any).colorTheme}</li>}
+                {(product as any).gender && <li><span className="font-medium text-gray-900">Gender :</span> {(product as any).gender}</li>}
+                {(product as any).occasion && <li><span className="font-medium text-gray-900">Occasion :</span> {(product as any).occasion}</li>}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+      ),
     },
     {
       id: "shipping-returns",
@@ -580,10 +638,8 @@ export default function ProductDetailPage() {
                     />
                   </button>
                 </div>
-
               </div>
             </div>
-
           </div>
         </div>
       </div>
