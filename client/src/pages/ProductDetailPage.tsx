@@ -108,49 +108,6 @@ export default function ProductDetailPage() {
 
         // Priority 2: Same category
         const aSameCat = a.category === currentCategory;
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [isImageZoomed, setIsImageZoomed] = useState(false);
-  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
-  const [openInfoSection, setOpenInfoSection] = useState<string | null>(null);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
-  const [showStickyBar, setShowStickyBar] = useState(false);
-  const [isStickyBarDismissed, setIsStickyBarDismissed] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Show sticky bar almost immediately when scrolled down
-      if (window.scrollY > 100) {
-        setShowStickyBar(true);
-      } else {
-        setShowStickyBar(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  // Get related products for "Pairs well with" section
-  const relatedProducts = useMemo(() => {
-    if (!product || !allProducts.length) return [];
-
-    const currentProductId = product.id;
-    const currentSubcategory = product.subcategory;
-    const currentCategory = product.category;
-
-    // Filter and sort related products
-    const related = allProducts
-      .filter((p: any) => p.id !== currentProductId) // Exclude current product
-      .sort((a: any, b: any) => {
-        // Priority 1: Same subcategory
-        const aSameSub = a.subcategory === currentSubcategory;
-        const bSameSub = b.subcategory === currentSubcategory;
-        if (aSameSub && !bSameSub) return -1;
-        if (!aSameSub && bSameSub) return 1;
-
-        // Priority 2: Same category
-        const aSameCat = a.category === currentCategory;
         const bSameCat = b.category === currentCategory;
         if (aSameCat && !bSameCat) return -1;
         if (!aSameCat && bSameCat) return 1;
@@ -455,7 +412,7 @@ export default function ProductDetailPage() {
                         }`}
                       >
                         <img
-                          src={getCloudinaryImageUrl(image, "f_auto,q_100,dpr_auto,c_fill,w_240,h_240")}
+                          src={image ? getCloudinaryImageUrl(image, "f_auto,q_100,dpr_auto,c_fill,w_240,h_240") : ""}
                           alt={`${product.name} view ${index + 1}`}
                           className="w-full h-full object-cover"
                           onError={(e) => {
