@@ -602,19 +602,20 @@ export default function Home() {
               {/* Mobile Banner Slider Images */}
               <div className="relative w-full h-auto">
                 {mobileBannerImages.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Mobile Banner ${index + 1}`}
-                    className={`w-full h-auto object-contain transition-opacity duration-1000 pointer-events-none ${
-                      index === currentMobileSlide ? 'opacity-100' : 'opacity-0 hidden'
-                    }`}
-                    draggable={false}
-                    onContextMenu={(e) => e.preventDefault()}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EMobile Banner%3C/text%3E%3C/svg%3E";
-                    }}
-                  />
+                  <Link key={index} href="/shop/style" className="block w-full h-auto">
+                    <img
+                      src={image}
+                      alt={`Mobile Banner ${index + 1}`}
+                      className={`w-full h-auto object-contain transition-opacity duration-1000 pointer-events-auto ${
+                        index === currentMobileSlide ? 'opacity-100' : 'opacity-0 hidden'
+                      }`}
+                      draggable={false}
+                      onContextMenu={(e) => e.preventDefault()}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EMobile Banner%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                  </Link>
                 ))}
               </div>
 
@@ -657,15 +658,16 @@ export default function Home() {
               {/* Slider Images */}
               <div className="relative w-full h-full">
                 {sliderImages.map((image, index) => (
-                  <img 
-                    key={index}
-                    src={image}
-                    alt={`Hero Slide ${index + 1}`} 
-                    className={`w-full h-full object-cover transition-opacity duration-1000 ${
-                      index === currentSlide ? 'opacity-100' : 'opacity-0 hidden'
-                    }`}
-                    draggable={false}
-                  />
+                  <Link key={index} href="/shop/style" className="block w-full h-full">
+                    <img 
+                      src={image}
+                      alt={`Hero Slide ${index + 1}`} 
+                      className={`w-full h-full object-cover transition-opacity duration-1000 pointer-events-auto ${
+                        index === currentSlide ? 'opacity-100' : 'opacity-0 hidden'
+                      }`}
+                      draggable={false}
+                    />
+                  </Link>
                 ))}
               </div>
               
