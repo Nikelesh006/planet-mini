@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Heart, ShoppingBag, Star } from "lucide-react";
+import { Heart, ShoppingBag, Star, Gift } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
@@ -301,6 +301,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
               {product.mrp ? `₹${Number(product.mrp).toFixed(2)}` : ''}
             </span>
           </div>
+          {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+            <p className="flex items-center gap-1 text-xs font-medium text-gray-500">
+              <Gift className="w-3 h-3" />
+              You saved ₹{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+            </p>
+          )}
         </div>
       </motion.div>
     </Link>

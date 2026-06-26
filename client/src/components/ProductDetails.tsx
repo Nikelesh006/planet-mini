@@ -39,7 +39,17 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
   if (!product) return null;
 
   const isWishlisted = wishlist.includes(product.id);
-  const images = [product.image]; // Only use main image for now
+  // Get all product images (main image + additional images if available)
+  // Deduplicate to prevent showing same image twice
+  const mainImage = product?.image;
+  const rawImages = (product as any)?.images;
+  const additionalImages: string[] = Array.isArray(rawImages)
+    ? rawImages
+    : typeof rawImages === "string"
+      ? (() => { try { return JSON.parse(rawImages); } catch { return []; } })()
+      : [];
+  const allImages = [mainImage, ...additionalImages].filter(Boolean);
+  const images = Array.from(new Set(allImages));
 
   const handleAddToCart = () => {
     addToCart({
@@ -147,14 +157,21 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                   </div>
                   
                   {/* Price */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-3xl font-bold text-gray-900">
-                      ₹{Number(product.sellingPrice).toFixed(2)}
-                    </span>
-                    {product.mrp && (
-                      <span className="text-lg text-gray-500 line-through">
-                        ₹{Number(product.mrp).toFixed(2)}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl font-bold text-gray-900">
+                        ₹{Number(product.sellingPrice).toFixed(2)}
                       </span>
+                      {product.mrp && (
+                        <span className="text-lg text-gray-500 line-through">
+                          ₹{Number(product.mrp).toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    {product.mrp && Number(product.mrp) > Number(product.sellingPrice) && (
+                      <p className="mt-2 text-sm font-medium text-green-600">
+                        You saved ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
+                      </p>
                     )}
                   </div>
                 </div>

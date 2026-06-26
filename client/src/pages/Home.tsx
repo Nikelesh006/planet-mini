@@ -2249,10 +2249,10 @@ export default function Home() {
               </div>
               <button
                 onClick={handleDiscountDismiss}
-                className="text-gray-400 hover:text-black transition-colors"
+                className="text-gray-400 hover:text-black transition-colors p-2 hover:bg-gray-100 rounded-full"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>

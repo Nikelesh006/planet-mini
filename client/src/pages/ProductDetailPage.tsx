@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, Link } from "wouter";
-import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy, Trash2 } from "lucide-react";
+import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy, Trash2, Gift } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import type { MouseEvent } from "react";
 import { useCart } from "@/contexts/CartContext";
@@ -448,14 +448,22 @@ export default function ProductDetailPage() {
 
                 {/* Price */}
                 <div className="mb-8 flex items-center justify-between gap-4 sm:block">
-                  <div className="flex items-center gap-4">
-                    <span className="text-xl font-bold text-black sm:text-3xl">
-                      ₹{Number(product.sellingPrice).toFixed(2)}
-                    </span>
-                    {product.mrp && (
-                      <span className="text-sm text-gray-500 line-through sm:text-lg">
-                        ₹{Number(product.mrp).toFixed(2)}
+                  <div>
+                    <div className="flex items-center gap-4">
+                      <span className="text-xl font-bold text-black sm:text-3xl">
+                        ₹{Number(product.sellingPrice).toFixed(2)}
                       </span>
+                      {product.mrp && (
+                        <span className="text-sm text-gray-500 line-through sm:text-lg">
+                          ₹{Number(product.mrp).toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    {product.mrp && Number(product.mrp) > Number(product.sellingPrice) && (
+                      <p className="mt-2 flex items-center gap-2 text-sm font-medium text-gray-500">
+                        <Gift className="w-4 h-4" />
+                        You saved ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
+                      </p>
                     )}
                   </div>
 

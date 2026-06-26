@@ -2277,30 +2277,17 @@ export async function registerRoutes(
 
 
 
-      const updatedImages = updateData.images || (updateData.image ? [updateData.image] : []);
-
-
-
-
-
-
-
+// Parse images from JSON string if needed, or use single image
+      let updatedImages: string[] = [];
+      if (updateData.images) {
+        updatedImages = typeof updateData.images === 'string' 
+          ? JSON.parse(updateData.images) 
+          : updateData.images;
+      } else if (updateData.image) {
+        updatedImages = [updateData.image];
+      }
       
-
-
-
-
-
-
-
       // If images field provided, use it; otherwise preserve existing
-
-
-
-
-
-
-
       const mergedImages = updatedImages.length > 0 ? updatedImages : existingImages;
 
 

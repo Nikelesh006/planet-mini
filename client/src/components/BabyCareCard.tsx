@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Heart, ShoppingBag, ChevronLeft, ChevronRight } from "lucide-react";
+import { Heart, ShoppingBag, ChevronLeft, ChevronRight, Gift } from "lucide-react";
 import { useLikes } from "@/contexts/LikeContext";
 import { useCart } from "@/contexts/CartContext";
 import { useAuthGuard } from "@/hooks/useAuthGuard";
@@ -144,6 +144,12 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
                 </span>
               )}
             </div>
+            {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+              <p className="flex items-center justify-center gap-1 text-xs font-medium text-gray-500 mt-1">
+                <Gift className="w-3 h-3" />
+                You saved &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+              </p>
+            )}
           </div>
         </motion.div>
       </Link>

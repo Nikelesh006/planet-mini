@@ -1,6 +1,6 @@
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Star, ShoppingCart, Heart, ShoppingBag } from "lucide-react";
+import { Star, ShoppingCart, Heart, ShoppingBag, Gift } from "lucide-react";
 import type { Product } from "@shared/schema";
 
 import { useLikes } from "@/contexts/LikeContext";
@@ -142,6 +142,12 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                 ₹{Number(product.mrp || product.sellingPrice || 0).toFixed(2)}
               </span>
             </div>
+            {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+              <p className="flex items-center gap-1 text-xs font-medium text-gray-500">
+                <Gift className="w-3 h-3" />
+                You saved ₹{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+              </p>
+            )}
           </div>
         </motion.div>
       </Link>

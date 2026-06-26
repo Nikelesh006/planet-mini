@@ -198,6 +198,23 @@ export default function AddProduct() {
 
   useEffect(() => {
     if (productData && (isEdit || viewId)) {
+      // Parse images from JSON string if needed
+      let parsedImages: string[] = [];
+      const rawImages = (productData as any).images;
+      if (rawImages) {
+        if (typeof rawImages === 'string') {
+          try {
+            parsedImages = JSON.parse(rawImages);
+          } catch {
+            parsedImages = [rawImages];
+          }
+        } else if (Array.isArray(rawImages)) {
+          parsedImages = rawImages;
+        }
+      } else if (productData.image) {
+        parsedImages = [productData.image];
+      }
+
       setFormData({
         id: productData.id?.toString() || "",
         sku: productData.sku || "",
@@ -210,7 +227,7 @@ export default function AddProduct() {
         mrp: productData.mrp?.toString() || "",
         category: (productData.category as ProductFormData["category"]) || "",
         subcategory: productData.subcategory || "",
-        images: (productData as any).images || (productData.image ? [productData.image] : []),
+        images: parsedImages,
         rating: productData.rating || 4.5,
         reviews: productData.reviews || 0,
         inStock: productData.inStock ?? true,
@@ -261,8 +278,23 @@ export default function AddProduct() {
 
   const resetForm = () => {
     setFormData(emptyForm);
+    setProductDetails({
+      ageGroup: "",
+      gender: "Unisex",
+      occasion: "Daily Wear",
+      fabric: "Cotton",
+      colorTheme: "Multi Print",
+      careInstructions: "Machine Wash",
+    });
+    setInventory({
+      stockQuantity: "50",
+      lowStockAlert: "5",
+    });
+    setComboItems([]);
     setErrors({});
     setShowSuccess(false);
+    // Navigate back to add product mode by clearing URL params
+    setLocation("/admin/add-product");
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -414,7 +446,7 @@ export default function AddProduct() {
   };
 
   try {
-    const url = isEdit && viewId ? `/api/products/${viewId}` : "/api/products";
+    const url = isEdit ? `/api/products/${editId}` : "/api/products";
     const method = isEdit ? "PUT" : "POST";
     
     const response = await fetch(url, {
@@ -436,7 +468,7 @@ export default function AddProduct() {
         variant: "success",
       });
 
-      if (!isEdit) resetForm();
+      resetForm();
     } catch (error) {
       console.error("Error saving product:", error);
       toast({
@@ -675,106 +707,6 @@ export default function AddProduct() {
           <p className="mt-3 text-xs text-slate-500">{formData.images.length}/5 images uploaded. The first image is used as the main product image.</p>
         </Section>
 
-        <Section title="Combo Details" icon={Package} className="lg:col-span-12">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <Label required>Combo Type</Label>
-              <select
-                name="productClassification"
-                value={formData.productClassification}
-                onChange={handleInputChange}
-                className={fieldClass}
-              >
-                <option value="Hospital Combo">Hospital Combo</option>
-                <option value="Essential Set">Essential Set</option>
-                <option value="Gift Combo">Gift Combo</option>
-                <option value="Single Product">Single Product</option>
-              </select>
-            </div>
-            <div>
-              <Label required>Combo Name</Label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className={fieldClass}
-                placeholder="Welcome to Planet Mini Set"
-              />
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <Label required>Included Products</Label>
-            <div className="overflow-x-auto rounded-lg border border-slate-200">
-              <div className="min-w-[720px]">
-                <div className="grid grid-cols-[1.4fr_1fr_120px_72px] bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  <span>Product</span>
-                  <span>Size / Variant</span>
-                  <span>Quantity</span>
-                  <span className="text-center">Action</span>
-                </div>
-                <div className="divide-y divide-slate-100 bg-white">
-                  {comboItems.map((item) => (
-                    <div key={item.id} className="grid grid-cols-[1.4fr_1fr_120px_72px] items-center gap-3 px-3 py-2 text-sm text-slate-800">
-                      <label className="flex min-w-0 items-center gap-3">
-                        <input
-                          type="checkbox"
-                          checked={item.selected}
-                          onChange={() => toggleComboItem(item.id)}
-                          className="h-4 w-4 rounded border-slate-300 text-[#B4C49A] focus:ring-[#B4C49A]"
-                        />
-                        <span className="truncate font-medium">{item.product}</span>
-                      </label>
-                      <span className="truncate text-slate-600">{item.variant}</span>
-                      <input
-                        type="number"
-                        min="0"
-                        value={item.quantity}
-                        onChange={(e) => handleComboQuantityChange(item.id, e.target.value)}
-                        className="w-24 rounded-md border border-slate-200 px-3 py-1.5 text-sm outline-none focus:border-[#B4C49A] focus:ring-2 focus:ring-[#B4C49A]/25"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeComboItem(item.id)}
-                        className="mx-auto inline-flex h-8 w-8 items-center justify-center rounded-md text-rose-500 transition hover:bg-rose-50"
-                        aria-label={`Remove ${item.product}`}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <button
-                type="button"
-                onClick={() =>
-                  setComboItems((prev) => [
-                    ...prev,
-                    {
-                      id: `combo-item-${Date.now()}`,
-                      product: "Additional Combo Product",
-                      variant: "Newborn",
-                      quantity: 1,
-                      selected: true,
-                    },
-                  ])
-                }
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#B4C49A] bg-[#F1F5EB] px-4 py-2 text-sm font-semibold text-[#5F6F46] transition hover:bg-[#E6EEDC]"
-              >
-                <Plus className="h-4 w-4" />
-                Add More Products
-              </button>
-              <div className="flex flex-wrap gap-3 text-sm font-semibold text-slate-800">
-                <span>Total Items: {comboTotalQuantity}</span>
-                <span>Total Quantity: {comboTotalQuantity}</span>
-              </div>
-            </div>
-          </div>
-        </Section>
 
         <Section title="Inventory" icon={Package} className="lg:col-span-5">
           <div className="space-y-4">
