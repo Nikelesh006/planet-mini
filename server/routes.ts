@@ -1071,7 +1071,9 @@ export async function registerRoutes(
 
 
 
-          p.description?.toLowerCase().includes(searchLower)
+          p.description?.toLowerCase().includes(searchLower) ||
+          p.id?.toString().toLowerCase().includes(searchLower) ||
+          p.sku?.toString().toLowerCase().includes(searchLower)
 
 
 

@@ -45,10 +45,13 @@ export default function ProductList() {
 
       // Filter by search term
       if (searchTerm) {
+        const search = searchTerm.toLowerCase();
         filtered = filtered.filter(product =>
-          product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          product.category.toLowerCase().includes(searchTerm.toLowerCase())
+          product.name.toLowerCase().includes(search) ||
+          product.description.toLowerCase().includes(search) ||
+          product.category.toLowerCase().includes(search) ||
+          product.id.toString().toLowerCase().includes(search) ||
+          (product.sku || "").toLowerCase().includes(search)
         );
       }
 
