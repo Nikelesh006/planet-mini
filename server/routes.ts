@@ -31,6 +31,8 @@ import jwt from "jsonwebtoken";
 
 
 import { storage, addressStorage, userStorage, ordersStorage } from "./storage";
+import { productsStorage } from "./db";
+import { getAvailableStock, isOutOfStock } from "@shared/stock";
 
 
 
@@ -3221,6 +3223,21 @@ export async function registerRoutes(
 
 
       const { productId, quantity, size, color } = req.body;
+      const requestedQuantity = Math.max(1, Number(quantity || 1));
+      const products = await productsStorage.getProducts();
+      const product = products.find((item: any) =>
+        item.id?.toString() === productId?.toString() ||
+        item._id?.toString() === productId?.toString() ||
+        item.slug === productId
+      );
+
+      if (!product || isOutOfStock(product)) {
+        return res.status(400).json({ message: 'Product is out of stock' });
+      }
+
+      if (requestedQuantity > getAvailableStock(product)) {
+        return res.status(400).json({ message: 'Requested quantity exceeds available stock' });
+      }
 
 
 
@@ -3244,7 +3261,7 @@ export async function registerRoutes(
 
 
 
-        quantity: quantity || 1,
+        quantity: requestedQuantity,
 
 
 
@@ -3437,6 +3454,21 @@ export async function registerRoutes(
 
 
       const { quantity, size, color } = req.body;
+      const requestedQuantity = Math.max(1, Number(quantity || 1));
+      const products = await productsStorage.getProducts();
+      const product = products.find((item: any) =>
+        item.id?.toString() === productId?.toString() ||
+        item._id?.toString() === productId?.toString() ||
+        item.slug === productId
+      );
+
+      if (!product || isOutOfStock(product)) {
+        return res.status(400).json({ message: 'Product is out of stock' });
+      }
+
+      if (requestedQuantity > getAvailableStock(product)) {
+        return res.status(400).json({ message: 'Requested quantity exceeds available stock' });
+      }
 
 
 
@@ -3460,7 +3492,7 @@ export async function registerRoutes(
 
 
 
-        quantity,
+        quantity: requestedQuantity,
 
 
 
@@ -6236,7 +6268,10 @@ export async function registerRoutes(
 
 
 
-      res.status(500).json({ message: 'Failed to create order' });
+      const statusCode = (error as any)?.statusCode || 500;
+      res.status(statusCode).json({
+        message: (error as any)?.message || 'Failed to create order'
+      });
 
 
 

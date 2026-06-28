@@ -3,8 +3,37 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 
 import Profile from '../models/Profile';
+import { productsStorage } from '../db';
+import { getAvailableStock, isOutOfStock } from '@shared/stock';
 
 const router = express.Router();
+
+const findProductForStock = async (productId: string | undefined) => {
+  if (!productId) return null;
+
+  const products = await productsStorage.getProducts();
+  return products.find((product: any) =>
+    product.id?.toString() === productId ||
+    product._id?.toString() === productId ||
+    product.slug === productId
+  );
+};
+
+const validateStockOrRespond = async (res: any, productId: string | undefined, requestedQuantity: number) => {
+  const product = await findProductForStock(productId);
+
+  if (!product || isOutOfStock(product)) {
+    res.status(400).json({ message: 'Product is out of stock' });
+    return null;
+  }
+
+  if (requestedQuantity > getAvailableStock(product)) {
+    res.status(400).json({ message: 'Requested quantity exceeds available stock' });
+    return null;
+  }
+
+  return product;
+};
 
 // ✅ MIDDLEWARE: Check both cookies and Authorization header
 const requireAuth = (req: any, res: any, next: any) => {
@@ -346,6 +375,13 @@ router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
 
 
+    const productId = req.body.id || req.body.productId;
+    const requestedQuantity = Math.max(1, Number(req.body.quantity || 1));
+
+    if (!productId) {
+      return res.status(400).json({ message: 'Product is out of stock' });
+    }
+
     let profile = await Profile.findOne({ userId });
 
 
@@ -377,15 +413,26 @@ router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
 
     // Check if item already exists in cart
-    const existingItemIndex = profile.cartItems.findIndex((item: any) => item.id === req.body.id);
+    const existingItemIndex = profile.cartItems.findIndex((item: any) => item.id === productId.toString());
 
     if (existingItemIndex >= 0) {
       // Increment quantity if item exists
-      profile.cartItems[existingItemIndex].quantity = (profile.cartItems[existingItemIndex].quantity || 1) + 1;
+      const nextQuantity = (profile.cartItems[existingItemIndex].quantity || 1) + requestedQuantity;
+      const stockProduct = await validateStockOrRespond(res, productId.toString(), nextQuantity);
+      if (!stockProduct) return;
+      profile.cartItems[existingItemIndex].quantity = nextQuantity;
+      profile.cartItems[existingItemIndex].stockQuantity = getAvailableStock(stockProduct);
       console.log('➕ Incremented quantity for existing item:', req.body.id);
     } else {
       // Add new item to cartItems array
-      profile.cartItems.push(req.body);
+      const stockProduct = await validateStockOrRespond(res, productId.toString(), requestedQuantity);
+      if (!stockProduct) return;
+      profile.cartItems.push({
+        ...req.body,
+        id: productId.toString(),
+        quantity: requestedQuantity,
+        stockQuantity: getAvailableStock(stockProduct),
+      });
       console.log('✅ Added new item to cart:', req.body.id);
     }
 
@@ -588,7 +635,11 @@ router.patch('/:userId/cart/:itemId/increase', requireAuth, async (req: any, res
     }
 
     const oldQty = cartItem.quantity || 1;
+    const stockProduct = await validateStockOrRespond(res, itemId, oldQty + 1);
+    if (!stockProduct) return;
+
     cartItem.quantity = oldQty + 1;
+    cartItem.stockQuantity = getAvailableStock(stockProduct);
     await profile.save();
 
     console.log('✅ Increased quantity:', itemId, 'from', oldQty, 'to', cartItem.quantity);
@@ -855,6 +906,13 @@ router.post('/:userId/orders', requireAuth, async (req: any, res: any) => {
       return res.status(404).json({ error: 'Profile not found' });
     }
 
+    for (const item of items || []) {
+      const productId = item.productId || item.id;
+      const requestedQuantity = Math.max(1, Number(item.quantity || 1));
+      const stockProduct = await validateStockOrRespond(res, productId?.toString(), requestedQuantity);
+      if (!stockProduct) return;
+    }
+
     // Generate order ID
     const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
@@ -879,7 +937,8 @@ router.post('/:userId/orders', requireAuth, async (req: any, res: any) => {
     res.json({ success: true, order: newOrder, orders: profile.orders });
   } catch (error) {
     console.error('❌ Failed to create order:', error);
-    res.status(500).json({ error: 'Failed to create order' });
+    const statusCode = (error as any)?.statusCode || 500;
+    res.status(statusCode).json({ error: (error as any)?.message || 'Failed to create order' });
   }
 });
 

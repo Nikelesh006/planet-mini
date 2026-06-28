@@ -11,6 +11,7 @@ export interface CartItemDetails {
   quantity: number;
   color?: string;
   size?: string;
+  stockQuantity?: number | null;
 }
 
 interface AppState {

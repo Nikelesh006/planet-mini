@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { apiFetch } from '@/lib/api';
+import { getAvailableStock, isOutOfStock } from '@shared/stock';
 
 export default function CartPage() {
   const { state, removeFromCart, increaseQuantity, decreaseQuantity, clearCart } = useCart();
@@ -94,11 +95,21 @@ export default function CartPage() {
     return `₹${sellingPrice}`;
   };
 
+  const hasStockIssue = (item: any) =>
+    isOutOfStock(item) || Number(item.quantity || 0) > getAvailableStock(item);
+
+  const hasStockIssues = state.items.some(hasStockIssue);
+
   const handlePlaceOrder = async () => {
     try {
       // Validate cart has items
       if (state.items.length === 0) {
         alert('Your cart is empty. Please add items before placing an order.');
+        return;
+      }
+
+      if (hasStockIssues) {
+        alert('Some cart items are out of stock or exceed available stock. Please remove or adjust them before checkout.');
         return;
       }
 
@@ -309,7 +320,7 @@ export default function CartPage() {
             {/* Cart Items */}
             <div className="space-y-4">
               {state.items.map((item, index) => (
-                <div key={getCartItemKey(item, index)} className="bg-white border border-gray-200 rounded-2xl p-4 lg:p-6 lg:grid lg:grid-cols-12 lg:gap-4 lg:border-b lg:rounded-none lg:border-t-0 lg:border-x-0 items-center">
+                <div key={getCartItemKey(item, index)} className={`bg-white border rounded-2xl p-4 lg:p-6 lg:grid lg:grid-cols-12 lg:gap-4 lg:border-b lg:rounded-none lg:border-t-0 lg:border-x-0 items-center ${hasStockIssue(item) ? "border-red-200 bg-red-50/30" : "border-gray-200"}`}>
                   {/* Product Details */}
                   <div className="flex gap-4 mb-4 lg:mb-0 lg:col-span-6">
                     <img
@@ -325,6 +336,13 @@ export default function CartPage() {
                         {item.size && item.color && ' · '}
                         {item.color && `Color: ${item.color}`}
                       </p>
+                      {hasStockIssue(item) && (
+                        <p className="mb-2 text-sm font-medium text-red-600">
+                          {isOutOfStock(item)
+                            ? "This product is currently unavailable."
+                            : `Only ${getAvailableStock(item)} available. Please reduce quantity.`}
+                        </p>
+                      )}
                       <button
                         onClick={() => removeFromCart(item.id)}
                         className="text-sm text-red-500 hover:text-red-700 text-left"
@@ -348,7 +366,8 @@ export default function CartPage() {
                       <span className="w-8 text-center font-semibold text-black">{item.quantity}</span>
                       <button
                         onClick={() => increaseQuantity(item.id)}
-                        className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                        disabled={isOutOfStock(item) || item.quantity >= getAvailableStock(item)}
+                        className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         aria-label="Increase quantity"
                       >
                         <Plus className="w-4 h-4 text-gray-600" />
@@ -373,7 +392,8 @@ export default function CartPage() {
                     <span className="w-10 text-center font-semibold text-black">{item.quantity}</span>
                     <button
                       onClick={() => increaseQuantity(item.id)}
-                      className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                      disabled={isOutOfStock(item) || item.quantity >= getAvailableStock(item)}
+                      className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       aria-label="Increase quantity"
                     >
                       <Plus className="w-4 h-4 text-gray-600" />
@@ -533,10 +553,18 @@ export default function CartPage() {
                 <span className="text-xl sm:text-2xl font-bold text-black">{formatPrice(subtotal)}</span>
               </div>
 
+              {hasStockIssues && (
+                <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3">
+                  <p className="text-sm font-medium text-red-700">
+                    Remove out-of-stock items or reduce quantities before checkout.
+                  </p>
+                </div>
+              )}
+
               {/* Place Order Button */}
               <button 
                 onClick={handlePlaceOrder}
-                disabled={isPaymentLoading}
+                disabled={isPaymentLoading || hasStockIssues}
                 className="w-full bg-black text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
               >
                 {isPaymentLoading ? (

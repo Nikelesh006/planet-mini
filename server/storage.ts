@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import { productsStorage } from './db';
+import { getAvailableStock, isOutOfStock } from '@shared/stock';
 
 
 
@@ -1035,6 +1036,29 @@ const transformedItems = (order.items || order.products || []).map((item: any) =
       // For testing: if userId is in orderData, use that instead
 
       const finalUserId = orderData.userId || userId;
+
+      const products = await productsStorage.getProducts();
+      for (const item of orderData.items || orderData.products || []) {
+        const productId = (item.productId || item.id || item._id)?.toString();
+        const product = products.find((candidate: any) =>
+          candidate.id?.toString() === productId ||
+          candidate._id?.toString() === productId ||
+          candidate.slug === productId
+        );
+        const requestedQuantity = Math.max(1, Number(item.quantity || 1));
+
+        if (!product || isOutOfStock(product)) {
+          const error = new Error('Product is out of stock');
+          (error as any).statusCode = 400;
+          throw error;
+        }
+
+        if (requestedQuantity > getAvailableStock(product)) {
+          const error = new Error('Requested quantity exceeds available stock');
+          (error as any).statusCode = 400;
+          throw error;
+        }
+      }
 
       console.log(`🔧 Creating order for userId: ${finalUserId}`);
 

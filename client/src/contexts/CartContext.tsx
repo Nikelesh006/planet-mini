@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
 import { useAuth } from './AuthContext';
 import { API_BASE_URL } from '../lib/api';
+import { getAvailableStock, isOutOfStock } from '@shared/stock';
 
 
 
@@ -46,6 +47,7 @@ interface CartItem {
 
 
   color?: string;
+  stockQuantity?: number | null;
 
 
 
@@ -85,7 +87,7 @@ type CartAction =
 
 
 
-  | { type: 'ADD_TO_CART'; payload: Omit<CartItem, 'quantity'> }
+  | { type: 'ADD_TO_CART'; payload: Omit<CartItem, 'quantity'> & { quantity?: number } }
 
 
 
@@ -161,6 +163,13 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 
 
 
+      const requestedQuantity = Math.max(1, Number(action.payload.quantity || 1));
+      const availableStock = getAvailableStock(action.payload);
+
+      if (isOutOfStock(action.payload)) {
+        return state;
+      }
+
       if (existingItem) {
 
 
@@ -173,7 +182,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 
 
 
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: Math.min(item.quantity + requestedQuantity, availableStock) }
 
 
 
@@ -186,7 +195,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 
 
       } else {
-        newItems = [...state.items, { ...action.payload, quantity: 1 }];
+        newItems = [...state.items, { ...action.payload, quantity: Math.min(requestedQuantity, availableStock) }];
       }
 
       return {
@@ -227,7 +236,7 @@ const cartReducer = (state: CartState, action: CartAction): CartState => {
 
 
 
-          ? { ...item, quantity: item.quantity + 1 }
+          ? { ...item, quantity: Math.min(item.quantity + 1, getAvailableStock(item)) }
 
 
 
@@ -322,7 +331,7 @@ export const CartContext = createContext<{
 
   state: CartState;
 
-  addToCart: (product: Omit<CartItem, 'quantity'>) => void;
+  addToCart: (product: Omit<CartItem, 'quantity'> & { quantity?: number }) => Promise<boolean>;
 
   removeFromCart: (id: string) => void;
 
@@ -384,8 +393,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const addToCart = async (product: Omit<CartItem, 'quantity'>) => {
-    if (!user) return;
+  const addToCart = async (product: Omit<CartItem, 'quantity'> & { quantity?: number }) => {
+    if (!user || isOutOfStock(product)) return false;
 
     try {
       const token = getAuthToken();
@@ -397,16 +406,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
         body: JSON.stringify({
           ...product,
-          quantity: 1,
+          quantity: Math.max(1, Number(product.quantity || 1)),
         }),
       });
 
       if (response.ok) {
         // Refresh cart from backend
         await loadCart();
+        return true;
       }
+
+      const errorData = await response.json().catch(() => null);
+      console.error('Error adding to cart:', errorData?.message || errorData?.error || response.statusText);
+      await loadCart();
+      return false;
     } catch (error) {
       console.error('Error adding to cart:', error);
+      return false;
     }
   };
 
@@ -447,6 +463,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (!item) {
       console.error('ERROR: Item not found in cart state');
+      return;
+    }
+
+    if (item.quantity >= getAvailableStock(item)) {
+      console.error('ERROR: Requested quantity exceeds available stock');
+      await loadCart();
       return;
     }
 

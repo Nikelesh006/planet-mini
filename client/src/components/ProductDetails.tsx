@@ -3,6 +3,7 @@ import { X, Heart, ShoppingBag, Star, Minus, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@/store/use-store";
 import type { ProductResponse } from "@shared/routes";
+import { getAvailableStock, isOutOfStock } from "@shared/stock";
 
 interface ProductDetailsProps {
   product: ProductResponse | null;
@@ -39,6 +40,8 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
   if (!product) return null;
 
   const isWishlisted = wishlist.includes(product.id);
+  const availableStock = getAvailableStock(product);
+  const outOfStock = isOutOfStock(product);
   // Get all product images (main image + additional images if available)
   // Deduplicate to prevent showing same image twice
   const mainImage = product?.image;
@@ -52,6 +55,8 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
   const images = Array.from(new Set(allImages));
 
   const handleAddToCart = () => {
+    if (outOfStock) return;
+
     addToCart({
       productId: product.id,
       slug: product.slug,
@@ -61,6 +66,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
       quantity,
       color: selectedColor,
       size: selectedSize,
+      stockQuantity: product.stockQuantity,
     });
     onClose();
   };
@@ -233,14 +239,16 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                     <div className="flex items-center gap-3">
                       <button
                         onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors"
+                        disabled={outOfStock}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
                       <span className="w-12 text-center font-medium">{quantity}</span>
                       <button
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors"
+                        onClick={() => setQuantity(Math.min(availableStock, quantity + 1))}
+                        disabled={outOfStock || quantity >= availableStock}
+                        className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -250,10 +258,13 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
                 {/* Stock Status */}
                 <div className="mb-6">
-                  {product.inStock ? (
+                  {!outOfStock ? (
                     <p className="text-sm text-green-600 font-medium">✓ In Stock</p>
                   ) : (
-                    <p className="text-sm text-red-600 font-medium">✗ Out of Stock</p>
+                    <div>
+                      <p className="text-sm text-red-600 font-medium">✗ Out of Stock</p>
+                      <p className="mt-1 text-sm text-red-600">This product is currently unavailable.</p>
+                    </div>
                   )}
                 </div>
 
@@ -261,11 +272,11 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                 <div className="flex gap-3 mt-auto">
                   <button
                     onClick={handleAddToCart}
-                    disabled={!product.inStock}
+                    disabled={outOfStock}
                     className="flex-1 bg-primary text-primary-foreground px-6 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <ShoppingBag className="w-5 h-5" />
-                    Add to Cart
+                    {outOfStock ? "Out of Stock" : "Add to Cart"}
                   </button>
                   <button
                     onClick={handleWishlist}

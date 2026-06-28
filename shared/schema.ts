@@ -17,6 +17,8 @@ export const products = sqliteTable("products", {
   rating: real("rating").notNull(),
   reviews: integer("reviews").notNull(),
   inStock: integer("in_stock", { mode: "boolean" }).default(true),
+  stockQuantity: integer("stock_quantity").default(0),
+  lowStockAlert: integer("low_stock_alert").default(0),
   isNew: integer("is_new", { mode: "boolean" }).default(false),
   colors: text("colors"), // JSON string for SQLite
   sizes: text("sizes"), // JSON string for SQLite

@@ -17,6 +17,8 @@ const productSchema = z.object({
   rating: z.number(),
   reviews: z.number(),
   inStock: z.boolean().nullable(),
+  stockQuantity: z.number().nullable().optional(),
+  lowStockAlert: z.number().nullable().optional(),
   isNew: z.boolean().nullable(),
   colors: z.string().nullable(),
   sizes: z.string().nullable(),

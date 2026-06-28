@@ -14,6 +14,7 @@ import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useToast } from "@/hooks/use-toast";
 
 import type { ProductResponse } from "@shared/routes";
+import { isOutOfStock } from "@shared/stock";
 
 
 
@@ -46,6 +47,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
   const { toast } = useToast();
 
   const isWishlisted = likedProducts.some(p => p.id === product.id);
+  const outOfStock = isOutOfStock(product);
 
   // Debug logging
   console.log('ProductCard Debug:', {
@@ -62,6 +64,14 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
     e.stopPropagation();
 
+    if (outOfStock) {
+      toast({
+        title: "Out of Stock",
+        description: "This product is currently unavailable.",
+        variant: "destructive"
+      });
+      return;
+    }
     
 
     // Execute add to cart with auth guard
@@ -83,6 +93,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
         category: product.category,
 
         subcategory: product.subcategory || undefined,
+        stockQuantity: product.stockQuantity,
 
       });
 
@@ -204,7 +215,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
         transition={{ duration: 0.5, delay: index * 0.1 }}
 
-        className="group relative flex flex-col cursor-pointer h-[450px] hover:shadow-lg transition-all duration-500 ease-out border border-gray-300 rounded-3xl overflow-hidden bg-white"
+        className={`group relative flex flex-col cursor-pointer h-[450px] hover:shadow-lg transition-all duration-500 ease-out border border-gray-300 rounded-3xl overflow-hidden bg-white ${outOfStock ? "opacity-75" : ""}`}
 
       >
 
@@ -216,7 +227,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
             alt={product.name}
 
-            className="object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-700 group-hover:scale-105"
+            className={`object-contain w-full h-full max-w-full max-h-full transform transition-transform duration-700 group-hover:scale-105 ${outOfStock ? "grayscale opacity-70" : ""}`}
 
             draggable={false}
 
@@ -227,8 +238,13 @@ export function ProductCard({ product, index }: ProductCardProps) {
           {/* Badges */}
 
           <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
+            {outOfStock && (
+              <span className="bg-black px-3 py-1 text-sm font-bold text-white shadow-md">
+                Out of Stock
+              </span>
+            )}
 
-            {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (() => {
+            {!outOfStock && product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (() => {
               const originalPrice = Number(product.mrp);
               const currentPrice = Number(product.sellingPrice || 0);
               const discountPercentage = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
@@ -271,15 +287,15 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
               onClick={handleQuickAdd}
 
-              disabled={!product.inStock}
+              disabled={outOfStock}
 
-              className="w-full h-12 flex items-center justify-center gap-2 rounded-2xl bg-white/90 backdrop-blur-md text-foreground font-semibold shadow-lg hover:bg-red-100 hover:text-red-700 transition-colors active:scale-95 disabled:opacity-50"
+              className="w-full h-12 flex items-center justify-center gap-2 rounded-2xl bg-white/90 backdrop-blur-md text-foreground font-semibold shadow-lg hover:bg-red-100 hover:text-red-700 transition-colors active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
 
             >
 
               <ShoppingBag className="w-5 h-5" />
 
-              {product.inStock ? "Quick Add" : "Out of Stock"}
+              {outOfStock ? "Out of Stock" : "Quick Add"}
 
             </button>
 

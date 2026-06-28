@@ -9,6 +9,7 @@ import { useAuthGuard } from "@/hooks/useAuthGuard";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useProduct, useProductById, useProducts } from "@/hooks/useProducts";
 import { BabyCareCard } from "@/components/BabyCareCard";
+import { getAvailableStock, isOutOfStock } from "@shared/stock";
 
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
   if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
@@ -65,6 +66,8 @@ export default function ProductDetailPage() {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "error">("idle");
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [isStickyBarDismissed, setIsStickyBarDismissed] = useState(false);
+  const availableStock = getAvailableStock(product);
+  const outOfStock = isOutOfStock(product);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -174,6 +177,11 @@ export default function ProductDetailPage() {
     setSelectedSize(sizeOptions[0] || "");
   }, [sizeOptions]);
 
+  useEffect(() => {
+    if (!product) return;
+    setQuantity(outOfStock ? 1 : Math.min(Math.max(1, quantity), availableStock));
+  }, [availableStock, outOfStock, product?.id]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -202,6 +210,8 @@ export default function ProductDetailPage() {
   }
 
   const handleAddToCart = () => {
+    if (outOfStock) return;
+
     executeWithAuth(() => {
       addToCart({
         id: product.id.toString(),
@@ -212,6 +222,8 @@ export default function ProductDetailPage() {
         category: product.category,
         subcategory: product.subcategory || undefined,
         size: selectedSize || undefined,
+        quantity,
+        stockQuantity: product.stockQuantity,
       });
     });
   };
@@ -239,6 +251,8 @@ export default function ProductDetailPage() {
   };
 
   const handleBuyNow = () => {
+    if (outOfStock) return;
+
     executeWithAuth(() => {
       addToCart({
         id: product.id.toString(),
@@ -249,6 +263,8 @@ export default function ProductDetailPage() {
         category: product.category,
         subcategory: product.subcategory || undefined,
         size: selectedSize || undefined,
+        quantity,
+        stockQuantity: product.stockQuantity,
       });
       window.location.href = '/cart';
     });
@@ -434,7 +450,7 @@ export default function ProductDetailPage() {
                       Share
                     </button>
 
-                    {product.inStock ? (
+                    {!outOfStock ? (
                       <span className="inline-flex items-center rounded-full border border-green-200 bg-green-50 px-3 py-1 font-medium text-green-700">
                         In Stock
                       </span>
@@ -480,6 +496,12 @@ export default function ProductDetailPage() {
                 <p className="inline-block rounded-lg border border-[#B4C49A]/80 bg-[#B4C49A]/35 px-4 py-2 text-sm sm:text-base text-gray-800">
                   Use code <span className="font-semibold text-black">PM10</span> to get 10% off on your order.
                 </p>
+
+                {outOfStock && (
+                  <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+                    This product is currently unavailable.
+                  </p>
+                )}
 
                 {/* Product Information Accordion */}
                 <div className="mt-8 border-y border-gray-200">
@@ -551,14 +573,16 @@ export default function ProductDetailPage() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors"
+                      disabled={outOfStock}
+                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
                     <span className="w-16 text-center font-medium text-lg">{quantity}</span>
                     <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors"
+                      onClick={() => setQuantity(Math.min(availableStock, quantity + 1))}
+                      disabled={outOfStock || quantity >= availableStock}
+                      className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:border-gray-400 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -569,18 +593,18 @@ export default function ProductDetailPage() {
                 <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_44px] items-center gap-2 sm:flex sm:gap-4">
                   <button
                     onClick={handleAddToCart}
-                    disabled={!product.inStock}
+                    disabled={outOfStock}
                     className="h-11 min-w-0 bg-black text-white px-2 text-sm rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 whitespace-nowrap sm:h-auto sm:flex-1 sm:px-6 sm:py-3 sm:text-base sm:gap-2"
                   >
                     <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
-                    Add To Cart
+                    {outOfStock ? "Out of Stock" : "Add To Cart"}
                   </button>
                   <button
                     onClick={handleBuyNow}
-                    disabled={!product.inStock}
+                    disabled={outOfStock}
                     className="h-11 min-w-0 bg-red-600 text-white px-2 text-sm rounded-lg font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap sm:h-auto sm:flex-1 sm:px-6 sm:py-3 sm:text-base"
                   >
-                    Buy Now
+                    {outOfStock ? "Unavailable" : "Buy Now"}
                   </button>
                   <button
                     onClick={handleWishlist}
@@ -732,14 +756,16 @@ export default function ProductDetailPage() {
                 <div className="flex items-center gap-3 bg-white rounded-full px-4 py-2 border border-[#B4C49A]/40 shadow-sm">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#B4C49A] transition-colors cursor-pointer"
+                    disabled={outOfStock}
+                    className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#B4C49A] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
                   <span className="w-6 text-center font-medium text-sm text-[#1D3557]">{quantity}</span>
                   <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#B4C49A] transition-colors cursor-pointer"
+                    onClick={() => setQuantity(Math.min(availableStock, quantity + 1))}
+                    disabled={outOfStock || quantity >= availableStock}
+                    className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-[#B4C49A] transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
@@ -756,14 +782,14 @@ export default function ProductDetailPage() {
                 )}
                 <button
                   onClick={isProductInCart ? () => window.location.href = '/cart' : handleAddToCart}
-                  disabled={!product.inStock}
+                  disabled={outOfStock}
                   className="bg-[#B4C49A] text-black px-8 py-2.5 rounded-full text-sm font-bold hover:bg-[#97A97D] transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shadow-md ml-2 cursor-pointer transform hover:-translate-y-0.5"
                 >
                   {isProductInCart ? (
                     state.totalItems > 1 
                       ? `Checkout (${state.totalItems} items • ₹${state.totalPrice.toFixed(2)})` 
                       : "Checkout"
-                  ) : "Add To Cart"}
+                  ) : outOfStock ? "Out of Stock" : "Add To Cart"}
                 </button>
                 <button 
                   onClick={() => setIsStickyBarDismissed(true)}
