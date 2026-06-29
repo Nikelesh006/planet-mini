@@ -34,6 +34,7 @@ interface ProductFormData {
   mrp: string;
   category: "" | "style" | "home";
   subcategory: string;
+  subcategoryItem: string;
   images: string[];
   rating: number;
   reviews: number;
@@ -72,13 +73,14 @@ const emptyForm: ProductFormData = {
   sku: "",
   name: "",
   slug: "",
-  productClassification: "Hospital Combo",
+  productClassification: "",
   collectionName: "",
   description: "",
   sellingPrice: "",
   mrp: "",
   category: "",
   subcategory: "",
+  subcategoryItem: "",
   images: [],
   rating: 4.5,
   reviews: 0,
@@ -94,6 +96,23 @@ const emptyForm: ProductFormData = {
 const subcategoryOptions: Record<string, string[]> = {
   style: [],
   home: ["New Arrivals", "Trending Products"],
+};
+
+const homeSubcategoryItemOptions = [
+  "Jhablas",
+  "Towels & blankets",
+  "Nappies",
+  "Wipes",
+  "Beds",
+  "New born accessories",
+];
+
+const productClassificationOptionsBySubcategoryItem: Record<string, string[]> = {
+  Jhablas: ["Knot Jhablas", "Button Jhablas"],
+  Nappies: ["Nappies"],
+  "Towels & blankets": ["Hooded towels", "Swaddle"],
+  Beds: ["Baby nest", "Baby net bed"],
+  "New born accessories": ["Hats", "Mittens", "Booties"],
 };
 
 const ageGroupOptions = [
@@ -121,6 +140,11 @@ const generateUniqueSlug = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const shuffled = chars.split('').sort(() => Math.random() - 0.5).join('');
   return shuffled.substring(0, 12);
+};
+
+const splitHomeSubcategory = (subcategory?: string | null) => {
+  const [parent = "", child = ""] = (subcategory || "").split(" / ");
+  return { parent, child };
 };
 
 const Section = ({
@@ -215,18 +239,21 @@ export default function AddProduct() {
         parsedImages = [productData.image];
       }
 
+      const parsedSubcategory = splitHomeSubcategory(productData.subcategory);
+
       setFormData({
         id: productData.id?.toString() || "",
         sku: productData.sku || "",
         name: productData.name || "",
         slug: productData.slug || "",
-        productClassification: (productData as any).productClassification || "Hospital Combo",
+        productClassification: (productData as any).productClassification || "",
         collectionName: (productData as any).collectionName || (productData as any).collectionPrintName || productData.name || "",
         description: productData.description || "",
         sellingPrice: productData.sellingPrice != null ? String(productData.sellingPrice) : "",
         mrp: productData.mrp?.toString() || "",
         category: (productData.category as ProductFormData["category"]) || "",
-        subcategory: productData.subcategory || "",
+        subcategory: parsedSubcategory.parent,
+        subcategoryItem: parsedSubcategory.child,
         images: parsedImages,
         rating: productData.rating || 4.5,
         reviews: productData.reviews || 0,
@@ -260,7 +287,14 @@ export default function AddProduct() {
   }, [formData.mrp, formData.sellingPrice]);
 
   const previewCategory = formData.category === "home" ? "Home" : formData.category === "style" ? "Shop by Style" : "Category";
-  const previewSubcategory = formData.subcategory || "No subcategory";
+  const savedSubcategory = formData.subcategoryItem
+    ? `${formData.subcategory} / ${formData.subcategoryItem}`
+    : formData.subcategory;
+  const previewSubcategory = savedSubcategory || "No subcategory";
+  const productClassificationOptions = useMemo(
+    () => productClassificationOptionsBySubcategoryItem[formData.subcategoryItem] || [],
+    [formData.subcategoryItem],
+  );
   const nextSku = useMemo(() => `PM-${String(products.length + 1).padStart(4, "0")}`, [products.length]);
   const previewSku = isEdit ? formData.sku || nextSku : nextSku;
   const nextSlug = useMemo(() => generateUniqueSlug(), []);
@@ -275,6 +309,26 @@ export default function AddProduct() {
   );
   const selectedComboItems = comboItems.filter((item) => item.selected);
   const comboTotalQuantity = selectedComboItems.reduce((total, item) => total + Number(item.quantity || 0), 0);
+
+  useEffect(() => {
+    if (productClassificationOptions.length === 0 && formData.productClassification) {
+      setFormData((prev) => ({
+        ...prev,
+        productClassification: "",
+      }));
+      return;
+    }
+
+    if (
+      productClassificationOptions.length > 0 &&
+      !productClassificationOptions.includes(formData.productClassification)
+    ) {
+      setFormData((prev) => ({
+        ...prev,
+        productClassification: productClassificationOptions[0],
+      }));
+    }
+  }, [formData.productClassification, productClassificationOptions]);
 
   const resetForm = () => {
     setFormData(emptyForm);
@@ -303,7 +357,8 @@ export default function AddProduct() {
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
-      ...(name === "category" ? { subcategory: "" } : {}),
+      ...(name === "category" ? { subcategory: "", subcategoryItem: "" } : {}),
+      ...(name === "subcategory" ? { subcategoryItem: "" } : {}),
     }));
 
     if (errors[name as keyof ProductFormData]) {
@@ -425,7 +480,7 @@ export default function AddProduct() {
     mrp: formData.mrp ? parseFloat(formData.mrp) : null,
     category: formData.category,
     ageGroup: selectedAgeGroups.length > 0 ? selectedAgeGroups.join(", ") : null,
-    subcategory: formData.subcategory,
+    subcategory: savedSubcategory,
     image: formData.images[0] || "",
     images: JSON.stringify(formData.images),
     rating: parseFloat(formData.rating.toString()),
@@ -561,18 +616,42 @@ export default function AddProduct() {
               </select>
             </div>
 
+            {formData.category === "home" && formData.subcategory && (
+              <div>
+                <Label>{formData.subcategory}</Label>
+                <select
+                  name="subcategoryItem"
+                  value={formData.subcategoryItem}
+                  onChange={handleInputChange}
+                  className={fieldClass}
+                >
+                  <option value="">Select item</option>
+                  {homeSubcategoryItemOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             <div>
               <Label required>Product Classification</Label>
               <select
                 name="productClassification"
                 value={formData.productClassification}
                 onChange={handleInputChange}
-                className={fieldClass}
+                disabled={productClassificationOptions.length === 0}
+                className={`${fieldClass} disabled:bg-slate-100 disabled:text-slate-400`}
               >
-                <option value="Hospital Combo">Hospital Combo</option>
-                <option value="Essential Set">Essential Set</option>
-                <option value="Gift Combo">Gift Combo</option>
-                <option value="Single Product">Single Product</option>
+                {productClassificationOptions.length === 0 && (
+                  <option value="">Select subcategory item first</option>
+                )}
+                {productClassificationOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
               </select>
               <p className="mt-1 text-xs text-slate-500">Frontend-only classification for admin organization.</p>
             </div>
@@ -619,6 +698,39 @@ export default function AddProduct() {
                 {previewSlug}
               </div>
               <p className="mt-1 text-xs text-slate-500">Random alphanumeric identifier for unique product identification.</p>
+            </div>
+          </div>
+        </Section>
+
+        <Section title="Store Preview" icon={Eye} className="lg:col-span-4 lg:row-span-2 lg:self-start">
+          <div className="space-y-4">
+            <div className="aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+              {formData.images[0] ? (
+                <img src={formData.images[0]} alt="Product preview" className="h-full w-full object-cover" />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-slate-400">
+                  <ImageIcon className="h-10 w-10" />
+                </div>
+              )}
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-[#5F6F46]">{previewCategory} / {previewSubcategory}</p>
+              <h3 className="mt-2 text-lg font-semibold leading-snug text-slate-950">{formData.name || "Product name preview"}</h3>
+              <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-5 text-slate-600">
+                {formData.description || "Product description preview appears here once you start typing."}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+              <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">{formData.inStock ? "In stock" : "Out of stock"}</span>
+              {formData.isNew && <span className="rounded-full bg-[#F1F5EB] px-3 py-1 text-[#5F6F46]">New arrival</span>}
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{formData.rating} rating</span>
+            </div>
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <p className="text-2xl font-bold text-slate-950">Rs {Number(formData.sellingPrice || 0).toLocaleString("en-IN")}</p>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                {formData.mrp && <p className="text-sm text-slate-500 line-through">Rs {Number(formData.mrp).toLocaleString("en-IN")}</p>}
+                {discount && <p className="text-sm font-semibold text-emerald-700">{discount.percent}% off</p>}
+              </div>
             </div>
           </div>
         </Section>
@@ -946,35 +1058,6 @@ export default function AddProduct() {
                   <input type="number" name="reviews" value={formData.reviews} onChange={handleInputChange} min="0" className={fieldClass} />
                 </div>
               </div>
-            </div>
-          </div>
-        </Section>
-
-        <Section title="Store Preview" icon={Eye} className="lg:col-span-12">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center lg:grid lg:grid-cols-[180px_1fr_auto]">
-            <div className="mx-auto aspect-square w-32 shrink-0 sm:mx-0 sm:w-32 lg:w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-              {formData.images[0] ? (
-                <img src={formData.images[0]} alt="Product preview" className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-slate-400">
-                  <ImageIcon className="h-8 w-8" />
-                </div>
-              )}
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#5F6F46]">{previewCategory} / {previewSubcategory}</p>
-              <h3 className="mt-1 text-xl font-semibold text-slate-950">{formData.name || "Product name preview"}</h3>
-              <p className="mt-2 line-clamp-2 max-w-3xl text-sm text-slate-600">{formData.description || "Product description preview appears here once you start typing."}</p>
-              <div className="mt-3 flex flex-wrap items-center gap-2 text-xs font-medium">
-                <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">{formData.inStock ? "In stock" : "Out of stock"}</span>
-                {formData.isNew && <span className="rounded-full bg-[#F1F5EB] px-3 py-1 text-[#5F6F46]">New arrival</span>}
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{formData.rating} rating</span>
-              </div>
-            </div>
-            <div className="min-w-[160px] rounded-lg border border-slate-200 bg-slate-50 p-4 text-right">
-              <p className="text-2xl font-bold text-slate-950">Rs {Number(formData.sellingPrice || 0).toLocaleString("en-IN")}</p>
-              {formData.mrp && <p className="mt-1 text-sm text-slate-500 line-through">Rs {Number(formData.mrp).toLocaleString("en-IN")}</p>}
-              {discount && <p className="mt-1 text-sm font-semibold text-emerald-700">{discount.percent}% off</p>}
             </div>
           </div>
         </Section>

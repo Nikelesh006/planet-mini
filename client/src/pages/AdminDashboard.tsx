@@ -214,6 +214,19 @@ Thank you for shopping with Planet Mini!
     return content;
   };
 
+  const recentOrderedProducts = dashboardData?.recentOrders
+    ? dashboardData.recentOrders
+        .slice()
+        .flatMap((order: any) =>
+          (order.items || []).map((item: any) => ({
+            ...item,
+            orderNumber: order.orderNumber,
+            orderDate: order.createdAt,
+          }))
+        )
+        .slice(0, 3)
+    : [];
+
   return (
     <div className="min-h-screen">
       {/* Header */}
@@ -307,7 +320,26 @@ Thank you for shopping with Planet Mini!
                 <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
               </div>
               <div className="p-6">
-                <p className="text-sm text-gray-500">No orders</p>
+                {recentOrderedProducts.length > 0 ? (
+                  <div className="space-y-4">
+                    {recentOrderedProducts.map((item: any, index: number) => (
+                      <div key={`${item.id}-${index}`} className="flex items-center gap-4">
+                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
+                        <div className="min-w-0 flex-1">
+                          <p className="font-medium text-gray-900 truncate">{item.name}</p>
+                          <p className="text-xs text-gray-500">
+                            Order #{item.orderNumber} · Qty {item.quantity}
+                          </p>
+                        </div>
+                        <span className="text-sm font-semibold text-gray-900">
+                          ₹{Number(item.sellingPrice || item.price || 0).toFixed(0)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500">No orders</p>
+                )}
               </div>
             </div>
           </motion.div>

@@ -887,23 +887,13 @@ export async function registerRoutes(
 
 
 
-        filtered = filtered.filter(p => 
-
-
-
-
-
-
-
-          p.subcategory?.toLowerCase() === subcategoryLower
-
-
-
-
-
-
-
-        );
+        filtered = filtered.filter(p => {
+          const productSubcategory = p.subcategory?.toLowerCase();
+          return (
+            productSubcategory === subcategoryLower ||
+            productSubcategory?.startsWith(`${subcategoryLower} /`)
+          );
+        });
 
 
 
