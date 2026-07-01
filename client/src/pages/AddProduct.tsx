@@ -27,6 +27,7 @@ interface ProductFormData {
   sku?: string;
   name: string;
   slug: string;
+  productType: "single" | "combo";
   productClassification: string;
   collectionName: string;
   description: string;
@@ -73,6 +74,7 @@ const emptyForm: ProductFormData = {
   sku: "",
   name: "",
   slug: "",
+  productType: "single",
   productClassification: "",
   collectionName: "",
   description: "",
@@ -97,6 +99,11 @@ const subcategoryOptions: Record<string, string[]> = {
   style: [],
   home: ["New Arrivals", "Trending Products"],
 };
+
+const comboSubcategoryOptions = ["Gifting", "Hospital Bags", "Blockbuster Combos"];
+
+const DRAFT_STATUS = "Draft";
+const ACTIVE_STATUS = "Active";
 
 const homeSubcategoryItemOptions = [
   "Jhablas",
@@ -140,6 +147,11 @@ const generateUniqueSlug = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   const shuffled = chars.split('').sort(() => Math.random() - 0.5).join('');
   return shuffled.substring(0, 12);
+};
+
+const toNonNegativeInteger = (value: string, fallback = 0) => {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
 };
 
 const splitHomeSubcategory = (subcategory?: string | null) => {
@@ -246,6 +258,7 @@ export default function AddProduct() {
         sku: productData.sku || "",
         name: productData.name || "",
         slug: productData.slug || "",
+        productType: (productData as any).productType || "single",
         productClassification: (productData as any).productClassification || "",
         collectionName: (productData as any).collectionName || (productData as any).collectionPrintName || productData.name || "",
         description: productData.description || "",
@@ -273,6 +286,10 @@ export default function AddProduct() {
         fabric: (productData as any).fabric || prev.fabric,
         colorTheme: (productData as any).colorTheme || prev.colorTheme,
       }));
+      setInventory({
+        stockQuantity: productData.stockQuantity != null ? String(productData.stockQuantity) : "0",
+        lowStockAlert: productData.lowStockAlert != null ? String(productData.lowStockAlert) : "0",
+      });
     }
   }, [productData, isEdit, viewId]);
 
@@ -329,6 +346,23 @@ export default function AddProduct() {
       }));
     }
   }, [formData.productClassification, productClassificationOptions]);
+
+  useEffect(() => {
+    if (formData.productType !== "combo") return;
+
+    setFormData((prev) => {
+      const nextSubcategory = comboSubcategoryOptions.includes(prev.subcategory)
+        ? prev.subcategory
+        : comboSubcategoryOptions[0];
+
+      return {
+        ...prev,
+        category: "home",
+        subcategory: nextSubcategory,
+        subcategoryItem: "",
+      };
+    });
+  }, [formData.productType]);
 
   const resetForm = () => {
     setFormData(emptyForm);
@@ -457,10 +491,13 @@ export default function AddProduct() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>, overrideStatus?: string) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
+
+    const nextStatus = overrideStatus || formData.status || ACTIVE_STATUS;
+    const isDraft = nextStatus === DRAFT_STATUS;
+
+    if (!isDraft && !validateForm()) {
       toast({
         title: "Validation Error",
         description: "Please check the highlighted fields.",
@@ -468,7 +505,7 @@ export default function AddProduct() {
       });
       return;
     }
-    
+
     setIsSubmitting(true);
 
     const productPayload = {
@@ -476,22 +513,26 @@ export default function AddProduct() {
     sku: previewSku,
     name: formData.name,
     description: formData.description,
-    sellingPrice: isEdit ? parseFloat(formData.sellingPrice) : parseFloat(formData.sellingPrice),
+    sellingPrice: formData.sellingPrice ? parseFloat(formData.sellingPrice) : null,
     mrp: formData.mrp ? parseFloat(formData.mrp) : null,
     category: formData.category,
     ageGroup: selectedAgeGroups.length > 0 ? selectedAgeGroups.join(", ") : null,
     subcategory: savedSubcategory,
     image: formData.images[0] || "",
     images: JSON.stringify(formData.images),
-    rating: parseFloat(formData.rating.toString()),
-    reviews: parseInt(formData.reviews.toString(), 10),
-    inStock: formData.inStock,
+    rating: isDraft ? null : parseFloat(formData.rating.toString()),
+    reviews: isDraft ? null : parseInt(formData.reviews.toString(), 10),
+    inStock: isDraft ? false : true,
     isNew: formData.isNew,
+    status: nextStatus,
+    stockQuantity: toNonNegativeInteger(inventory.stockQuantity),
+    lowStockAlert: toNonNegativeInteger(inventory.lowStockAlert),
     gender: productDetails.gender,
     occasion: productDetails.occasion,
     fabric: productDetails.fabric,
     colorTheme: productDetails.colorTheme,
     careInstructions: productDetails.careInstructions,
+    productType: formData.productType,
     productClassification: formData.productClassification,
     collectionName: formData.collectionName,
     showOnWebsite: formData.showOnWebsite,
@@ -510,7 +551,7 @@ export default function AddProduct() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(productPayload),
-    });
+      });
 
     if (!response.ok) {
       throw new Error(isEdit ? "Failed to update product" : "Failed to create product");
@@ -518,8 +559,12 @@ export default function AddProduct() {
 
       setShowSuccess(true);
       toast({
-        title: isEdit ? "Product Updated Successfully!" : "Product Added Successfully!",
-        description: isEdit ? "Your product has been updated and is now live on the store." : "Your new product has been added and is now live on the store.",
+        title: nextStatus === DRAFT_STATUS ? "Draft product saved successfully" : "Product saved successfully",
+        description: nextStatus === DRAFT_STATUS
+          ? "Your draft has been saved and can be completed later."
+          : isEdit
+            ? "Your product has been updated and is now live on the store."
+            : "Your new product has been added and is now live on the store.",
         variant: "success",
       });
 
@@ -574,21 +619,38 @@ export default function AddProduct() {
         </motion.div>
       )}
 
-      <form onSubmit={handleSubmit} className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:px-6 lg:grid-cols-12 lg:px-8">
+      <form onSubmit={(e) => handleSubmit(e, formData.status)} className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:px-6 lg:grid-cols-12 lg:px-8">
         <Section title="Basic Information" icon={Package} className="lg:col-span-8">
           <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <Label required>Product Type</Label>
+              <select
+                name="productType"
+                value={formData.productType}
+                onChange={handleInputChange}
+                className={fieldClass}
+              >
+                <option value="single">Single Product</option>
+                <option value="combo">Combo Product</option>
+              </select>
+              <p className="mt-1 text-xs text-slate-500">Choose whether this is a single item or a bundle/combo.</p>
+            </div>
             <div>
               <Label required>Category</Label>
               <select
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
+                disabled={formData.productType === "combo"}
                 className={`${fieldClass} ${errors.category ? errorFieldClass : ""}`}
               >
                 <option value="">Select category</option>
                 <option value="style">Shop by Style</option>
                 <option value="home">Home</option>
               </select>
+              {formData.productType === "combo" && (
+                <p className="mt-1 text-xs text-slate-500">Combo products are fixed to the Home category.</p>
+              )}
               {errors.category && <p className="mt-1 text-xs text-red-500">{errors.category}</p>}
             </div>
 
@@ -603,6 +665,15 @@ export default function AddProduct() {
               >
                 {formData.category === "style" ? (
                   <option value="">No subcategories</option>
+                ) : formData.productType === "combo" ? (
+                  <>
+                    <option value="">Select subcategory</option>
+                    {comboSubcategoryOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </>
                 ) : (
                   <>
                     <option value="">Select subcategory</option>
@@ -614,6 +685,11 @@ export default function AddProduct() {
                   </>
                 )}
               </select>
+              {formData.productType === "combo" && (
+                <p className="mt-1 text-xs text-slate-500">
+                  Combo products can only use Gifting.
+                </p>
+              )}
             </div>
 
             {formData.category === "home" && formData.subcategory && (
@@ -974,7 +1050,6 @@ export default function AddProduct() {
               >
                 <option value="Active">Active</option>
                 <option value="Draft">Draft</option>
-                <option value="Archived">Archived</option>
               </select>
               <p className="mt-2 text-xs text-slate-500">
                 Product will be visible on website
@@ -1074,8 +1149,30 @@ export default function AddProduct() {
               Cancel
             </button>
             <button
-              type="submit"
+              type="button"
               disabled={isSubmitting}
+              onClick={(e) => {
+                setFormData((prev) => ({ ...prev, status: DRAFT_STATUS }));
+                void handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>, DRAFT_STATUS);
+              }}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#B4C49A] bg-white px-5 py-2.5 text-sm font-semibold text-[#5F6F46] transition hover:bg-[#F1F5EB] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#B4C49A]/30 border-b-[#5F6F46]" />
+                  Saving Draft...
+                </>
+              ) : (
+                <>
+                  <Save className="h-4 w-4" />
+                  Save as Draft
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={(e) => void handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>, ACTIVE_STATUS)}
               className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#B4C49A] px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-[#A4B68A] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (

@@ -14,7 +14,7 @@ import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useToast } from "@/hooks/use-toast";
 
 import type { ProductResponse } from "@shared/routes";
-import { isOutOfStock } from "@shared/stock";
+import { isLowStock, isOutOfStock } from "@shared/stock";
 
 
 
@@ -48,6 +48,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
   const isWishlisted = likedProducts.some(p => p.id === product.id);
   const outOfStock = isOutOfStock(product);
+  const lowStock = isLowStock(product);
 
   // Debug logging
   console.log('ProductCard Debug:', {
@@ -237,7 +238,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           {/* Badges */}
 
-          <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none">
+          <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none z-30">
+            {lowStock && !outOfStock && (
+              <span className="bg-amber-500 px-3 py-1 text-sm font-bold text-white shadow-md">
+                Low Stock
+              </span>
+            )}
             {outOfStock && (
               <span className="bg-black px-3 py-1 text-sm font-bold text-white shadow-md">
                 Out of Stock

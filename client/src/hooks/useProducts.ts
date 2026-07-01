@@ -15,6 +15,8 @@ interface ProductQueryParams {
 
   search?: string;
 
+  includeDrafts?: boolean;
+
 }
 
 
@@ -32,6 +34,8 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
   if (params?.subcategory) queryParams.append('subcategory', params.subcategory);
 
   if (params?.search) queryParams.append('search', params.search);
+
+  if (params?.includeDrafts) queryParams.append('includeDrafts', 'true');
 
   
 
@@ -316,7 +320,19 @@ export const useComboProducts = () => {
 
     category: 'home',
 
-    subcategory: "Blockbuster Combo's"
+    subcategory: "Blockbuster Combos"
+
+  });
+
+};
+
+export const useBlockbusterProducts = () => {
+
+  return useProducts({
+
+    category: 'home',
+
+    subcategory: "Blockbuster Combos"
 
   });
 

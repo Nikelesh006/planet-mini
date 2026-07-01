@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useState, useEffect } from "react";
 import { BabyCareCard } from "@/components/BabyCareCard";
 import { Sparkles, Filter, X } from "lucide-react";
-import { useShopByStyleProducts } from "@/hooks/useProducts";
+import { useBlockbusterProducts, useGiftingProducts, useProducts, useShopByStyleProducts } from "@/hooks/useProducts";
 import { Slider } from "@/components/ui/slider";
 
 interface FilterSection {
@@ -18,13 +18,39 @@ interface FilterSection {
 }
 
 export default function ShopStyle() {
+  const [location] = useLocation();
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  const searchParams = new URLSearchParams(window.location.search);
+  const isBlockbusterSection = searchParams.get("section") === "blockbuster-combos";
+  const isHospitalBagsSection = searchParams.get("section") === "hospital-bags";
+  const isGiftingSection = searchParams.get("section") === "gifting";
+
   // Fetch all home products (same as Home page sections)
-  const { data: products, isLoading } = useShopByStyleProducts();
+  const { data: styleProducts, isLoading: styleLoading } = useShopByStyleProducts();
+  const { data: blockbusterProducts, isLoading: blockbusterLoading } = useBlockbusterProducts();
+  const { data: hospitalBagsProducts, isLoading: hospitalBagsLoading } = useProducts({
+    category: "home",
+    subcategory: "Hospital Bags",
+  });
+  const { data: giftingSectionProducts, isLoading: giftingSectionLoading } = useGiftingProducts();
+  const products = isBlockbusterSection
+    ? blockbusterProducts
+    : isHospitalBagsSection
+      ? hospitalBagsProducts
+      : isGiftingSection
+        ? giftingSectionProducts
+        : styleProducts;
+  const isLoading = isBlockbusterSection
+    ? blockbusterLoading
+    : isHospitalBagsSection
+      ? hospitalBagsLoading
+      : isGiftingSection
+        ? giftingSectionLoading
+        : styleLoading;
   
   // Filter state
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
@@ -109,11 +135,44 @@ export default function ShopStyle() {
     setMaxPrice(5000);
   };
 
-  // Filter products by max price (show products with price <= maxPrice)
-  const filteredProducts = products
-    ? products.filter(product => Number(product.sellingPrice) <= maxPrice)
-    : [];
+  const normalizeText = (value: string | undefined | null) =>
+    (value || "")
+      .toLowerCase()
+      .replace(/[’']/g, "")
+      .replace(/-/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 
+  const filteredProducts = products
+    ? products
+        .filter(product => Number(product.sellingPrice) <= maxPrice)
+        .filter(product => {
+          const category = normalizeText(product.category);
+          const subcategory = normalizeText(product.subcategory);
+          if (isBlockbusterSection) {
+            return category === "home" && (
+              subcategory === "blockbuster combos" ||
+              subcategory === "blockbuster combo" ||
+              subcategory.includes("blockbuster combo")
+            );
+          }
+          if (isHospitalBagsSection) {
+            return category === "home" && (
+              subcategory === "hospital bags" ||
+              subcategory === "hospital bag" ||
+              subcategory.includes("hospital bag")
+            );
+          }
+          if (isGiftingSection) {
+            return category === "home" && (
+              subcategory === "gifting" ||
+              subcategory === "gift" ||
+              subcategory.includes("gift")
+            );
+          }
+          return true;
+        })
+    : [];
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Banner Section */}
@@ -473,4 +532,14 @@ export default function ShopStyle() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+
+
 

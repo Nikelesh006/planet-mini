@@ -703,6 +703,36 @@ const authenticateToken = (req: any, res: any, next: any) => {
 
 
 
+const REQUIRED_ACTIVE_FIELDS = [
+  "name",
+  "description",
+  "sellingPrice",
+  "category",
+  "sku",
+  "image",
+] as const;
+
+const isBlank = (value: unknown) => {
+  if (value == null) return true;
+  if (typeof value === "string") return value.trim().length === 0;
+  return false;
+};
+
+const validateActiveProduct = (payload: any) => {
+  for (const field of REQUIRED_ACTIVE_FIELDS) {
+    if (isBlank(payload?.[field])) {
+      return field;
+    }
+  }
+
+  const price = Number(payload?.sellingPrice);
+  if (!Number.isFinite(price) || price <= 0) {
+    return "sellingPrice";
+  }
+
+  return null;
+};
+
 export async function registerRoutes(
 
 
@@ -879,7 +909,10 @@ export async function registerRoutes(
 
 
 
-        const subcategoryLower = req.query.subcategory.toLowerCase();
+        const normalize = (value: string) =>
+          value.toLowerCase().replace(/['’]/g, '').replace(/\s+/g, ' ').trim();
+
+        const subcategoryLower = normalize(req.query.subcategory);
 
 
 
@@ -888,7 +921,7 @@ export async function registerRoutes(
 
 
         filtered = filtered.filter(p => {
-          const productSubcategory = p.subcategory?.toLowerCase();
+          const productSubcategory = normalize(p.subcategory || '');
           return (
             productSubcategory === subcategoryLower ||
             productSubcategory?.startsWith(`${subcategoryLower} /`)
@@ -925,7 +958,7 @@ export async function registerRoutes(
 
 
 
-      filtered = filtered.filter(p => p.inStock === true);
+      filtered = filtered.filter(p => req.query?.includeDrafts === 'true' ? true : p.inStock === true && (p.status || "Active").toLowerCase() === "active");
 
 
 
@@ -1160,6 +1193,16 @@ export async function registerRoutes(
 
 
       const productData = req.body;
+
+      if ((productData.status || "Active").toLowerCase() === "active") {
+        const invalidField = validateActiveProduct(productData);
+        if (invalidField) {
+          return res.status(400).json({
+            message: "Missing required fields for active products",
+            field: invalidField,
+          });
+        }
+      }
 
 
 
@@ -1921,6 +1964,16 @@ export async function registerRoutes(
 
       const updateData = req.body;
 
+      if ((updateData.status || "Active").toLowerCase() === "active") {
+        const invalidField = validateActiveProduct(updateData);
+        if (invalidField) {
+          return res.status(400).json({
+            message: "Missing required fields for active products",
+            field: invalidField,
+          });
+        }
+      }
+
 
 
 
@@ -2160,6 +2213,16 @@ export async function registerRoutes(
 
 
       const updateData = req.body;
+
+      if ((updateData.status || "Active").toLowerCase() === "active") {
+        const invalidField = validateActiveProduct(updateData);
+        if (invalidField) {
+          return res.status(400).json({
+            message: "Missing required fields for active products",
+            field: invalidField,
+          });
+        }
+      }
 
 
 

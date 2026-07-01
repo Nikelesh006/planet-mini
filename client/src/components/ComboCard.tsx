@@ -8,6 +8,7 @@ import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import type { ProductResponse } from "@shared/routes";
+import { isLowStock } from "@shared/stock";
 
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
   if (!url || typeof url !== 'string') return url;
@@ -28,6 +29,7 @@ export function ComboCard({ product, index }: ComboCardProps) {
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
   const { toast } = useToast();
   const isWishlisted = likedProducts.some(p => p.id === product.id);
+  const lowStock = isLowStock(product);
   
   const productImages = [product.image];
 
@@ -114,6 +116,13 @@ export function ComboCard({ product, index }: ComboCardProps) {
 
           {/* Large Product Image */}
           <div className="aspect-[4/5] flex items-center justify-center relative bg-transparent">
+            {lowStock && product.inStock && (
+              <div className="absolute top-4 left-4 z-30">
+                <div className="bg-amber-500 px-3 py-1 text-sm font-bold text-white shadow-md rounded-md">
+                  Low Stock
+                </div>
+              </div>
+            )}
             <img
               src={getCloudinaryImageUrl(product.image, "f_auto,q_100,dpr_auto")}
               alt={product.name}

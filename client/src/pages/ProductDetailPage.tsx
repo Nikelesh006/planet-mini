@@ -9,7 +9,7 @@ import { useAuthGuard } from "@/hooks/useAuthGuard";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useProduct, useProductById, useProducts } from "@/hooks/useProducts";
 import { BabyCareCard } from "@/components/BabyCareCard";
-import { getAvailableStock, isOutOfStock } from "@shared/stock";
+import { getAvailableStock, isLowStock, isOutOfStock } from "@shared/stock";
 
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
   if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
@@ -68,6 +68,7 @@ export default function ProductDetailPage() {
   const [isStickyBarDismissed, setIsStickyBarDismissed] = useState(false);
   const availableStock = getAvailableStock(product);
   const outOfStock = isOutOfStock(product);
+  const lowStock = isLowStock(product);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -479,6 +480,11 @@ export default function ProductDetailPage() {
                       <p className="mt-2 flex items-center gap-2 text-sm font-medium text-gray-500">
                         <Gift className="w-4 h-4" />
                         You saved ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
+                      </p>
+                    )}
+                    {!outOfStock && lowStock && (
+                      <p className="mt-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
+                        Low stock: only {availableStock} left
                       </p>
                     )}
                   </div>

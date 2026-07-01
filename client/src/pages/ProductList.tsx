@@ -23,7 +23,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { ProductResponse } from "@shared/routes";
 
 export default function ProductList() {
-  const { data: products = [], isLoading, error } = useProducts();
+  const { data: products = [], isLoading, error } = useProducts({ includeDrafts: true });
   const deleteProduct = useDeleteProduct();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
@@ -41,7 +41,7 @@ export default function ProductList() {
 
   useEffect(() => {
     if (products) {
-      let filtered = products;
+      let filtered = [...products];
 
       // Filter by search term
       if (searchTerm) {
@@ -59,6 +59,17 @@ export default function ProductList() {
       if (filterCategory !== "all") {
         filtered = filtered.filter(product => product.category === filterCategory);
       }
+
+      filtered.sort((a, b) => {
+        const aDraft = (a.status || "").toLowerCase() === "draft";
+        const bDraft = (b.status || "").toLowerCase() === "draft";
+
+        if (aDraft !== bDraft) {
+          return aDraft ? 1 : -1;
+        }
+
+        return a.name.localeCompare(b.name);
+      });
 
       setFilteredProducts(filtered);
     }
@@ -348,6 +359,9 @@ const handleProductSelect = (productId: number) => {
                     Category
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Price
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -405,6 +419,15 @@ const handleProductSelect = (productId: number) => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
                         {product.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        (product.status || "").toLowerCase() === "draft"
+                          ? "bg-amber-100 text-amber-800"
+                          : "bg-emerald-100 text-emerald-800"
+                      }`}>
+                        {product.status || "Active"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

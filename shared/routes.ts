@@ -20,6 +20,12 @@ const productSchema = z.object({
   stockQuantity: z.number().nullable().optional(),
   lowStockAlert: z.number().nullable().optional(),
   isNew: z.boolean().nullable(),
+  productType: z.string().nullable().optional(),
+  status: z.string().nullable().optional(),
+  showOnWebsite: z.boolean().nullable().optional(),
+  featuredProduct: z.boolean().nullable().optional(),
+  bestSeller: z.boolean().nullable().optional(),
+  recommendedProduct: z.boolean().nullable().optional(),
   colors: z.string().nullable(),
   sizes: z.string().nullable(),
 });

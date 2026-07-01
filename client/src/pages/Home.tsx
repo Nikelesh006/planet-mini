@@ -1000,7 +1000,7 @@ export default function Home() {
           <div className="mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Hospital Bag Image 1 */}
-              <Link href="/shopstyle">
+              <Link href="/shop/style?section=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1020,7 +1020,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Hospital Bag Image 2 */}
-              <Link href="/shopstyle">
+              <Link href="/shop/style?section=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1040,7 +1040,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Hospital Bag Image 3 */}
-              <Link href="/shopstyle">
+              <Link href="/shop/style?section=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1341,7 +1341,7 @@ export default function Home() {
           <div className="mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Combo Offer Image 1 */}
-              <Link href="/shopstyle">
+              <Link href="/shop/style?section=blockbuster-combos">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1361,7 +1361,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Combo Offer Image 2 */}
-              <Link href="/shopstyle">
+              <Link href="/shop/style?section=blockbuster-combos">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1381,7 +1381,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Combo Offer Image 3 */}
-              <Link href="/shopstyle">
+              <Link href="/shop/style?section=blockbuster-combos">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1469,7 +1469,7 @@ export default function Home() {
           <div className="mt-12">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Combined Card 1 & 2 - Rectangle */}
-              <Link href="/shop/gifting" className="md:col-span-2">
+              <Link href="/shop/style?section=gifting" className="md:col-span-2">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1493,7 +1493,7 @@ export default function Home() {
               </Link>
 
               {/* Gifting Card 3 - 1:1 Square with gifting1.png */}
-              <Link href="/shop/gifting">
+              <Link href="/shop/style?section=gifting">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1517,7 +1517,7 @@ export default function Home() {
               </Link>
 
               {/* Gifting Card 4 - 1:1 Square */}
-              <Link href="/shop/gifting">
+              <Link href="/shop/style?section=gifting">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1541,7 +1541,7 @@ export default function Home() {
               </Link>
 
               {/* Combined Card 5 & 6 - Rectangle */}
-              <Link href="/shop/gifting" className="md:col-span-2">
+              <Link href="/shop/style?section=gifting" className="md:col-span-2">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -2332,4 +2332,6 @@ export default function Home() {
   );
 
 }
+
+
 

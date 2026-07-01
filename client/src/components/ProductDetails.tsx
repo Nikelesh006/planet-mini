@@ -1,9 +1,9 @@
-import { motion, AnimatePresence } from "framer-motion";
+    import { motion, AnimatePresence } from "framer-motion";
 import { X, Heart, ShoppingBag, Star, Minus, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useStore } from "@/store/use-store";
 import type { ProductResponse } from "@shared/routes";
-import { getAvailableStock, isOutOfStock } from "@shared/stock";
+import { getAvailableStock, isLowStock, isOutOfStock } from "@shared/stock";
 
 interface ProductDetailsProps {
   product: ProductResponse | null;
@@ -42,6 +42,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
   const isWishlisted = wishlist.includes(product.id);
   const availableStock = getAvailableStock(product);
   const outOfStock = isOutOfStock(product);
+  const lowStock = isLowStock(product);
   // Get all product images (main image + additional images if available)
   // Deduplicate to prevent showing same image twice
   const mainImage = product?.image;
@@ -174,11 +175,16 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                         </span>
                       )}
                     </div>
-                    {product.mrp && Number(product.mrp) > Number(product.sellingPrice) && (
+                  {product.mrp && Number(product.mrp) > Number(product.sellingPrice) && (
                       <p className="mt-2 text-sm font-medium text-green-600">
                         You saved ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
                       </p>
                     )}
+                  {!outOfStock && lowStock && (
+                    <div className="mt-3 inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
+                      Low stock: only {availableStock} left
+                    </div>
+                  )}
                   </div>
                 </div>
 
@@ -259,7 +265,14 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                 {/* Stock Status */}
                 <div className="mb-6">
                   {!outOfStock ? (
-                    <p className="text-sm text-green-600 font-medium">✓ In Stock</p>
+                    <div>
+                      <p className="text-sm text-green-600 font-medium">✓ In Stock</p>
+                      {lowStock && (
+                        <p className="mt-1 text-sm text-amber-600 font-medium">
+                          Low stock alert: only {availableStock} left.
+                        </p>
+                      )}
+                    </div>
                   ) : (
                     <div>
                       <p className="text-sm text-red-600 font-medium">✗ Out of Stock</p>

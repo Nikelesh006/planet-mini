@@ -8,6 +8,7 @@ import { useAuthGuard } from "@/hooks/useAuthGuard";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useToast } from "@/hooks/use-toast";
 import type { ProductResponse } from "@shared/routes";
+import { isLowStock } from "@shared/stock";
 
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
   if (!url || typeof url !== 'string') return url;
@@ -28,6 +29,7 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
   const { toast } = useToast();
   const isWishlisted = likedProducts.some(p => p.id === product.id);
+  const lowStock = isLowStock(product);
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -98,8 +100,16 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
           )}
 
           {/* Gift Badge - only show if no discount */}
+          {lowStock && product.inStock && (
+            <div className="absolute top-2 left-2 z-30">
+              <div className="bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded">
+                Low Stock
+              </div>
+            </div>
+          )}
+
           {!(product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0)) && (
-            <div className="absolute top-2 left-2 z-20">
+            <div className="absolute top-8 left-2 z-20">
               <div className="bg-purple-500 text-white text-xs font-bold px-2 py-1 rounded">
                 GIFT SET
               </div>
