@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Search, Menu, User, X, Heart, LogOut, UserCircle, ShoppingBag as OrdersIcon, ChevronRight } from "lucide-react";
+import { ShoppingBag, Search, Menu, User, X, Heart, LogOut, UserCircle, ShoppingBag as OrdersIcon, ChevronRight, ChevronDown, Phone } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
 import { useState, useEffect, useRef, useMemo } from "react";
@@ -20,6 +20,7 @@ function cn(...inputs: (string | undefined | null | false)[]) {
 export default function Navbar() {
   const [location] = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isNavbarHidden, setIsNavbarHidden] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,6 +28,7 @@ export default function Navbar() {
   const [searchDropdownOpen, setSearchDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchDropdownRef = useRef<HTMLDivElement>(null);
+  const lastScrollY = useRef(0);
   const { state } = useCart();
   const { user, isLoading, logout } = useAuth();
   const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
@@ -125,8 +127,30 @@ export default function Navbar() {
   };
 
   useEffect(() => {
+    // Initialize lastScrollY to current scroll position
+    lastScrollY.current = window.scrollY;
+
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      const heroSectionHeight = 600; // Hero section height from Home.tsx
+
+      setIsScrolled(currentScrollY > 20);
+
+      // Only hide navbar after scrolling past hero section
+      if (currentScrollY > heroSectionHeight) {
+        if (currentScrollY > lastScrollY.current) {
+          // Scrolling down - hide navbar
+          setIsNavbarHidden(true);
+        } else if (currentScrollY < lastScrollY.current) {
+          // Scrolling up - show navbar
+          setIsNavbarHidden(false);
+        }
+      } else {
+        // In hero section - always show navbar
+        setIsNavbarHidden(false);
+      }
+
+      lastScrollY.current = currentScrollY;
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -168,27 +192,35 @@ export default function Navbar() {
       `}</style>
 
       <header
+        style={{ 
+          top: isNavbarHidden ? '-200px' : '40px'
+        }}
         className={cn(
-          "fixed left-0 right-0 z-50 transition-all duration-300 bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800",
-          isScrolled
-            ? "shadow-lg py-3 top-10"
-            : "shadow-md py-5 top-10"
+          "fixed left-0 right-0 z-[51] transition-all duration-300 ease-in-out bg-[#F0F4EB] dark:bg-gray-900",
+          isScrolled ? "shadow-lg" : "shadow-md"
         )}
       >
-        <div className="w-full px-6 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between">
-            {/* Mobile Menu Toggle */}
+        <div className="w-full px-6 sm:px-8 lg:px-12">
+          {/* Top Row */}
+          <div className="flex items-center justify-between py-4 border-b border-gray-400 dark:border-gray-700">
+            {/* Phone Number - Left */}
+            <div className="hidden md:flex items-center gap-2 text-gray-700 font-medium w-1/4">
+              <Phone className="w-4 h-4" />
+              <span className="text-sm">+91 82202 94678</span>
+            </div>
+
+            {/* Mobile Menu Toggle - Left on mobile */}
             <button
-              className="lg:hidden p-2 text-foreground hover:bg-muted rounded-full transition-colors mr-4"
+              className="lg:hidden p-2 text-foreground hover:bg-muted rounded-full transition-colors"
               onClick={() => setMobileMenuOpen(true)}
             >
               <Menu className="w-6 h-6" />
             </button>
 
-            {/* Logo */}
+            {/* Logo - Centered */}
             <Link
               href="/"
-              className="flex items-center justify-start hover:opacity-80 transition-opacity flex-shrink overflow-hidden max-w-[45vw] sm:max-w-none"
+              className="flex items-center justify-center hover:opacity-80 transition-opacity w-1/2"
             >
               <img
                 src="/Planet-mini-logo.png"
@@ -196,7 +228,6 @@ export default function Navbar() {
                 className="h-10 sm:h-12 lg:h-14 w-auto object-contain block"
                 draggable={false}
                 onError={(e) => {
-                  // Fallback to original logo if image fails to load
                   const target = e.target as HTMLImageElement;
                   target.style.display = 'none';
                   const fallback = target.nextElementSibling as HTMLElement;
@@ -208,27 +239,8 @@ export default function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-2 flex-1 ml-8">
-              {navLinks.map((link, index) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={cn(
-                    "text-base font-semibold transition-all duration-300 ease-in-out relative px-5 py-2 rounded-md whitespace-nowrap",
-                    "hover:bg-gray-200 hover:text-black",
-                    location === link.href
-                      ? "text-black bg-gray-200"
-                      : "text-gray-600"
-                  )}
-                >
-                  <span className="relative z-10">{link.label}</span>
-                </Link>
-              ))}
-            </nav>
-
-            {/* Actions */}
-            <div className="flex items-center gap-1 sm:gap-2 ml-auto flex-shrink-0">
+            {/* Actions - Right */}
+            <div className="flex items-center gap-3 sm:gap-4 flex-shrink-0 w-1/4 justify-end">
               <div className="relative hidden sm:block" ref={searchDropdownRef}>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
@@ -454,6 +466,25 @@ export default function Navbar() {
               </div>
             </div>
           </div>
+
+          {/* Bottom Row - Navigation Links */}
+          <nav className="hidden lg:flex items-center justify-center gap-8 py-4 border-t border-gray-200">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "text-base font-semibold transition-all duration-300 ease-in-out relative whitespace-nowrap px-2",
+                  "hover:text-black",
+                  location === link.href
+                    ? "text-black"
+                    : "text-gray-600"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
         </div>
       </header>
 

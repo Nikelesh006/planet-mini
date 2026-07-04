@@ -38,7 +38,7 @@ export default function Home() {
         setTimeout(() => {
           const element = document.querySelector(hash);
           if (element) {
-            const navbarHeight = 128; // Standard navbar height (pt-32)
+            const navbarHeight = 176; // Updated navbar height for two-row layout
             const elementPosition = element.getBoundingClientRect().top + window.scrollY;
             window.scrollTo({
               top: elementPosition - navbarHeight - 20, // Add extra padding
@@ -590,11 +590,11 @@ export default function Home() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="min-h-screen space-y-4"
+      className="min-h-screen space-y-4 pt-10"
     >
 
       {/* Hero Section with Image Slider */}
-      <section className="relative w-full h-auto sm:h-[60vh] md:h-[70vh] sm:min-h-[300px] sm:max-h-[600px]">
+      <section className="relative w-full min-h-[600px]">
         <div className="relative w-full h-full overflow-hidden">
           <div className="relative w-full h-full">
             {/* Mobile Banner - Only visible on small screens */}
@@ -654,7 +654,7 @@ export default function Home() {
             </div>
 
             {/* Desktop Image Slider - Only visible on sm and larger screens */}
-            <div className="hidden sm:block relative w-full h-full">
+            <div className="hidden sm:block relative w-full h-full group">
               {/* Slider Images */}
               <div className="relative w-full h-full">
                 {sliderImages.map((image, index) => (
@@ -689,7 +689,7 @@ export default function Home() {
               {/* Navigation Arrows */}
               <button 
                 onClick={goToPrevSlide}
-                className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
+                className="absolute left-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -697,7 +697,7 @@ export default function Home() {
               </button>
               <button 
                 onClick={goToNextSlide}
-                className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg"
+                className="absolute right-8 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white text-black p-4 rounded-full transition-all duration-300 hover:scale-110 shadow-lg opacity-0 group-hover:opacity-100"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
