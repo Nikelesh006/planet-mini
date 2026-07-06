@@ -36,6 +36,8 @@ interface ProductFormData {
   category: "" | "style" | "home";
   subcategory: string;
   subcategoryItem: string;
+  styleVariant: string;
+  hospitalBagsPackSize: string;
   images: string[];
   rating: number;
   reviews: number;
@@ -83,6 +85,8 @@ const emptyForm: ProductFormData = {
   category: "",
   subcategory: "",
   subcategoryItem: "",
+  styleVariant: "",
+  hospitalBagsPackSize: "",
   images: [],
   rating: 4.5,
   reviews: 0,
@@ -114,13 +118,49 @@ const homeSubcategoryItemOptions = [
   "New born accessories",
 ];
 
+const shopByStyleClassificationOptions = [
+  "Jhablas",
+  "Towels & blankets",
+  "Nappies",
+  "Wipes",
+  "Beds",
+  "New born accessories",
+];
+
 const productClassificationOptionsBySubcategoryItem: Record<string, string[]> = {
   Jhablas: ["Knot Jhablas", "Button Jhablas"],
   Nappies: ["Nappies"],
   "Towels & blankets": ["Hooded towels", "Swaddle"],
   Beds: ["Baby nest", "Baby net bed"],
   "New born accessories": ["Hats", "Mittens", "Booties"],
+  "Blockbuster Combos": [
+    "Below ₹499",
+    "Below ₹999",
+    "Below ₹1499",
+    "Below ₹1999",
+    "Below ₹2499",
+    "Below ₹2999",
+  ],
 };
+
+const shopByStyleVariantOptionsByGroup: Record<string, string[]> = {
+  Jhablas: ["Knot Jhablas", "Button Jhablas"],
+  "Towels & blankets": ["Hooded towels", "Swaddle"],
+  Beds: ["Baby nest", "Baby net bed"],
+  "New born accessories": ["Hats", "Mittens", "Booties"],
+  Nappies: ["Nappies"],
+  Wipes: ["Wipes"],
+};
+
+const hospitalBagPackOptions = Array.from({ length: 100 }, (_, index) => String(index + 1));
+const blockbusterComboPriceBands = [
+  "Below ₹499",
+  "Below ₹999",
+  "Below ₹1499",
+  "Below ₹1999",
+  "Below ₹2499",
+  "Below ₹2999",
+];
 
 const ageGroupOptions = [
   "Newborn (0-1M)",
@@ -267,6 +307,8 @@ export default function AddProduct() {
         category: (productData.category as ProductFormData["category"]) || "",
         subcategory: parsedSubcategory.parent,
         subcategoryItem: parsedSubcategory.child,
+        styleVariant: (productData as any).styleVariant || "",
+        hospitalBagsPackSize: (productData as any).hospitalBagsPackSize || "",
         images: parsedImages,
         rating: productData.rating || 4.5,
         reviews: productData.reviews || 0,
@@ -304,13 +346,21 @@ export default function AddProduct() {
   }, [formData.mrp, formData.sellingPrice]);
 
   const previewCategory = formData.category === "home" ? "Home" : formData.category === "style" ? "Shop by Style" : "Category";
-  const savedSubcategory = formData.subcategoryItem
-    ? `${formData.subcategory} / ${formData.subcategoryItem}`
-    : formData.subcategory;
+  const savedSubcategory = formData.category === "style" && formData.styleVariant
+    ? `${formData.subcategory} / ${formData.styleVariant}`
+    : formData.subcategoryItem
+      ? `${formData.subcategory} / ${formData.subcategoryItem}`
+      : formData.subcategory;
   const previewSubcategory = savedSubcategory || "No subcategory";
+  const usesClassificationFlow = formData.category === "home" || formData.category === "style";
   const productClassificationOptions = useMemo(
-    () => productClassificationOptionsBySubcategoryItem[formData.subcategoryItem] || [],
-    [formData.subcategoryItem],
+    () =>
+      formData.category === "style"
+        ? shopByStyleClassificationOptions
+        : formData.subcategory === "Blockbuster Combos"
+          ? blockbusterComboPriceBands
+          : productClassificationOptionsBySubcategoryItem[formData.subcategoryItem] || [],
+    [formData.category, formData.subcategory, formData.subcategoryItem],
   );
   const nextSku = useMemo(() => `PM-${String(products.length + 1).padStart(4, "0")}`, [products.length]);
   const previewSku = isEdit ? formData.sku || nextSku : nextSku;
@@ -364,6 +414,38 @@ export default function AddProduct() {
     });
   }, [formData.productType]);
 
+  useEffect(() => {
+    if (!usesClassificationFlow) {
+      if (formData.subcategoryItem || formData.productClassification || formData.styleVariant || formData.hospitalBagsPackSize) {
+        setFormData((prev) => ({
+          ...prev,
+          subcategoryItem: "",
+          productClassification: "",
+          styleVariant: "",
+          hospitalBagsPackSize: "",
+        }));
+      }
+      return;
+    }
+
+    if (formData.category === "home" && !formData.subcategoryItem) {
+      setFormData((prev) => ({
+        ...prev,
+        subcategoryItem: homeSubcategoryItemOptions[0],
+      }));
+    }
+
+    if (formData.category === "style" && formData.subcategory && formData.productClassification) {
+      const validOptions = shopByStyleVariantOptionsByGroup[formData.subcategory] || [];
+      if (!validOptions.includes(formData.styleVariant)) {
+        setFormData((prev) => ({
+          ...prev,
+          styleVariant: "",
+        }));
+      }
+    }
+  }, [formData.category, formData.subcategory, formData.subcategoryItem, formData.productClassification, formData.styleVariant, usesClassificationFlow]);
+
   const resetForm = () => {
     setFormData(emptyForm);
     setProductDetails({
@@ -388,12 +470,12 @@ export default function AddProduct() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-      ...(name === "category" ? { subcategory: "", subcategoryItem: "" } : {}),
-      ...(name === "subcategory" ? { subcategoryItem: "" } : {}),
-    }));
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === "checkbox" ? checked : value,
+        ...(name === "category" ? { subcategory: "", subcategoryItem: "", productClassification: "", styleVariant: "" } : {}),
+        ...(name === "subcategory" ? { subcategoryItem: "", productClassification: "", styleVariant: "", hospitalBagsPackSize: "" } : {}),
+      }));
 
     if (errors[name as keyof ProductFormData]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
@@ -534,6 +616,7 @@ export default function AddProduct() {
     careInstructions: productDetails.careInstructions,
     productType: formData.productType,
     productClassification: formData.productClassification,
+    hospitalBagsPackSize: formData.hospitalBagsPackSize,
     collectionName: formData.collectionName,
     showOnWebsite: formData.showOnWebsite,
     featuredProduct: formData.featuredProduct,
@@ -554,7 +637,15 @@ export default function AddProduct() {
       });
 
     if (!response.ok) {
-      throw new Error(isEdit ? "Failed to update product" : "Failed to create product");
+      let errorMessage = isEdit ? "Failed to update product" : "Failed to create product";
+      try {
+        const errorBody = await response.json();
+        errorMessage = errorBody?.message || errorMessage;
+      } catch {
+        const errorText = await response.text();
+        if (errorText) errorMessage = errorText;
+      }
+      throw new Error(errorMessage);
     }
 
       setShowSuccess(true);
@@ -568,12 +659,16 @@ export default function AddProduct() {
         variant: "success",
       });
 
-      resetForm();
+      if (isEdit) {
+        setLocation("/admin/product-list");
+      } else {
+        resetForm();
+      }
     } catch (error) {
       console.error("Error saving product:", error);
       toast({
         title: "Error",
-        description: "Failed to save product. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to save product. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -663,9 +758,7 @@ export default function AddProduct() {
                 disabled={!formData.category || formData.category === "style"}
                 className={`${fieldClass} disabled:bg-slate-100 disabled:text-slate-400`}
               >
-                {formData.category === "style" ? (
-                  <option value="">No subcategories</option>
-                ) : formData.productType === "combo" ? (
+                {formData.productType === "combo" ? (
                   <>
                     <option value="">Select subcategory</option>
                     {comboSubcategoryOptions.map((option) => (
@@ -690,11 +783,16 @@ export default function AddProduct() {
                   Combo products can only use Gifting.
                 </p>
               )}
+              {formData.category === "style" && (
+                <p className="mt-1 text-xs text-slate-500">
+                  Shop by Style uses the Product Classification field for the style group.
+                </p>
+              )}
             </div>
 
-            {formData.category === "home" && formData.subcategory && (
+            {formData.category === "home" && (
               <div>
-                <Label>{formData.subcategory}</Label>
+                <Label>{formData.subcategory || "Style Group"}</Label>
                 <select
                   name="subcategoryItem"
                   value={formData.subcategoryItem}
@@ -711,25 +809,95 @@ export default function AddProduct() {
               </div>
             )}
 
+            {formData.productType === "combo" && formData.subcategory === "Hospital Bags" && (
+              <div>
+                <Label required>Hospital Bags Pack Size</Label>
+                <select
+                  name="hospitalBagsPackSize"
+                  value={formData.hospitalBagsPackSize}
+                  onChange={handleInputChange}
+                  className={fieldClass}
+                >
+                  <option value="">Select pack size</option>
+                  {hospitalBagPackOptions.map((option) => (
+                    <option key={option} value={option}>
+                      Pack of {option}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-slate-500">
+                  Choose a pack size from 1 to 100.
+                </p>
+              </div>
+            )}
+
+            {formData.category === "style" && (
             <div>
-              <Label required>Product Classification</Label>
+              <Label required>
+                Style Group
+              </Label>
+                <select
+                  name="subcategory"
+                  value={formData.subcategory}
+                  onChange={handleInputChange}
+                  className={fieldClass}
+                >
+                  <option value="">Select item</option>
+                  {shopByStyleClassificationOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs text-slate-500">Choose the style group first.</p>
+              </div>
+            )}
+
+            <div>
+              <Label required>
+                {formData.category === "home" && formData.subcategory === "Blockbuster Combos"
+                  ? "Blockbuster Combos"
+                  : formData.category === "home"
+                    ? "Style variants"
+                    : formData.category === "style"
+                      ? "Style variants"
+                      : "Product Classification"}
+              </Label>
               <select
-                name="productClassification"
-                value={formData.productClassification}
+                name={formData.category === "style" ? "styleVariant" : "productClassification"}
+                value={formData.category === "style" ? formData.styleVariant : formData.productClassification}
                 onChange={handleInputChange}
-                disabled={productClassificationOptions.length === 0}
+                disabled={
+                  (formData.category === "home" && !formData.subcategoryItem) ||
+                  (formData.category === "style" && !formData.subcategory) ||
+                  (formData.category !== "style" && productClassificationOptions.length === 0)
+                }
                 className={`${fieldClass} disabled:bg-slate-100 disabled:text-slate-400`}
               >
-                {productClassificationOptions.length === 0 && (
+                {formData.category === "style" ? (
+                  <>
+                    <option value="">Select variant</option>
+                    {(shopByStyleVariantOptionsByGroup[formData.subcategory] || []).map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </>
+                ) : formData.category === "home" && !formData.subcategoryItem ? (
                   <option value="">Select subcategory item first</option>
-                )}
-                {productClassificationOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
+                ) : null}
+                {formData.category !== "style" &&
+                  productClassificationOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
               </select>
-              <p className="mt-1 text-xs text-slate-500">Frontend-only classification for admin organization.</p>
+              <p className="mt-1 text-xs text-slate-500">
+                {formData.category === "style"
+                  ? "Select a style group first, then choose the matching variant in the new input box."
+                  : "Frontend-only classification for admin organization."}
+              </p>
             </div>
 
             <div>
@@ -1152,7 +1320,6 @@ export default function AddProduct() {
               type="button"
               disabled={isSubmitting}
               onClick={(e) => {
-                setFormData((prev) => ({ ...prev, status: DRAFT_STATUS }));
                 void handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>, DRAFT_STATUS);
               }}
               className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#B4C49A] bg-white px-5 py-2.5 text-sm font-semibold text-[#5F6F46] transition hover:bg-[#F1F5EB] disabled:cursor-not-allowed disabled:opacity-50"
