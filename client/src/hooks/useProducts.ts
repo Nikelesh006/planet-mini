@@ -19,6 +19,32 @@ interface ProductQueryParams {
 
 }
 
+const sortProductsForDisplay = (products: ProductResponse[]) => {
+  return [...products].sort((a, b) => {
+    const aBoosted = a.isBoosted === true;
+    const bBoosted = b.isBoosted === true;
+
+    if (aBoosted !== bBoosted) {
+      return aBoosted ? -1 : 1;
+    }
+
+    const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
+    const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
+
+    if (aBoostTime !== bBoostTime) {
+      return bBoostTime - aBoostTime;
+    }
+
+    const aDraft = (a.status || "").toLowerCase() === "draft";
+    const bDraft = (b.status || "").toLowerCase() === "draft";
+    if (aDraft !== bDraft) {
+      return aDraft ? 1 : -1;
+    }
+
+    return (a.name || "").localeCompare(b.name || "");
+  });
+};
+
 
 
 // Fetch products from API
@@ -124,8 +150,7 @@ const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undef
 // React Query hooks
 
 export const useProducts = (params?: ProductQueryParams) => {
-
-  return useQuery({
+  const query = useQuery({
 
     queryKey: ['products', params],
 
@@ -139,6 +164,15 @@ export const useProducts = (params?: ProductQueryParams) => {
 
   });
 
+  const filteredData = params?.includeDrafts
+    ? query.data
+    : (query.data || []).filter(isVisibleInStorefront);
+
+  return {
+    ...query,
+    data: filteredData ? sortProductsForDisplay(filteredData) : filteredData,
+  };
+
 };
 
 
@@ -149,7 +183,10 @@ export const useProductBySlug = (slug: string) => {
 
     queryKey: ['product', slug],
 
-    queryFn: () => fetchProductBySlug(slug),
+    queryFn: async () => {
+      const product = await fetchProductBySlug(slug);
+      return product && product.inStock === true ? product : null;
+    },
 
     enabled: !!slug,
 
@@ -171,7 +208,10 @@ export const useProduct = (slug: string) => {
 
     queryKey: ['product', slug],
 
-    queryFn: () => fetchProduct(slug),
+    queryFn: async () => {
+      const product = await fetchProduct(slug);
+      return product && product.inStock === true ? product : null;
+    },
 
     enabled: !!slug,
 
@@ -206,6 +246,32 @@ export const useProductById = (id: string) => {
   });
 
 };
+
+export const useToggleBoostProduct = () => {
+  const queryClient = useQueryClient();
+
+  return async (productId: string, isBoosted: boolean) => {
+    const response = await apiFetch(`/api/products/${productId}/boost`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        isBoosted,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to update boost status');
+    }
+
+    await response.json();
+    queryClient.invalidateQueries({ queryKey: ['products'] });
+    return true;
+  };
+};
+
+const isVisibleInStorefront = (product: any) => product?.inStock === true;
 
 
 
@@ -253,12 +319,11 @@ export const useSearchProducts = (searchTerm: string) => {
 
 // Specific hooks for Home page sections
 
-// Shop by Style shows both home category AND style category products
+// Shop by Style shows all home category products plus style category products
 export const useShopByStyleProducts = () => {
   const { data: homeProducts, isLoading: homeLoading } = useHomeProducts();
   const { data: styleProducts, isLoading: styleLoading } = useStyleProducts();
 
-  // Combine both home and style products
   const combinedProducts = [
     ...(homeProducts || []),
     ...(styleProducts || [])
@@ -287,28 +352,30 @@ export const useLatestStyleProducts = () => {
 
 
 export const useBabyCareProducts = () => {
+  const { data: homeProducts, isLoading } = useHomeProducts();
+  const filteredProducts = (homeProducts || []).filter((product: any) =>
+    product.visibleInNewArrivals === true
+  );
 
-  return useProducts({
-
-    category: 'home',
-
-    subcategory: 'New Arrivals'
-
-  });
+  return {
+    data: filteredProducts,
+    isLoading
+  };
 
 };
 
 
 
 export const useMuslinProducts = () => {
+  const { data: homeProducts, isLoading } = useHomeProducts();
+  const filteredProducts = (homeProducts || []).filter((product: any) =>
+    product.visibleInTrendingProducts === true
+  );
 
-  return useProducts({
-
-    category: 'home',
-
-    subcategory: 'Trending Products'
-
-  });
+  return {
+    data: filteredProducts,
+    isLoading
+  };
 
 };
 

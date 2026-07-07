@@ -20,6 +20,8 @@ export const products = sqliteTable("products", {
   stockQuantity: integer("stock_quantity").default(0),
   lowStockAlert: integer("low_stock_alert").default(0),
   isNew: integer("is_new", { mode: "boolean" }).default(false),
+  isBoosted: integer("is_boosted", { mode: "boolean" }).default(false),
+  boostUpdatedAt: text("boost_updated_at"),
   colors: text("colors"), // JSON string for SQLite
   sizes: text("sizes"), // JSON string for SQLite
   gender: text("gender"),

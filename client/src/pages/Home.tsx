@@ -780,8 +780,8 @@ export default function Home() {
 
             {/* Jhablas */}
 
-            <button 
-              onClick={() => setActiveFilter(activeFilter === 'jhablas' ? null : 'jhablas')}
+            <Link
+              href="/shop/style?filter=jhlablas"
               className={`group flex flex-col items-center ${activeFilter === 'jhablas' ? 'ring-4 ring-primary scale-105' : ''}`}
             >
 
@@ -808,14 +808,14 @@ export default function Home() {
 
               <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'jhablas' ? 'text-primary' : 'text-black'}`}>Jhablas</h3>
 
-            </button>
+            </Link>
 
 
 
             {/* Towels & Blankets */}
 
-            <button 
-              onClick={() => setActiveFilter(activeFilter === 'towels' ? null : 'towels')}
+            <Link
+              href="/shop/style?filter=towels"
               className={`group flex flex-col items-center ${activeFilter === 'towels' ? 'ring-4 ring-secondary scale-105' : ''}`}
             >
 
@@ -842,14 +842,14 @@ export default function Home() {
 
               <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'towels' ? 'text-secondary' : 'text-black'}`}>Towels & Blankets</h3>
 
-            </button>
+            </Link>
 
 
 
             {/* Nappies */}
 
-            <button 
-              onClick={() => setActiveFilter(activeFilter === 'nappies' ? null : 'nappies')}
+            <Link
+              href="/shop/style?filter=nappies"
               className={`group flex flex-col items-center ${activeFilter === 'nappies' ? 'ring-4 ring-primary scale-105' : ''}`}
             >
 
@@ -876,14 +876,14 @@ export default function Home() {
 
               <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'nappies' ? 'text-primary' : 'text-black'}`}>Nappies</h3>
 
-            </button>
+            </Link>
 
 
 
             {/* Wipes */}
 
-            <button 
-              onClick={() => setActiveFilter(activeFilter === 'wipes' ? null : 'wipes')}
+            <Link
+              href="/shop/style?filter=wipes"
               className={`group flex flex-col items-center ${activeFilter === 'wipes' ? 'ring-4 ring-secondary scale-105' : ''}`}
             >
 
@@ -910,14 +910,14 @@ export default function Home() {
 
               <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'wipes' ? 'text-secondary' : 'text-black'}`}>Wipes</h3>
 
-            </button>
+            </Link>
 
 
 
             {/* Beds */}
 
-            <button 
-              onClick={() => setActiveFilter(activeFilter === 'beds' ? null : 'beds')}
+            <Link
+              href="/shop/style?filter=beds"
               className={`group flex flex-col items-center ${activeFilter === 'beds' ? 'ring-4 ring-primary scale-105' : ''}`}
             >
 
@@ -944,7 +944,7 @@ export default function Home() {
 
               <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'beds' ? 'text-primary' : 'text-black'}`}>Beds</h3>
 
-            </button>
+            </Link>
 
           </div>
 

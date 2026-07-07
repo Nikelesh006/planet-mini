@@ -30,6 +30,7 @@ interface ProductFormData {
   productType: "single" | "combo";
   productClassification: string;
   collectionName: string;
+  styleGroup: string;
   description: string;
   sellingPrice: string;
   mrp: string;
@@ -45,6 +46,9 @@ interface ProductFormData {
   isNew: boolean;
   status: string;
   showOnWebsite: boolean;
+  visibleInNewArrivals: boolean;
+  visibleInTrendingProducts: boolean;
+  visibleInShopByStyle: boolean;
   featuredProduct: boolean;
   bestSeller: boolean;
   recommendedProduct: boolean;
@@ -79,6 +83,7 @@ const emptyForm: ProductFormData = {
   productType: "single",
   productClassification: "",
   collectionName: "",
+  styleGroup: "",
   description: "",
   sellingPrice: "",
   mrp: "",
@@ -94,6 +99,9 @@ const emptyForm: ProductFormData = {
   isNew: false,
   status: "Active",
   showOnWebsite: true,
+  visibleInNewArrivals: false,
+  visibleInTrendingProducts: false,
+  visibleInShopByStyle: false,
   featuredProduct: false,
   bestSeller: false,
   recommendedProduct: false,
@@ -300,7 +308,7 @@ export default function AddProduct() {
         slug: productData.slug || "",
         productType: (productData as any).productType || "single",
         productClassification: (productData as any).productClassification || "",
-        collectionName: (productData as any).collectionName || (productData as any).collectionPrintName || productData.name || "",
+        collectionName: (productData as any).collectionName || (productData as any).collectionPrintName || (productData as any).printName || productData.name || "",
         description: productData.description || "",
         sellingPrice: productData.sellingPrice != null ? String(productData.sellingPrice) : "",
         mrp: productData.mrp?.toString() || "",
@@ -308,6 +316,7 @@ export default function AddProduct() {
         subcategory: parsedSubcategory.parent,
         subcategoryItem: parsedSubcategory.child,
         styleVariant: (productData as any).styleVariant || "",
+        styleGroup: (productData as any).styleGroup || parsedSubcategory.parent || parsedSubcategory.child || "",
         hospitalBagsPackSize: (productData as any).hospitalBagsPackSize || "",
         images: parsedImages,
         rating: productData.rating || 4.5,
@@ -316,6 +325,9 @@ export default function AddProduct() {
         isNew: productData.isNew || false,
         status: (productData as any).status || "Active",
         showOnWebsite: (productData as any).showOnWebsite ?? true,
+        visibleInNewArrivals: (productData as any).visibleInNewArrivals ?? false,
+        visibleInTrendingProducts: (productData as any).visibleInTrendingProducts ?? false,
+        visibleInShopByStyle: (productData as any).visibleInShopByStyle ?? false,
         featuredProduct: (productData as any).featuredProduct || false,
         bestSeller: (productData as any).bestSeller || false,
         recommendedProduct: (productData as any).recommendedProduct || false,
@@ -346,6 +358,7 @@ export default function AddProduct() {
   }, [formData.mrp, formData.sellingPrice]);
 
   const previewCategory = formData.category === "home" ? "Home" : formData.category === "style" ? "Shop by Style" : "Category";
+  const normalizedCategory = formData.category.toLowerCase();
   const savedSubcategory = formData.category === "style" && formData.styleVariant
     ? `${formData.subcategory} / ${formData.styleVariant}`
     : formData.subcategoryItem
@@ -473,8 +486,28 @@ export default function AddProduct() {
       setFormData((prev) => ({
         ...prev,
         [name]: type === "checkbox" ? checked : value,
-        ...(name === "category" ? { subcategory: "", subcategoryItem: "", productClassification: "", styleVariant: "" } : {}),
-        ...(name === "subcategory" ? { subcategoryItem: "", productClassification: "", styleVariant: "", hospitalBagsPackSize: "" } : {}),
+        ...(name === "category"
+          ? {
+              subcategory: "",
+              subcategoryItem: "",
+              productClassification: "",
+              styleVariant: "",
+              styleGroup: "",
+              hospitalBagsPackSize: "",
+              visibleInNewArrivals: false,
+              visibleInTrendingProducts: false,
+              visibleInShopByStyle: false,
+            }
+          : {}),
+        ...(name === "subcategory"
+          ? {
+              subcategoryItem: "",
+              productClassification: "",
+              styleVariant: "",
+              styleGroup: value,
+              hospitalBagsPackSize: "",
+            }
+          : {}),
       }));
 
     if (errors[name as keyof ProductFormData]) {
@@ -590,7 +623,7 @@ export default function AddProduct() {
 
     setIsSubmitting(true);
 
-    const productPayload = {
+  const productPayload = {
     slug: previewSlug,
     sku: previewSku,
     name: formData.name,
@@ -616,9 +649,16 @@ export default function AddProduct() {
     careInstructions: productDetails.careInstructions,
     productType: formData.productType,
     productClassification: formData.productClassification,
+    styleGroup: formData.styleGroup || (formData.category === "style" ? formData.subcategory : formData.subcategoryItem),
+    styleVariant: formData.styleVariant,
     hospitalBagsPackSize: formData.hospitalBagsPackSize,
     collectionName: formData.collectionName,
+    collectionPrintName: formData.collectionName,
+    printName: formData.collectionName,
     showOnWebsite: formData.showOnWebsite,
+    visibleInNewArrivals: formData.visibleInNewArrivals,
+    visibleInTrendingProducts: formData.visibleInTrendingProducts,
+    visibleInShopByStyle: formData.visibleInShopByStyle,
     featuredProduct: formData.featuredProduct,
     bestSeller: formData.bestSeller,
     recommendedProduct: formData.recommendedProduct,
@@ -925,7 +965,7 @@ export default function AddProduct() {
                 className={fieldClass}
                 placeholder="Welcome to Planet Mini"
               />
-              <p className="mt-1 text-xs text-slate-500">For sorting and collection pages. Not sent to backend.</p>
+              <p className="mt-1 text-xs text-slate-500">Saved with the product for sorting and collection pages.</p>
             </div>
 
             <div>
@@ -1226,7 +1266,10 @@ export default function AddProduct() {
 
             <div>
               <Label>Visibility</Label>
-              <div className="mt-3 space-y-3">
+              <p className="mt-1 text-xs text-slate-500">
+                Select one or more sections where this product should appear.
+              </p>
+              <div className="mt-3 space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <label className="flex items-center gap-3">
                   <input
                     type="checkbox"
@@ -1237,46 +1280,65 @@ export default function AddProduct() {
                   />
                   <span className="text-sm font-semibold text-slate-800">Show on Website</span>
                 </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    name="isNew"
-                    checked={formData.isNew}
-                    onChange={handleInputChange}
-                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
-                  />
-                  <span className="text-sm font-semibold text-slate-800">New Arrival</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    name="featuredProduct"
-                    checked={formData.featuredProduct}
-                    onChange={handleInputChange}
-                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
-                  />
-                  <span className="text-sm font-semibold text-slate-800">Featured Product</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    name="bestSeller"
-                    checked={formData.bestSeller}
-                    onChange={handleInputChange}
-                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
-                  />
-                  <span className="text-sm font-semibold text-slate-800">Best Seller</span>
-                </label>
-                <label className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    name="recommendedProduct"
-                    checked={formData.recommendedProduct}
-                    onChange={handleInputChange}
-                    className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
-                  />
-                  <span className="text-sm font-semibold text-slate-800">Recommended Product</span>
-                </label>
+
+                <div className="rounded-lg border border-white bg-white p-3">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Available sections
+                  </p>
+                  <div className="mt-3 space-y-3">
+                    {normalizedCategory === "home" && (
+                      <>
+                        <div className="rounded-lg border border-slate-200 p-3">
+                          <p className="text-sm font-semibold text-slate-900">Home Page</p>
+                          <p className="mt-1 text-xs text-slate-500">
+                            Choose which Home sections should display this product.
+                          </p>
+                          <div className="mt-3 space-y-3">
+                            <label className="flex items-center gap-3">
+                              <input
+                                type="checkbox"
+                                name="visibleInNewArrivals"
+                                checked={formData.visibleInNewArrivals}
+                                onChange={handleInputChange}
+                                className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                              />
+                              <span className="text-sm font-semibold text-slate-800">New Arrivals</span>
+                            </label>
+                            <label className="flex items-center gap-3">
+                              <input
+                                type="checkbox"
+                                name="visibleInTrendingProducts"
+                                checked={formData.visibleInTrendingProducts}
+                                onChange={handleInputChange}
+                                className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                              />
+                              <span className="text-sm font-semibold text-slate-800">Trending Products</span>
+                            </label>
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    {normalizedCategory === "style" && (
+                      <div className="rounded-lg border border-slate-200 p-3">
+                        <p className="text-sm font-semibold text-slate-900">Shop by Style</p>
+                        <p className="mt-1 text-xs text-slate-500">
+                          Select this option to display the product on the Shop by Style page.
+                        </p>
+                        <label className="mt-3 flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            name="visibleInShopByStyle"
+                            checked={formData.visibleInShopByStyle}
+                            onChange={handleInputChange}
+                            className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                          />
+                          <span className="text-sm font-semibold text-slate-800">Shop by Style</span>
+                        </label>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 

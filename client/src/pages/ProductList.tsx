@@ -15,9 +15,10 @@ import {
   Star,
   TrendingUp,
   Calendar,
-  Check
+  Check,
+  Zap
 } from "lucide-react";
-import { useProducts, useDeleteProduct } from "@/hooks/useProducts";
+import { useProducts, useDeleteProduct, useToggleBoostProduct } from "@/hooks/useProducts";
 import { Modal, ConfirmModal } from "@/components/ui/Modal";
 import { useToast } from "@/hooks/use-toast";
 import type { ProductResponse } from "@shared/routes";
@@ -26,10 +27,12 @@ export default function ProductList() {
   const { data: products = [], isLoading, error } = useProducts({ includeDrafts: true });
   const deleteProduct = useDeleteProduct();
   const { toast } = useToast();
+  const toggleBoostProduct = useToggleBoostProduct();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filteredProducts, setFilteredProducts] = useState<ProductResponse[]>([]);
   const [selectedProducts, setSelectedProducts] = useState<Set<number>>(new Set());
+  const [boostingProducts, setBoostingProducts] = useState<Set<number>>(new Set());
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; productId: string | null }>({ 
     isOpen: false, 
     productId: null 
@@ -61,6 +64,18 @@ export default function ProductList() {
       }
 
       filtered.sort((a, b) => {
+        const aBoosted = a.isBoosted === true;
+        const bBoosted = b.isBoosted === true;
+        if (aBoosted !== bBoosted) {
+          return aBoosted ? -1 : 1;
+        }
+
+        const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
+        const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
+        if (aBoostTime !== bBoostTime) {
+          return bBoostTime - aBoostTime;
+        }
+
         const aDraft = (a.status || "").toLowerCase() === "draft";
         const bDraft = (b.status || "").toLowerCase() === "draft";
 
@@ -129,6 +144,39 @@ const handleProductSelect = (productId: number) => {
     return newSet;
   });
 };
+
+  const handleToggleBoost = async (product: ProductResponse) => {
+    const nextBoostState = !(product.isBoosted === true);
+    setBoostingProducts(prev => {
+      const next = new Set(prev);
+      next.add(product.id);
+      return next;
+    });
+
+    try {
+      await toggleBoostProduct(String(product.id), nextBoostState);
+      toast({
+        title: nextBoostState ? "Product boosted" : "Boost removed",
+        description: nextBoostState
+          ? "The product will now appear first wherever it is eligible to display."
+          : "The product will return to its normal position.",
+        variant: "success",
+      });
+    } catch (error) {
+      console.error("Error updating boost status:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update boost status. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setBoostingProducts(prev => {
+        const next = new Set(prev);
+        next.delete(product.id);
+        return next;
+      });
+    }
+  };
 
   const handleBulkDelete = async () => {
     if (selectedProducts.size === 0) {
@@ -478,6 +526,18 @@ const handleProductSelect = (productId: number) => {
                         >
                           <Edit className="w-4 h-4" />
                         </Link>
+                        <button
+                          onClick={() => handleToggleBoost(product)}
+                          disabled={boostingProducts.has(product.id)}
+                          className={`transition-colors ${
+                            product.isBoosted
+                              ? "text-yellow-500 hover:text-yellow-700"
+                              : "text-slate-500 hover:text-yellow-600"
+                          } disabled:opacity-50`}
+                          title={product.isBoosted ? "Remove Boost" : "Boost Product"}
+                        >
+                          <Zap className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => handleDeleteProduct(String(product.id))}
                           className="text-red-600 hover:text-red-900"

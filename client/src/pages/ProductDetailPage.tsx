@@ -96,6 +96,14 @@ export default function ProductDetailPage() {
     const related = allProducts
       .filter((p: any) => p.id !== currentProductId) // Exclude current product
       .sort((a: any, b: any) => {
+        const aBoosted = a.isBoosted === true;
+        const bBoosted = b.isBoosted === true;
+        if (aBoosted !== bBoosted) return aBoosted ? -1 : 1;
+
+        const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
+        const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
+        if (aBoostTime !== bBoostTime) return bBoostTime - aBoostTime;
+
         // Priority 1: Same subcategory
         const aSameSub = a.subcategory === currentSubcategory;
         const bSameSub = b.subcategory === currentSubcategory;

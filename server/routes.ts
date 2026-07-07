@@ -733,6 +733,12 @@ const validateActiveProduct = (payload: any) => {
   return null;
 };
 
+const isBoostOnlyUpdate = (payload: any) => {
+  const keys = Object.keys(payload || {});
+  if (keys.length === 0) return false;
+  return keys.every((key) => ["isBoosted", "boostUpdatedAt"].includes(key));
+};
+
 export async function registerRoutes(
 
 
@@ -1964,7 +1970,7 @@ export async function registerRoutes(
 
       const updateData = req.body;
 
-      if ((updateData.status || "Active").toLowerCase() === "active") {
+      if (!isBoostOnlyUpdate(updateData) && (updateData.status || "Active").toLowerCase() === "active") {
         const invalidField = validateActiveProduct(updateData);
         if (invalidField) {
           return res.status(400).json({
@@ -2214,7 +2220,7 @@ export async function registerRoutes(
 
       const updateData = req.body;
 
-      if ((updateData.status || "Active").toLowerCase() === "active") {
+      if (!isBoostOnlyUpdate(updateData) && (updateData.status || "Active").toLowerCase() === "active") {
         const invalidField = validateActiveProduct(updateData);
         if (invalidField) {
           return res.status(400).json({
@@ -6378,6 +6384,36 @@ export async function registerRoutes(
 
     }
 
+  });
+
+  app.patch("/api/products/:id/boost", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { isBoosted } = req.body || {};
+
+      if (!id) {
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+
+      const existingProduct = await storage.getProductById(id);
+      if (!existingProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      const updatedProduct = await storage.updateProduct(id, {
+        isBoosted: Boolean(isBoosted),
+        boostUpdatedAt: Boolean(isBoosted) ? new Date().toISOString() : null,
+      });
+
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error("Error updating boost status:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
 
