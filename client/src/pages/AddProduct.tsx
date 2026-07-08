@@ -923,15 +923,16 @@ export default function AddProduct() {
                       </option>
                     ))}
                   </>
-                ) : formData.category === "home" && !formData.subcategoryItem ? (
-                  <option value="">Select subcategory item first</option>
-                ) : null}
-                {formData.category !== "style" &&
-                  productClassificationOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
+                ) : (
+                  <>
+                    <option value="">Select product classification</option>
+                    {productClassificationOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </>
+                )}
               </select>
               <p className="mt-1 text-xs text-slate-500">
                 {formData.category === "style"

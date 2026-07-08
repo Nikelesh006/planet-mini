@@ -14,6 +14,7 @@ import { Sparkles, Filter, Search, X } from "lucide-react";
 
 
 import { useBlockbusterProducts, useGiftingProducts, useProducts, useShopByStyleProducts } from "@/hooks/useProducts";
+import { useQueryClient } from "@tanstack/react-query";
 
 
 import { Slider } from "@/components/ui/slider";
@@ -59,6 +60,7 @@ export default function ShopStyle() {
 
 
   const [location] = useLocation();
+  const queryClient = useQueryClient();
 
 
   // Scroll to top when component mounts
@@ -88,6 +90,9 @@ export default function ShopStyle() {
   const isGiftingSection = searchParams.get("section") === "gifting";
 
   const homeFilter = searchParams.get("filter");
+  const searchParam = searchParams.get("search");
+  const customMode = searchParams.get("custom") === "true";
+
 
 
 
@@ -116,47 +121,30 @@ export default function ShopStyle() {
 
   const { data: giftingSectionProducts, isLoading: giftingSectionLoading } = useGiftingProducts();
 
-
-  const products = isBlockbusterSection
-
-
-    ? blockbusterProducts
+  // Fetch all products for custom mode - always fetch to ensure availability
+  const { data: allProducts, isLoading: allProductsLoading } = useProducts();
 
 
-    : isHospitalBagsSection
+  const products = customMode
+    ? (allProducts || [])
+    : (isBlockbusterSection
+      ? blockbusterProducts
+      : isHospitalBagsSection
+        ? hospitalBagsProducts
+        : isGiftingSection
+          ? giftingSectionProducts
+          : styleProducts);
 
 
-      ? hospitalBagsProducts
-
-
-      : isGiftingSection
-
-
-        ? giftingSectionProducts
-
-
-        : styleProducts;
-
-
-  const isLoading = isBlockbusterSection
-
-
-    ? blockbusterLoading
-
-
-    : isHospitalBagsSection
-
-
-      ? hospitalBagsLoading
-
-
-      : isGiftingSection
-
-
-        ? giftingSectionLoading
-
-
-        : styleLoading;
+  const isLoading = customMode
+    ? allProductsLoading
+    : isBlockbusterSection
+      ? blockbusterLoading
+      : isHospitalBagsSection
+        ? hospitalBagsLoading
+        : isGiftingSection
+          ? giftingSectionLoading
+          : styleLoading;
 
 
   
@@ -175,6 +163,8 @@ export default function ShopStyle() {
 
 
   const [maxPrice, setMaxPrice] = useState(5000);
+
+  const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
 
 
 
@@ -202,6 +192,9 @@ export default function ShopStyle() {
 
 
     { id: 'newborn-accessories', name: 'Newborn Accessories', count: 12 },
+
+
+    { id: 'hospital-bags', name: 'Hospital Bags', count: 15 },
 
 
   ];
@@ -432,24 +425,35 @@ export default function ShopStyle() {
   const matchesHomeFilter = (product: any, filter: string | null) => {
     if (!filter) return true;
 
-    const name = normalizeText(product.name);
-    const description = normalizeText(product.description);
-    const haystack = `${name} ${description}`;
-    const normalizedFilter = normalizeText(filter);
+    // Style filter: match styleGroup or styleVariant
+    const matchesStyle =
+      (product as any).styleGroup?.toLowerCase() === filter.toLowerCase() ||
+      (product as any).styleVariant?.toLowerCase() === filter.toLowerCase();
 
-    const filterTokens: Record<string, string[]> = {
-      "jhlablas": ["jhabla", "jhablas"],
-      "hooded towels": ["hooded towel", "towel", "blanket"],
-      "hooded-towels": ["hooded towel", "towel", "blanket"],
-      "beds": ["bed", "nest", "baby bed"],
-      "muslin": ["muslin"],
-      "napkins": ["napkin", "wipe"],
-      "rompers": ["romper"],
-      "towels": ["towel", "blanket"],
-    };
+    // Special handling for hospital-bags filter - match subcategory
+    if (filter.toLowerCase() === 'hospital-bags') {
+      const subcategory = normalizeText(product.subcategory);
+      return subcategory.includes('hospital bag');
+    }
 
-    const tokens = filterTokens[filter] || filterTokens[normalizedFilter] || [normalizedFilter];
-    return tokens.some((token) => haystack.includes(normalizeText(token)));
+    return matchesStyle;
+  };
+
+  const matchesSearch = (product: any, keyword: string) => {
+    if (!keyword) return true;
+
+    const searchTerm = keyword.trim().toLowerCase();
+
+    // Search filter: match any of the specified fields
+    return (
+      (product as any).styleGroup?.toLowerCase().includes(searchTerm) ||
+      (product as any).styleVariant?.toLowerCase().includes(searchTerm) ||
+      (product as any).printName?.toLowerCase().includes(searchTerm) ||
+      (product as any).collectionName?.toLowerCase().includes(searchTerm) ||
+      (product as any).collectionPrintName?.toLowerCase().includes(searchTerm) ||
+      product.name?.toLowerCase().includes(searchTerm) ||
+      product.description?.toLowerCase().includes(searchTerm)
+    );
   };
 
   const filteredProducts = products
@@ -460,11 +464,14 @@ export default function ShopStyle() {
 
         .filter(product => Number(product.sellingPrice) <= maxPrice)
 
-        .filter(product => matchesHomeFilter(product, homeFilter))
+        .filter(product => customMode || matchesHomeFilter(product, homeFilter))
+
+        .filter(product => matchesSearch(product, searchQuery))
 
 
         .filter(product => {
-
+          // Skip section filters in custom mode
+          if (customMode) return true;
 
           const category = normalizeText(product.category);
 
@@ -857,6 +864,36 @@ export default function ShopStyle() {
 
 
       </section>
+
+
+
+      {/* Customise Hospital Bags Button */}
+
+      {homeFilter === 'hospital-bags' && (
+
+        <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
+
+          <div className="text-center">
+
+            <button
+
+              onClick={() => window.location.href = '/shop/style?custom=true&filter=hospital-bags'}
+
+              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl"
+
+            >
+
+              <Sparkles className="w-5 h-5" />
+
+              Customise Your Own Hospital Bags
+
+            </button>
+
+          </div>
+
+        </section>
+
+      )}
 
 
 
@@ -1555,7 +1592,7 @@ export default function ShopStyle() {
                     {filteredProducts.map((product, index) => (
 
 
-                      <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} />
+                      <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} customMode={customMode} />
 
 
                     ))}

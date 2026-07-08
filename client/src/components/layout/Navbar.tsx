@@ -41,16 +41,19 @@ export default function Navbar() {
   // Search algorithm - filter products based on query
   const searchResults = useMemo(() => {
     if (!searchQuery.trim() || !allProducts) return [];
-    
+
     const query = searchQuery.toLowerCase().trim();
-    
+
     return allProducts.filter(product => {
+      const styleGroupMatch = (product as any).styleGroup?.toLowerCase().includes(query);
+      const styleVariantMatch = (product as any).styleVariant?.toLowerCase().includes(query);
+      const printNameMatch = (product as any).printName?.toLowerCase().includes(query);
+      const collectionNameMatch = (product as any).collectionName?.toLowerCase().includes(query);
+      const collectionPrintNameMatch = (product as any).collectionPrintName?.toLowerCase().includes(query);
       const nameMatch = product.name?.toLowerCase().includes(query);
-      const categoryMatch = product.category?.toLowerCase().includes(query);
-      const subcategoryMatch = product.subcategory?.toLowerCase().includes(query);
       const descriptionMatch = product.description?.toLowerCase().includes(query);
-      
-      return nameMatch || categoryMatch || subcategoryMatch || descriptionMatch;
+
+      return styleGroupMatch || styleVariantMatch || printNameMatch || collectionNameMatch || collectionPrintNameMatch || nameMatch || descriptionMatch;
     }).slice(0, 8); // Limit to 8 results
   }, [searchQuery, allProducts]);
 
@@ -123,6 +126,13 @@ export default function Navbar() {
       window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);
+    }
+  };
+
+  const handleSearchSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      window.location.href = `/shop/style?search=${encodeURIComponent(searchQuery.trim())}`;
+      setSearchDropdownOpen(false);
     }
   };
 
@@ -249,6 +259,7 @@ export default function Navbar() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onFocus={() => setSearchDropdownOpen(true)}
+                  onKeyDown={handleSearchSubmit}
                   className="pl-9 pr-4 py-3 bg-white border border-gray-300 rounded-full text-sm focus:outline-none focus:border-gray-400 focus:shadow-lg shadow-md w-64 lg:w-80 transition-all placeholder:text-gray-500"
                 />
                 

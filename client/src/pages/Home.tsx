@@ -109,47 +109,23 @@ export default function Home() {
 
   const { data: homeProducts, isLoading: homeLoading } = useHomeProducts();
 
-  // Shop by Style filter state
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-
-  // Helper function to filter products by search term
-  const filterProducts = (products: any[] | undefined, filterTerm: string | null) => {
-    if (!filterTerm || !products) return products;
-    const searchTerm = filterTerm.toLowerCase();
-    return products.filter(product => {
-      const nameMatch = product.name?.toLowerCase().includes(searchTerm);
-      const descMatch = product.description?.toLowerCase().includes(searchTerm);
-      const categoryMatch = product.category?.toLowerCase().includes(searchTerm);
-      const subcategoryMatch = product.subcategory?.toLowerCase().includes(searchTerm);
-      return nameMatch || descMatch || categoryMatch || subcategoryMatch;
-    });
-  };
-
   // Specific hooks for each section
 
-  const { data: shopByStyleProductsRaw, isLoading: shopByStyleLoading } = useShopByStyleProducts();
-  const shopByStyleProducts = filterProducts(shopByStyleProductsRaw, activeFilter);
+  const { data: shopByStyleProducts, isLoading: shopByStyleLoading } = useShopByStyleProducts();
 
-  const { data: latestStyleProductsRaw, isLoading: latestStyleLoading } = useLatestStyleProducts();
-  const latestStyleProducts = filterProducts(latestStyleProductsRaw, activeFilter);
+  const { data: latestStyleProducts, isLoading: latestStyleLoading } = useLatestStyleProducts();
 
-  const { data: babyCareProductsRaw, isLoading: babyCareLoading } = useBabyCareProducts();
-  const babyCareProducts = filterProducts(babyCareProductsRaw, activeFilter);
+  const { data: babyCareProducts, isLoading: babyCareLoading } = useBabyCareProducts();
 
-  const { data: muslinProductsRaw, isLoading: muslinLoading } = useMuslinProducts();
-  const muslinProducts = filterProducts(muslinProductsRaw, activeFilter);
+  const { data: muslinProducts, isLoading: muslinLoading } = useMuslinProducts();
 
-  const { data: superSaverProductsRaw, isLoading: superSaverLoading } = useSuperSaverProducts();
-  const superSaverProducts = filterProducts(superSaverProductsRaw, activeFilter);
+  const { data: superSaverProducts, isLoading: superSaverLoading } = useSuperSaverProducts();
 
-  const { data: comboProductsRaw, isLoading: comboLoading } = useComboProducts();
-  const comboProducts = filterProducts(comboProductsRaw, activeFilter);
+  const { data: comboProducts, isLoading: comboLoading } = useComboProducts();
 
-  const { data: featuredProductsRaw, isLoading: featuredLoading } = useFeaturedProducts();
-  const featuredProducts = filterProducts(featuredProductsRaw, activeFilter);
+  const { data: featuredProducts, isLoading: featuredLoading } = useFeaturedProducts();
 
-  const { data: giftingProductsRaw, isLoading: giftingLoading } = useGiftingProducts();
-  const giftingProducts = filterProducts(giftingProductsRaw, activeFilter);
+  const { data: giftingProducts, isLoading: giftingLoading } = useGiftingProducts();
 
 
 
@@ -750,30 +726,6 @@ export default function Home() {
 
           </motion.div>
 
-          {/* Active Filter Display */}
-          {activeFilter && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-center items-center gap-4 mb-6"
-            >
-              <div className="bg-primary text-white px-4 py-2 rounded-full flex items-center gap-2 shadow-md">
-                <span className="font-semibold capitalize">Filter: {activeFilter}</span>
-                <button 
-                  onClick={() => setActiveFilter(null)}
-                  className="bg-white/20 hover:bg-white/30 rounded-full p-1 transition-colors"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              <p className="text-gray-600 text-sm">
-                Showing filtered results in all sections below
-              </p>
-            </motion.div>
-          )}
-
           {/* Style Categories Grid */}
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-8 px-2 sm:px-4 lg:px-6 bg-red-50 py-6 rounded-3xl shadow-inner">
@@ -781,11 +733,11 @@ export default function Home() {
             {/* Jhablas */}
 
             <Link
-              href="/shop/style?filter=jhlablas"
-              className={`group flex flex-col items-center ${activeFilter === 'jhablas' ? 'ring-4 ring-primary scale-105' : ''}`}
+              href="/shop/style?filter=jhablas"
+              className="group flex flex-col items-center"
             >
 
-              <div className={`bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 ${activeFilter === 'jhablas' ? 'border-primary' : 'border-primary/20 hover:border-primary/40'}`}>
+              <div className="bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 border-primary/20 hover:border-primary/40">
 
                 <img 
 
@@ -806,7 +758,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'jhablas' ? 'text-primary' : 'text-black'}`}>Jhablas</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Jhablas</h3>
 
             </Link>
 
@@ -816,10 +768,10 @@ export default function Home() {
 
             <Link
               href="/shop/style?filter=towels"
-              className={`group flex flex-col items-center ${activeFilter === 'towels' ? 'ring-4 ring-secondary scale-105' : ''}`}
+              className="group flex flex-col items-center"
             >
 
-              <div className={`bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 ${activeFilter === 'towels' ? 'border-secondary' : 'border-secondary/20 hover:border-secondary/40'}`}>
+              <div className="bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 border-secondary/20 hover:border-secondary/40">
 
                 <img 
 
@@ -840,7 +792,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'towels' ? 'text-secondary' : 'text-black'}`}>Towels & Blankets</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Towels & Blankets</h3>
 
             </Link>
 
@@ -850,10 +802,10 @@ export default function Home() {
 
             <Link
               href="/shop/style?filter=nappies"
-              className={`group flex flex-col items-center ${activeFilter === 'nappies' ? 'ring-4 ring-primary scale-105' : ''}`}
+              className="group flex flex-col items-center"
             >
 
-              <div className={`bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 ${activeFilter === 'nappies' ? 'border-primary' : 'border-primary/20 hover:border-primary/40'}`}>
+              <div className="bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 border-primary/20 hover:border-primary/40">
 
                 <img 
 
@@ -874,7 +826,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'nappies' ? 'text-primary' : 'text-black'}`}>Nappies</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Nappies</h3>
 
             </Link>
 
@@ -884,10 +836,10 @@ export default function Home() {
 
             <Link
               href="/shop/style?filter=wipes"
-              className={`group flex flex-col items-center ${activeFilter === 'wipes' ? 'ring-4 ring-secondary scale-105' : ''}`}
+              className="group flex flex-col items-center"
             >
 
-              <div className={`bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 ${activeFilter === 'wipes' ? 'border-secondary' : 'border-secondary/20 hover:border-secondary/40'}`}>
+              <div className="bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 border-secondary/20 hover:border-secondary/40">
 
                 <img 
 
@@ -908,7 +860,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'wipes' ? 'text-secondary' : 'text-black'}`}>Wipes</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Wipes</h3>
 
             </Link>
 
@@ -918,10 +870,10 @@ export default function Home() {
 
             <Link
               href="/shop/style?filter=beds"
-              className={`group flex flex-col items-center ${activeFilter === 'beds' ? 'ring-4 ring-primary scale-105' : ''}`}
+              className="group flex flex-col items-center"
             >
 
-              <div className={`bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 ${activeFilter === 'beds' ? 'border-primary' : 'border-primary/20 hover:border-primary/40'}`}>
+              <div className="bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 border-primary/20 hover:border-primary/40">
 
                 <img 
 
@@ -942,7 +894,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className={`text-sm sm:text-lg font-bold text-center mt-4 ${activeFilter === 'beds' ? 'text-primary' : 'text-black'}`}>Beds</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Beds</h3>
 
             </Link>
 
@@ -1000,7 +952,7 @@ export default function Home() {
           <div className="mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Hospital Bag Image 1 */}
-              <Link href="/shop/style?section=hospital-bags">
+              <Link href="/shop/style?filter=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1020,7 +972,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Hospital Bag Image 2 */}
-              <Link href="/shop/style?section=hospital-bags">
+              <Link href="/shop/style?filter=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1040,7 +992,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Hospital Bag Image 3 */}
-              <Link href="/shop/style?section=hospital-bags">
+              <Link href="/shop/style?filter=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

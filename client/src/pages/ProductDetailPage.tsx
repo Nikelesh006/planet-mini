@@ -23,6 +23,10 @@ export default function ProductDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
 
+  // Check for custom mode from URL
+  const searchParams = new URLSearchParams(window.location.search);
+  const customMode = searchParams.get("custom") === "true";
+
   if (!slug) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -300,7 +304,7 @@ export default function ProductDetailPage() {
       content: (
         <div className="space-y-4">
           <p className="whitespace-pre-wrap">{product.description || "Premium quality product thoughtfully made for your little one."}</p>
-          {(product as any).fabric || (product as any).colorTheme || (product as any).gender || (product as any).occasion ? (
+          {(product as any).fabric || (product as any).colorTheme || (product as any).gender || (product as any).occasion || (product as any).collectionName || (product as any).printName ? (
             <div>
               <h4 className="font-semibold text-gray-900 mb-2">Thoughtful Details You'll Love</h4>
               <ul className="list-disc pl-5 space-y-1">
@@ -308,6 +312,8 @@ export default function ProductDetailPage() {
                 {(product as any).colorTheme && <li><span className="font-medium text-gray-900">Color :</span> {(product as any).colorTheme}</li>}
                 {(product as any).gender && <li><span className="font-medium text-gray-900">Gender :</span> {(product as any).gender}</li>}
                 {(product as any).occasion && <li><span className="font-medium text-gray-900">Occasion :</span> {(product as any).occasion}</li>}
+                {(product as any).productType === 'combo' && (product as any).collectionName && <li><span className="font-medium text-gray-900">Collection :</span> {(product as any).collectionName}</li>}
+                {(product as any).productType === 'single' && (product as any).printName && <li><span className="font-medium text-gray-900">Print :</span> {(product as any).printName}</li>}
               </ul>
             </div>
           ) : null}
@@ -611,7 +617,7 @@ export default function ProductDetailPage() {
                     className="h-11 min-w-0 bg-black text-white px-2 text-sm rounded-lg font-semibold hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 whitespace-nowrap sm:h-auto sm:flex-1 sm:px-6 sm:py-3 sm:text-base sm:gap-2"
                   >
                     <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
-                    {outOfStock ? "Out of Stock" : "Add To Cart"}
+                    {outOfStock ? "Out of Stock" : (customMode ? "Add to Bag" : "Add To Cart")}
                   </button>
                   <button
                     onClick={handleBuyNow}
@@ -800,10 +806,10 @@ export default function ProductDetailPage() {
                   className="bg-[#B4C49A] text-black px-8 py-2.5 rounded-full text-sm font-bold hover:bg-[#97A97D] transition-all disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap shadow-md ml-2 cursor-pointer transform hover:-translate-y-0.5"
                 >
                   {isProductInCart ? (
-                    state.totalItems > 1 
-                      ? `Checkout (${state.totalItems} items • ₹${state.totalPrice.toFixed(2)})` 
+                    state.totalItems > 1
+                      ? `Checkout (${state.totalItems} items • ₹${state.totalPrice.toFixed(2)})`
                       : "Checkout"
-                  ) : outOfStock ? "Out of Stock" : "Add To Cart"}
+                  ) : outOfStock ? "Out of Stock" : (customMode ? "Add to Bag" : "Add To Cart")}
                 </button>
                 <button 
                   onClick={() => setIsStickyBarDismissed(true)}

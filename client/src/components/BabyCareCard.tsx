@@ -21,9 +21,10 @@ const getCloudinaryImageUrl = (url: string, transformation: string) => {
 interface BabyCareCardProps {
   product: ProductResponse;
   index: number;
+  customMode?: boolean;
 }
 
-export function BabyCareCard({ product, index }: BabyCareCardProps) {
+export function BabyCareCard({ product, index, customMode = false }: BabyCareCardProps) {
   const { likedProducts, toggleLike } = useLikes();
   const { addToCart } = useCart();
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
@@ -36,7 +37,7 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     executeWithAuth(() => {
       addToCart({
         id: product.id.toString(),
@@ -47,10 +48,10 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
         category: product.category,
         subcategory: product.subcategory || undefined,
       });
-      
+
       toast({
-        title: "Added to Cart!",
-        description: `${product.name} has been added to your cart.`,
+        title: customMode ? "Added to Bag!" : "Added to Cart!",
+        description: `${product.name} has been ${customMode ? 'added to your bag' : 'added to your cart'}.`,
         variant: "success"
       });
     });
@@ -85,7 +86,7 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
 
   return (
     <>
-      <Link href={`/products/${product.slug}`} className="block">
+      <Link href={`/products/${product.slug}${customMode ? '?custom=true' : ''}`} className="block">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -132,7 +133,7 @@ export function BabyCareCard({ product, index }: BabyCareCardProps) {
                 disabled={!product.inStock}
                 className="w-full bg-white text-black py-2 px-3 text-sm font-medium hover:bg-red-100 hover:text-red-700 transition-all duration-200 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg border border-gray-300"
               >
-                {product.inStock ? "Quick Add" : "Out of Stock"}
+                {product.inStock ? (customMode ? "Add to Bag" : "Quick Add") : "Out of Stock"}
               </button>
             </div>
           </div>
