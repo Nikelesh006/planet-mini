@@ -213,18 +213,88 @@ interface FilterSection {
 
 
 
+const isProductInStep = (product: any, stepNumber: number) => {
+  const category = (product.category || "").toLowerCase().trim();
+  const subcategory = (product.subcategory || "").toLowerCase().trim();
+  const subcategoryItem = (product.subcategoryItem || "").toLowerCase().trim();
+  const styleGroup = (product.styleGroup || "").toLowerCase().trim();
+  const productName = (product.name || "").toLowerCase().trim();
+  const description = (product.description || "").toLowerCase().trim();
+  const styleVariant = (product.styleVariant || "").toLowerCase().trim();
+  
+  if (stepNumber === 1) {
+    const targetTerms = ['towels and blankets', 'towels & blankets', 'beds', 'towels', 'blankets'];
+    return targetTerms.some(term => 
+      styleGroup.includes(term) || 
+      subcategoryItem.includes(term) ||
+      subcategory.includes(term) ||
+      productName.includes(term) || 
+      description.includes(term) || 
+      styleVariant.includes(term)
+    );
+  }
+  
+  if (stepNumber === 2) {
+    const targetTerms = ['jhablas'];
+    return targetTerms.some(term => 
+      styleGroup.includes(term) || 
+      subcategoryItem.includes(term) ||
+      subcategory.includes(term) ||
+      productName.includes(term) || 
+      description.includes(term) || 
+      styleVariant.includes(term)
+    ) || product.productType === 'combo' || subcategory.includes('hospital bag');
+  }
+  
+  if (stepNumber === 3) {
+    const targetTerms = ['nappies', 'wipes', 'new born accessories', 'newborn accessories'];
+    return targetTerms.some(term => 
+      styleGroup.includes(term) || 
+      subcategoryItem.includes(term) ||
+      subcategory.includes(term) ||
+      productName.includes(term) || 
+      description.includes(term) || 
+      styleVariant.includes(term)
+    );
+  }
+  
+  return false;
+};
+
+const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id: string; name: string }[] }> = {
+  'jhablas': { 
+    name: 'Jhablas', 
+    icon: '👶',
+    variants: [{ id: 'knot-jhablas', name: 'Knot Jhablas' }, { id: 'button-jhablas', name: 'Button Jhablas' }] 
+  },
+  'towels': { 
+    name: 'Towels and Blankets', 
+    icon: '🧸',
+    variants: [{ id: 'hooded-towels', name: 'Hooded Towels' }, { id: 'swaddle', name: 'Swaddle' }] 
+  },
+  'nappies': { 
+    name: 'Nappies', 
+    icon: '👕',
+    variants: [] 
+  },
+  'wipes': { 
+    name: 'Wipes', 
+    icon: '🧻',
+    variants: [] 
+  },
+  'newborn-accessories': { 
+    name: 'Newborn Accessories', 
+    icon: '🎀',
+    variants: [{ id: 'hat', name: 'Hat' }, { id: 'mittens', name: 'Mittens' }, { id: 'booties', name: 'Booties' }] 
+  },
+  'beds': { 
+    name: 'Beds', 
+    icon: '🛏️',
+    variants: [{ id: 'baby-nest', name: 'Baby Nest' }, { id: 'baby-net-bed', name: 'Baby Net Bed' }] 
+  }
+};
+
 export default function ShopStyle() {
-
-
-
-
-
-
-
-
-
-
-
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
 
@@ -235,30 +305,50 @@ export default function ShopStyle() {
   const { bundleItems, addToBundle, removeFromBundle, updateQuantity, bundleTotal, totalItems } = useCustomBagBundle();
 
   const handleStepClick = (stepId: number) => {
-    if (stepId === 4 && customMode) {
-      // Navigate to bundle review page after completing Step 3
-      if (bundleItems.length === 0) {
-        toast({
-          title: "Bundle is Empty",
-          description: "Please add at least one product to your bundle before proceeding to review.",
-          variant: "destructive"
-        });
-        return;
-      }
-      setLocation('/bundle-review');
-    } else {
-      // Validate step progression
-      if (customMode && stepId > 1) {
-        // Check if bundle has items before allowing step progression
-        if (bundleItems.length === 0) {
+    if (customMode) {
+      // Validate step 1
+      if (stepId > 1) {
+        const hasStep1Item = bundleItems.some(item => isProductInStep(item.product, 1));
+        if (!hasStep1Item) {
           toast({
-            title: "Bundle is Empty",
-            description: "Please add at least one product to your bundle before proceeding to the next step.",
+            title: "Action Required",
+            description: "Please add at least one product from Nursing & Bedding (Step 1) to your bundle.",
             variant: "destructive"
           });
           return;
         }
       }
+      
+      // Validate step 2
+      if (stepId > 2) {
+        const hasStep2Item = bundleItems.some(item => isProductInStep(item.product, 2));
+        if (!hasStep2Item) {
+          toast({
+            title: "Action Required",
+            description: "Please add at least one product from Baby Clothing (Step 2) to your bundle.",
+            variant: "destructive"
+          });
+          return;
+        }
+      }
+
+      // Validate step 3 and navigate to review
+      if (stepId === 4) {
+        const hasStep3Item = bundleItems.some(item => isProductInStep(item.product, 3));
+        if (!hasStep3Item) {
+          toast({
+            title: "Action Required",
+            description: "Please add at least one product from Other Essentials (Step 3) to your bundle.",
+            variant: "destructive"
+          });
+          return;
+        }
+        setLocation('/bundle-review');
+        return;
+      }
+      
+      setCurrentStep(stepId);
+    } else {
       setCurrentStep(stepId);
     }
   };
@@ -532,15 +622,9 @@ export default function ShopStyle() {
 
   const products = customMode
 
-
-
     ? (allProducts || [])
 
-
-
     : (isBlockbusterSection
-
-
 
       ? blockbusterProducts
 
@@ -548,21 +632,29 @@ export default function ShopStyle() {
 
       : isHospitalBagsSection
 
-
-
         ? hospitalBagsProducts
-
-
 
         : isGiftingSection
 
-
-
           ? giftingSectionProducts
 
+          : homeFilter === 'hospital-bags'
 
+            ? (() => {
+                // Merge styleProducts and hospitalBagsProducts, deduplicating by id
+                const style = styleProducts || [];
+                const hospital = hospitalBagsProducts || [];
+                const merged = [...style];
+                const existingIds = new Set(style.map((p: any) => p.id));
+                for (const p of hospital) {
+                  if (!existingIds.has(p.id)) {
+                    merged.push(p);
+                  }
+                }
+                return merged;
+              })()
 
-          : styleProducts);
+            : styleProducts);
 
 
 
@@ -576,37 +668,25 @@ export default function ShopStyle() {
 
   const isLoading = customMode
 
-
-
     ? allProductsLoading
-
-
 
     : isBlockbusterSection
 
-
-
       ? blockbusterLoading
-
-
 
       : isHospitalBagsSection
 
-
-
         ? hospitalBagsLoading
-
-
 
         : isGiftingSection
 
-
-
           ? giftingSectionLoading
 
+          : homeFilter === 'hospital-bags'
 
+            ? (styleLoading || hospitalBagsLoading)
 
-          : styleLoading;
+            : styleLoading;
 
 
 
@@ -642,7 +722,19 @@ export default function ShopStyle() {
 
 
 
-  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(
+    homeFilter && STYLE_MAPPING[homeFilter] ? [homeFilter] : []
+  );
+
+  // Sync selectedFilters from homeFilter URL param on mount / param change
+  useEffect(() => {
+    if (homeFilter && STYLE_MAPPING[homeFilter]) {
+      setSelectedFilters(prev => {
+        if (!prev.includes(homeFilter)) return [homeFilter];
+        return prev;
+      });
+    }
+  }, [homeFilter]);
 
 
 
@@ -1371,77 +1463,31 @@ export default function ShopStyle() {
 
 
   const handleFilterToggle = (filterId: string) => {
-
-
-
-
-
-
-
-
-
-
-
-    setSelectedFilters(prev => 
-
-
-
-
-
-
-
-
-
-
-
-      prev.includes(filterId) 
-
-
-
-
-
-
-
-
-
-
-
-        ? prev.filter(id => id !== filterId)
-
-
-
-
-
-
-
-
-
-
-
-        : [...prev, filterId]
-
-
-
-
-
-
-
-
-
-
-
-    );
-
-
-
-
-
-
-
-
-
-
-
+    const isStyleGroup = !!STYLE_MAPPING[filterId];
+    const isCurrentlySelected = selectedFilters.includes(filterId);
+
+    if (isStyleGroup) {
+      // When toggling a Style Group, update the URL filter param
+      const newParams = new URLSearchParams(window.location.search);
+      if (isCurrentlySelected) {
+        // Deselecting: remove group and its variants from selectedFilters, clear URL filter
+        const groupVariantIds = STYLE_MAPPING[filterId].variants.map(v => v.id);
+        setSelectedFilters(prev => prev.filter(id => id !== filterId && !groupVariantIds.includes(id)));
+        newParams.delete('filter');
+      } else {
+        // Selecting: set only this group, clear any previous variants from other groups
+        setSelectedFilters([filterId]);
+        newParams.set('filter', filterId);
+      }
+      setLocation(`/shop/style?${newParams.toString()}`);
+    } else {
+      // Toggling a Style Variant — keep the parent group selected
+      setSelectedFilters(prev =>
+        prev.includes(filterId)
+          ? prev.filter(id => id !== filterId)
+          : [...prev, filterId]
+      );
+    }
   };
 
 
@@ -1563,41 +1609,13 @@ export default function ShopStyle() {
 
 
   const clearFilters = () => {
-
-
-
-
-
-
-
-
-
-
-
     setSelectedFilters([]);
-
-
-
-
-
-
-
-
-
-
-
     setMaxPrice(5000);
-
-
-
-
-
-
-
-
-
-
-
+    // Also clear the filter URL param
+    const newParams = new URLSearchParams(window.location.search);
+    newParams.delete('filter');
+    const paramStr = newParams.toString();
+    setLocation(`/shop/style${paramStr ? '?' + paramStr : ''}`);
   };
 
 
@@ -1730,27 +1748,30 @@ export default function ShopStyle() {
 
 
 
-    // Style filter: match styleGroup or styleVariant
-
-
+    // Style filter: match styleGroup, styleVariant, name, description, or printName
+    const filterLower = normalizeText(filter);
+    const productName = normalizeText(product.name);
+    const productDesc = normalizeText(product.description);
+    const productPrintName = normalizeText(product.printName);
+    const productStyleGroup = normalizeText(product.styleGroup);
+    const productStyleVariant = normalizeText(product.styleVariant);
 
     const matchesStyle =
-
-
-
-      (product as any).styleGroup?.toLowerCase() === filter.toLowerCase() ||
-
-
-
-      (product as any).styleVariant?.toLowerCase() === filter.toLowerCase();
-
-
-
+      productStyleGroup === filterLower ||
+      productStyleGroup.includes(filterLower) ||
+      productStyleVariant === filterLower ||
+      productStyleVariant.includes(filterLower) ||
+      productName.includes(filterLower) ||
+      productDesc.includes(filterLower) ||
+      productPrintName.includes(filterLower);
 
 
 
 
-    // Special handling for hospital-bags filter - match subcategory
+
+
+
+    // Special handling for hospital-bags filter - match subcategory and category
 
 
 
@@ -1762,19 +1783,12 @@ export default function ShopStyle() {
 
 
 
-      console.log('Hospital bags filter check:', {
-        productId: product.id,
-        productName: product.name,
-        subcategory: product.subcategory,
-        normalizedSubcategory: subcategory,
-        productType: product.productType,
-        matches: subcategory.includes('hospital bag') || subcategory.includes('hospital bags')
-      });
+      const category = normalizeText(product.category);
 
 
 
-      // Match both "hospital bag" and "hospital bags" to include combo products
-      return subcategory.includes('hospital bag') || subcategory.includes('hospital bags');
+      // Match both "hospital bag" and "hospital bags" AND ensure category is 'home'
+      return (subcategory.includes('hospital bag') || subcategory.includes('hospital bags')) && category === 'home';
 
 
 
@@ -1902,51 +1916,7 @@ export default function ShopStyle() {
 
         .filter(product => {
           if (!currentStep) return true;
-          
-          const category = (product.category || "").toLowerCase().trim();
-          const subcategory = (product.subcategory || "").toLowerCase().trim();
-          const subcategoryItem = (product.subcategoryItem || "").toLowerCase().trim();
-          const styleGroup = (product.styleGroup || "").toLowerCase().trim();
-          const productName = (product.name || "").toLowerCase().trim();
-          const description = (product.description || "").toLowerCase().trim();
-          const styleVariant = (product.styleVariant || "").toLowerCase().trim();
-          
-          if (currentStep === 1) {
-            // Step 1: Nursing & Bedding - towels & blankets, beds
-            const targetTerms = ['towels and blankets', 'towels & blankets', 'beds', 'towels', 'blankets'];
-            return targetTerms.some(term => 
-              styleGroup.includes(term) || 
-              productName.includes(term) || 
-              description.includes(term) || 
-              styleVariant.includes(term)
-            );
-          }
-          
-          if (currentStep === 2) {
-            // Step 2: Baby Clothing - jhablas, combo products
-            const targetTerms = ['jhablas'];
-            return targetTerms.some(term => 
-              styleGroup.includes(term) || 
-              productName.includes(term) || 
-              description.includes(term) || 
-              styleVariant.includes(term)
-            ) || product.productType === 'combo';
-          }
-          
-          if (currentStep === 3) {
-            // Step 3: Other Essentials - nappies, wipes, newborn accessories
-            const targetTerms = ['nappies', 'wipes', 'new born accessories', 'newborn accessories'];
-            return targetTerms.some(term => 
-              styleGroup.includes(term) || 
-              subcategoryItem.includes(term) ||
-              subcategory.includes(term) ||
-              productName.includes(term) || 
-              description.includes(term) || 
-              styleVariant.includes(term)
-            );
-          }
-          
-          return true;
+          return isProductInStep(product, currentStep);
         })
 
 
@@ -1956,6 +1926,29 @@ export default function ShopStyle() {
 
 
         .filter(product => matchesSearch(product, searchQuery))
+
+        // Style Variant filter: if any variant IDs are selected, filter by styleVariant, name, desc, etc.
+        .filter(product => {
+          // Get variant IDs from selectedFilters (exclude group-level keys)
+          const selectedVariantIds = selectedFilters.filter(id => !STYLE_MAPPING[id]);
+          if (selectedVariantIds.length === 0) return true;
+          
+          const productStyleVariant = normalizeText(product.styleVariant);
+          const productStyleGroup = normalizeText(product.styleGroup);
+          const productName = normalizeText(product.name);
+          const productDesc = normalizeText(product.description);
+          const productPrintName = normalizeText(product.printName);
+          
+          return selectedVariantIds.some(variantId => {
+            const normalizedVariant = normalizeText(variantId.replace(/-/g, ' '));
+            return productStyleVariant === normalizedVariant || 
+                   productStyleVariant.includes(normalizedVariant) ||
+                   productStyleGroup.includes(normalizedVariant) ||
+                   productName.includes(normalizedVariant) ||
+                   productDesc.includes(normalizedVariant) ||
+                   productPrintName.includes(normalizedVariant);
+          });
+        })
 
 
 
@@ -2703,451 +2696,120 @@ export default function ShopStyle() {
 
 
 
-      {/* Category Filter Section */}
-
-
-
-
-
-
-
-
-
-
-
+      {/* Style Group & Variant Filter Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 py-6">
-
-
-
-
-
-
-
-
-
-
-
+        {/* Style Groups Row */}
         <div className="flex flex-wrap justify-center gap-3 sm:gap-8 md:gap-10">
-
-
-
-
-
-
-
-
-
-
-
-          {[
-
-
-
-
-
-
-
-
-
-
-
-            { id: 'jhlablas', name: 'Jhlablas', icon: '👶' },
-
-
-
-
-
-
-
-
-
-
-
-            { id: 'hooded-towels', name: 'Hooded Towels', icon: '🧸' },
-
-
-
-
-
-
-
-
-
-
-
-            { id: 'beds', name: 'Beds', icon: '🛏️' },
-
-
-
-
-
-
-
-
-
-
-
-            { id: 'muslin', name: 'Muslin', icon: '🧣' },
-
-
-
-
-
-
-
-
-
-
-
-            { id: 'napkins', name: 'Napkins', icon: '👕' },
-
-
-
-
-
-
-
-
-
-
-
-            { id: 'rompers', name: 'Rompers', icon: '👗' },
-
-
-
-
-
-
-
-
-
-
-
-          ].map((category) => (
-
-
-
-
-
-
-
-
-
-
-
+          {Object.entries(STYLE_MAPPING)
+            .filter(([groupId]) => {
+              const activeGroupId = selectedFilters.find(id => STYLE_MAPPING[id]);
+              return activeGroupId ? groupId === activeGroupId : true;
+            })
+            .map(([groupId, group]) => (
             <button
-
-
-
-
-
-
-
-
-
-
-
-              key={category.id}
-
-
-
-
-
-
-
-
-
-
-
-              onClick={() => handleFilterToggle(category.id)}
-
-
-
-
-
-
-
-
-
-
-
+              key={groupId}
+              onClick={() => handleFilterToggle(groupId)}
               className={`
-
-
-
-
-
-
-
-
-
-
-
                 flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-8 rounded-2xl transition-all duration-300 border-2
-
-
-
-
-
-
-
-
-
-
-
-                ${selectedFilters.includes(category.id)
-
-
-
-
-
-
-
-
-
-
-
+                ${selectedFilters.includes(groupId)
                   ? 'bg-red-100 border-red-500 shadow-xl scale-110'
-
-
-
-
-
-
-
-
-
-
-
                   : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-110'
-
-
-
-
-
-
-
-
-
-
-
                 }
-
-
-
-
-
-
-
-
-
-
-
               `}
-
-
-
-
-
-
-
-
-
-
-
             >
-
-
-
-
-
-
-
-
-
-
-
               <div className={`
-
-
-
-
-
-
-
-
-
-
-
                 text-3xl sm:text-6xl transition-transform duration-300
-
-
-
-
-
-
-
-
-
-
-
-                ${selectedFilters.includes(category.id) ? 'scale-125' : 'hover:scale-125'}
-
-
-
-
-
-
-
-
-
-
-
+                ${selectedFilters.includes(groupId) ? 'scale-125' : 'hover:scale-125'}
               `}>
-
-
-
-
-
-
-
-
-
-
-
-                {category.icon}
-
-
-
-
-
-
-
-
-
-
-
+                {group.icon}
               </div>
-
-
-
-
-
-
-
-
-
-
-
               <span className={`
-
-
-
-
-
-
-
-
-
-
-
                 text-xs sm:text-lg font-semibold transition-colors
-
-
-
-
-
-
-
-
-
-
-
-                ${selectedFilters.includes(category.id) ? 'text-red-600' : 'text-gray-700'}
-
-
-
-
-
-
-
-
-
-
-
+                ${selectedFilters.includes(groupId) ? 'text-red-600' : 'text-gray-700'}
               `}>
-
-
-
-
-
-
-
-
-
-
-
-                {category.name}
-
-
-
-
-
-
-
-
-
-
-
+                {group.name}
               </span>
-
-
-
-
-
-
-
-
-
-
-
             </button>
-
-
-
-
-
-
-
-
-
-
-
           ))}
-
-
-
-
-
-
-
-
-
-
-
         </div>
 
+        {/* Style Variants Row — only shown when a group with variants is selected */}
+        {(() => {
+          const activeGroupId = selectedFilters.find(id => STYLE_MAPPING[id]);
+          const activeGroup = activeGroupId ? STYLE_MAPPING[activeGroupId] : null;
+          if (!activeGroup || activeGroup.variants.length === 0) return null;
 
+          return (
+            <div className="mt-6">
+              <h3 className="text-center text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">
+                Style Variants
+              </h3>
+              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                {activeGroup.variants.map(variant => (
+                  <button
+                    key={variant.id}
+                    onClick={() => handleFilterToggle(variant.id)}
+                    className={`
+                      px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-300 border-2
+                      ${selectedFilters.includes(variant.id)
+                        ? 'bg-red-500 text-white border-red-500 shadow-lg scale-105'
+                        : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:shadow-md'
+                      }
+                    `}
+                  >
+                    {variant.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
-
-
-
-
-
-
-
-
+        {/* Clear filters button when any filter is active */}
+        {selectedFilters.length > 0 && (
+          <div className="flex justify-center mt-4">
+            <button
+              onClick={clearFilters}
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+            >
+              <X className="w-4 h-4" />
+              Clear Filters
+            </button>
+          </div>
+        )}
       </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
