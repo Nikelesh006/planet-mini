@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Confetti, useConfetti } from "@/components/ui/Confetti";
-import { ChevronDown, ArrowLeft, Minus, Plus, MapPin, Check } from 'lucide-react';
+import { ChevronDown, ArrowLeft, Minus, Plus, MapPin, Check, ShoppingBag } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
 import { useRazorpay } from '@/hooks/useRazorpay';
@@ -309,6 +309,49 @@ export default function CartPage() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Cart Items - Left Side */}
           <div className="lg:col-span-2">
+            {/* Hospital Bag Section */}
+            {state.items.some(item => item.category === 'home' && item.subcategory?.toLowerCase().includes('hospital')) && (
+              <div className="mb-6 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-pink-200 rounded-2xl p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center">
+                    <ShoppingBag className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Hospital Bag Bundle</h2>
+                    <p className="text-sm text-gray-600">Your custom hospital bag items</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-3">
+                  {state.items
+                    .filter(item => item.category === 'home' && item.subcategory?.toLowerCase().includes('hospital'))
+                    .map((item, index) => (
+                      <div key={`hospital-${getCartItemKey(item, index)}`} className="bg-white rounded-xl p-4 border border-pink-100 shadow-sm">
+                        <div className="flex gap-4">
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            crossOrigin="anonymous"
+                            className="w-16 h-16 object-cover rounded-lg"
+                          />
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-gray-900">{item.name}</h3>
+                            <div className="flex items-center justify-between mt-2">
+                              <span className="text-sm font-bold text-gray-900">{formatPrice(item.sellingPrice)}</span>
+                              <button
+                                onClick={() => removeFromCart(item.id)}
+                                className="text-sm text-red-500 hover:text-red-700 font-medium"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
             {/* Table Header - Desktop Only */}
             <div className="hidden lg:grid grid-cols-12 gap-4 pb-4 border-b border-gray-200 text-sm text-gray-600">
               <div className="col-span-6">Product Details</div>

@@ -4,7 +4,7 @@ import { useAuth } from './AuthContext';
 import { API_BASE_URL } from '../lib/api';
 
 interface LikedProduct {
-  id: number;
+  id: string | number;
   name: string;
   slug: string;
   description: string;

@@ -486,6 +486,20 @@ export default function AddProduct() {
       setFormData((prev) => ({
         ...prev,
         [name]: type === "checkbox" ? checked : value,
+        ...(name === "productType" && value === "single"
+          ? {
+              category: "",
+              subcategory: "",
+              subcategoryItem: "",
+              productClassification: "",
+              styleVariant: "",
+              styleGroup: "",
+              hospitalBagsPackSize: "",
+              visibleInNewArrivals: false,
+              visibleInTrendingProducts: false,
+              visibleInShopByStyle: false,
+            }
+          : {}),
         ...(name === "category"
           ? {
               subcategory: "",
@@ -508,10 +522,40 @@ export default function AddProduct() {
               hospitalBagsPackSize: "",
             }
           : {}),
+        // Auto-fill price for blockbuster combos
+        ...(name === "productClassification" && formData.subcategory === "Blockbuster Combos"
+          ? {
+              sellingPrice: value.replace("Below ₹", "").replace(/,/g, ""),
+            }
+          : {}),
       }));
 
     if (errors[name as keyof ProductFormData]) {
       setErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+
+    // Reset combo items when switching to single product
+    if (name === "productType" && value === "single") {
+      setComboItems([]);
+      setProductDetails({
+        ageGroup: "Newborn (0-1M)",
+        gender: "Unisex",
+        occasion: "Daily Use",
+        fabric: "100% Muslin Cotton",
+        colorTheme: "Multi Print",
+        careInstructions: "Machine Wash",
+      });
+      setInventory({
+        stockQuantity: "50",
+        lowStockAlert: "5",
+      });
+      // Reset Store Preview by clearing images
+      setFormData((prev) => ({
+        ...prev,
+        images: [],
+      }));
+      // Clear all validation errors
+      setErrors({});
     }
   };
 
@@ -832,12 +876,13 @@ export default function AddProduct() {
 
             {formData.category === "home" && (
               <div>
-                <Label>{formData.subcategory || "Style Group"}</Label>
+                <Label>Style Group</Label>
                 <select
                   name="subcategoryItem"
                   value={formData.subcategoryItem}
                   onChange={handleInputChange}
-                  className={fieldClass}
+                  disabled={formData.productType === "combo"}
+                  className={`${fieldClass} disabled:bg-slate-100 disabled:text-slate-400`}
                 >
                   <option value="">Select item</option>
                   {homeSubcategoryItemOptions.map((option) => (
@@ -846,6 +891,9 @@ export default function AddProduct() {
                     </option>
                   ))}
                 </select>
+                {formData.productType === "combo" && (
+                  <p className="mt-1 text-xs text-slate-500">Style Group is not applicable for combo products.</p>
+                )}
               </div>
             )}
 
@@ -908,6 +956,7 @@ export default function AddProduct() {
                 value={formData.category === "style" ? formData.styleVariant : formData.productClassification}
                 onChange={handleInputChange}
                 disabled={
+                  (formData.productType === "combo" && formData.subcategory !== "Blockbuster Combos") ||
                   (formData.category === "home" && !formData.subcategoryItem) ||
                   (formData.category === "style" && !formData.subcategory) ||
                   (formData.category !== "style" && productClassificationOptions.length === 0)
@@ -934,6 +983,9 @@ export default function AddProduct() {
                   </>
                 )}
               </select>
+              {formData.productType === "combo" && formData.subcategory !== "Blockbuster Combos" && (
+                <p className="mt-1 text-xs text-slate-500">Style Variant is not applicable for combo products.</p>
+              )}
               <p className="mt-1 text-xs text-slate-500">
                 {formData.category === "style"
                   ? "Select a style group first, then choose the matching variant in the new input box."
@@ -1031,9 +1083,13 @@ export default function AddProduct() {
                 onChange={handleInputChange}
                 step="0.01"
                 min="0"
-                className={`${fieldClass} ${errors.sellingPrice ? errorFieldClass : ""}`}
+                disabled={formData.productType === "combo" && formData.subcategory === "Blockbuster Combos"}
+                className={`${fieldClass} ${errors.sellingPrice ? errorFieldClass : ""} disabled:bg-slate-100 disabled:text-slate-400`}
                 placeholder="999"
               />
+              {formData.productType === "combo" && formData.subcategory === "Blockbuster Combos" && (
+                <p className="mt-1 text-xs text-slate-500">Price is auto-filled based on blockbuster combo selection.</p>
+              )}
               {errors.sellingPrice && <p className="mt-1 text-xs text-red-500">{errors.sellingPrice}</p>}
             </div>
             <div>
@@ -1287,46 +1343,33 @@ export default function AddProduct() {
                     Available sections
                   </p>
                   <div className="mt-3 space-y-3">
-                    {normalizedCategory === "home" && (
-                      <>
-                        <div className="rounded-lg border border-slate-200 p-3">
-                          <p className="text-sm font-semibold text-slate-900">Home Page</p>
-                          <p className="mt-1 text-xs text-slate-500">
-                            Choose which Home sections should display this product.
-                          </p>
-                          <div className="mt-3 space-y-3">
-                            <label className="flex items-center gap-3">
-                              <input
-                                type="checkbox"
-                                name="visibleInNewArrivals"
-                                checked={formData.visibleInNewArrivals}
-                                onChange={handleInputChange}
-                                className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
-                              />
-                              <span className="text-sm font-semibold text-slate-800">New Arrivals</span>
-                            </label>
-                            <label className="flex items-center gap-3">
-                              <input
-                                type="checkbox"
-                                name="visibleInTrendingProducts"
-                                checked={formData.visibleInTrendingProducts}
-                                onChange={handleInputChange}
-                                className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
-                              />
-                              <span className="text-sm font-semibold text-slate-800">Trending Products</span>
-                            </label>
-                          </div>
-                        </div>
-                      </>
-                    )}
-
-                    {normalizedCategory === "style" && (
-                      <div className="rounded-lg border border-slate-200 p-3">
-                        <p className="text-sm font-semibold text-slate-900">Shop by Style</p>
-                        <p className="mt-1 text-xs text-slate-500">
-                          Select this option to display the product on the Shop by Style page.
-                        </p>
-                        <label className="mt-3 flex items-center gap-3">
+                    <div className="rounded-lg border border-slate-200 p-3">
+                      <p className="text-sm font-semibold text-slate-900">Visibility</p>
+                      <p className="mt-1 text-xs text-slate-500">
+                        Choose which sections should display this product.
+                      </p>
+                      <div className="mt-3 space-y-3">
+                        <label className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            name="visibleInNewArrivals"
+                            checked={formData.visibleInNewArrivals}
+                            onChange={handleInputChange}
+                            className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                          />
+                          <span className="text-sm font-semibold text-slate-800">New Arrivals</span>
+                        </label>
+                        <label className="flex items-center gap-3">
+                          <input
+                            type="checkbox"
+                            name="visibleInTrendingProducts"
+                            checked={formData.visibleInTrendingProducts}
+                            onChange={handleInputChange}
+                            className="h-5 w-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-600 bg-white"
+                          />
+                          <span className="text-sm font-semibold text-slate-800">Trending Products</span>
+                        </label>
+                        <label className="flex items-center gap-3">
                           <input
                             type="checkbox"
                             name="visibleInShopByStyle"
@@ -1337,7 +1380,7 @@ export default function AddProduct() {
                           <span className="text-sm font-semibold text-slate-800">Shop by Style</span>
                         </label>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>

@@ -394,23 +394,44 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addToCart = async (product: Omit<CartItem, 'quantity'> & { quantity?: number }) => {
-    if (!user || isOutOfStock(product)) return false;
+    console.log('>>> addToCart called <<<');
+    console.log('User:', user?.id, user?.email);
+    console.log('Product:', product);
+    console.log('Is out of stock:', isOutOfStock(product));
+    
+    if (!user) {
+      console.error('ERROR: No user logged in');
+      return false;
+    }
+    
+    if (isOutOfStock(product)) {
+      console.error('ERROR: Product is out of stock');
+      return false;
+    }
 
     try {
       const token = getAuthToken();
+      console.log('Token present:', !!token);
+      
+      const payload = {
+        ...product,
+        quantity: Math.max(1, Number(product.quantity || 1)),
+      };
+      console.log('Payload:', payload);
+      
       const response = await fetch(`${API_BASE_URL}/api/profile/${user.id}/cart`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          ...product,
-          quantity: Math.max(1, Number(product.quantity || 1)),
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log('Response status:', response.status, response.statusText);
+
       if (response.ok) {
+        console.log('API success, reloading cart');
         // Refresh cart from backend
         await loadCart();
         return true;
@@ -418,6 +439,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       const errorData = await response.json().catch(() => null);
       console.error('Error adding to cart:', errorData?.message || errorData?.error || response.statusText);
+      console.error('Error data:', errorData);
       await loadCart();
       return false;
     } catch (error) {

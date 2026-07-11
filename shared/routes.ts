@@ -3,7 +3,7 @@ import { products, insertProductSchema } from './schema';
 
 // Create product schema for API responses
 const productSchema = z.object({
-  id: z.number(),
+  id: z.union([z.number(), z.string()]),
   slug: z.string(),
   sku: z.string().optional(),
   name: z.string(),
@@ -13,7 +13,13 @@ const productSchema = z.object({
   category: z.string(),
   ageGroup: z.string().nullable().optional(),
   subcategory: z.string().nullable(),
+  subcategoryItem: z.string().nullable().optional(),
+  productClassification: z.string().nullable().optional(),
+  styleGroup: z.string().nullable().optional(),
+  styleVariant: z.string().nullable().optional(),
+  hospitalBagsPackSize: z.string().nullable().optional(),
   image: z.string(),
+  images: z.union([z.string(), z.array(z.string())]).nullable().optional(),
   rating: z.number(),
   reviews: z.number(),
   inStock: z.boolean().nullable(),
@@ -22,11 +28,6 @@ const productSchema = z.object({
   isNew: z.boolean().nullable(),
   productType: z.string().nullable().optional(),
   status: z.string().nullable().optional(),
-  styleGroup: z.string().nullable().optional(),
-  styleVariant: z.string().nullable().optional(),
-  printName: z.string().nullable().optional(),
-  collectionName: z.string().nullable().optional(),
-  collectionPrintName: z.string().nullable().optional(),
   showOnWebsite: z.boolean().nullable().optional(),
   visibleInNewArrivals: z.boolean().nullable().optional(),
   visibleInTrendingProducts: z.boolean().nullable().optional(),
@@ -36,8 +37,16 @@ const productSchema = z.object({
   featuredProduct: z.boolean().nullable().optional(),
   bestSeller: z.boolean().nullable().optional(),
   recommendedProduct: z.boolean().nullable().optional(),
+  collectionName: z.string().nullable().optional(),
+  collectionPrintName: z.string().nullable().optional(),
+  printName: z.string().nullable().optional(),
   colors: z.string().nullable(),
   sizes: z.string().nullable(),
+  gender: z.string().nullable().optional(),
+  occasion: z.string().nullable().optional(),
+  fabric: z.string().nullable().optional(),
+  colorTheme: z.string().nullable().optional(),
+  careInstructions: z.string().nullable().optional(),
 });
 
 export const errorSchemas = {

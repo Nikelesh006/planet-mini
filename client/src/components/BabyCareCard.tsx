@@ -9,6 +9,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import type { ProductResponse } from "@shared/routes";
 import { isLowStock } from "@shared/stock";
+import { CustomBagProductModal } from "@/components/CustomBagProductModal";
+import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
 
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
   if (!url || typeof url !== 'string') return url;
@@ -27,10 +29,12 @@ interface BabyCareCardProps {
 export function BabyCareCard({ product, index, customMode = false }: BabyCareCardProps) {
   const { likedProducts, toggleLike } = useLikes();
   const { addToCart } = useCart();
+  const { addToBundle } = useCustomBagBundle();
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
   const { toast } = useToast();
   const isWishlisted = likedProducts.some(p => p.id === product.id);
   const lowStock = isLowStock(product);
+  const [showModal, setShowModal] = useState(false);
   
   const productImages = [product.image]; 
   
@@ -39,21 +43,33 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
     e.stopPropagation();
 
     executeWithAuth(() => {
-      addToCart({
-        id: product.id.toString(),
-        name: product.name,
-        sellingPrice: Number(product.sellingPrice),
-        mrp: product.mrp ? Number(product.mrp) : undefined,
-        image: product.image,
-        category: product.category,
-        subcategory: product.subcategory || undefined,
-      });
-
-      toast({
-        title: customMode ? "Added to Bag!" : "Added to Cart!",
-        description: `${product.name} has been ${customMode ? 'added to your bag' : 'added to your cart'}.`,
-        variant: "success"
-      });
+      if (customMode) {
+        // Add to custom bundle in custom mode
+        console.log('Adding to bundle:', product);
+        addToBundle(product, 1, product.styleVariant || undefined);
+        console.log('After addToBundle call');
+        toast({
+          title: "Added to Bag!",
+          description: `${product.name} has been added to your custom bag bundle.`,
+          variant: "success"
+        });
+      } else {
+        // Add to regular cart in normal mode
+        addToCart({
+          id: product.id.toString(),
+          name: product.name,
+          sellingPrice: Number(product.sellingPrice),
+          mrp: product.mrp ? Number(product.mrp) : undefined,
+          image: product.image,
+          category: product.category,
+          subcategory: product.subcategory || undefined,
+        });
+        toast({
+          title: "Added to Cart!",
+          description: `${product.name} has been added to your cart.`,
+          variant: "success"
+        });
+      }
     });
   };
 
@@ -84,15 +100,104 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
     });
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (customMode) {
+      e.preventDefault();
+      setShowModal(true);
+    }
+  };
+
   return (
     <>
-      <Link href={`/products/${product.slug}${customMode ? '?custom=true' : ''}`} className="block">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: index * 0.1 }}
-          className="group relative transition-all duration-300 overflow-hidden"
+      {customMode ? (
+        <div 
+          className="block cursor-pointer"
+          onClick={handleCardClick}
         >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="group relative transition-all duration-300 overflow-hidden"
+          >
+          
+          {/* Large Product Image */}
+          <div className="aspect-[2/3] sm:aspect-[3/4] flex items-center justify-center relative bg-transparent">
+            {lowStock && product.inStock && (
+              <div className="absolute top-4 left-4 z-30">
+                <div className="bg-amber-500 px-3 py-1 text-sm font-bold text-white shadow-md rounded-md">
+                  Low Stock
+                </div>
+              </div>
+            )}
+            {/* Discount Badge */}
+            {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+              <div className="absolute top-4 left-4 z-20">
+                <div className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
+                  {Math.round(((Number(product.mrp) - Number(product.sellingPrice)) / Number(product.mrp)) * 100)}% OFF
+                </div>
+              </div>
+            )}
+            <img
+              src={getCloudinaryImageUrl(product.image, "f_auto,q_100,dpr_auto")}
+              alt={product.name}
+              className="w-full h-full object-cover rounded-3xl transition-all duration-300"
+              draggable={false}
+            />
+            
+            {/* Wishlist Heart */}
+            <button
+              onClick={handleWishlist}
+              className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 hover:bg-red-50"
+            >
+              <Heart className={`w-4 h-4 transition-all duration-300 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500 hover:fill-red-500'}`} />
+            </button>
+            
+            {/* Quick Add Button - Reveals on Hover */}
+            <div className="absolute inset-x-3 bottom-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+              <button
+                onClick={handleQuickAdd}
+                disabled={!product.inStock}
+                className="w-full bg-white text-black py-2 px-3 text-sm font-medium hover:bg-red-100 hover:text-red-700 transition-all duration-200 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg border border-gray-300"
+              >
+                {product.inStock ? (customMode ? "Add to Bag" : "Quick Add") : "Out of Stock"}
+              </button>
+            </div>
+          </div>
+
+          {/* Product Content - Text Below Image */}
+          <div className="p-1 sm:p-3 bg-white text-center">
+            {/* Product Name */}
+            <h3 className="font-semibold text-gray-900 mb-1 line-clamp-2 leading-relaxed text-base sm:text-lg">
+              {product.name}
+            </h3>
+
+            {/* Price Section */}
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-lg sm:text-xl font-extrabold text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+                <span className="text-sm font-medium text-slate-500 line-through">
+                  &#8377;{Number(product.mrp).toFixed(2)}
+                </span>
+              )}
+            </div>
+            {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+              <p className="flex items-center justify-center gap-1 text-xs font-medium text-gray-500 mt-1">
+                <Gift className="w-3 h-3" />
+                You saved &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+              </p>
+            )}
+          </div>
+        </motion.div>
+      </div>
+      ) : (
+        <Link href={`/products/${product.slug}${customMode ? '?custom=true' : ''}`} className="block">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            className="group relative transition-all duration-300 overflow-hidden"
+          >
           
           {/* Large Product Image */}
           <div className="aspect-[2/3] sm:aspect-[3/4] flex items-center justify-center relative bg-transparent">
@@ -163,6 +268,14 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
           </div>
         </motion.div>
       </Link>
+      )}
+
+      {/* Custom Bag Product Modal */}
+      <CustomBagProductModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        product={product}
+      />
 
       {/* Google Auth Modal */}
       <GoogleAuthModal

@@ -9,7 +9,7 @@ import { MuslinCard } from "@/components/MuslinCard";
 import { ComboCard } from "@/components/ComboCard";
 import { GiftingCard } from "@/components/GiftingCard";
 
-import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useMuslinProducts, useComboProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts } from "@/hooks/useProducts";
+import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useMuslinProducts, useComboProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts, useNewArrivalsProducts, useTrendingProducts } from "@/hooks/useProducts";
 
 import { motion } from "framer-motion";
 import { WelcomeModal } from "@/components/WelcomeModal";
@@ -126,6 +126,12 @@ export default function Home() {
   const { data: featuredProducts, isLoading: featuredLoading } = useFeaturedProducts();
 
   const { data: giftingProducts, isLoading: giftingLoading } = useGiftingProducts();
+
+  // Visibility-specific hooks for Home page sections
+
+  const { data: newArrivalsProducts, isLoading: newArrivalsLoading } = useNewArrivalsProducts();
+
+  const { data: trendingProducts, isLoading: trendingLoading } = useTrendingProducts();
 
 
 
@@ -1070,13 +1076,13 @@ export default function Home() {
 
           <div className="w-full px-0 sm:px-4 lg:px-8">
 
-            {!babyCareLoading && babyCareProducts && babyCareProducts.length > 0 && (
+            {!newArrivalsLoading && newArrivalsProducts && newArrivalsProducts.length > 0 && (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 lg:gap-10">
 
-                  {babyCareProducts.slice(0, 4).map((product, index) => (
+                  {newArrivalsProducts.slice(0, 4).map((product, index) => (
 
-                    <BabyCareCard key={product.id || `baby-care-${index}`} product={product} index={index} />
+                    <BabyCareCard key={product.id || `new-arrivals-${index}`} product={product} index={index} />
 
                   ))}
 
@@ -1102,7 +1108,7 @@ export default function Home() {
               </>
             )}
 
-            {!babyCareLoading && (!babyCareProducts || babyCareProducts.length === 0) && (
+            {!newArrivalsLoading && (!newArrivalsProducts || newArrivalsProducts.length === 0) && (
 
               <div className="text-center py-12">
 
@@ -1185,13 +1191,13 @@ export default function Home() {
 
           <div className="w-full px-0 sm:px-4 lg:px-8">
 
-            {!muslinLoading && muslinProducts && muslinProducts.length > 0 && (
+            {!trendingLoading && trendingProducts && trendingProducts.length > 0 && (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 lg:gap-10">
 
-                  {muslinProducts.slice(0, 4).map((product, index) => (
+                  {trendingProducts.slice(0, 4).map((product, index) => (
 
-                    <MuslinCard key={product.id || `muslin-${index}`} product={product} index={index} />
+                    <MuslinCard key={product.id || `trending-${index}`} product={product} index={index} />
 
                   ))}
 
@@ -1217,7 +1223,7 @@ export default function Home() {
               </>
             )}
 
-            {!muslinLoading && (!muslinProducts || muslinProducts.length === 0) && (
+            {!trendingLoading && (!trendingProducts || trendingProducts.length === 0) && (
 
               <div className="text-center py-12">
 

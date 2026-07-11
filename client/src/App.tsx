@@ -27,6 +27,7 @@ import { CartProvider } from "@/contexts/CartContext";
 
 
 import { LikeProvider } from "@/contexts/LikeContext";
+import { CustomBagBundleProvider } from "@/contexts/CustomBagBundleContext";
 
 
 
@@ -79,6 +80,7 @@ import Shop from "./pages/Shop";
 
 
 import ShopStyle from "./pages/ShopStyle";
+import BundleReview from "./pages/BundleReview";
 
 
 
@@ -167,6 +169,7 @@ function Router() {
         <Route path="/know-us" component={KnowUs} />
         <Route path="/shop" component={Shop} />
         <Route path="/shop/style" component={ShopStyle} />
+        <Route path="/bundle-review" component={BundleReview} />
         <Route path="/shop/care" component={ShopCare} />
         <Route path="/shop/offers" component={ShopOffers} />
         <Route path="/cart" component={CartPage} />
@@ -296,6 +299,8 @@ function App() {
 
             <LikeProvider>
 
+              <CustomBagBundleProvider>
+
 
 
               <AnimatePresence>
@@ -309,6 +314,7 @@ function App() {
 
 
 
+              </CustomBagBundleProvider>
             </LikeProvider>
 
 

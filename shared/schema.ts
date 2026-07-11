@@ -10,10 +10,16 @@ export const products = sqliteTable("products", {
   sku: text("sku").notNull().unique(),
   sellingPrice: real("selling_price").notNull(),
   mrp: real("mrp"),
-  category: text("category").notNull(), // style, age, care
+  category: text("category").notNull(), // style, home
   ageGroup: text("age_group"),
   subcategory: text("subcategory"),
+  subcategoryItem: text("subcategory_item"),
+  productClassification: text("product_classification"),
+  styleGroup: text("style_group"),
+  styleVariant: text("style_variant"),
+  hospitalBagsPackSize: text("hospital_bags_pack_size"),
   image: text("image").notNull(),
+  images: text("images"), // JSON string for multiple images
   rating: real("rating").notNull(),
   reviews: integer("reviews").notNull(),
   inStock: integer("in_stock", { mode: "boolean" }).default(true),
@@ -22,12 +28,25 @@ export const products = sqliteTable("products", {
   isNew: integer("is_new", { mode: "boolean" }).default(false),
   isBoosted: integer("is_boosted", { mode: "boolean" }).default(false),
   boostUpdatedAt: text("boost_updated_at"),
+  productType: text("product_type"), // single, combo
+  status: text("status").default("Active"), // Active, Draft
+  showOnWebsite: integer("show_on_website", { mode: "boolean" }).default(true),
+  visibleInNewArrivals: integer("visible_in_new_arrivals", { mode: "boolean" }).default(false),
+  visibleInTrendingProducts: integer("visible_in_trending_products", { mode: "boolean" }).default(false),
+  visibleInShopByStyle: integer("visible_in_shop_by_style", { mode: "boolean" }).default(false),
+  featuredProduct: integer("featured_product", { mode: "boolean" }).default(false),
+  bestSeller: integer("best_seller", { mode: "boolean" }).default(false),
+  recommendedProduct: integer("recommended_product", { mode: "boolean" }).default(false),
+  collectionName: text("collection_name"),
+  collectionPrintName: text("collection_print_name"),
+  printName: text("print_name"),
   colors: text("colors"), // JSON string for SQLite
   sizes: text("sizes"), // JSON string for SQLite
   gender: text("gender"),
   occasion: text("occasion"),
   fabric: text("fabric"),
   colorTheme: text("color_theme"),
+  careInstructions: text("care_instructions"),
 });
 
 export const insertProductSchema = createInsertSchema(products).omit({ id: true });
