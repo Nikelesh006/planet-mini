@@ -34,6 +34,7 @@ const productSchema = z.object({
   visibleInShopByStyle: z.boolean().nullable().optional(),
   isBoosted: z.boolean().nullable().optional(),
   boostUpdatedAt: z.union([z.string(), z.number()]).nullable().optional(),
+  boostSections: z.array(z.string()).nullable().optional(),
   featuredProduct: z.boolean().nullable().optional(),
   bestSeller: z.boolean().nullable().optional(),
   recommendedProduct: z.boolean().nullable().optional(),

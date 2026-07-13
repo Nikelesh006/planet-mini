@@ -10,6 +10,18 @@ import { motion } from "framer-motion";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 import { Link, useLocation } from "wouter";
 
 
@@ -22,7 +34,20 @@ import { Link, useLocation } from "wouter";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 import { useState, useEffect } from "react";
+
 import { useToast } from "@/hooks/use-toast";
 
 
@@ -35,9 +60,35 @@ import { useToast } from "@/hooks/use-toast";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 import { BabyCareCard } from "@/components/BabyCareCard";
+
 import { CustomBagBundleSummary } from "@/components/CustomBagBundleSummary";
+
 import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -61,11 +112,39 @@ import { Sparkles, Filter, Search, X } from "lucide-react";
 
 
 
-import { useBlockbusterProducts, useGiftingProducts, useProducts, useShopByStyleProducts } from "@/hooks/useProducts";
+
+
+
+
+
+
+
+
+
+
+
+
+import { useProducts } from "@/hooks/useProducts";
+
+
+
+
 
 
 
 import { useQueryClient } from "@tanstack/react-query";
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -101,11 +180,51 @@ import { Slider } from "@/components/ui/slider";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 interface FilterSection {
 
 
+
+
+
   id: string;
+
   title: string;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -129,7 +248,31 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   items?: { id: string; name: string; count: number }[];
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -153,7 +296,31 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   min?: number;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -177,7 +344,31 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   step?: number;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -213,145 +404,319 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const isProductInStep = (product: any, stepNumber: number) => {
+
   const category = (product.category || "").toLowerCase().trim();
+
   const subcategory = (product.subcategory || "").toLowerCase().trim();
+
   const subcategoryItem = (product.subcategoryItem || "").toLowerCase().trim();
+
   const styleGroup = (product.styleGroup || "").toLowerCase().trim();
+
   const productName = (product.name || "").toLowerCase().trim();
+
   const description = (product.description || "").toLowerCase().trim();
+
   const styleVariant = (product.styleVariant || "").toLowerCase().trim();
+
   
+
   if (stepNumber === 1) {
+
     const targetTerms = ['towels and blankets', 'towels & blankets', 'beds', 'towels', 'blankets'];
+
     return targetTerms.some(term => 
+
       styleGroup.includes(term) || 
+
       subcategoryItem.includes(term) ||
+
       subcategory.includes(term) ||
+
       productName.includes(term) || 
+
       description.includes(term) || 
+
       styleVariant.includes(term)
+
     );
+
   }
+
   
+
   if (stepNumber === 2) {
+
     const targetTerms = ['jhablas'];
+
     return targetTerms.some(term => 
+
       styleGroup.includes(term) || 
+
       subcategoryItem.includes(term) ||
+
       subcategory.includes(term) ||
+
       productName.includes(term) || 
+
       description.includes(term) || 
+
       styleVariant.includes(term)
+
     ) || product.productType === 'combo' || subcategory.includes('hospital bag');
+
   }
+
   
+
   if (stepNumber === 3) {
+
     const targetTerms = ['nappies', 'wipes', 'new born accessories', 'newborn accessories'];
+
     return targetTerms.some(term => 
+
       styleGroup.includes(term) || 
+
       subcategoryItem.includes(term) ||
+
       subcategory.includes(term) ||
+
       productName.includes(term) || 
+
       description.includes(term) || 
+
       styleVariant.includes(term)
+
     );
+
   }
+
   
+
   return false;
+
 };
+
+
 
 const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id: string; name: string }[] }> = {
+
   'jhablas': { 
+
     name: 'Jhablas', 
+
     icon: '👶',
+
     variants: [{ id: 'knot-jhablas', name: 'Knot Jhablas' }, { id: 'button-jhablas', name: 'Button Jhablas' }] 
+
   },
+
   'towels': { 
+
     name: 'Towels and Blankets', 
+
     icon: '🧸',
+
     variants: [{ id: 'hooded-towels', name: 'Hooded Towels' }, { id: 'swaddle', name: 'Swaddle' }] 
+
   },
+
   'nappies': { 
+
     name: 'Nappies', 
+
     icon: '👕',
+
     variants: [] 
+
   },
+
   'wipes': { 
+
     name: 'Wipes', 
+
     icon: '🧻',
+
     variants: [] 
+
   },
+
   'newborn-accessories': { 
+
     name: 'Newborn Accessories', 
+
     icon: '🎀',
+
     variants: [{ id: 'hat', name: 'Hat' }, { id: 'mittens', name: 'Mittens' }, { id: 'booties', name: 'Booties' }] 
+
   },
+
   'beds': { 
+
     name: 'Beds', 
+
     icon: '🛏️',
+
     variants: [{ id: 'baby-nest', name: 'Baby Nest' }, { id: 'baby-net-bed', name: 'Baby Net Bed' }] 
+
   }
+
 };
 
+
+
 export default function ShopStyle() {
+
   const [location, setLocation] = useLocation();
+
   const { toast } = useToast();
+
+
 
   const queryClient = useQueryClient();
 
+
+
   const [currentStep, setCurrentStep] = useState<number>(0);
+
+
 
   const { bundleItems, addToBundle, removeFromBundle, updateQuantity, bundleTotal, totalItems } = useCustomBagBundle();
 
+
+
   const handleStepClick = (stepId: number) => {
+
     if (customMode) {
+
       // Validate step 1
+
       if (stepId > 1) {
+
         const hasStep1Item = bundleItems.some(item => isProductInStep(item.product, 1));
+
         if (!hasStep1Item) {
+
           toast({
+
             title: "Action Required",
+
             description: "Please add at least one product from Nursing & Bedding (Step 1) to your bundle.",
+
             variant: "destructive"
+
           });
+
           return;
+
         }
-      }
-      
-      // Validate step 2
-      if (stepId > 2) {
-        const hasStep2Item = bundleItems.some(item => isProductInStep(item.product, 2));
-        if (!hasStep2Item) {
-          toast({
-            title: "Action Required",
-            description: "Please add at least one product from Baby Clothing (Step 2) to your bundle.",
-            variant: "destructive"
-          });
-          return;
-        }
+
       }
 
-      // Validate step 3 and navigate to review
-      if (stepId === 4) {
-        const hasStep3Item = bundleItems.some(item => isProductInStep(item.product, 3));
-        if (!hasStep3Item) {
-          toast({
-            title: "Action Required",
-            description: "Please add at least one product from Other Essentials (Step 3) to your bundle.",
-            variant: "destructive"
-          });
-          return;
-        }
-        setLocation('/bundle-review');
-        return;
-      }
       
+
+      // Validate step 2
+
+      if (stepId > 2) {
+
+        const hasStep2Item = bundleItems.some(item => isProductInStep(item.product, 2));
+
+        if (!hasStep2Item) {
+
+          toast({
+
+            title: "Action Required",
+
+            description: "Please add at least one product from Baby Clothing (Step 2) to your bundle.",
+
+            variant: "destructive"
+
+          });
+
+          return;
+
+        }
+
+      }
+
+
+
+      // Validate step 3 and navigate to review
+
+      if (stepId === 4) {
+
+        const hasStep3Item = bundleItems.some(item => isProductInStep(item.product, 3));
+
+        if (!hasStep3Item) {
+
+          toast({
+
+            title: "Action Required",
+
+            description: "Please add at least one product from Other Essentials (Step 3) to your bundle.",
+
+            variant: "destructive"
+
+          });
+
+          return;
+
+        }
+
+        setLocation('/bundle-review');
+
+        return;
+
+      }
+
+      
+
       setCurrentStep(stepId);
+
     } else {
+
       setCurrentStep(stepId);
+
     }
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -375,6 +740,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   useEffect(() => {
 
 
@@ -387,7 +764,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     window.scrollTo(0, 0);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -423,6 +824,30 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const searchParams = new URLSearchParams(window.location.search);
 
 
@@ -435,31 +860,11 @@ export default function ShopStyle() {
 
 
 
-  const isBlockbusterSection = searchParams.get("section") === "blockbuster-combos";
 
 
 
 
 
-
-
-
-
-
-
-  const isHospitalBagsSection = searchParams.get("section") === "hospital-bags";
-
-
-
-
-
-
-
-
-
-
-
-  const isGiftingSection = searchParams.get("section") === "gifting";
 
 
 
@@ -471,19 +876,44 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   const searchParam = searchParams.get("search");
+
+
+
+
 
 
 
   const customMode = searchParams.get("custom") === "true";
 
+  const sectionParam = searchParams.get("section");
+
+  const isBlockbusterSection = sectionParam === "blockbuster-combos";
+
+  const isHospitalBagsSection = sectionParam === "hospital-bags";
+
+  const isGiftingSection = sectionParam === "gifting";
+
+
+
   // Set Step 1 as default when in custom mode
+
   useEffect(() => {
+
     if (customMode) {
+
       setCurrentStep(1);
+
     } else {
+
       setCurrentStep(0);
+
     }
+
   }, [customMode]);
 
 
@@ -512,7 +942,6 @@ export default function ShopStyle() {
 
 
 
-  // Fetch all home products (same as Home page sections)
 
 
 
@@ -521,68 +950,29 @@ export default function ShopStyle() {
 
 
 
+  // Fetch all products for the master catalog
 
+  const { data: allProducts, isLoading: allProductsLoading } = useProducts();
 
 
-  const { data: styleProducts, isLoading: styleLoading } = useShopByStyleProducts();
 
+  const products = (allProducts || []).filter((product: any) => {
 
+    // In custom mode, show all products
 
+    if (customMode) return true;
 
+    
 
+    // Check if product belongs to home or style category, or has any visibleIn flag
 
+    const isHomeOrStyle = product.category === 'home' || product.category === 'style';
 
+    const hasVisibilityFlag = Object.keys(product).some(key => key.startsWith('visibleIn') && product[key] === true);
 
+    
 
-
-
-  const { data: blockbusterProducts, isLoading: blockbusterLoading } = useBlockbusterProducts();
-
-
-
-
-
-
-
-
-
-
-
-  const { data: hospitalBagsProducts, isLoading: hospitalBagsLoading } = useProducts({
-
-
-
-
-
-
-
-
-
-
-
-    category: "home",
-
-
-
-
-
-
-
-
-
-
-
-    subcategory: "Hospital Bags",
-
-
-
-
-
-
-
-
-
-
+    return isHomeOrStyle || hasVisibilityFlag;
 
   });
 
@@ -596,19 +986,6 @@ export default function ShopStyle() {
 
 
 
-  const { data: giftingSectionProducts, isLoading: giftingSectionLoading } = useGiftingProducts();
-
-
-
-
-
-
-
-  // Fetch all products for custom mode - always fetch to ensure availability
-
-
-
-  const { data: allProducts, isLoading: allProductsLoading } = useProducts();
 
 
 
@@ -620,41 +997,8 @@ export default function ShopStyle() {
 
 
 
-  const products = customMode
 
-    ? (allProducts || [])
-
-    : (isBlockbusterSection
-
-      ? blockbusterProducts
-
- 
-
-      : isHospitalBagsSection
-
-        ? hospitalBagsProducts
-
-        : isGiftingSection
-
-          ? giftingSectionProducts
-
-          : homeFilter === 'hospital-bags'
-
-            ? (() => {
-                // Merge styleProducts and hospitalBagsProducts, deduplicating by id
-                const style = styleProducts || [];
-                const hospital = hospitalBagsProducts || [];
-                const merged = [...style];
-                const existingIds = new Set(style.map((p: any) => p.id));
-                for (const p of hospital) {
-                  if (!existingIds.has(p.id)) {
-                    merged.push(p);
-                  }
-                }
-                return merged;
-              })()
-
-            : styleProducts);
+  const isLoading = allProductsLoading;
 
 
 
@@ -666,27 +1010,7 @@ export default function ShopStyle() {
 
 
 
-  const isLoading = customMode
 
-    ? allProductsLoading
-
-    : isBlockbusterSection
-
-      ? blockbusterLoading
-
-      : isHospitalBagsSection
-
-        ? hospitalBagsLoading
-
-        : isGiftingSection
-
-          ? giftingSectionLoading
-
-          : homeFilter === 'hospital-bags'
-
-            ? (styleLoading || hospitalBagsLoading)
-
-            : styleLoading;
 
 
 
@@ -710,6 +1034,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   // Filter state
 
 
@@ -722,19 +1058,55 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   const [selectedFilters, setSelectedFilters] = useState<string[]>(
+
     homeFilter && STYLE_MAPPING[homeFilter] ? [homeFilter] : []
+
   );
 
+
+
   // Sync selectedFilters from homeFilter URL param on mount / param change
+
   useEffect(() => {
+
     if (homeFilter && STYLE_MAPPING[homeFilter]) {
+
       setSelectedFilters(prev => {
+
         if (!prev.includes(homeFilter)) return [homeFilter];
+
         return prev;
+
       });
+
     }
+
   }, [homeFilter]);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -758,7 +1130,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -778,7 +1174,39 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -814,7 +1242,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   const filterCategories = [
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -838,7 +1290,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     { id: 'towels', name: 'Towels & Blankets', count: 18 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -862,7 +1338,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     { id: 'wipes', name: 'Wipes', count: 15 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -886,7 +1386,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     { id: 'newborn-accessories', name: 'Newborn Accessories', count: 12 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -910,7 +1434,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -946,6 +1506,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   const filterSections: FilterSection[] = [
 
 
@@ -958,7 +1530,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -982,6 +1578,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Categories',
 
 
@@ -994,7 +1602,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       icon: Filter,
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1018,6 +1650,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     },
 
 
@@ -1030,7 +1674,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1054,7 +1722,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Size',
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1078,7 +1770,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       items: [
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1102,7 +1818,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'infant', name: 'Infant (3-6M)', count: 22 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1126,7 +1866,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'toddler', name: 'Toddler (1-2Y)', count: 19 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1150,7 +1914,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       ]
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1174,7 +1962,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1198,6 +2010,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Color',
 
 
@@ -1210,7 +2034,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       icon: Filter,
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1234,7 +2082,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'white', name: 'White', count: 31 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1258,7 +2130,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'blue', name: 'Blue', count: 24 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1282,7 +2178,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'green', name: 'Green', count: 12 },
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1306,7 +2226,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       ]
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1330,7 +2274,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1354,7 +2322,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Price Range',
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1378,7 +2370,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       isSlider: true,
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1402,7 +2418,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       max: 5000,
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1426,7 +2466,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1462,33 +2526,107 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const handleFilterToggle = (filterId: string) => {
+
     const isStyleGroup = !!STYLE_MAPPING[filterId];
+
     const isCurrentlySelected = selectedFilters.includes(filterId);
 
+
+
     if (isStyleGroup) {
+
       // When toggling a Style Group, update the URL filter param
+
       const newParams = new URLSearchParams(window.location.search);
+
       if (isCurrentlySelected) {
+
         // Deselecting: remove group and its variants from selectedFilters, clear URL filter
+
         const groupVariantIds = STYLE_MAPPING[filterId].variants.map(v => v.id);
+
         setSelectedFilters(prev => prev.filter(id => id !== filterId && !groupVariantIds.includes(id)));
+
         newParams.delete('filter');
+
       } else {
+
         // Selecting: set only this group, clear any previous variants from other groups
+
         setSelectedFilters([filterId]);
+
         newParams.set('filter', filterId);
+
       }
+
       setLocation(`/shop/style?${newParams.toString()}`);
+
     } else {
+
       // Toggling a Style Variant — keep the parent group selected
+
       setSelectedFilters(prev =>
+
         prev.includes(filterId)
+
           ? prev.filter(id => id !== filterId)
+
           : [...prev, filterId]
+
       );
+
     }
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1524,7 +2662,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     setExpandedCategories(prev => 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1548,7 +2710,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         ? prev.filter(id => id !== categoryId)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1572,6 +2758,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     );
 
 
@@ -1584,7 +2782,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1609,14 +2843,46 @@ export default function ShopStyle() {
 
 
   const clearFilters = () => {
+
     setSelectedFilters([]);
+
     setMaxPrice(5000);
+
     // Also clear the filter URL param
+
     const newParams = new URLSearchParams(window.location.search);
+
     newParams.delete('filter');
+
     const paramStr = newParams.toString();
+
     setLocation(`/shop/style${paramStr ? '?' + paramStr : ''}`);
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1641,102 +2907,13 @@ export default function ShopStyle() {
 
 
   const normalizeText = (value: string | undefined | null) =>
-
-
-
-
-
-
-
-
-
-
-
-    (value || "")
-
-
-
-
-
-
-
-
-
-
-
-      .toLowerCase()
-
-
-
-
-
-
-
-
-
-
-
-      .replace(/[']/g, "")
-
-
-
-
-
-
-
-
-
-
-
-      .replace(/-/g, " ")
-
-
-
-
-
-
-
-
-
-
-
-      .replace(/\s+/g, " ")
-
-
-
-
-
-
-
-
-
-
-
-      .trim();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    (value || "").toLowerCase().trim().replace(/\s+/g, " ");
 
   const matchesHomeFilter = (product: any, filter: string | null) => {
+
+
+
+
 
 
 
@@ -1748,22 +2925,53 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
     // Style filter: match styleGroup, styleVariant, name, description, or printName
+
     const filterLower = normalizeText(filter);
+
     const productName = normalizeText(product.name);
+
     const productDesc = normalizeText(product.description);
+
     const productPrintName = normalizeText(product.printName);
+
     const productStyleGroup = normalizeText(product.styleGroup);
+
     const productStyleVariant = normalizeText(product.styleVariant);
 
+
+
     const matchesStyle =
+
       productStyleGroup === filterLower ||
+
       productStyleGroup.includes(filterLower) ||
+
       productStyleVariant === filterLower ||
+
       productStyleVariant.includes(filterLower) ||
+
       productName.includes(filterLower) ||
+
       productDesc.includes(filterLower) ||
+
       productPrintName.includes(filterLower);
+
+
+
+
+
+
+
+
 
 
 
@@ -1775,24 +2983,27 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     if (filter.toLowerCase() === 'hospital-bags') {
-
-
-
       const subcategory = normalizeText(product.subcategory);
-
-
-
       const category = normalizeText(product.category);
-
-
-
       // Match both "hospital bag" and "hospital bags" AND ensure category is 'home'
       return (subcategory.includes('hospital bag') || subcategory.includes('hospital bags')) && category === 'home';
-
-
-
+    } else if (filter.toLowerCase() === 'blockbuster-combos') {
+      const subcategory = normalizeText(product.subcategory);
+      return subcategory.includes('blockbuster combo');
     }
+
+
+
+
+
+
+
+
 
 
 
@@ -1804,7 +3015,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
 
 
 
@@ -1816,7 +3039,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     if (!keyword) return true;
+
+
+
+
+
+
+
+
 
 
 
@@ -1832,7 +3067,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
     // Search filter: match any of the specified fields
+
+
+
+
 
 
 
@@ -1840,7 +3087,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       (product as any).styleGroup?.toLowerCase().includes(searchTerm) ||
+
+
+
+
 
 
 
@@ -1848,7 +3103,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       (product as any).printName?.toLowerCase().includes(searchTerm) ||
+
+
+
+
 
 
 
@@ -1856,7 +3119,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       (product as any).collectionPrintName?.toLowerCase().includes(searchTerm) ||
+
+
+
+
 
 
 
@@ -1864,11 +3135,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       product.description?.toLowerCase().includes(searchTerm)
 
 
 
+
+
+
+
     );
+
+
+
+
 
 
 
@@ -1880,7 +3163,27 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
   const filteredProducts = products
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1904,6 +3207,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         .filter(product => Number(product.sellingPrice) <= maxPrice)
 
 
@@ -1912,12 +3227,33 @@ export default function ShopStyle() {
 
 
 
-        .filter(product => customMode || matchesHomeFilter(product, homeFilter))
+
+
+
+
+
+
+
+
+        .filter(product => customMode || isBlockbusterSection || matchesHomeFilter(product, homeFilter))
+
+
 
         .filter(product => {
+
           if (!currentStep) return true;
+
           return isProductInStep(product, currentStep);
+
         })
+
+
+
+
+
+
+
+
 
 
 
@@ -1927,27 +3263,52 @@ export default function ShopStyle() {
 
         .filter(product => matchesSearch(product, searchQuery))
 
+
+
         // Style Variant filter: if any variant IDs are selected, filter by styleVariant, name, desc, etc.
+
         .filter(product => {
+
+          if (customMode || isBlockbusterSection) return true;
+
           // Get variant IDs from selectedFilters (exclude group-level keys)
+
           const selectedVariantIds = selectedFilters.filter(id => !STYLE_MAPPING[id]);
+
           if (selectedVariantIds.length === 0) return true;
+
           
+
           const productStyleVariant = normalizeText(product.styleVariant);
+
           const productStyleGroup = normalizeText(product.styleGroup);
+
           const productName = normalizeText(product.name);
+
           const productDesc = normalizeText(product.description);
+
           const productPrintName = normalizeText(product.printName);
+
           
+
           return selectedVariantIds.some(variantId => {
+
             const normalizedVariant = normalizeText(variantId.replace(/-/g, ' '));
+
             return productStyleVariant === normalizedVariant || 
+
                    productStyleVariant.includes(normalizedVariant) ||
+
                    productStyleGroup.includes(normalizedVariant) ||
+
                    productName.includes(normalizedVariant) ||
+
                    productDesc.includes(normalizedVariant) ||
+
                    productPrintName.includes(normalizedVariant);
+
           });
+
         })
 
 
@@ -1960,7 +3321,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         .filter(product => {
+
+
+
+
 
 
 
@@ -1968,7 +3345,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           if (customMode) return true;
+
+
+
+
+
+
+
+
 
 
 
@@ -1988,91 +3377,162 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           const subcategory = normalizeText(product.subcategory);
 
-
-
-
-
-
-
-
-
-
-
           if (isBlockbusterSection) {
-
-
-
-
-
-
-
-
-
-
-
-            return category === "home" && (
-
-
-
-
-
-
-
-
-
-
-
-              subcategory === "blockbuster combos" ||
-
-
-
-
-
-
-
-
-
-
-
-              subcategory === "blockbuster combo" ||
-
-
-
-
-
-
-
-
-
-
-
-              subcategory.includes("blockbuster combo")
-
-
-
-
-
-
-
-
-
-
-
-            );
-
-
-
-
-
-
-
-
-
-
-
+            return category === "home" && subcategory.includes('blockbuster combo');
           }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2096,7 +3556,30 @@ export default function ShopStyle() {
 
 
 
-            return category === "home" && (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2120,7 +3603,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               subcategory === "hospital bag" ||
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2144,7 +3651,30 @@ export default function ShopStyle() {
 
 
 
-            );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2157,6 +3687,18 @@ export default function ShopStyle() {
 
 
           }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2180,7 +3722,30 @@ export default function ShopStyle() {
 
 
 
-            return category === "home" && (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2204,7 +3769,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               subcategory === "gift" ||
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2228,7 +3817,30 @@ export default function ShopStyle() {
 
 
 
-            );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2252,7 +3864,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           return true;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2276,7 +3912,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     : [];
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2300,7 +3960,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     <div className="min-h-screen bg-white">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2324,7 +4008,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       <section className="relative w-full h-auto sm:h-[70vh] sm:min-h-[400px] sm:max-h-[600px] mb-8">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2348,7 +4056,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Mobile Banner - Only visible on small screens */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2372,7 +4104,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             <img 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2396,7 +4152,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               alt="Shop by Style - Planet Mini Baby Wear"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2420,7 +4200,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               draggable={false}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2444,7 +4248,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               onError={(e) => {
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2468,7 +4296,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               }}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2492,7 +4344,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2516,7 +4392,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           <div className="hidden sm:block relative w-full h-full select-none">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2540,7 +4440,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               src="/shopbystyle-banner.png"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2564,7 +4488,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               className="w-full h-full object-cover pointer-events-none"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2588,7 +4536,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               onContextMenu={(e) => e.preventDefault()}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2612,7 +4584,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EShop by Style Banner%3C/text%3E%3C/svg%3E";
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2636,7 +4632,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2660,6 +4680,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
 
 
@@ -2672,7 +4704,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2697,87 +4765,224 @@ export default function ShopStyle() {
 
 
       {/* Style Group & Variant Filter Section */}
+
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 py-6">
+
         {/* Style Groups Row */}
+
         <div className="flex flex-wrap justify-center gap-3 sm:gap-8 md:gap-10">
+
           {Object.entries(STYLE_MAPPING)
+
             .filter(([groupId]) => {
+
               const activeGroupId = selectedFilters.find(id => STYLE_MAPPING[id]);
+
               return activeGroupId ? groupId === activeGroupId : true;
+
             })
+
             .map(([groupId, group]) => (
+
             <button
+
               key={groupId}
+
               onClick={() => handleFilterToggle(groupId)}
+
               className={`
+
                 flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-8 rounded-2xl transition-all duration-300 border-2
+
                 ${selectedFilters.includes(groupId)
+
                   ? 'bg-red-100 border-red-500 shadow-xl scale-110'
+
                   : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-110'
+
                 }
+
               `}
+
             >
+
               <div className={`
+
                 text-3xl sm:text-6xl transition-transform duration-300
+
                 ${selectedFilters.includes(groupId) ? 'scale-125' : 'hover:scale-125'}
+
               `}>
+
                 {group.icon}
+
               </div>
+
               <span className={`
+
                 text-xs sm:text-lg font-semibold transition-colors
+
                 ${selectedFilters.includes(groupId) ? 'text-red-600' : 'text-gray-700'}
+
               `}>
+
                 {group.name}
+
               </span>
+
             </button>
+
           ))}
+
         </div>
 
+
+
         {/* Style Variants Row — only shown when a group with variants is selected */}
+
         {(() => {
+
           const activeGroupId = selectedFilters.find(id => STYLE_MAPPING[id]);
+
           const activeGroup = activeGroupId ? STYLE_MAPPING[activeGroupId] : null;
+
           if (!activeGroup || activeGroup.variants.length === 0) return null;
 
+
+
           return (
+
             <div className="mt-6">
+
               <h3 className="text-center text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">
+
                 Style Variants
+
               </h3>
+
               <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
+
                 {activeGroup.variants.map(variant => (
+
                   <button
+
                     key={variant.id}
+
                     onClick={() => handleFilterToggle(variant.id)}
+
                     className={`
+
                       px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-300 border-2
+
                       ${selectedFilters.includes(variant.id)
+
                         ? 'bg-red-500 text-white border-red-500 shadow-lg scale-105'
+
                         : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:shadow-md'
+
                       }
+
                     `}
+
                   >
+
                     {variant.name}
+
                   </button>
+
                 ))}
+
               </div>
+
             </div>
+
           );
+
         })()}
 
+
+
         {/* Clear filters button when any filter is active */}
+
         {selectedFilters.length > 0 && (
+
           <div className="flex justify-center mt-4">
+
             <button
+
               onClick={clearFilters}
+
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+
             >
+
               <X className="w-4 h-4" />
+
               Clear Filters
+
             </button>
+
           </div>
+
         )}
+
       </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2845,7 +5050,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 pt-10">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2869,7 +5098,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           <motion.div
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2893,7 +5146,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             animate={{ opacity: 1, y: 0 }}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2917,7 +5194,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           >
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2941,7 +5242,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               <div className="hidden sm:block flex-1 h-0.5 bg-gray-400"></div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2965,7 +5290,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2989,7 +5338,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 </h2>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3013,7 +5386,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   src="/baby-cloth.png"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3037,7 +5434,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   className="w-8 h-8 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3061,7 +5482,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   onError={(e) => {
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3085,7 +5530,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   }}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3109,7 +5578,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3133,7 +5626,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3157,7 +5674,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               Find the perfect style for your little one with our curated collection of adorable baby wear
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3181,6 +5722,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           </motion.div>
 
 
@@ -3193,7 +5746,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3221,7 +5798,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       {/* Customise Hospital Bags Button */}
+
+
+
+
+
+
+
+
 
 
 
@@ -3237,7 +5838,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
         <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
+
+
+
+
+
+
+
+
 
 
 
@@ -3253,7 +5870,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
             <button
+
+
+
+
+
+
+
+
 
 
 
@@ -3269,7 +5902,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
               className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl"
+
+
+
+
+
+
+
+
 
 
 
@@ -3285,7 +5934,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
               <Sparkles className="w-5 h-5" />
+
+
+
+
+
+
+
+
 
 
 
@@ -3301,87 +5966,183 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
             </button>
 
+
+
             {/* Step Filters - Only in custom mode */}
+
             {customMode && (
+
               <div className="mt-6 flex flex-wrap justify-center gap-3">
+
                 <button
+
                   onClick={() => handleStepClick(1)}
+
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors ${
+
                     currentStep === 1
+
                       ? 'bg-primary text-white shadow-lg'
+
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+
                   }`}
+
                 >
+
                   <span className="text-sm font-semibold">Step 1:</span>
+
                   <span className="text-sm">Nursing & Bedding</span>
+
                 </button>
+
                 <button
+
                   onClick={() => handleStepClick(2)}
+
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors ${
+
                     currentStep === 2
+
                       ? 'bg-primary text-white shadow-lg'
+
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+
                   }`}
+
                 >
+
                   <span className="text-sm font-semibold">Step 2:</span>
+
                   <span className="text-sm">Baby Clothing</span>
+
                 </button>
+
                 <button
+
                   onClick={() => handleStepClick(3)}
+
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors ${
+
                     currentStep === 3
+
                       ? 'bg-primary text-white shadow-lg'
+
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+
                   }`}
+
                 >
+
                   <span className="text-sm font-semibold">Step 3:</span>
+
                   <span className="text-sm">Other Essentials</span>
+
                 </button>
+
               </div>
+
             )}
+
+
 
             {/* Next Step Buttons - Only in custom mode */}
+
             {customMode && (
+
               <div className="mt-4 flex flex-wrap justify-center gap-3">
+
                 {currentStep === 1 && (
+
                   <button
+
                     onClick={() => handleStepClick(2)}
+
                     className="inline-flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-colors bg-black text-white shadow-lg hover:bg-gray-800"
+
                   >
+
                     <span className="text-sm font-semibold">Next</span>
+
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+
                     </svg>
+
                   </button>
+
                 )}
+
                 {currentStep === 2 && (
+
                   <button
+
                     onClick={() => handleStepClick(3)}
+
                     className="inline-flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-colors bg-black text-white shadow-lg hover:bg-gray-800"
+
                   >
+
                     <span className="text-sm font-semibold">Next</span>
+
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+
                     </svg>
+
                   </button>
+
                 )}
+
                 {currentStep === 3 && (
+
                   <button
+
                     onClick={() => handleStepClick(4)}
+
                     className="inline-flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-colors bg-black text-white shadow-lg hover:bg-gray-800"
+
                   >
+
                     <span className="text-sm font-semibold">Review Bundle</span>
+
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+
                     </svg>
+
                   </button>
+
                 )}
+
               </div>
+
             )}
 
+
+
           </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -3397,7 +6158,39 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
       )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3433,7 +6226,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
       <div className="lg:hidden px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-4">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3457,7 +6274,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3481,7 +6322,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         >
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3505,7 +6370,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           Filters
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3529,7 +6418,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3553,7 +6466,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             </span>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3577,7 +6514,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         </button>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3613,7 +6574,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       {/* Products Section with Full Width Layout */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3637,7 +6634,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         <div className="flex flex-col lg:flex-row">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3661,7 +6682,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Filter Sidebar - Fixed to Left Corner */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3685,7 +6730,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             ${isMobileFilterOpen ? 'block' : 'hidden'}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3709,7 +6778,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
           `}>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3745,7 +6838,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               {/* Mobile Close Button - Sticky */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3769,7 +6898,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 <h2 className="text-base sm:text-lg font-bold text-black flex items-center gap-2">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3793,7 +6946,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   Filters
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3817,7 +6994,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3841,7 +7042,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3865,7 +7090,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   <X className="w-4 h-4 sm:w-5 sm:h-5" />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3889,7 +7138,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3925,7 +7210,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               <div className="hidden lg:flex items-center justify-between p-4 bg-white/60 backdrop-blur-sm border-b border-primary/30">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3949,7 +7258,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   <Filter className="w-5 h-5 text-red-500" />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3973,7 +7306,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 </h2>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3997,7 +7354,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   <button
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4021,7 +7402,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                     className="text-sm font-semibold bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4045,7 +7450,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                     Clear all
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4069,6 +7498,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 )}
 
 
@@ -4081,7 +7522,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4117,7 +7594,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               <div className="flex-1 overflow-y-auto p-3 sm:p-4 pb-2 space-y-2 sm:space-y-3">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4141,7 +7642,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   <div key={section.id} className="border-2 border-black rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4165,7 +7690,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                     <button
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4189,7 +7738,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       className={`
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4213,7 +7786,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                         ${index % 2 === 0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4237,7 +7834,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           : 'bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 border-l-4 border-gray-700'
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4261,7 +7882,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       `}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4285,7 +7930,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       <div className="flex items-center gap-1 sm:gap-2">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4309,7 +7978,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           w-3 h-3 sm:w-4 sm:h-4 transition-colors
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4333,7 +8026,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                         `} />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4357,7 +8074,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4393,7 +8146,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       <svg
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4417,7 +8194,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 text-black
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4441,7 +8242,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                         `}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4465,7 +8290,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                         stroke="currentColor"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4489,7 +8338,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       >
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4513,7 +8386,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       </svg>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4549,7 +8446,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     {/* Expandable Content */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4573,7 +8506,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       transition-all duration-300 ease-in-out overflow-hidden
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4597,7 +8554,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                     `}>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4621,7 +8602,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                         p-2 sm:p-3 space-y-2 sm:space-y-4
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4645,7 +8650,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       `}>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4669,7 +8698,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           // Price Range Slider
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4693,7 +8746,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                             <div className="flex items-center justify-between text-xs sm:text-sm font-medium text-black">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4717,6 +8794,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               <span>₹{maxPrice}</span>
 
 
@@ -4729,7 +8818,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4753,7 +8866,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               value={[maxPrice]}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4777,7 +8914,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               max={section.max || 5000}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4801,7 +8962,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               step={section.step || 100}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4825,7 +9010,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                             />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4849,7 +9058,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               Drag to adjust price range
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4873,7 +9106,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4897,7 +9154,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           // Regular checkbox items
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4921,7 +9202,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                             <label
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4945,7 +9250,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               className={`
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4969,7 +9298,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                 ${selectedFilters.includes(item.id)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4993,7 +9346,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     ? 'bg-red-100 border-red-500 shadow-sm'
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5017,7 +9394,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                   : 'bg-white/80 border-gray-200 hover:bg-gray-100'
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5041,7 +9442,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               `}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5065,7 +9490,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               <div className="flex items-center gap-2 sm:gap-3">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5089,7 +9538,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                 <div className="relative">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5113,7 +9586,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     type="checkbox"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5137,7 +9634,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     onChange={() => handleFilterToggle(item.id)}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5161,7 +9682,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                   />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5185,7 +9730,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     w-3 h-3 sm:w-4 sm:h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5209,7 +9778,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                       ? index % 2 === 0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5233,7 +9826,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                         : 'bg-gray-700 border-gray-700 shadow-md'
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5257,7 +9874,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5281,7 +9922,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     {selectedFilters.includes(item.id) && (
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5305,7 +9970,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5329,6 +10018,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     )}
 
 
@@ -5341,7 +10042,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5377,7 +10102,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <span className="text-xs sm:text-sm font-semibold text-black select-none">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5401,7 +10162,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                 </span>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5437,7 +10222,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               <span className={`
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5461,7 +10282,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                 ${expandedCategories.includes(section.id)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5485,7 +10330,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                   : index % 2 === 0
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5509,7 +10378,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                                     : 'bg-gray-200 text-gray-700 border-gray-400'
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5533,7 +10426,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               `}>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5557,7 +10474,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                               </span>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5581,7 +10522,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           ))
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5605,7 +10570,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5629,7 +10618,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5653,6 +10666,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -5665,7 +10690,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5701,7 +10750,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Mobile Overlay */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5725,7 +10810,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             <div 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5749,6 +10858,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               onClick={() => setIsMobileFilterOpen(false)}
 
 
@@ -5761,7 +10882,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5797,7 +10942,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Products Content */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5821,7 +11002,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-4 pb-8 lg:pb-16">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5845,7 +11050,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               {/* Active Filters Display */}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5869,7 +11098,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="mb-6 flex flex-wrap gap-2">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5893,7 +11146,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                     const section = filterSections.find(sec => sec.id === filterId);
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5917,7 +11194,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                     return (
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5941,7 +11242,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                         key={filterId}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5965,7 +11290,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       >
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5989,7 +11338,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6013,7 +11386,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           className="hover:text-red-800"
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6037,7 +11434,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                           <X className="w-3 h-3" />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6061,31 +11482,33 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       </span>
-
-
-
-
-
-
-
-
-
-
-
                     );
-
-
-
-
-
-
-
-
-
-
-
                   })}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6109,7 +11532,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6145,7 +11604,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               {!isLoading && filteredProducts && filteredProducts.length > 0 && (
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6169,7 +11652,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6193,7 +11700,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                       <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} customMode={customMode} />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6217,7 +11748,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6241,7 +11796,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               )}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6265,7 +11844,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="flex justify-center py-8">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6289,6 +11892,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
 
 
@@ -6301,7 +11916,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
               )}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6325,7 +11964,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="text-center py-8">
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6349,7 +12012,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6373,7 +12060,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6397,7 +12108,31 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6411,19 +12146,45 @@ export default function ShopStyle() {
 
       </section>
 
+
+
       {/* Custom Bag Bundle Summary - Show when in custom mode and has items */}
+
       {customMode && (
+
         <>
+
           {console.log('CustomBagBundleSummary render check:', { customMode, bundleItemsLength: bundleItems.length, bundleItems })}
+
           <CustomBagBundleSummary
+
             bundleItems={bundleItems}
+
             bundleTotal={bundleTotal}
+
             totalItems={totalItems}
+
             onRemoveItem={removeFromBundle}
+
             onUpdateQuantity={updateQuantity}
+
           />
+
         </>
+
       )}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6447,6 +12208,18 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   );
 
 
@@ -6459,7 +12232,166 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

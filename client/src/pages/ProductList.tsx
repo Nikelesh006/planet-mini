@@ -38,9 +38,10 @@ import {
 
 } from "lucide-react";
 
-import { useProducts, useDeleteProduct, useToggleBoostProduct } from "@/hooks/useProducts";
+import { useProducts, useDeleteProduct, useToggleBoostProduct, useUpdateProductBoostSections } from "@/hooks/useProducts";
 
 import { Modal, ConfirmModal } from "@/components/ui/Modal";
+import { BoostModal } from "@/components/BoostModal";
 
 import { useToast } from "@/hooks/use-toast";
 
@@ -58,15 +59,22 @@ export default function ProductList() {
 
   const toggleBoostProduct = useToggleBoostProduct();
 
+  const updateProductBoostSections = useUpdateProductBoostSections();
+
   const [searchTerm, setSearchTerm] = useState("");
 
   const [filterCategory, setFilterCategory] = useState("all");
 
   const [filteredProducts, setFilteredProducts] = useState<ProductResponse[]>([]);
 
-  const [selectedProducts, setSelectedProducts] = useState<Set<number>>(new Set());
+  const [selectedProducts, setSelectedProducts] = useState<Set<string>>(new Set());
 
-  const [boostingProducts, setBoostingProducts] = useState<Set<number>>(new Set());
+  const [boostingProducts, setBoostingProducts] = useState<Set<string>>(new Set());
+
+  const [boostModal, setBoostModal] = useState<{ isOpen: boolean; product: ProductResponse | null }>({ 
+    isOpen: false, 
+    product: null 
+  });
 
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; productId: string | null }>({ 
 
@@ -264,7 +272,7 @@ export default function ProductList() {
 
 
 
-const handleProductSelect = (productId: number) => {
+const handleProductSelect = (productId: string) => {
 
   setSelectedProducts(prev => {
 
@@ -293,67 +301,44 @@ const handleProductSelect = (productId: number) => {
 
 
   const handleToggleBoost = async (product: ProductResponse) => {
+    setBoostModal({ isOpen: true, product });
+  };
 
-    const nextBoostState = !(product.isBoosted === true);
+  const handleSaveBoostSections = async (sections: string[]) => {
+    if (!boostModal.product) return;
 
+    const productId = String(boostModal.product.id);
     setBoostingProducts(prev => {
-
       const next = new Set(prev);
-
-      next.add(product.id);
-
+      next.add(productId);
       return next;
-
     });
 
-
-
     try {
-
-      await toggleBoostProduct(String(product.id), nextBoostState);
-
+      await updateProductBoostSections(productId, sections);
+      
+      const hasBoost = sections.length > 0;
       toast({
-
-        title: nextBoostState ? "Product boosted" : "Boost removed",
-
-        description: nextBoostState
-
-          ? "The product will now appear first wherever it is eligible to display."
-
+        title: hasBoost ? "Product boosted" : "Boost removed",
+        description: hasBoost
+          ? `The product will now appear at the top of ${sections.length} section(s).`
           : "The product will return to its normal position.",
-
         variant: "success",
-
       });
-
     } catch (error) {
-
-      console.error("Error updating boost status:", error);
-
+      console.error("Error updating boost sections:", error);
       toast({
-
         title: "Error",
-
-        description: "Failed to update boost status. Please try again.",
-
+        description: "Failed to update boost settings. Please try again.",
         variant: "destructive",
-
       });
-
     } finally {
-
       setBoostingProducts(prev => {
-
         const next = new Set(prev);
-
-        next.delete(product.id);
-
+        next.delete(productId);
         return next;
-
       });
-
     }
-
   };
 
 
@@ -876,11 +861,11 @@ const handleProductSelect = (productId: number) => {
 
                       <button
 
-                        onClick={() => handleProductSelect(product.id)}
+                        onClick={() => handleProductSelect(String(product.id))}
 
                         className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all transform hover:scale-110 ${
 
-                          selectedProducts.has(product.id)
+                          selectedProducts.has(String(product.id))
 
                             ? 'bg-[#B4C49A] border-[#B4C49A] shadow-lg'
 
@@ -890,7 +875,7 @@ const handleProductSelect = (productId: number) => {
 
                       >
 
-                        {selectedProducts.has(product.id) && <Check className="w-3 h-3 text-white" />}
+                        {selectedProducts.has(String(product.id)) && <Check className="w-3 h-3 text-white" />}
 
                       </button>
 
@@ -1058,7 +1043,7 @@ const handleProductSelect = (productId: number) => {
 
                           onClick={() => handleToggleBoost(product)}
 
-                          disabled={boostingProducts.has(product.id)}
+                          disabled={boostingProducts.has(String(product.id))}
 
                           className={`transition-colors ${
 
@@ -1207,6 +1192,16 @@ const handleProductSelect = (productId: number) => {
         variant={bulkDeleteModal.count === 0 ? "primary" : "danger"}
 
       />
+
+      {/* Boost Modal */}
+      {boostModal.product && (
+        <BoostModal
+          isOpen={boostModal.isOpen}
+          onClose={() => setBoostModal({ isOpen: false, product: null })}
+          product={boostModal.product}
+          onSave={handleSaveBoostSections}
+        />
+      )}
 
     </div>
 

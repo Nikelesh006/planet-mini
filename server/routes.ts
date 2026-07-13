@@ -1474,7 +1474,7 @@ const isBoostOnlyUpdate = (payload: any) => {
 
   if (keys.length === 0) return false;
 
-  return keys.every((key) => ["isBoosted", "boostUpdatedAt"].includes(key));
+  return keys.every((key) => ["isBoosted", "boostUpdatedAt", "boostSections", "visibleInNewArrivals", "visibleInTrendingProducts"].includes(key));
 
 };
 
@@ -12830,6 +12830,47 @@ export async function registerRoutes(
 
     }
 
+  });
+
+  app.patch("/api/products/:id/boost-sections", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { boostSections } = req.body || {};
+
+      if (!id) {
+        return res.status(400).json({ message: "Invalid product ID" });
+      }
+
+      if (!Array.isArray(boostSections)) {
+        return res.status(400).json({ message: "boostSections must be an array" });
+      }
+
+      const existingProduct = await storage.getProductById(id);
+      if (!existingProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      const hasBoost = boostSections.length > 0;
+      const shouldShowInNewArrivals = boostSections.includes('new-arrivals');
+      const shouldShowInTrendingProducts = boostSections.includes('trending-products');
+
+      const updatedProduct = await storage.updateProduct(id, {
+        boostSections: boostSections,
+        isBoosted: hasBoost,
+        boostUpdatedAt: hasBoost ? new Date().toISOString() : null,
+        visibleInNewArrivals: shouldShowInNewArrivals,
+        visibleInTrendingProducts: shouldShowInTrendingProducts,
+      });
+
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      res.json(updatedProduct);
+    } catch (error) {
+      console.error("Error updating boost sections:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
 
 

@@ -403,10 +403,18 @@ export default function AddProduct() {
       productClassificationOptions.length > 0 &&
       !productClassificationOptions.includes(formData.productClassification)
     ) {
-      setFormData((prev) => ({
-        ...prev,
-        productClassification: productClassificationOptions[0],
-      }));
+      setFormData((prev) => {
+        const nextClassification = productClassificationOptions[0];
+        let autoPrice = prev.sellingPrice;
+        if (prev.subcategory === "Blockbuster Combos") {
+          autoPrice = nextClassification.replace("Below ₹", "").replace(/,/g, "");
+        }
+        return {
+          ...prev,
+          productClassification: nextClassification,
+          sellingPrice: autoPrice,
+        };
+      });
     }
   }, [formData.productClassification, productClassificationOptions]);
 

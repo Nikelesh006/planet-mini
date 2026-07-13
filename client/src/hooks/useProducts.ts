@@ -40,52 +40,50 @@ interface ProductQueryParams {
 
 
 
-const sortProductsForDisplay = (products: ProductResponse[]) => {
+const sortProductsForDisplay = (products: ProductResponse[], section?: string) => {
 
   return [...products].sort((a, b) => {
+    // Check if products are boosted for the specific section
+    const aBoostedForSection = section && a.boostSections?.includes(section);
+    const bBoostedForSection = section && b.boostSections?.includes(section);
 
+    // If one is boosted for this section and the other isn't, prioritize the boosted one
+    if (aBoostedForSection !== bBoostedForSection) {
+      return aBoostedForSection ? -1 : 1;
+    }
+
+    // If both are boosted for this section, sort by boost time
+    if (aBoostedForSection && bBoostedForSection) {
+      const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
+      const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
+      if (aBoostTime !== bBoostTime) {
+        return bBoostTime - aBoostTime;
+      }
+    }
+
+    // Fallback to general boost status
     const aBoosted = a.isBoosted === true;
-
     const bBoosted = b.isBoosted === true;
 
-
-
     if (aBoosted !== bBoosted) {
-
       return aBoosted ? -1 : 1;
-
     }
-
-
 
     const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
-
     const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
 
-
-
     if (aBoostTime !== bBoostTime) {
-
       return bBoostTime - aBoostTime;
-
     }
 
-
-
     const aDraft = (a.status || "").toLowerCase() === "draft";
-
     const bDraft = (b.status || "").toLowerCase() === "draft";
 
     if (aDraft !== bDraft) {
-
       return aDraft ? 1 : -1;
-
     }
 
-
-
     return (a.name || "").localeCompare(b.name || "");
-
   });
 
 };
@@ -542,6 +540,51 @@ export const useToggleBoostProduct = () => {
 
 };
 
+export const useUpdateProductBoostSections = () => {
+
+  const queryClient = useQueryClient();
+
+
+
+  return async (productId: string, boostSections: string[]) => {
+
+    const response = await apiFetch(`/api/products/${productId}/boost-sections`, {
+
+      method: 'PATCH',
+
+      headers: {
+
+        'Content-Type': 'application/json',
+
+      },
+
+      body: JSON.stringify({
+
+        boostSections,
+
+      }),
+
+    });
+
+
+
+    if (!response.ok) {
+
+      throw new Error('Failed to update boost sections');
+
+    }
+
+
+
+    await response.json();
+    queryClient.invalidateQueries({ queryKey: ['products'] });
+
+    return true;
+
+  };
+
+};
+
 
 
 const isVisibleInStorefront = (product: any) => product?.inStock === true;
@@ -681,7 +724,7 @@ export const useNewArrivalsProducts = () => {
   );
 
   return {
-    data: filteredProducts,
+    data: filteredProducts ? sortProductsForDisplay(filteredProducts, 'new-arrivals') : filteredProducts,
     isLoading
   };
 };
@@ -697,7 +740,7 @@ export const useTrendingProducts = () => {
   );
 
   return {
-    data: filteredProducts,
+    data: filteredProducts ? sortProductsForDisplay(filteredProducts, 'trending-products') : filteredProducts,
     isLoading
   };
 };
