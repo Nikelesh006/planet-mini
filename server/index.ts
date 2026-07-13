@@ -4,8 +4,6 @@ import express, { type Request, Response, NextFunction } from "express";
 
 import { registerRoutes } from "./routes";
 
-import { serveStatic } from "./static";
-
 import { createServer } from "http";
 
 import dotenv from "dotenv";
@@ -26,9 +24,11 @@ dotenv.config();
 
 
 
-const app = express();
+export const app = express();
 
 const httpServer = createServer(app);
+
+app.set("trust proxy", 1);
 
 
 
@@ -66,15 +66,33 @@ app.use(express.urlencoded({ extended: false }));
 
 // CORS + cookies
 
-const allowedOrigins = [
-  process.env.FRONTEND_URL || "http://localhost:5002",
+const configuredOrigins = [
+  process.env.FRONTEND_URL,
+  process.env.CLIENT_URL,
+  "http://localhost:5002",
+  "http://localhost:5173",
   "https://planet-mini.vercel.app",
-  // Add your Railway backend URL here if needed for local development
-  // "http://localhost:5001"
-];
+].filter(Boolean) as string[];
+
+const isAllowedOrigin = (origin: string) => {
+  if (configuredOrigins.includes(origin)) return true;
+
+  try {
+    const { hostname } = new URL(origin);
+    return hostname.endsWith(".vercel.app");
+  } catch {
+    return false;
+  }
+};
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin(origin, callback) {
+    if (!origin || isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id']
@@ -87,6 +105,16 @@ app.use(cookieParser());
 // Initialize passport
 
 app.use(passport.initialize());
+
+app.get("/api/health", async (_req: Request, res: Response) => {
+  await connectDB();
+
+  res.json({
+    status: "ok",
+    runtime: process.env.VERCEL ? "vercel" : "node",
+    database: process.env.MONGODB_URI || process.env.DATABASE_URL ? "configured" : "missing",
+  });
+});
 
 
 
@@ -256,7 +284,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
 
 
-    const tokenJson = await tokenRes.json();
+    const tokenJson = await tokenRes.json() as any;
 
     if (tokenJson.error) {
 
@@ -286,7 +314,7 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 
     );
 
-    const user = await userRes.json();
+    const user = await userRes.json() as any;
 
 
 
@@ -408,7 +436,7 @@ app.post("/api/auth/logout", (req: Request, res: Response) => {
 
 
 
-(async () => {
+async function bootstrap() {
 
   await registerRoutes(httpServer, app);
 
@@ -442,15 +470,9 @@ app.post("/api/auth/logout", (req: Request, res: Response) => {
 
 
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.VERCEL) {
 
-    serveStatic(app);
-
-  } else {
-
-    const { setupVite } = await import("./vite");
-
-    await setupVite(httpServer, app);
+    log("running as a Vercel function");
 
   }
 
@@ -462,25 +484,33 @@ app.post("/api/auth/logout", (req: Request, res: Response) => {
 
 
 
-  const port = parseInt(process.env.PORT || "5001", 10);
+  if (!process.env.VERCEL) {
 
-  httpServer.listen(
+    const port = parseInt(process.env.PORT || "5001", 10);
 
-    {
+    httpServer.listen(
 
-      port,
+      {
 
-      host: "0.0.0.0",
+        port,
 
-    },
+        host: "0.0.0.0",
 
-    () => {
+      },
 
-      log(`serving on port ${port}`);
+      () => {
 
-    },
+        log(`serving on port ${port}`);
 
-  );
+      },
 
-})();
+    );
+
+  }
+
+}
+
+export const ready = bootstrap();
+
+export default app;
 

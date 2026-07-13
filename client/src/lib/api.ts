@@ -1,7 +1,7 @@
 // API Configuration
 // Leave empty in local dev so requests go to the same Express/Vite host.
 // Set VITE_API_URL to your deployed backend origin, for example:
-// https://your-railway-backend.up.railway.app
+// https://your-api-project.vercel.app
 export const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
 // Helper function to make API calls

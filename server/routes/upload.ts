@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
-import { uploadImage } from '../lib/cloudinary.js';
+import { cloudinary, uploadImage } from '../lib/cloudinary.js';
 
 const router = express.Router();
 
@@ -9,7 +9,7 @@ const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit
+    fileSize: 4 * 1024 * 1024, // Keep under Vercel's 4.5MB function payload limit.
   },
   fileFilter: (req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
     // Accept only image files
@@ -19,6 +19,31 @@ const upload = multer({
       cb(new Error('Only image files are allowed'));
     }
   }
+});
+
+// Prefer this endpoint for production uploads: request a signature here,
+// then upload directly from the browser to Cloudinary.
+router.post('/signature', (req: Request, res: Response) => {
+  const timestamp = Math.round(Date.now() / 1000);
+  const folder = typeof req.body?.folder === 'string' ? req.body.folder : 'products';
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !apiSecret) {
+    return res.status(500).json({ error: 'Cloudinary environment variables are missing' });
+  }
+
+  const signature = cloudinary.utils.api_sign_request(
+    { folder, timestamp },
+    apiSecret
+  );
+
+  res.json({
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    folder,
+    timestamp,
+    signature,
+  });
 });
 
 // Upload single image

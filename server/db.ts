@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 
 
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL = process.env.MONGODB_URI || process.env.DATABASE_URL;
 
 
 
@@ -14,15 +14,18 @@ const DATABASE_URL = process.env.DATABASE_URL;
 
 
 
-if (!DATABASE_URL) {
-
-
-
-  throw new Error("DATABASE_URL is not set in environment variables");
-
-
-
+declare global {
+  // eslint-disable-next-line no-var
+  var __mongooseCache: {
+    conn: typeof mongoose | null;
+    promise: Promise<typeof mongoose> | null;
+  } | undefined;
 }
+
+const mongooseCache = globalThis.__mongooseCache ?? (globalThis.__mongooseCache = {
+  conn: null,
+  promise: null,
+});
 
 
 
@@ -38,7 +41,26 @@ export const connectDB = async () => {
 
 
 
-    await mongoose.connect(DATABASE_URL);
+    if (!DATABASE_URL) {
+      console.warn("DATABASE_URL or MONGODB_URI is not set in environment variables");
+      return null;
+    }
+
+    if (mongooseCache.conn) {
+      return mongooseCache.conn;
+    }
+
+    if (!mongooseCache.promise) {
+      mongooseCache.promise = mongoose.connect(DATABASE_URL, {
+        bufferCommands: false,
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 10000,
+      });
+    }
+
+    mongooseCache.conn = await mongooseCache.promise;
+
+    return mongooseCache.conn;
 
 
 
@@ -47,6 +69,8 @@ export const connectDB = async () => {
 
 
   } catch (error) {
+
+    mongooseCache.promise = null;
 
 
 
