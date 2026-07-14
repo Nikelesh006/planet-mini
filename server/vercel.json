@@ -1,6 +1,8 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "functions": {
-    "api/index.ts": {
+    "dist/api/index.js": {
       "maxDuration": 30
     }
   },
