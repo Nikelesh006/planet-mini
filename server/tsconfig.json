@@ -1,6 +1,6 @@
 {
-  "include": ["**/*", "../shared/**/*"],
-  "exclude": ["node_modules", "dist", "vite.ts", "**/*.test.ts"],
+  "include": ["**/*"],
+  "exclude": ["node_modules", "dist", "vite.ts", "**/*.test.ts", "../shared/**/*"],
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
@@ -12,7 +12,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "allowImportingTsExtensions": false,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "baseUrl": ".",
     "types": ["node"],
     "paths": {
