@@ -2,9 +2,9 @@ import express from 'express';
 
 import jwt from 'jsonwebtoken';
 
-import Profile from '../models/Profile';
-import { productsStorage } from '../db';
-import { getAvailableStock, isOutOfStock } from '../shared/stock';
+import Profile from '../models/Profile.js';
+import { productsStorage } from '../db.js';
+import { getAvailableStock, isOutOfStock } from '../../shared/stock.js';
 
 const router = express.Router();
 

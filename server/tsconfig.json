@@ -1,22 +1,16 @@
 {
-  "include": ["**/*"],
-  "exclude": ["node_modules", "dist", "vite.ts", "**/*.test.ts"],
+  "include": ["**/*", "../shared/routes.ts", "../shared/stock.ts"],
+  "exclude": ["node_modules", "dist", "vite.ts", "static.ts", "**/*.test.ts", "../shared/schema.ts"],
   "compilerOptions": {
-    "incremental": true,
-    "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
-    "noEmit": false,
-    "outDir": "dist",
-    "module": "ESNext",
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "strict": true,
     "lib": ["esnext"],
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "allowImportingTsExtensions": false,
-    "moduleResolution": "node",
     "baseUrl": ".",
     "types": ["node"],
-    "paths": {
-      "@shared/*": ["./shared/*"]
-    }
+    "noEmit": true
   }
 }

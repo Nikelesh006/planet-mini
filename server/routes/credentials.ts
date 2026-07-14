@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 import bcrypt from 'bcryptjs';
 
-import Profile from '../models/Profile';
+import Profile from '../models/Profile.js';
 
 const router = express.Router();
 

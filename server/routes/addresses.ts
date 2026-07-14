@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { addressStorage } from '../storage';
+import { addressStorage } from '../storage.js';
 
 import { z } from 'zod';
 
@@ -10,7 +10,7 @@ import jwt from 'jsonwebtoken';
 
 // Import Address interface from types
 
-import { Address } from '../types/Address';
+import type { Address } from '../types/Address.js';
 
 
 

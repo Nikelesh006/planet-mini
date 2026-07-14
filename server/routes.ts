@@ -62,13 +62,11 @@ import jwt from "jsonwebtoken";
 
 
 
-import { storage, addressStorage, userStorage, ordersStorage } from "./storage";
+import { storage, addressStorage, userStorage, ordersStorage } from "./storage.js";
 
-import { productsStorage } from "./db";
+import { productsStorage } from "./db.js";
 
-import { getAvailableStock, isOutOfStock } from "./shared/stock";
-
-
+import { getAvailableStock, isOutOfStock } from "../shared/stock.js";
 
 
 
@@ -82,7 +80,9 @@ import { getAvailableStock, isOutOfStock } from "./shared/stock";
 
 
 
-import { api } from "./shared/routes";
+
+
+import { api } from "../shared/routes.js";
 
 
 
@@ -114,7 +114,7 @@ import { z } from "zod";
 
 
 
-import profileRoutes from "./routes/profile";            
+import profileRoutes from "./routes/profile.js";            
 
 
 
@@ -130,7 +130,7 @@ import profileRoutes from "./routes/profile";
 
 
 
-import authRoutes from "./routes/auth";
+import authRoutes from "./routes/auth.js";
 
 
 
@@ -138,7 +138,7 @@ import authRoutes from "./routes/auth";
 
 
 
-import credentialsRoutes from "./routes/credentials";
+import credentialsRoutes from "./routes/credentials.js";
 
 
 
@@ -146,7 +146,7 @@ import credentialsRoutes from "./routes/credentials";
 
 
 
-import uploadRoutes from "./routes/upload";
+import uploadRoutes from "./routes/upload.js";
 
 
 
@@ -162,11 +162,11 @@ import uploadRoutes from "./routes/upload";
 
 
 
-import addressRoutes from "./routes/addresses";
+import addressRoutes from "./routes/addresses.js";
 
 
 
-import paymentRoutes from "./routes/payment";
+import paymentRoutes from "./routes/payment.js";
 
 
 
@@ -2914,7 +2914,7 @@ export async function registerRoutes(
 
 
 
-        const { default: Profile } = await import('./models/Profile');
+        const { default: Profile } = await import('./models/Profile.js');
 
 
 

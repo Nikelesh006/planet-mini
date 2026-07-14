@@ -8,7 +8,7 @@ import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 
 import jwt from 'jsonwebtoken';
 
-import Profile from '../models/Profile';  // ✅ Import Profile model
+import Profile from '../models/Profile.js';  // ✅ Import Profile model
 
 
 

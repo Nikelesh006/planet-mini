@@ -2,13 +2,13 @@ import "dotenv/config"; // Load .env variables FIRST
 
 import express, { type Request, Response, NextFunction } from "express";
 
-import { registerRoutes } from "./routes";
+import { registerRoutes } from "./routes.js";
 
 import { createServer } from "http";
 
 import dotenv from "dotenv";
 
-import { connectDB } from "./db";
+import { connectDB } from "./db.js";
 
 import cors from "cors";
 
