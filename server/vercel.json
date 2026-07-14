@@ -1,11 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "functions": {
-    "dist/api/index.js": {
-      "maxDuration": 30
-    }
-  },
+  "outputDirectory": "dist/server",
   "rewrites": [
     {
       "source": "/(.*)",
