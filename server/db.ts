@@ -54,7 +54,7 @@ export const connectDB = async () => {
       mongooseCache.promise = mongoose.connect(DATABASE_URL, {
         bufferCommands: false,
         maxPoolSize: 10,
-        serverSelectionTimeoutMS: 10000,
+        serverSelectionTimeoutMS: 2000, // Reduced from 10000 to prevent Vercel crashes
       });
     }
 
