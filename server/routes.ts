@@ -66,7 +66,7 @@ import { storage, addressStorage, userStorage, ordersStorage } from "./storage";
 
 import { productsStorage } from "./db";
 
-import { getAvailableStock, isOutOfStock } from "../shared/stock";
+import { getAvailableStock, isOutOfStock } from "@shared/stock";
 
 
 
@@ -82,7 +82,7 @@ import { getAvailableStock, isOutOfStock } from "../shared/stock";
 
 
 
-import { api } from "../shared/routes";
+import { api } from "@shared/routes";
 
 
 
