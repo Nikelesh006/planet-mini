@@ -717,7 +717,7 @@ export default function AddProduct() {
   };
 
   try {
-    const url = isEdit ? `/api/products/${editId}` : "/api/products";
+    const url = `${API_BASE_URL}${isEdit ? `/api/products/${editId}` : "/api/products"}`;
     const method = isEdit ? "PUT" : "POST";
     
     const response = await fetch(url, {

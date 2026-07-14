@@ -12,6 +12,10 @@
 
     "dev": "tsx server/index.ts",
 
+    "dev:api": "tsx server/index.ts",
+
+    "dev:web": "npm --prefix client run dev",
+
     "build": "tsx script/build.ts",
 
     "start": "NODE_ENV=production node dist/index.cjs",

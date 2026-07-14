@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { api, buildUrl } from "@shared/routes";
+import { API_BASE_URL } from "../lib/api";
 
 export function useProducts(params?: { category?: string; search?: string }) {
   return useQuery({
     queryKey: [api.products.list.path, params],
     queryFn: async () => {
-      const url = new URL(api.products.list.path, window.location.origin);
+      const url = new URL(api.products.list.path, API_BASE_URL || window.location.origin);
       if (params?.category) url.searchParams.append("category", params.category);
       if (params?.search) url.searchParams.append("search", params.search);
 
@@ -21,7 +22,7 @@ export function useProduct(slug: string) {
   return useQuery({
     queryKey: [api.products.get.path, slug],
     queryFn: async () => {
-      const url = buildUrl(api.products.get.path, { slug });
+      const url = `${API_BASE_URL}${buildUrl(api.products.get.path, { slug })}`;
       const res = await fetch(url, { credentials: "omit" });
       if (res.status === 404) return null;
       if (!res.ok) throw new Error("Failed to fetch product");
