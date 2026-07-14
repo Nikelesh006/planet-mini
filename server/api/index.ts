@@ -1,4 +1,4 @@
-import { app, ready } from '../index';
+import { app, ready } from '../index.js';
 
 export default async function handler(req: any, res: any) {
   try {
