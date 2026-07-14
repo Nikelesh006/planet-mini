@@ -72,7 +72,6 @@ const configuredOrigins = [
   "http://localhost:5002",
   "http://localhost:5173",
   "https://planet-mini.vercel.app",
-  "https://planet-mini-client.vercel.app",
 ].filter(Boolean) as string[];
 
 const isAllowedOrigin = (origin: string) => {
@@ -96,22 +95,8 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id'],
-  preflightContinue: false,
-  optionsSuccessStatus: 204
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id']
 }));
-
-// Handle preflight requests explicitly
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  if (!origin || isAllowedOrigin(origin)) {
-    res.header('Access-Control-Allow-Origin', origin || '*');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-id');
-    res.header('Access-Control-Allow-Credentials', 'true');
-  }
-  res.sendStatus(204);
-});
 
 app.use(cookieParser());
 
