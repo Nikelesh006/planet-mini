@@ -1,12 +1,18 @@
 // API Configuration
-// Leave empty in local dev so requests go to the same Express/Vite host.
-// Set VITE_API_URL to your deployed backend origin, for example:
-// https://your-api-project.vercel.app
-export const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+// Set VITE_API_URL to your backend origin.
+// Production backend: https://planet-mini-e4oc.vercel.app
+const DEFAULT_API_BASE_URL = 'https://planet-mini-e4oc.vercel.app';
+
+export const API_BASE_URL = (import.meta.env.VITE_API_URL || DEFAULT_API_BASE_URL).replace(/\/$/, '');
+
+export function buildApiUrl(endpoint: string) {
+  if (endpoint.startsWith('http')) return endpoint;
+  return `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+}
 
 // Helper function to make API calls
 export async function apiFetch(endpoint: string, options?: RequestInit) {
-  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
+  const url = buildApiUrl(endpoint);
   
   const token = localStorage.getItem('jwtToken');
   const headers: Record<string, string> = {
