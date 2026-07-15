@@ -4,6 +4,14 @@
     {
       "source": "/(.*)",
       "destination": "/index.html"
+    },
+    {
+      "source": "/shop/style",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/shop/:path*",
+      "destination": "/index.html"
     }
   ]
 }
