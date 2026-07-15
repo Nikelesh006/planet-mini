@@ -1,6 +1,6 @@
 {
-  "include": ["**/*", "../shared/**/*"],
-  "exclude": ["node_modules", "dist", "vite.ts", "static.ts", "**/*.test.ts", "../shared/schema.ts"],
+  "include": ["**/*"],
+  "exclude": ["node_modules", "dist", "vite.ts", "static.ts", "**/*.test.ts", "shared/schema.ts"],
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
