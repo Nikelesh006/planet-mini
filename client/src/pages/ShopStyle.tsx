@@ -5894,7 +5894,7 @@ export default function ShopStyle() {
 
 
 
-              onClick={() => window.location.href = '/shop/style?custom=true&filter=hospital-bags'}
+              onClick={() => setLocation('/shop/style?custom=true&filter=hospital-bags')}
 
 
 
