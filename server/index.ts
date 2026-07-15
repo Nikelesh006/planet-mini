@@ -6,8 +6,6 @@ import { registerRoutes } from "./routes.js";
 
 import { createServer } from "http";
 
-import dotenv from "dotenv";
-
 import { connectDB } from "./db.js";
 
 import cors from "cors";
@@ -17,10 +15,6 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 
 import passport from "passport";
-
-
-
-dotenv.config();
 
 
 
