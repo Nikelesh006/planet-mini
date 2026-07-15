@@ -1,7 +1,10 @@
     import { motion, AnimatePresence } from "framer-motion";
 import { X, Heart, ShoppingBag, Star, Minus, Plus } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useStore } from "@/store/use-store";
+import { useLikes } from "@/contexts/LikeContext";
+import { useCart } from "@/contexts/CartContext";
+import { useAuthGuard } from "@/hooks/useAuthGuard";
+import { useToast } from "@/hooks/use-toast";
 import type { ProductResponse } from "@shared/routes";
 import { getAvailableStock, isLowStock, isOutOfStock } from "@shared/stock";
 
@@ -12,7 +15,10 @@ interface ProductDetailsProps {
 }
 
 export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps) {
-  const { wishlist, toggleWishlist, addToCart } = useStore();
+  const { likedProducts, toggleLike } = useLikes();
+  const { addToCart } = useCart();
+  const { executeWithAuth } = useAuthGuard();
+  const { toast } = useToast();
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(product?.colors || "");
@@ -39,7 +45,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
   if (!product) return null;
 
-  const isWishlisted = wishlist.includes(product.id);
+  const isWishlisted = likedProducts.some(p => p.id === product.id);
   const availableStock = getAvailableStock(product);
   const outOfStock = isOutOfStock(product);
   const lowStock = isLowStock(product);
@@ -58,22 +64,51 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
   const handleAddToCart = () => {
     if (outOfStock) return;
 
-    addToCart({
-      productId: product.id,
-      slug: product.slug,
-      name: product.name,
-      sellingPrice: Number(product.sellingPrice),
-      image: product.image,
-      quantity,
-      color: selectedColor,
-      size: selectedSize,
-      stockQuantity: product.stockQuantity,
+    executeWithAuth(() => {
+      addToCart({
+        id: product.id.toString(),
+        name: product.name,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : undefined,
+        image: product.image,
+        category: product.category ?? undefined,
+        subcategory: undefined,
+        color: selectedColor || undefined,
+        size: selectedSize || undefined,
+        quantity,
+      });
+
+      toast({
+        title: "Added to Cart!",
+        description: `${product.name} has been added to your cart.`,
+        variant: "success"
+      });
+
+      onClose();
     });
-    onClose();
   };
 
   const handleWishlist = () => {
-    toggleWishlist(product.id);
+    executeWithAuth(() => {
+      const productForWishlist = {
+        id: product.id,
+        name: product.name,
+        sellingPrice: Number(product.sellingPrice),
+        mrp: product.mrp ? Number(product.mrp) : null,
+        image: product.image,
+        category: product.category || 'Uncategorized',
+        subcategory: null,
+        colors: product.colors ?? null,
+        sizes: product.sizes ?? null,
+        slug: product.slug,
+        rating: (product as any).rating || 0,
+        reviews: (product as any).reviews || 0,
+        inStock: product.inStock ?? null,
+        isNew: (product as any).isNew ?? null,
+        description: product.description,
+      };
+      toggleLike(productForWishlist);
+    });
   };
 
   return (
