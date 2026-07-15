@@ -170,6 +170,7 @@ function Router() {
         <Route path="/shop/style" component={ShopStyle} />
         <Route path="/shop/care" component={ShopCare} />
         <Route path="/shop/offers" component={ShopOffers} />
+        <Route path="/bundle-review" component={BundleReview} />
         <Route path="/shop" component={Shop} />
         <Route path="/cart" component={CartPage} />
         <Route path="/likes" component={LikesPage} />

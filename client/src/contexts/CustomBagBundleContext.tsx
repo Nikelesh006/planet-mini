@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-import type { ProductResponse } from '@shared/routes';
+import type { ProductResponse } from '../shared/routes';
 
 export interface BundleItem {
   id: string;
