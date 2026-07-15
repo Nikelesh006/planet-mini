@@ -42,17 +42,18 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
     e.preventDefault();
     e.stopPropagation();
 
-    if (customMode) {
-      addToBundle(product, 1, product.styleVariant || undefined);
-      toast({
-        title: "Added to Bag!",
-        description: `${product.name} has been added to your custom bag bundle.`,
-        variant: "success"
-      });
-      return;
-    }
-
     executeWithAuth(() => {
+      if (customMode) {
+        // Add to custom bundle in custom mode
+        console.log('Adding to bundle:', product);
+        addToBundle(product, 1, product.styleVariant || undefined);
+        console.log('After addToBundle call');
+        toast({
+          title: "Added to Bag!",
+          description: `${product.name} has been added to your custom bag bundle.`,
+          variant: "success"
+        });
+      } else {
         // Add to regular cart in normal mode
         addToCart({
           id: product.id.toString(),
@@ -68,6 +69,7 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
           description: `${product.name} has been added to your cart.`,
           variant: "success"
         });
+      }
     });
   };
 

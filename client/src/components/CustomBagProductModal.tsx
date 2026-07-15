@@ -6,7 +6,7 @@ import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
-import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
+import { useCustomBagBundle } from "@/hooks/useCustomBagBundle";
 import type { ProductResponse } from "@shared/routes";
 import { isLowStock } from "@shared/stock";
 
@@ -39,14 +39,16 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
   const productImages = [product.image]; // Add more images if available
 
   const handleAddToBag = () => {
-    addToBundle(product, quantity, product.styleVariant || undefined, selectedVariant);
+    executeWithAuth(() => {
+      addToBundle(product, quantity, product.styleVariant || undefined, selectedVariant);
 
-    toast({
-      title: "Added to Bundle!",
-      description: `${product.name} has been added to your custom bag bundle.`,
-      variant: "success"
+      toast({
+        title: "Added to Bundle!",
+        description: `${product.name} has been added to your custom bag bundle.`,
+        variant: "success"
+      });
+      onClose();
     });
-    onClose();
   };
 
   const handleAddToCart = () => {
