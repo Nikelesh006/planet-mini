@@ -67,6 +67,7 @@ const configuredOrigins = [
   "http://localhost:5173",
   "https://planet-mini.vercel.app",
   "https://planet-mini-api.vercel.app",
+  "https://planet-mini-e4oc.vercel.app",
 ].filter(Boolean) as string[];
 
 const isAllowedOrigin = (origin: string) => {
