@@ -1,5 +1,5 @@
 {
-  "include": ["**/*", "../shared/routes.ts", "../shared/stock.ts"],
+  "include": ["**/*", "../shared/**/*"],
   "exclude": ["node_modules", "dist", "vite.ts", "static.ts", "**/*.test.ts", "../shared/schema.ts"],
   "compilerOptions": {
     "target": "ES2022",
