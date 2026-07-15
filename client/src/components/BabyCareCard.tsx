@@ -7,8 +7,8 @@ import { useAuthGuard } from "@/hooks/useAuthGuard";
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import type { ProductResponse } from "@shared/routes";
-import { isLowStock } from "@shared/stock";
+import type { ProductResponse } from "../shared/routes";
+import { isLowStock } from "../shared/stock";
 import { CustomBagProductModal } from "@/components/CustomBagProductModal";
 import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
 
