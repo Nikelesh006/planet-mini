@@ -3,8 +3,8 @@
   "exclude": ["node_modules", "dist", "vite.ts", "static.ts", "**/*.test.ts", "../shared/schema.ts"],
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "strict": true,
     "lib": ["esnext"],
     "esModuleInterop": true,
