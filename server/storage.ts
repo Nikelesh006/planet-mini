@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import { productsStorage } from './db.js';
-import { getAvailableStock, isOutOfStock } from '../shared/stock';
+import { getAvailableStock, isOutOfStock } from '../shared/stock.ts';
 
 
 

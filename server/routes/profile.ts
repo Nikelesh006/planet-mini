@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 
 import Profile from '../models/Profile.js';
 import { productsStorage } from '../db.js';
-import { getAvailableStock, isOutOfStock } from '../../shared/stock.js';
+import { getAvailableStock, isOutOfStock } from '../../shared/stock.ts';
 
 const router = express.Router();
 
