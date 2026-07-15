@@ -167,11 +167,10 @@ function Router() {
         <Route path="/orders" component={Orders} />
         <Route path="/orders-test" component={OrdersTest} />
         <Route path="/know-us" component={KnowUs} />
-        <Route path="/shop" component={Shop} />
         <Route path="/shop/style" component={ShopStyle} />
-        <Route path="/bundle-review" component={BundleReview} />
         <Route path="/shop/care" component={ShopCare} />
         <Route path="/shop/offers" component={ShopOffers} />
+        <Route path="/shop" component={Shop} />
         <Route path="/cart" component={CartPage} />
         <Route path="/likes" component={LikesPage} />
         <Route path="/add-address" component={AddAddressPage} />
