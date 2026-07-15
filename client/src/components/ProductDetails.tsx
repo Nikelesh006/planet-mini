@@ -39,7 +39,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
   if (!product) return null;
 
-  const isWishlisted = wishlist.includes(Number(product.id));
+  const isWishlisted = wishlist.includes(product.id);
   const availableStock = getAvailableStock(product);
   const outOfStock = isOutOfStock(product);
   const lowStock = isLowStock(product);
@@ -59,7 +59,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
     if (outOfStock) return;
 
     addToCart({
-      productId: Number(product.id),
+      productId: product.id,
       slug: product.slug,
       name: product.name,
       sellingPrice: Number(product.sellingPrice),
@@ -73,7 +73,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
   };
 
   const handleWishlist = () => {
-    toggleWishlist(Number(product.id));
+    toggleWishlist(product.id);
   };
 
   return (
