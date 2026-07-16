@@ -2,9 +2,23 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 
 
+
+
+
+
 import type { ProductResponse } from "@shared/routes";
 
+
+
 import { apiFetch } from '../lib/api';
+
+
+
+
+
+
+
+
 
 
 
@@ -16,7 +30,15 @@ import { apiFetch } from '../lib/api';
 
 
 
+
+
+
+
 interface ProductQueryParams {
+
+
+
+
 
 
 
@@ -24,7 +46,15 @@ interface ProductQueryParams {
 
 
 
+
+
+
+
   subcategory?: string;
+
+
+
+
 
 
 
@@ -32,7 +62,15 @@ interface ProductQueryParams {
 
 
 
+
+
+
+
   includeDrafts?: boolean;
+
+
+
+
 
 
 
@@ -40,53 +78,111 @@ interface ProductQueryParams {
 
 
 
+
+
+
+
 const sortProductsForDisplay = (products: ProductResponse[], section?: string) => {
 
+
+
   return [...products].sort((a, b) => {
+
     // Check if products are boosted for the specific section
+
     const aBoostedForSection = section && a.boostSections?.includes(section);
+
     const bBoostedForSection = section && b.boostSections?.includes(section);
 
+
+
     // If one is boosted for this section and the other isn't, prioritize the boosted one
+
     if (aBoostedForSection !== bBoostedForSection) {
+
       return aBoostedForSection ? -1 : 1;
+
     }
+
+
 
     // If both are boosted for this section, sort by boost time
+
     if (aBoostedForSection && bBoostedForSection) {
+
       const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
+
       const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
+
       if (aBoostTime !== bBoostTime) {
+
         return bBoostTime - aBoostTime;
+
       }
+
     }
+
+
 
     // Fallback to general boost status
+
     const aBoosted = a.isBoosted === true;
+
     const bBoosted = b.isBoosted === true;
 
+
+
     if (aBoosted !== bBoosted) {
+
       return aBoosted ? -1 : 1;
+
     }
+
+
 
     const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
+
     const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
 
+
+
     if (aBoostTime !== bBoostTime) {
+
       return bBoostTime - aBoostTime;
+
     }
+
+
 
     const aDraft = (a.status || "").toLowerCase() === "draft";
+
     const bDraft = (b.status || "").toLowerCase() === "draft";
 
+
+
     if (aDraft !== bDraft) {
+
       return aDraft ? 1 : -1;
+
     }
 
+
+
     return (a.name || "").localeCompare(b.name || "");
+
   });
 
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -98,7 +194,15 @@ const sortProductsForDisplay = (products: ProductResponse[], section?: string) =
 
 
 
+
+
+
+
 const fetchProducts = async (params?: ProductQueryParams): Promise<ProductResponse[]> => {
+
+
+
+
 
 
 
@@ -106,7 +210,15 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -114,7 +226,15 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
   if (params?.subcategory) queryParams.append('subcategory', params.subcategory);
+
+
+
+
 
 
 
@@ -122,11 +242,23 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
   if (params?.includeDrafts) queryParams.append('includeDrafts', 'true');
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -134,7 +266,15 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -142,7 +282,15 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
   if (!response.ok) {
+
+
+
+
 
 
 
@@ -150,7 +298,15 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
@@ -158,11 +314,27 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
   return response.json();
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -174,7 +346,15 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
+
+
+
+
 const fetchProduct = async (slug: string): Promise<ProductResponse> => {
+
+
+
+
 
 
 
@@ -182,7 +362,15 @@ const fetchProduct = async (slug: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
   if (!response.ok) {
+
+
+
+
 
 
 
@@ -190,7 +378,15 @@ const fetchProduct = async (slug: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
@@ -198,11 +394,27 @@ const fetchProduct = async (slug: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
   return response.json();
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -214,7 +426,15 @@ const fetchProduct = async (slug: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
 const fetchProductById = async (id: string): Promise<ProductResponse> => {
+
+
+
+
 
 
 
@@ -222,7 +442,15 @@ const fetchProductById = async (id: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
   if (!response.ok) {
+
+
+
+
 
 
 
@@ -230,7 +458,15 @@ const fetchProductById = async (id: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
@@ -238,11 +474,27 @@ const fetchProductById = async (id: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
   return response.json();
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -254,7 +506,15 @@ const fetchProductById = async (id: string): Promise<ProductResponse> => {
 
 
 
+
+
+
+
 const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undefined> => {
+
+
+
+
 
 
 
@@ -262,7 +522,15 @@ const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undef
 
 
 
+
+
+
+
   if (!response.ok) {
+
+
+
+
 
 
 
@@ -270,7 +538,15 @@ const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undef
 
 
 
+
+
+
+
     throw new Error('Failed to fetch product');
+
+
+
+
 
 
 
@@ -278,7 +554,15 @@ const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undef
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -286,7 +570,19 @@ const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undef
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -298,9 +594,19 @@ const fetchProductBySlug = async (slug: string): Promise<ProductResponse | undef
 
 
 
+
+
+
+
 export const useProducts = (params?: ProductQueryParams) => {
 
+
+
   const query = useQuery({
+
+
+
+
 
 
 
@@ -308,7 +614,15 @@ export const useProducts = (params?: ProductQueryParams) => {
 
 
 
+
+
+
+
     queryFn: () => fetchProducts(params),
+
+
+
+
 
 
 
@@ -316,7 +630,15 @@ export const useProducts = (params?: ProductQueryParams) => {
 
 
 
+
+
+
+
     gcTime: 10 * 60 * 1000, // 10 minutes
+
+
+
+
 
 
 
@@ -324,29 +646,63 @@ export const useProducts = (params?: ProductQueryParams) => {
 
 
 
+
+
+
+
   });
+
+
+
+
 
 
 
   const filteredData = params?.includeDrafts
 
+
+
     ? query.data
+
+
 
     : (query.data || []).filter(isVisibleInStorefront);
 
 
 
+
+
+
+
   return {
+
+
 
     ...query,
 
+
+
     data: filteredData ? sortProductsForDisplay(filteredData) : filteredData,
+
+
 
   };
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -358,7 +714,15 @@ export const useProductBySlug = (slug: string) => {
 
 
 
+
+
+
+
   return useQuery({
+
+
+
+
 
 
 
@@ -366,13 +730,27 @@ export const useProductBySlug = (slug: string) => {
 
 
 
+
+
+
+
     queryFn: async () => {
+
+
 
       const product = await fetchProductBySlug(slug);
 
+
+
       return product && product.inStock === true ? product : null;
 
+
+
     },
+
+
+
+
 
 
 
@@ -380,7 +758,15 @@ export const useProductBySlug = (slug: string) => {
 
 
 
+
+
+
+
     staleTime: 0,
+
+
+
+
 
 
 
@@ -388,7 +774,15 @@ export const useProductBySlug = (slug: string) => {
 
 
 
+
+
+
+
     refetchOnMount: true,
+
+
+
+
 
 
 
@@ -396,7 +790,19 @@ export const useProductBySlug = (slug: string) => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -408,7 +814,15 @@ export const useProduct = (slug: string) => {
 
 
 
+
+
+
+
   return useQuery({
+
+
+
+
 
 
 
@@ -416,13 +830,27 @@ export const useProduct = (slug: string) => {
 
 
 
+
+
+
+
     queryFn: async () => {
+
+
 
       const product = await fetchProduct(slug);
 
+
+
       return product && product.inStock === true ? product : null;
 
+
+
     },
+
+
+
+
 
 
 
@@ -430,7 +858,15 @@ export const useProduct = (slug: string) => {
 
 
 
+
+
+
+
     staleTime: 0,
+
+
+
+
 
 
 
@@ -438,7 +874,15 @@ export const useProduct = (slug: string) => {
 
 
 
+
+
+
+
     refetchOnMount: true,
+
+
+
+
 
 
 
@@ -446,7 +890,19 @@ export const useProduct = (slug: string) => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -458,7 +914,15 @@ export const useProductById = (id: string) => {
 
 
 
+
+
+
+
   return useQuery({
+
+
+
+
 
 
 
@@ -466,7 +930,15 @@ export const useProductById = (id: string) => {
 
 
 
+
+
+
+
     queryFn: () => fetchProductById(id),
+
+
+
+
 
 
 
@@ -474,7 +946,15 @@ export const useProductById = (id: string) => {
 
 
 
+
+
+
+
     staleTime: 0,
+
+
+
+
 
 
 
@@ -482,7 +962,15 @@ export const useProductById = (id: string) => {
 
 
 
+
+
+
+
     refetchOnMount: true,
+
+
+
+
 
 
 
@@ -490,100 +978,201 @@ export const useProductById = (id: string) => {
 
 
 
+
+
+
+
 };
+
+
+
+
 
 
 
 export const useToggleBoostProduct = () => {
 
+
+
   const queryClient = useQueryClient();
+
+
+
+
 
 
 
   return async (productId: string, isBoosted: boolean) => {
 
+
+
     const response = await apiFetch(`/api/products/${productId}/boost`, {
+
+
 
       method: 'PATCH',
 
+
+
       headers: {
+
+
 
         'Content-Type': 'application/json',
 
+
+
       },
+
+
 
       body: JSON.stringify({
 
+
+
         isBoosted,
 
+
+
       }),
+
+
 
     });
 
 
 
+
+
+
+
     if (!response.ok) {
 
+
+
       throw new Error('Failed to update boost status');
+
+
 
     }
 
 
 
+
+
+
+
     await response.json();
+
+
 
     queryClient.invalidateQueries({ queryKey: ['products'] });
 
+
+
     return true;
+
+
 
   };
 
+
+
 };
 
+
+
 export const useUpdateProductBoostSections = () => {
+
+
 
   const queryClient = useQueryClient();
 
 
 
+
+
+
+
   return async (productId: string, boostSections: string[]) => {
+
+
 
     const response = await apiFetch(`/api/products/${productId}/boost-sections`, {
 
+
+
       method: 'PATCH',
+
+
 
       headers: {
 
+
+
         'Content-Type': 'application/json',
+
+
 
       },
 
+
+
       body: JSON.stringify({
+
+
 
         boostSections,
 
+
+
       }),
+
+
 
     });
 
 
 
+
+
+
+
     if (!response.ok) {
 
+
+
       throw new Error('Failed to update boost sections');
+
+
 
     }
 
 
 
+
+
+
+
     await response.json();
+
     queryClient.invalidateQueries({ queryKey: ['products'] });
+
+
 
     return true;
 
+
+
   };
 
+
+
 };
+
+
+
+
 
 
 
@@ -595,7 +1184,19 @@ const isVisibleInStorefront = (product: any) => product?.inStock === true;
 
 
 
+
+
+
+
+
+
+
+
 // Specialized hooks for common use cases
+
+
+
+
 
 
 
@@ -603,7 +1204,15 @@ export const useStyleProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -611,7 +1220,15 @@ export const useStyleProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
     ...(subcategory && { subcategory })
+
+
+
+
 
 
 
@@ -619,7 +1236,19 @@ export const useStyleProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -631,7 +1260,15 @@ export const useHomeProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
   const { data: allHomeProducts, isLoading } = useProducts({
+
+
+
+
 
 
 
@@ -639,7 +1276,15 @@ export const useHomeProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
     ...(subcategory && { subcategory })
+
+
+
+
 
 
 
@@ -647,7 +1292,15 @@ export const useHomeProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
   // Filter products that are visible in home sections (New Arrivals or Trending Products)
+
+
+
+
 
 
 
@@ -655,7 +1308,15 @@ export const useHomeProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
     product.visibleInNewArrivals === true || product.visibleInTrendingProducts === true
+
+
+
+
 
 
 
@@ -663,7 +1324,15 @@ export const useHomeProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
   return {
+
+
+
+
 
 
 
@@ -671,7 +1340,15 @@ export const useHomeProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
     isLoading
+
+
+
+
 
 
 
@@ -679,7 +1356,19 @@ export const useHomeProducts = (subcategory?: string) => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -691,7 +1380,15 @@ export const useSearchProducts = (searchTerm: string) => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -699,11 +1396,27 @@ export const useSearchProducts = (searchTerm: string) => {
 
 
 
+
+
+
+
   });
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -713,61 +1426,121 @@ export const useSearchProducts = (searchTerm: string) => {
 
 // Specific hooks for Home page sections
 
+
+
 // New Arrivals section - shows products with visibleInNewArrivals = true
+
+
 
 export const useNewArrivalsProducts = () => {
 
+
+
   const { data: allProducts, isLoading } = useProducts();
 
+
+
   const filteredProducts = (allProducts || []).filter((product: any) =>
+
     product.visibleInNewArrivals === true
+
   );
 
+
+
   return {
+
     data: filteredProducts ? sortProductsForDisplay(filteredProducts, 'new-arrivals') : filteredProducts,
+
     isLoading
+
   };
+
 };
+
+
 
 // Trending Products section - shows products with visibleInTrendingProducts = true
 
+
+
 export const useTrendingProducts = () => {
+
+
 
   const { data: allProducts, isLoading } = useProducts();
 
+
+
   const filteredProducts = (allProducts || []).filter((product: any) =>
+
     product.visibleInTrendingProducts === true
+
   );
 
+
+
   return {
+
     data: filteredProducts ? sortProductsForDisplay(filteredProducts, 'trending-products') : filteredProducts,
+
     isLoading
+
   };
+
 };
+
+
 
 // Shop by Style shows products with visibleInShopByStyle flag OR home page visibility
 
+
+
 export const useShopByStyleProducts = () => {
 
+
+
   const { data: allProducts, isLoading } = useProducts();
+
+
+
+
 
 
 
   // Filter products that are visible in Shop by Style section OR home page sections
 
+
+
   const filteredProducts = (allProducts || []).filter((product: any) =>
+
+
 
     product.visibleInShopByStyle === true ||
 
+
+
     product.visibleInNewArrivals === true ||
 
+
+
     product.visibleInTrendingProducts === true
+
+
 
   );
 
 
 
+
+
+
+
   return {
+
+
+
+
 
 
 
@@ -775,13 +1548,31 @@ export const useShopByStyleProducts = () => {
 
 
 
+
+
+
+
     isLoading
+
+
+
+
 
 
 
   };
 
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -793,7 +1584,15 @@ export const useLatestStyleProducts = () => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -801,7 +1600,15 @@ export const useLatestStyleProducts = () => {
 
 
 
+
+
+
+
     subcategory: 'Latest Style Products'
+
+
+
+
 
 
 
@@ -809,7 +1616,19 @@ export const useLatestStyleProducts = () => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -819,27 +1638,57 @@ export const useLatestStyleProducts = () => {
 
 export const useBabyCareProducts = () => {
 
+
+
   const { data: homeProducts, isLoading } = useHomeProducts();
+
+
 
   const filteredProducts = (homeProducts || []).filter((product: any) =>
 
+
+
     product.visibleInNewArrivals === true
+
+
 
   );
 
 
 
+
+
+
+
   return {
+
+
 
     data: filteredProducts,
 
+
+
     isLoading
+
+
 
   };
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -849,27 +1698,57 @@ export const useBabyCareProducts = () => {
 
 export const useMuslinProducts = () => {
 
+
+
   const { data: homeProducts, isLoading } = useHomeProducts();
+
+
 
   const filteredProducts = (homeProducts || []).filter((product: any) =>
 
+
+
     product.visibleInTrendingProducts === true
+
+
 
   );
 
 
 
+
+
+
+
   return {
+
+
 
     data: filteredProducts,
 
+
+
     isLoading
+
+
 
   };
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -881,7 +1760,15 @@ export const useComboProducts = () => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -889,7 +1776,15 @@ export const useComboProducts = () => {
 
 
 
+
+
+
+
     subcategory: "Blockbuster Combos"
+
+
+
+
 
 
 
@@ -897,7 +1792,15 @@ export const useComboProducts = () => {
 
 
 
+
+
+
+
 };
+
+
+
+
 
 
 
@@ -905,7 +1808,15 @@ export const useBlockbusterProducts = () => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -913,7 +1824,15 @@ export const useBlockbusterProducts = () => {
 
 
 
+
+
+
+
     subcategory: "Blockbuster Combos"
+
+
+
+
 
 
 
@@ -921,7 +1840,19 @@ export const useBlockbusterProducts = () => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -933,7 +1864,15 @@ export const useGiftingProducts = () => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -941,7 +1880,15 @@ export const useGiftingProducts = () => {
 
 
 
+
+
+
+
     subcategory: 'Gifting'
+
+
+
+
 
 
 
@@ -949,7 +1896,19 @@ export const useGiftingProducts = () => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -961,7 +1920,15 @@ export const useSuperSaverProducts = () => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -969,7 +1936,15 @@ export const useSuperSaverProducts = () => {
 
 
 
+
+
+
+
     subcategory: 'Super Saver Offers'
+
+
+
+
 
 
 
@@ -977,7 +1952,19 @@ export const useSuperSaverProducts = () => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -989,7 +1976,15 @@ export const useFeaturedProducts = () => {
 
 
 
+
+
+
+
   return useProducts({
+
+
+
+
 
 
 
@@ -997,7 +1992,15 @@ export const useFeaturedProducts = () => {
 
 
 
+
+
+
+
     subcategory: 'Featured Products'
+
+
+
+
 
 
 
@@ -1005,7 +2008,19 @@ export const useFeaturedProducts = () => {
 
 
 
+
+
+
+
 };
+
+
+
+
+
+
+
+
 
 
 
@@ -1017,7 +2032,15 @@ export const useFeaturedProducts = () => {
 
 
 
+
+
+
+
 export const useDeleteProduct = () => {
+
+
+
+
 
 
 
@@ -1029,7 +2052,19 @@ export const useDeleteProduct = () => {
 
 
 
+
+
+
+
+
+
+
+
   return async (productId: string) => {
+
+
+
+
 
 
 
@@ -1037,7 +2072,15 @@ export const useDeleteProduct = () => {
 
 
 
+
+
+
+
       method: 'DELETE',
+
+
+
+
 
 
 
@@ -1049,11 +2092,27 @@ export const useDeleteProduct = () => {
 
 
 
+
+
+
+
+
+
+
+
     if (!response.ok) {
 
 
 
+
+
+
+
       throw new Error('Failed to delete product');
+
+
+
+
 
 
 
@@ -1065,7 +2124,19 @@ export const useDeleteProduct = () => {
 
 
 
+
+
+
+
+
+
+
+
     // Invalidate and refetch products query to update UI immediately
+
+
+
+
 
 
 
@@ -1073,7 +2144,15 @@ export const useDeleteProduct = () => {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -1081,11 +2160,23 @@ export const useDeleteProduct = () => {
 
 
 
+
+
+
+
   };
 
 
 
+
+
+
+
 };
+
+
+
+
 
 
 

@@ -1,186 +1,372 @@
 import { Link } from "wouter";
+
 import { motion } from "framer-motion";
+
 import { Heart, ShoppingBag, ChevronLeft, ChevronRight, Gift } from "lucide-react";
+
 import { useLikes } from "@/contexts/LikeContext";
+
 import { useCart } from "@/contexts/CartContext";
+
 import { useAuthGuard } from "@/hooks/useAuthGuard";
+
 import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
+
 import { useToast } from "@/hooks/use-toast";
+
 import { useState } from "react";
+
 import type { ProductResponse } from "@shared/routes";
+
 import { isLowStock } from "@shared/stock";
 
+
+
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
+
   if (!url || typeof url !== 'string') return url;
+
   if (!url.includes("res.cloudinary.com") || !url.includes("/image/upload/")) {
+
     return url;
+
   }
+
   return url.replace("/image/upload/", `/image/upload/${transformation}/`);
+
 };
 
+
+
 interface ComboCardProps {
+
   product: ProductResponse;
+
   index: number;
+
 }
+
+
 
 export function ComboCard({ product, index }: ComboCardProps) {
+
   const { likedProducts, toggleLike } = useLikes();
+
   const { addToCart } = useCart();
+
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
+
   const { toast } = useToast();
+
   const isWishlisted = likedProducts.some(p => p.id === product.id);
+
   const lowStock = isLowStock(product);
+
   
+
   const productImages = [product.image];
 
+
+
   const handleQuickAdd = (e: React.MouseEvent) => {
+
     e.preventDefault();
+
     e.stopPropagation();
+
     
+
     executeWithAuth(() => {
+
       addToCart({
+
         id: product.id.toString(),
+
         name: product.name,
+
         sellingPrice: Number(product.sellingPrice),
+
         mrp: product.mrp ? Number(product.mrp) : undefined,
+
         image: product.image,
+
         category: product.category,
+
         subcategory: product.subcategory || undefined,
+
       });
+
       
+
       toast({
+
         title: "Added to Cart!",
+
         description: `${product.name} has been added to your cart.`,
+
         variant: "success"
+
       });
+
     });
+
   };
+
+
 
   const handleWishlist = (e: React.MouseEvent) => {
+
     e.preventDefault();
+
     e.stopPropagation();
+
     
+
     executeWithAuth(() => {
+
       const productForWishlist = {
+
         id: product.id,
+
         name: product.name,
+
         sellingPrice: Number(product.sellingPrice),
+
         mrp: product.mrp ? Number(product.mrp) : null,
+
         image: product.image,
+
         category: product.category,
+
         subcategory: product.subcategory || null,
+
         slug: product.slug,
+
         rating: product.rating,
+
         reviews: product.reviews,
+
         inStock: product.inStock === null ? null : product.inStock,
+
         isNew: product.isNew === null ? null : product.isNew,
+
         description: product.description,
+
         colors: null,
+
         sizes: null
+
       };
+
       
+
       toggleLike(productForWishlist);
+
     });
+
   };
 
+
+
   const discountPercentage = product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) 
+
     ? Math.round(((Number(product.mrp) - Number(product.sellingPrice)) / Number(product.mrp)) * 100)
+
     : 0;
 
+
+
   return (
+
     <>
+
       <Link href={`/products/${product.slug}`} className="block">
+
         <motion.div
+
           initial={{ opacity: 0, y: 20 }}
+
           animate={{ opacity: 1, y: 0 }}
+
           transition={{ duration: 0.5, delay: index * 0.1 }}
+
           className="group relative transition-all duration-300 overflow-hidden"
+
         >
+
           {/* Discount Badge */}
+
           {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+
             <div className="absolute top-4 left-4 z-20">
+
               <div className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
+
                 {Math.round(((Number(product.mrp) - Number(product.sellingPrice)) / Number(product.mrp)) * 100)}% OFF
+
               </div>
+
             </div>
+
           )}
+
+
 
           {/* Combo Badge - only show if no discount */}
+
           {!(product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0)) && (
+
             <div className="absolute top-4 left-4 z-20">
+
               <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
+
                 3 PACK COMBO
+
               </div>
+
             </div>
+
           )}
 
+
+
           {/* Large Product Image */}
+
           <div className="aspect-[4/5] flex items-center justify-center relative bg-transparent">
+
             {lowStock && product.inStock && (
+
               <div className="absolute top-4 left-4 z-30">
+
                 <div className="bg-amber-500 px-3 py-1 text-sm font-bold text-white shadow-md rounded-md">
+
                   Low Stock
+
                 </div>
+
               </div>
+
             )}
+
             <img
+
               src={getCloudinaryImageUrl(product.image, "f_auto,q_100,dpr_auto")}
+
               alt={product.name}
+
               className="w-full h-full object-cover rounded-3xl transition-all duration-300"
+
             />
+
             
+
             {/* Wishlist Heart */}
+
             <button
+
               onClick={handleWishlist}
+
               className="absolute top-4 right-4 z-20 w-8 h-8 flex items-center justify-center rounded-full bg-white/90 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 hover:bg-red-50"
+
             >
+
               <Heart className={`w-4 h-4 transition-all duration-300 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500 hover:fill-red-500'}`} />
+
             </button>
+
             
+
             {/* Quick Add Button - Reveals on Hover */}
+
             <div className="absolute inset-x-4 bottom-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+
               <button
+
                 onClick={handleQuickAdd}
+
                 disabled={!product.inStock}
+
                 className="w-full bg-white text-black py-2 px-3 text-sm font-medium hover:bg-gradient-to-r hover:from-primary hover:to-secondary transition-all duration-200 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg border border-gray-300"
+
               >
+
                 {product.inStock ? "Quick Add" : "Out of Stock"}
+
               </button>
+
             </div>
+
           </div>
+
+
 
           {/* Product Content - Text Below Image */}
+
           <div className="p-4 bg-white text-center">
+
             {/* Product Name */}
+
             <h3 className="font-semibold text-gray-900 mb-2 line-clamp-3 leading-relaxed text-lg">
+
               {product.name}
+
             </h3>
 
+
+
             {/* Price Section */}
+
             <div className="flex items-baseline justify-center gap-2">
+
               <span className="text-xl font-extrabold text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
+
               {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+
                 <span className="text-sm font-medium text-slate-500 line-through">
+
                   &#8377;{Number(product.mrp).toFixed(2)}
+
                 </span>
+
               )}
+
             </div>
+
             {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
+
               <p className="flex items-center justify-center gap-1 text-xs font-medium text-green-600 mt-1">
+
                 <Gift className="w-3 h-3" />
+
                 You save &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+
               </p>
+
             )}
+
           </div>
+
         </motion.div>
+
       </Link>
 
+
+
       {/* Google Auth Modal */}
+
       <GoogleAuthModal
+
         isOpen={showAuthModal}
+
         onClose={handleAuthCancel}
+
         initialMode="signin"
+
       />
+
     </>
+
   );
+
 }
+
