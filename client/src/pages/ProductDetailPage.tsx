@@ -491,9 +491,9 @@ export default function ProductDetailPage() {
                       )}
                     </div>
                     {product.mrp && Number(product.mrp) > Number(product.sellingPrice) && (
-                      <p className="mt-2 flex items-center gap-2 text-sm font-medium text-gray-500">
+                      <p className="mt-2 flex items-center gap-2 text-sm font-medium text-green-600">
                         <Gift className="w-4 h-4" />
-                        You saved ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
+                        You save ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
                       </p>
                     )}
                     {!outOfStock && lowStock && (

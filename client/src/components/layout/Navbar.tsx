@@ -142,21 +142,15 @@ export default function Navbar() {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      const heroSectionHeight = 600; // Hero section height from Home.tsx
 
       setIsScrolled(currentScrollY > 20);
 
-      // Only hide navbar after scrolling past hero section
-      if (currentScrollY > heroSectionHeight) {
-        if (currentScrollY > lastScrollY.current) {
-          // Scrolling down - hide navbar
-          setIsNavbarHidden(true);
-        } else if (currentScrollY < lastScrollY.current) {
-          // Scrolling up - show navbar
-          setIsNavbarHidden(false);
-        }
-      } else {
-        // In hero section - always show navbar
+      // Hide navbar when scrolling down, show when scrolling up
+      if (currentScrollY > lastScrollY.current) {
+        // Scrolling down - hide navbar
+        setIsNavbarHidden(true);
+      } else if (currentScrollY < lastScrollY.current) {
+        // Scrolling up - show navbar
         setIsNavbarHidden(false);
       }
 
@@ -206,7 +200,7 @@ export default function Navbar() {
           top: isNavbarHidden ? '-200px' : '40px'
         }}
         className={cn(
-          "fixed left-0 right-0 z-[51] transition-all duration-300 ease-in-out bg-[#F0F4EB] dark:bg-gray-900",
+          "fixed left-0 right-0 z-[51] transition-all duration-300 ease-in-out bg-white dark:bg-gray-900",
           isScrolled ? "shadow-lg" : "shadow-md"
         )}
       >

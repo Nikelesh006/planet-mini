@@ -21,6 +21,7 @@ import { useCloudinary } from "@/hooks/useCloudinary";
 import { useProduct, useProductById, useProducts } from "@/hooks/useProducts";
 import { API_BASE_URL } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { convertPriceStringTo9 } from "@/lib/priceUtils";
 
 interface ProductFormData {
   id?: string;
@@ -491,9 +492,19 @@ export default function AddProduct() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
+    
+    // Convert price to 9s pattern for sellingPrice and mrp
+    let processedValue = value;
+    if ((name === "sellingPrice" || name === "mrp") && type === "number") {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue) && numValue > 0) {
+        processedValue = convertPriceStringTo9(value);
+      }
+    }
+    
       setFormData((prev) => ({
         ...prev,
-        [name]: type === "checkbox" ? checked : value,
+        [name]: type === "checkbox" ? checked : processedValue,
         ...(name === "productType" && value === "single"
           ? {
               category: "",
@@ -533,7 +544,7 @@ export default function AddProduct() {
         // Auto-fill price for blockbuster combos
         ...(name === "productClassification" && formData.subcategory === "Blockbuster Combos"
           ? {
-              sellingPrice: value.replace("Below ₹", "").replace(/,/g, ""),
+              sellingPrice: convertPriceStringTo9(value.replace("Below ₹", "").replace(/,/g, "")),
             }
           : {}),
       }));

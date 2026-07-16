@@ -143,9 +143,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               </span>
             </div>
             {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
-              <p className="flex items-center gap-1 text-xs font-medium text-gray-500">
+              <p className="flex items-center gap-1 text-xs font-medium text-green-600">
                 <Gift className="w-3 h-3" />
-                You saved ₹{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+                You save ₹{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
               </p>
             )}
           </div>

@@ -182,9 +182,9 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
               )}
             </div>
             {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
-              <p className="flex items-center justify-center gap-1 text-xs font-medium text-gray-500 mt-1">
+              <p className="flex items-center justify-center gap-1 text-xs font-medium text-green-600 mt-1">
                 <Gift className="w-3 h-3" />
-                You saved &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+                You save &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
               </p>
             )}
           </div>
@@ -260,9 +260,9 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
               )}
             </div>
             {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
-              <p className="flex items-center justify-center gap-1 text-xs font-medium text-gray-500 mt-1">
+              <p className="flex items-center justify-center gap-1 text-xs font-medium text-green-600 mt-1">
                 <Gift className="w-3 h-3" />
-                You saved &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+                You save &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
               </p>
             )}
           </div>

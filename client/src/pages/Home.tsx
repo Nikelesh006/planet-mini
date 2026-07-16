@@ -1606,27 +1606,25 @@ export default function Home() {
 
           </motion.div>
 
-          {/* 4 Commitment Cards - IMAGE SIZE: 800x1067px (3:4 aspect ratio) recommended */}
+          {/* 4 Commitment Items - 2 per row with image left, text right */}
 
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start">
 
             {/* 100% Organic Cotton */}
 
             <motion.div
 
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
 
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-
-              whileHover={{ y: -12, scale: 1.02 }}
+              whileInView={{ opacity: 1, y: 0 }}
 
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
 
-              className="group flex flex-col items-center"
+              className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6"
 
             >
 
-              <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer w-full">
+              <div className="w-full sm:w-2/5 relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer">
 
                 <div className="aspect-[4/5] sm:aspect-[3/4] overflow-hidden">
 
@@ -1636,7 +1634,7 @@ export default function Home() {
 
                     alt="100% Organic Cotton"
 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
 
                     draggable={false}
 
@@ -1650,23 +1648,15 @@ export default function Home() {
 
                 </div>
 
-                {/* Gradient Overlay - only on hover */}
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-500"></div>
-
-                {/* Shine Effect on Hover */}
-
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-                {/* Hover Content - description only */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">Pure, natural fabric that's gentle on your baby's delicate skin</p>
-                </div>
-
               </div>
 
-              {/* Heading - below image */}
-              <h3 className="text-sm sm:text-2xl font-bold text-center mt-4 sm:mt-6 text-black">100% Organic Cotton</h3>
+              <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
+
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">100% Organic Cotton</h3>
+
+                <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">Pure, natural fabric that's gentle on your baby's delicate skin. Our cotton is sourced from certified organic farms, ensuring no pesticides or harmful chemicals are used in the cultivation process.</p>
+
+              </div>
 
             </motion.div>
 
@@ -1674,19 +1664,17 @@ export default function Home() {
 
             <motion.div
 
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
 
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-
-              whileHover={{ y: -12, scale: 1.02 }}
+              whileInView={{ opacity: 1, y: 0 }}
 
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
 
-              className="group flex flex-col items-center"
+              className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6"
 
             >
 
-              <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer w-full">
+              <div className="w-full sm:w-2/5 relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer">
 
                 <div className="aspect-[4/5] sm:aspect-[3/4] overflow-hidden">
 
@@ -1696,7 +1684,7 @@ export default function Home() {
 
                     alt="Chemical Free"
 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
 
                     draggable={false}
 
@@ -1710,19 +1698,15 @@ export default function Home() {
 
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-500"></div>
-
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-                {/* Hover Content - description only */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">No harmful chemicals or dyes, ensuring complete safety</p>
-                </div>
-
               </div>
 
-              {/* Heading - below image */}
-              <h3 className="text-sm sm:text-2xl font-bold text-center mt-4 sm:mt-6 text-black">Chemical Free</h3>
+              <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
+
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Chemical Free</h3>
+
+                <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">No harmful chemicals or dyes, ensuring complete safety for your little one. Our products undergo rigorous testing to guarantee they meet the highest safety standards.</p>
+
+              </div>
 
             </motion.div>
 
@@ -1730,19 +1714,17 @@ export default function Home() {
 
             <motion.div
 
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
 
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-
-              whileHover={{ y: -12, scale: 1.02 }}
+              whileInView={{ opacity: 1, y: 0 }}
 
               transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
 
-              className="group flex flex-col items-center"
+              className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6"
 
             >
 
-              <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer w-full">
+              <div className="w-full sm:w-2/5 relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer">
 
                 <div className="aspect-[4/5] sm:aspect-[3/4] overflow-hidden">
 
@@ -1752,7 +1734,7 @@ export default function Home() {
 
                     alt="Skin Friendly"
 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
 
                     draggable={false}
 
@@ -1766,19 +1748,15 @@ export default function Home() {
 
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-500"></div>
-
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-                {/* Hover Content - description only */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">Soft, breathable materials that prevent irritation and rashes</p>
-                </div>
-
               </div>
 
-              {/* Heading - below image */}
-              <h3 className="text-sm sm:text-2xl font-bold text-center mt-4 sm:mt-6 text-black">Skin Friendly</h3>
+              <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
+
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Skin Friendly</h3>
+
+                <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">Soft, breathable materials that prevent irritation and rashes. Our fabrics are carefully selected and tested to ensure they are hypoallergenic and suitable for sensitive baby skin.</p>
+
+              </div>
 
             </motion.div>
 
@@ -1786,19 +1764,17 @@ export default function Home() {
 
             <motion.div
 
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
 
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-
-              whileHover={{ y: -12, scale: 1.02 }}
+              whileInView={{ opacity: 1, y: 0 }}
 
               transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
 
-              className="group flex flex-col items-center"
+              className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6"
 
             >
 
-              <div className="relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer w-full">
+              <div className="w-full sm:w-2/5 relative overflow-hidden rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 cursor-pointer">
 
                 <div className="aspect-[4/5] sm:aspect-[3/4] overflow-hidden">
 
@@ -1808,7 +1784,7 @@ export default function Home() {
 
                     alt="Sustainable"
 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
 
                     draggable={false}
 
@@ -1822,19 +1798,15 @@ export default function Home() {
 
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-90 transition-opacity duration-500"></div>
-
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-                {/* Hover Content - description only */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-black transform transition-all duration-500 opacity-0 group-hover:opacity-100 group-hover:translate-y-[-4px]">
-                  <p className="text-sm sm:text-xl text-center text-black/95 leading-relaxed font-bold">Eco-friendly production that protects our planet for future generations</p>
-                </div>
-
               </div>
 
-              {/* Heading - below image */}
-              <h3 className="text-sm sm:text-2xl font-bold text-center mt-4 sm:mt-6 text-black">Sustainable</h3>
+              <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
+
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Sustainable</h3>
+
+                <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">Eco-friendly production that protects our planet for future generations. We use sustainable practices and materials to minimize our environmental footprint while delivering quality products.</p>
+
+              </div>
 
             </motion.div>
 

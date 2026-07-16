@@ -212,7 +212,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                     </div>
                   {product.mrp && Number(product.mrp) > Number(product.sellingPrice) && (
                       <p className="mt-2 text-sm font-medium text-green-600">
-                        You saved ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
+                        You save ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
                       </p>
                     )}
                   {!outOfStock && lowStock && (
