@@ -24,9 +24,9 @@ interface LikedProduct {
 interface LikeContextType {
   likedProducts: LikedProduct[];
   toggleLike: (product: LikedProduct) => void;
-  isLiked: (productId: number) => boolean;
+  isLiked: (productId: string | number) => boolean;
   loading: boolean;
-  removeFromLikes: (productId: number) => void;
+  removeFromLikes: (productId: string | number) => void;
 }
 
 const LikeContext = createContext<LikeContextType | undefined>(undefined);
@@ -163,7 +163,7 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
     return likedProducts.some(p => p.id === productId);
   };
 
-  const removeFromLikes = async (productId: number) => {
+  const removeFromLikes = async (productId: string | number) => {
     if (!user) return;
 
     try {
