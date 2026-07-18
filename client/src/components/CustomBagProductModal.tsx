@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { X, Heart, ShoppingBag, ChevronLeft, ChevronRight, Gift } from "lucide-react";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useAuthGuard } from "@/hooks/useAuthGuard";
 
@@ -71,6 +71,18 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
   const isWishlisted = likedProducts.some(p => p.id === product.id);
 
   const lowStock = isLowStock(product);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
 
 
@@ -250,7 +262,7 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
 
               exit={{ opacity: 0, scale: 0.95 }}
 
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8"
+              className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8"
 
             >
 

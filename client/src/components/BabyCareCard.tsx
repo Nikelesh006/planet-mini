@@ -174,7 +174,7 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
 
             {/* Price Section */}
             <div className="flex items-baseline justify-center gap-2">
-              <span className="text-lg sm:text-xl font-extrabold text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              <span className="text-sm font-medium text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
               {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
                 <span className="text-sm font-medium text-slate-500 line-through">
                   &#8377;{Number(product.mrp).toFixed(2)}
@@ -252,7 +252,7 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
 
             {/* Price Section */}
             <div className="flex items-baseline justify-center gap-2">
-              <span className="text-lg sm:text-xl font-extrabold text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              <span className="text-sm font-medium text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
               {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
                 <span className="text-sm font-medium text-slate-500 line-through">
                   &#8377;{Number(product.mrp).toFixed(2)}

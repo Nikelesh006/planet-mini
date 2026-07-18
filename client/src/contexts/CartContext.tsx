@@ -1,7 +1,5 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-
 import { useAuth } from './AuthContext';
-
 import { API_BASE_URL } from '../lib/api';
 
 import { getAvailableStock, isOutOfStock } from '@shared/stock';
@@ -700,9 +698,9 @@ export const CartContext = createContext<{
 
 
 
+const BRAND = "#b4c49a";
+
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-
-
 
   const [state, dispatch] = useReducer(cartReducer, initialState);
 
@@ -1294,13 +1292,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     >
 
-
-
       {children}
-
-
-
-
 
     </CartContext.Provider>
 

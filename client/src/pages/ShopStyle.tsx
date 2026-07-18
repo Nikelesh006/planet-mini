@@ -2556,11 +2556,13 @@ export default function ShopStyle() {
 
     const isCurrentlySelected = selectedFilters.includes(filterId);
 
+    const isCategory = filterCategories.some(cat => cat.id === filterId);
 
 
-    if (isStyleGroup) {
 
-      // When toggling a Style Group, update the URL filter param
+    if (isStyleGroup && !isCategory) {
+
+      // When toggling a Style Group (not category), update the URL filter param
 
       const newParams = new URLSearchParams(window.location.search);
 
@@ -2588,7 +2590,7 @@ export default function ShopStyle() {
 
     } else {
 
-      // Toggling a Style Variant — keep the parent group selected
+      // Toggling a Category or Style Variant — allow multiple selection
 
       setSelectedFilters(prev =>
 
@@ -4770,7 +4772,7 @@ export default function ShopStyle() {
 
         {/* Style Groups Row */}
 
-        <div className="flex flex-wrap justify-center gap-3 sm:gap-8 md:gap-10">
+        <div className="flex justify-center gap-3 sm:gap-8 md:gap-10 overflow-x-auto scrollbar-hide">
 
           {Object.entries(STYLE_MAPPING)
 
@@ -4792,13 +4794,13 @@ export default function ShopStyle() {
 
               className={`
 
-                flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-8 rounded-2xl transition-all duration-300 border-2
+                flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-4 rounded-xl transition-all duration-300 border-2
 
                 ${selectedFilters.includes(groupId)
 
-                  ? 'bg-red-100 border-red-500 shadow-xl scale-110'
+                  ? 'bg-red-100 border-red-500 shadow-xl scale-105'
 
-                  : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-110'
+                  : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-105'
 
                 }
 
@@ -4808,9 +4810,9 @@ export default function ShopStyle() {
 
               <div className={`
 
-                text-3xl sm:text-6xl transition-transform duration-300
+                text-xl sm:text-3xl transition-transform duration-300
 
-                ${selectedFilters.includes(groupId) ? 'scale-125' : 'hover:scale-125'}
+                ${selectedFilters.includes(groupId) ? 'scale-110' : 'hover:scale-110'}
 
               `}>
 
@@ -4820,7 +4822,7 @@ export default function ShopStyle() {
 
               <span className={`
 
-                text-xs sm:text-lg font-semibold transition-colors
+                text-[10px] sm:text-sm font-semibold transition-colors
 
                 ${selectedFilters.includes(groupId) ? 'text-red-600' : 'text-gray-700'}
 
@@ -5894,7 +5896,7 @@ export default function ShopStyle() {
 
 
 
-              onClick={() => setLocation('/shop/style?custom=true&filter=hospital-bags')}
+              onClick={() => setLocation('/shop/style?custom=true')}
 
 
 
@@ -5910,7 +5912,8 @@ export default function ShopStyle() {
 
 
 
-              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl"
+              style={{ backgroundColor: '#b4c49a', color: 'black' }}
 
 
 
@@ -5942,7 +5945,6 @@ export default function ShopStyle() {
 
 
 
-              <Sparkles className="w-5 h-5" />
 
 
 
@@ -5988,15 +5990,16 @@ export default function ShopStyle() {
 
                   onClick={() => handleStepClick(1)}
 
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors ${
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors shadow-lg ${
 
                     currentStep === 1
 
-                      ? 'bg-primary text-white shadow-lg'
+                      ? ''
 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
 
                   }`}
+                  style={currentStep === 1 ? { backgroundColor: '#b4c49a', color: 'black' } : {}}
 
                 >
 
@@ -6010,15 +6013,16 @@ export default function ShopStyle() {
 
                   onClick={() => handleStepClick(2)}
 
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors ${
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors shadow-lg ${
 
                     currentStep === 2
 
-                      ? 'bg-primary text-white shadow-lg'
+                      ? ''
 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
 
                   }`}
+                  style={currentStep === 2 ? { backgroundColor: '#b4c49a', color: 'black' } : {}}
 
                 >
 
@@ -6032,15 +6036,16 @@ export default function ShopStyle() {
 
                   onClick={() => handleStepClick(3)}
 
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors ${
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors shadow-lg ${
 
                     currentStep === 3
 
-                      ? 'bg-primary text-white shadow-lg'
+                      ? ''
 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
 
                   }`}
+                  style={currentStep === 3 ? { backgroundColor: '#b4c49a', color: 'black' } : {}}
 
                 >
 
@@ -6310,7 +6315,7 @@ export default function ShopStyle() {
 
 
 
-          className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+          className="flex items-center gap-2 bg-[#b4c49a] px-4 py-2 rounded-lg hover:bg-[#a3b385] transition-colors"
 
 
 
@@ -6814,7 +6819,7 @@ export default function ShopStyle() {
 
 
 
-            <div className="bg-white lg:rounded-xl lg:border-2 lg:border-t-4 lg:border-t-primary lg:border-r-secondary lg:border-b-primary lg:border-l-secondary lg:shadow-xl h-full lg:h-auto lg:sticky lg:top-4 flex flex-col">
+            <div className="bg-white lg:rounded-xl lg:border-2 lg:border-white lg:shadow-2xl h-full lg:h-auto lg:sticky lg:top-4 flex flex-col ring-1 ring-gray-200/80 [box-shadow:0_-8px_20px_-8px_rgba(0,0,0,0.18),0_25px_50px_-12px_rgba(0,0,0,0.25)]">
 
 
 
@@ -7822,7 +7827,7 @@ export default function ShopStyle() {
 
 
 
-                          ? 'bg-gradient-to-r from-red-50 to-red-100 hover:from-red-100 hover:to-red-200 border-l-4 border-red-500'
+                          ? 'bg-gradient-to-l from-[#e6ecdb] via-[#d6e0c2] to-[#c5d2a8] hover:from-[#dde3d0] hover:via-[#cdd9b6] hover:to-[#bccb9b] border-l-4 border-white'
 
 
 
@@ -7846,7 +7851,7 @@ export default function ShopStyle() {
 
 
 
-                          : 'bg-gradient-to-r from-gray-50 to-gray-100 hover:from-gray-100 hover:to-gray-200 border-l-4 border-gray-700'
+                          : 'bg-gradient-to-l from-[#e6ecdb] via-[#d6e0c2] to-[#c5d2a8] hover:from-[#dde3d0] hover:via-[#cdd9b6] hover:to-[#bccb9b] border-l-4 border-white'
 
 
 
@@ -8014,7 +8019,7 @@ export default function ShopStyle() {
 
 
 
-                          ${index % 2 === 0 ? 'text-red-500' : 'text-gray-700'}
+                          ${index % 2 === 0 ? 'text-black' : 'text-black'}
 
 
 
@@ -8638,7 +8643,7 @@ export default function ShopStyle() {
 
 
 
-                        ${index % 2 === 0 ? 'bg-red-50' : 'bg-gray-50'}
+                        ${index % 2 === 0 ? 'bg-white' : 'bg-white'}
 
 
 
@@ -9358,7 +9363,7 @@ export default function ShopStyle() {
 
 
 
-                                    ? 'bg-red-100 border-red-500 shadow-sm'
+                                    ? 'bg-[#b4c49a] border-[#b4c49a] shadow-sm'
 
 
 
@@ -9382,7 +9387,7 @@ export default function ShopStyle() {
 
 
 
-                                    : 'bg-gray-100 border-gray-700 shadow-sm'
+                                    : 'bg-[#b4c49a] border-[#b4c49a] shadow-sm'
 
 
 
@@ -9406,7 +9411,7 @@ export default function ShopStyle() {
 
 
 
-                                  : 'bg-white/80 border-gray-200 hover:bg-gray-100'
+                                  : 'bg-white border-gray-200 hover:bg-gray-50'
 
 
 
@@ -9814,7 +9819,7 @@ export default function ShopStyle() {
 
 
 
-                                        ? 'bg-red-500 border-red-500 shadow-md'
+                                        ? 'bg-[#b4c49a] border-[#b4c49a] shadow-md'
 
 
 
@@ -9838,7 +9843,7 @@ export default function ShopStyle() {
 
 
 
-                                        : 'bg-gray-700 border-gray-700 shadow-md'
+                                        : 'bg-[#b4c49a] border-[#b4c49a] shadow-md'
 
 
 
@@ -9958,7 +9963,7 @@ export default function ShopStyle() {
 
 
 
-                                      <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-black" fill="currentColor" viewBox="0 0 20 20">
+                                      <svg className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
 
 
 
@@ -10318,7 +10323,7 @@ export default function ShopStyle() {
 
 
 
-                                  ? 'bg-red-500 text-white border-red-500'
+                                  ? 'bg-[#b4c49a] text-white border-[#b4c49a]'
 
 
 

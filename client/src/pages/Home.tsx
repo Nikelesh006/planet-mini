@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 import { Button } from "@/components/Button";
 
@@ -11,10 +13,11 @@ import { GiftingCard } from "@/components/GiftingCard";
 
 import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useMuslinProducts, useComboProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts, useNewArrivalsProducts, useTrendingProducts } from "@/hooks/useProducts";
 
-import { motion } from "framer-motion";
 import { WelcomeModal } from "@/components/WelcomeModal";
 
 import Slider from "@/components/Slider";
+
+import SpinWheel from "@/components/SpinWheel";
 
 import CategoryCard from "@/components/CategoryCard";
 
@@ -60,18 +63,36 @@ export default function Home() {
   // Combo info modal state
   const [showComboInfoModal, setShowComboInfoModal] = useState(false);
 
-  // Discount modal state
-  const [showDiscountModal, setShowDiscountModal] = useState(() => {
-    // Check if user has already dismissed the discount modal
-    const discountDismissed = localStorage.getItem('discountModalDismissed');
-    return discountDismissed === null; // Show modal only if not dismissed
-  });
+  // Spin wheel state - show after 5 seconds delay, only once per user
+  const [showSpinWheel, setShowSpinWheel] = useState(false);
+  const [wonDiscount, setWonDiscount] = useState<string | null>(null);
+  const [showClaimMessage, setShowClaimMessage] = useState(false);
 
-  // Handle discount modal dismiss
-  const handleDiscountDismiss = () => {
-    localStorage.setItem('discountModalDismissed', 'true');
-    localStorage.setItem('discountModalDismissedDate', new Date().toISOString());
-    setShowDiscountModal(false);
+  // Show spin wheel after 5 seconds delay if user hasn't seen it before
+  useEffect(() => {
+    const spinWheelSeen = localStorage.getItem('spinWheelSeen');
+    
+    if (!spinWheelSeen) {
+      const timer = setTimeout(() => {
+        setShowSpinWheel(true);
+        localStorage.setItem('spinWheelSeen', 'true');
+        localStorage.setItem('spinWheelSeenDate', new Date().toISOString());
+      }, 5000); // 5 second delay
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const handleSpinWheelClose = () => {
+    setShowSpinWheel(false);
+  };
+
+  const handleDiscountWon = (discount: string) => {
+    setWonDiscount(discount);
+  };
+
+  const handleDismissDiscount = () => {
+    setWonDiscount(null);
   };
 
   // Cookie modal state
@@ -572,11 +593,11 @@ export default function Home() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
-      className="min-h-screen space-y-4 pt-10"
+      className="min-h-screen space-y-0 sm:space-y-4 pt-0 sm:pt-10"
     >
 
       {/* Hero Section with Image Slider */}
-      <section className="relative w-full min-h-[600px]">
+      <section className="relative w-full min-h-[400px] sm:min-h-[600px]">
         <div className="relative w-full h-full overflow-hidden">
           <div className="relative w-full h-full">
             {/* Mobile Banner - Only visible on small screens */}
@@ -692,9 +713,9 @@ export default function Home() {
 
       {/* Shop by Style Section */}
 
-      <section className="w-full pt-20">
+      <section className="w-full pt-8 sm:pt-20">
 
-        <div className="pt-0 pb-8 lg:pb-16 lg:pt-2 px-4 sm:px-6 lg:px-8">
+        <div className="pt-0 pb-0 sm:pb-8 lg:pb-16 lg:pt-2 px-4 sm:px-6 lg:px-8">
 
           <motion.div 
 
@@ -704,11 +725,11 @@ export default function Home() {
 
             transition={{ duration: 0.8, ease: "easeOut" }}
 
-            className="text-center mb-12"
+            className="text-center mb-4 sm:mb-12"
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4" id="shop-by-style">
+            <div className="flex items-center justify-center gap-4 mb-0 sm:mb-4" id="shop-by-style">
               <h2 className="text-2xl sm:text-4xl font-bold text-black">Shop by Style</h2>
               <img 
                 src="/babies.png" 
@@ -720,7 +741,7 @@ export default function Home() {
 
             <p className="text-gray-600 text-lg">Discover our latest collection of stylish baby wear</p>
 
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
 
@@ -734,7 +755,7 @@ export default function Home() {
 
           {/* Style Categories Grid */}
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-8 px-2 sm:px-4 lg:px-6 bg-red-50 py-6 rounded-3xl shadow-inner">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-8 px-2 sm:px-4 lg:px-6 bg-red-50 py-2 sm:py-6 rounded-3xl shadow-inner">
 
             {/* Jhablas */}
 
@@ -764,7 +785,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Jhablas</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Jhablas</h3>
 
             </Link>
 
@@ -798,7 +819,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Towels & Blankets</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Towels & Blankets</h3>
 
             </Link>
 
@@ -832,7 +853,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Nappies</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Nappies</h3>
 
             </Link>
 
@@ -866,7 +887,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Wipes</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Wipes</h3>
 
             </Link>
 
@@ -900,7 +921,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className="text-sm sm:text-lg font-bold text-center mt-4 text-black">Beds</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Beds</h3>
 
             </Link>
 
@@ -913,7 +934,7 @@ export default function Home() {
 
       {/* Hospital Bags Section */}
 
-      <section className="w-full py-12">
+      <section className="w-full py-4 pb-8 sm:py-12">
 
         <div className="px-4 sm:px-6 lg:px-8">
 
@@ -927,7 +948,7 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 sm:gap-8 mb-4" id="hospital-bags">
+            <div className="flex items-center justify-center gap-4 sm:gap-8 mb-0 sm:mb-4" id="hospital-bags">
               <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
               <div className="flex items-center gap-3">
                 <h2 className="text-2xl sm:text-4xl font-bold">Hospital Bags</h2>
@@ -943,7 +964,7 @@ export default function Home() {
 
             <p className="text-gray-600 text-lg">Ready-to-pack essentials for hospital stays and first days</p>
 
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
 
@@ -955,7 +976,7 @@ export default function Home() {
 
           </motion.div>
 
-          <div className="mt-16">
+          <div className="mt-8 sm:mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Hospital Bag Image 1 */}
               <Link href="/shop/style?filter=hospital-bags">
@@ -1030,7 +1051,7 @@ export default function Home() {
 
       <section className="w-full bg-red">
 
-        <div className="px-4 sm:px-6 lg:px-8 py-8 pb-2">
+        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pb-2 sm:pb-8">
 
           {/* Header */}
 
@@ -1040,11 +1061,11 @@ export default function Home() {
 
             whileInView={{ opacity: 1, y: 0 }}
 
-            className="text-center mb-12"
+            className="text-center mb-4 sm:mb-12"
 
           >
 
-            <div className="flex items-center justify-center gap-16 mb-4" id="new-arrivals">
+            <div className="flex items-center justify-center gap-16 mb-0 sm:mb-4" id="new-arrivals">
               <div className="flex-1 h-0.5 bg-black"></div>
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-4xl font-bold text-black">New Arrivals</h2>
@@ -1060,7 +1081,7 @@ export default function Home() {
 
             <p className="text-gray-600 text-lg">Everything you need for your baby's daily care routine</p>
 
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
 
@@ -1089,7 +1110,7 @@ export default function Home() {
                 </div>
 
                 {/* Explore More Button */}
-                <div className="text-center mt-4">
+                <div className="text-center mt-2 sm:mt-4">
                   <Link href="/shop/style">
                     <motion.button
                       initial={{ opacity: 0, y: 20 }}
@@ -1144,7 +1165,7 @@ export default function Home() {
 
       <section className="w-full">
 
-        <div className="px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+        <div className="px-4 sm:px-6 lg:px-8 pt-0 sm:pt-4 pb-8 sm:pb-12">
 
           {/* Header */}
 
@@ -1154,11 +1175,11 @@ export default function Home() {
 
             whileInView={{ opacity: 1, y: 0 }}
 
-            className="text-center mb-12"
+            className="text-center mb-4 sm:mb-12"
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-4 sm:gap-16" id="trending-products">
+            <div className="flex items-center justify-center gap-4 mb-0 sm:mb-4 sm:gap-16" id="trending-products">
               <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-4xl font-bold text-black">Trending Products</h2>
@@ -1175,7 +1196,7 @@ export default function Home() {
 
             <p className="text-gray-600 text-lg">Breathable, lightweight cotton fabric perfect for comfortable everyday wear</p>
 
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
 
@@ -1204,7 +1225,7 @@ export default function Home() {
                 </div>
 
                 {/* Explore More Button */}
-                <div className="text-center mt-8">
+                <div className="text-center mt-4 sm:mt-8">
                   <Link href="/shop/style">
                     <motion.button
                       initial={{ opacity: 0, y: 20 }}
@@ -1257,7 +1278,7 @@ export default function Home() {
 
       {/* Blockbuster Combo's Section */}
 
-      <section className="w-full bg-red-50 py-12">
+      <section className="w-full bg-red-50 py-8 sm:py-12">
 
         <div className="px-4 sm:px-6 lg:px-8">
 
@@ -1381,7 +1402,7 @@ export default function Home() {
 
       <section className="w-full">
 
-        <div className="px-4 sm:px-6 lg:px-8 py-8">
+        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
           {/* Header */}
 
@@ -1533,7 +1554,7 @@ export default function Home() {
       </section>
 
       {/* Announcement Slider */}
-      <section className="w-full bg-[#B4C49A] py-4 sm:py-6 md:py-8 overflow-hidden">
+      <section className="w-full bg-[#B4C49A] py-6 sm:py-6 md:py-8 overflow-hidden">
         <div className="relative">
           <div className="flex animate-scroll whitespace-nowrap">
             {/* First set of announcements */}
@@ -1572,7 +1593,7 @@ export default function Home() {
 
       {/* Our Commitment Section */}
 
-      <section className="w-full py-20 bg-gradient-to-b from-white via-red-50/50 to-red-100/30">
+      <section className="w-full py-12 sm:py-20 bg-gradient-to-b from-white via-red-50/50 to-red-100/30">
 
         <div className="px-4 sm:px-6 lg:px-8 max-w-[95%] mx-auto">
 
@@ -1871,7 +1892,7 @@ export default function Home() {
 
           {/* Main Grid Layout */}
 
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-3 auto-rows-[150px] md:auto-rows-[200px]">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 auto-rows-[150px] md:auto-rows-[200px]">
 
             {/* Large Featured Image - Top Left (2x2) */}
             <div className="relative group col-span-2 row-span-2 md:col-span-2 md:row-span-2">
@@ -2157,48 +2178,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Discount Modal */}
-      {showDiscountModal && (
-        <div className="fixed bottom-4 left-4 z-50">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.3 }}
-            className="bg-white border border-gray-200 rounded-xl p-6 shadow-2xl max-w-lg"
-          >
-            <div className="flex items-start justify-between mb-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center shadow-md">
-                  <span className="text-white font-bold text-base">10%</span>
-                </div>
-                <div>
-                  <h3 className="text-black font-bold text-lg">Special Offer!</h3>
-                  <p className="text-gray-700 text-base">Get 10% off your first order</p>
-                </div>
-              </div>
-              <button
-                onClick={handleDiscountDismiss}
-                className="text-gray-400 hover:text-black transition-colors p-2 hover:bg-gray-100 rounded-full"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            <div className="text-lg text-gray-600 mb-3">
-                <span>Code - </span><span className="text-red-500 font-bold text-lg">PMSALE10</span>
-            </div>
-            <button
-              onClick={handleDiscountDismiss}
-              className="w-full bg-red-500 text-white text-sm font-semibold py-2 rounded-lg hover:bg-red-600 transition-colors shadow-md"
-            >
-              Shop Now
-            </button>
-          </motion.div>
-        </div>
-      )}
-
       {/* Cookie Accept Modal */}
       {showCookieModal && (
         <div className="fixed bottom-4 right-4 z-50">
@@ -2257,6 +2236,41 @@ export default function Home() {
           </motion.div>
         </div>
       )}
+      
+      {/* Spin Wheel */}
+      {showSpinWheel && <SpinWheel onClose={handleSpinWheelClose} onDiscountWon={handleDiscountWon} />}
+      
+      {/* Sticky Discount Card */}
+      <AnimatePresence>
+        {wonDiscount && (
+          <motion.div
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 100 }}
+            transition={{ duration: 0.3 }}
+            className="fixed bottom-6 right-6 z-[9997]"
+          >
+            <div 
+              onClick={() => setShowClaimMessage(!showClaimMessage)}
+              className="bg-[#B4C49A] text-black px-6 py-4 rounded-xl shadow-2xl cursor-pointer"
+            >
+              <div className="flex items-center gap-3">
+                <div className="text-lg font-bold">{showClaimMessage ? `Claim ${wonDiscount} discount during checkout` : wonDiscount}</div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDismissDiscount();
+                  }}
+                  className="text-black hover:text-gray-700 transition-colors ml-2"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
       <WelcomeModal />
     </motion.div>
   );

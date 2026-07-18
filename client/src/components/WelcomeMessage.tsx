@@ -37,7 +37,7 @@ export default function WelcomeMessage({ userName, onClose }: WelcomeMessageProp
             damping: 25,
             duration: 0.3
           }}
-          className="fixed top-20 right-4 z-50 max-w-sm"
+          className="fixed top-20 right-4 z-[100] max-w-sm"
         >
           <div className="bg-white text-gray-800 rounded-2xl shadow-xl p-4 border-l-4 border-l-[#B4C49A] border-t border-r border-b border-gray-100">
             <div className="flex items-start justify-between gap-3">

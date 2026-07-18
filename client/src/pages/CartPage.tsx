@@ -546,27 +546,33 @@ export default function CartPage() {
 
     return (
 
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-white pt-20 sm:pt-24" style={{ fontFamily: 'Inter, system-ui, -apple-system, sans-serif' }}>
 
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col items-center justify-center">
 
-          <div className="text-center">
+          <div className="text-center max-w-md mx-auto">
 
-            <h1 className="text-3xl font-bold text-gray-900 mb-4">Your Cart</h1>
+            <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8 border-2" style={{ backgroundColor: 'rgba(180, 196, 154, 0.15)', borderColor: 'rgba(180, 196, 154, 0.3)' }}>
 
-            <p className="text-gray-500 mb-8">Your cart is currently empty</p>
+              <ShoppingBag className="w-16 h-16" style={{ color: '#b4c49a' }} />
+
+            </div>
+
+            <h1 className="text-3xl font-bold text-black mb-4">Your Cart is Empty</h1>
+
+            <p className="text-gray-600 mb-8 text-lg">Looks like you haven't added anything to your cart yet.</p>
 
             <Link 
 
               href="/"
 
-              className="inline-flex items-center gap-2 text-pink-500 hover:text-pink-600 font-medium"
+              className="inline-flex items-center gap-3 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:opacity-90"
+
+              style={{ backgroundColor: '#b4c49a' }}
 
             >
 
-              <ArrowLeft className="w-4 h-4" />
-
-              Continue Shopping
+              Start Shopping
 
             </Link>
 
@@ -596,7 +602,7 @@ export default function CartPage() {
 
       transition={{ duration: 0.2 }}
 
-      className="min-h-screen bg-white"
+      className="min-h-screen bg-white pt-20 sm:pt-24"
 
     >
 
@@ -624,11 +630,11 @@ export default function CartPage() {
 
             {state.items.some(item => item.category === 'home' && item.subcategory?.toLowerCase().includes('hospital')) && (
 
-              <div className="mb-6 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-pink-200 rounded-2xl p-6">
+              <div className="mb-6 bg-gradient-to-r from-[#b4c49a]/5 to-[#b4c49a]/10 border-2 border-[#b4c49a]/30 rounded-2xl p-6">
 
                 <div className="flex items-center gap-3 mb-4">
 
-                  <div className="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: '#b4c49a' }}>
 
                     <ShoppingBag className="w-6 h-6 text-white" />
 
@@ -654,7 +660,7 @@ export default function CartPage() {
 
                     .map((item, index) => (
 
-                      <div key={`hospital-${getCartItemKey(item, index)}`} className="bg-white rounded-xl p-4 border border-pink-100 shadow-sm">
+                      <div key={`hospital-${getCartItemKey(item, index)}`} className="bg-white rounded-xl p-4 border border-[#b4c49a]/20 shadow-sm">
 
                         <div className="flex gap-4">
 
@@ -796,7 +802,7 @@ export default function CartPage() {
 
                   <div className="flex items-center justify-between lg:hidden">
 
-                    <span className="text-lg font-bold text-black">{formatPrice(item.sellingPrice)}</span>
+                    <span className="text-base font-semibold text-black">{formatPrice(item.sellingPrice)}</span>
 
                     <div className="flex items-center gap-2">
 
@@ -842,7 +848,7 @@ export default function CartPage() {
 
                   <div className="hidden lg:block lg:col-span-2 lg:text-center">
 
-                    <span className="text-xl font-bold text-black">{formatPrice(item.sellingPrice)}</span>
+                    <span className="text-base font-semibold text-black">{formatPrice(item.sellingPrice)}</span>
 
                   </div>
 
@@ -894,7 +900,7 @@ export default function CartPage() {
 
                     <span className="text-gray-600">Subtotal</span>
 
-                    <span className="text-lg font-bold text-black">{formatPrice(item.sellingPrice * item.quantity)}</span>
+                    <span className="text-base font-semibold text-black">{formatPrice(item.sellingPrice * item.quantity)}</span>
 
                   </div>
 
@@ -904,7 +910,7 @@ export default function CartPage() {
 
                   <div className="hidden lg:block lg:col-span-2 lg:text-center">
 
-                    <span className="text-xl font-bold text-black">{formatPrice(item.sellingPrice * item.quantity)}</span>
+                    <span className="text-base font-semibold text-black">{formatPrice(item.sellingPrice * item.quantity)}</span>
 
                   </div>
 
@@ -924,7 +930,7 @@ export default function CartPage() {
 
                 href="/"
 
-                className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 sm:px-4 sm:py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 text-sm sm:text-base"
+                className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 sm:px-4 sm:py-2 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 text-xs sm:text-sm"
 
               >
 
@@ -968,7 +974,7 @@ export default function CartPage() {
 
                       onClick={() => setShowAddressDropdown(!showAddressDropdown)}
 
-                      className="text-xs font-bold text-pink-500 hover:text-pink-600 flex items-center gap-0.5 transition-colors"
+                      className="text-xs font-bold text-[#b4c49a] hover:text-[#a0b088] flex items-center gap-0.5 transition-colors"
 
                     >
 
@@ -1000,7 +1006,7 @@ export default function CartPage() {
 
                     <span className="block text-[11px] text-gray-500 mb-3">Add a shipping address to complete your checkout</span>
 
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-pink-500 bg-pink-50 px-3 py-1.5 rounded-xl group-hover:bg-pink-100 transition-colors">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#b4c49a] bg-[#b4c49a]/10 px-3 py-1.5 rounded-xl group-hover:bg-[#b4c49a]/20 transition-colors">
 
                       <Plus className="w-3.5 h-3.5" /> Add Address
 
@@ -1020,7 +1026,7 @@ export default function CartPage() {
 
                         <div className="flex items-start gap-3">
 
-                          <div className="bg-pink-50 p-2 rounded-xl text-pink-500 mt-0.5 shrink-0">
+                          <div className="bg-[#b4c49a]/10 p-2 rounded-xl text-[#b4c49a] mt-0.5 shrink-0">
 
                             <MapPin className="w-4 h-4" />
 
@@ -1088,7 +1094,7 @@ export default function CartPage() {
 
                                 isSelected 
 
-                                  ? 'bg-pink-50/50 border-pink-200 text-black' 
+                                  ? 'bg-[#b4c49a]/10 border-[#b4c49a]/30 text-black' 
 
                                   : 'hover:bg-gray-50 border-transparent text-gray-700'
 
@@ -1124,7 +1130,7 @@ export default function CartPage() {
 
                               {isSelected && (
 
-                                <Check className="w-4 h-4 text-pink-500 shrink-0 mt-0.5" />
+                                <Check className="w-4 h-4 text-[#b4c49a] shrink-0 mt-0.5" />
 
                               )}
 
@@ -1138,7 +1144,7 @@ export default function CartPage() {
 
                           onClick={() => window.location.href = '/add-address'}
 
-                          className="p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors text-left border-t border-gray-100 flex items-center gap-2 text-pink-500 hover:text-pink-600 font-semibold text-xs mt-1"
+                          className="p-3 rounded-xl hover:bg-gray-50 cursor-pointer transition-colors text-left border-t border-gray-100 flex items-center gap-2 text-[#b4c49a] hover:text-[#a0b088] font-semibold text-xs mt-1"
 
                         >
 
@@ -1166,7 +1172,7 @@ export default function CartPage() {
 
                   <span className="text-gray-600">ITEMS ({state.totalItems})</span>
 
-                  <span className="text-lg sm:text-xl font-bold text-black">{formatPrice(subtotal)}</span>
+                  <span className="text-base font-semibold text-black">{formatPrice(subtotal)}</span>
 
                 </div>
 
@@ -1174,7 +1180,7 @@ export default function CartPage() {
 
                   <span className="text-gray-600">Shipping Fee</span>
 
-                  <span className="text-lg sm:text-xl font-bold text-black">Free</span>
+                  <span className="text-base font-semibold text-black">Free</span>
 
                 </div>
 
@@ -1186,9 +1192,9 @@ export default function CartPage() {
 
               <div className="flex justify-between items-center pt-4 border-t border-gray-200 mb-6">
 
-                <span className="text-xl sm:text-2xl font-bold text-black">Total</span>
+                <span className="text-lg sm:text-xl font-bold text-black">Total</span>
 
-                <span className="text-xl sm:text-2xl font-bold text-black">{formatPrice(subtotal)}</span>
+                <span className="text-lg sm:text-xl font-bold text-black">{formatPrice(subtotal)}</span>
 
               </div>
 
@@ -1218,7 +1224,7 @@ export default function CartPage() {
 
                 disabled={isPaymentLoading || hasStockIssues}
 
-                className="w-full bg-black text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="w-full bg-black text-white px-4 py-3 sm:px-6 sm:py-3 rounded-xl font-medium hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg text-xs sm:text-sm disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
 
               >
 

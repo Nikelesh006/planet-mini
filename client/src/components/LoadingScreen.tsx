@@ -39,7 +39,7 @@ export default function LoadingScreen() {
             }}
           >
             {/* Orbiting Rocket */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1.5 shadow-[0_0_15px_rgba(96,165,250,0.4)] rotate-45 text-blue-500 border border-gray-200">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 text-blue-500">
                <Rocket className="w-5 h-5 md:w-6 md:h-6" strokeWidth={1.5} />
             </div>
           </motion.div>
@@ -56,12 +56,12 @@ export default function LoadingScreen() {
             }}
           >
              {/* Orbiting Star 1 */}
-             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-white rounded-full p-1 text-yellow-500 shadow-[0_0_10px_rgba(250,204,21,0.3)] border border-gray-100">
-               <Star className="w-4 h-4 md:w-5 md:h-5 fill-yellow-400/50" strokeWidth={1.5} />
+             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 text-yellow-600">
+               <Star className="w-4 h-4 md:w-5 md:h-5 fill-yellow-400/80" strokeWidth={1.5} />
              </div>
              {/* Orbiting Star 2 */}
-             <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 bg-white rounded-full p-1 text-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.2)] border border-gray-100">
-               <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-300/50" strokeWidth={1.5} />
+             <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 text-yellow-500">
+               <Star className="w-3 h-3 md:w-4 md:h-4 fill-yellow-300/80" strokeWidth={1.5} />
              </div>
           </motion.div>
           

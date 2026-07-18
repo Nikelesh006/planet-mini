@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation, Link } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import WelcomeMessage from "./WelcomeMessage";
+import RecentPurchasePopup from "./RecentPurchasePopup";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -26,7 +27,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             ease: [0.4, 0.0, 0.2, 1],
             stagger: 0
           }}
-          className="flex-1 pt-32 pb-12"
+          className="flex-1 pt-36 pb-12"
         >
           {children}
         </motion.main>
@@ -78,11 +79,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
       
       {/* Welcome Message - Only on Home Screen */}
       {shouldShowWelcome && (
-        <WelcomeMessage 
-          userName={user.name || 'User'} 
-          onClose={dismissWelcomeMessage} 
+        <WelcomeMessage
+          userName={user.name || 'User'}
+          onClose={dismissWelcomeMessage}
         />
       )}
+
+      {/* Recent Purchase Popup - bottom-left, cycles every 5-40s */}
+      <RecentPurchasePopup />
     </div>
   );
 }

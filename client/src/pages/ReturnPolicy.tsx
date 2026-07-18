@@ -14,31 +14,31 @@ export default function ReturnPolicy() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFF8F3] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           className="text-center mb-12 relative"
           {...fadeIn}
         >
           <div className="flex justify-center mb-4">
-             <img 
-                src="/Planet-mini-logo.png" 
-                alt="Planet Mini Logo" 
+             <img
+                src="/Planet-mini-logo.png"
+                alt="Planet Mini Logo"
                 className="h-16 w-auto object-contain"
               />
           </div>
-          <p className="text-[#FF7B9C] font-medium tracking-wide mb-2 uppercase text-sm">Premium Baby & Kids Wear</p>
+          <p className="text-[#7E9560] font-medium tracking-wide mb-2 uppercase text-sm">Premium Baby & Kids Wear</p>
           <h1 className="text-4xl md:text-5xl font-display font-bold text-[#1D3557] mb-4">Refund & Return Policy</h1>
           <p className="text-[#4A5568] text-lg">Your trust means everything to us.</p>
           <p className="text-[#4A5568] text-lg flex items-center justify-center gap-2">
-            Please read our policy carefully. <Heart className="w-5 h-5 text-[#FF7B9C] fill-[#FF7B9C]" />
+            Please read our policy carefully. <Heart className="w-5 h-5 text-[#B4C49A] fill-[#B4C49A]" />
           </p>
-          
+
           {/* Baby Image Placeholder (Stylized like the original) */}
           <div className="absolute -top-10 -right-4 hidden lg:block w-48 h-48 opacity-20 pointer-events-none">
              {/* You could add an image here if available, using an icon for now */}
-             <Heart className="w-full h-full text-[#FF7B9C]" />
+             <Heart className="w-full h-full text-[#B4C49A]" />
           </div>
         </motion.div>
 

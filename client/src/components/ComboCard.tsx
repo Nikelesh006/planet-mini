@@ -318,7 +318,7 @@ export function ComboCard({ product, index }: ComboCardProps) {
 
             <div className="flex items-baseline justify-center gap-2">
 
-              <span className="text-xl font-extrabold text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              <span className="text-base font-medium text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
 
               {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
 

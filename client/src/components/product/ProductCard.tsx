@@ -276,7 +276,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
 
             <div className="flex items-baseline gap-2">
 
-              <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              <span className="text-lg font-medium text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
 
               <span className="text-sm font-medium text-slate-500 line-through">
 

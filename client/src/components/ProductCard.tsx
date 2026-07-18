@@ -368,6 +368,20 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
       toggleLike(productForWishlist);
 
+      toast({
+
+        title: isWishlisted ? "Removed from Likes" : "Added to Likes!",
+
+        description: isWishlisted 
+
+          ? `${product.name} has been removed from your liked products.` 
+
+          : `${product.name} has been added to your liked products.`,
+
+        variant: isWishlisted ? "default" : "success"
+
+      });
+
 
 
     });
@@ -476,31 +490,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           {/* Badges */}
 
-
-
           <div className="absolute top-4 left-4 flex flex-col gap-2 pointer-events-none z-30">
-
-            {lowStock && !outOfStock && (
-
-              <span className="bg-amber-500 px-3 py-1 text-sm font-bold text-white shadow-md">
-
-                Low Stock
-
-              </span>
-
-            )}
-
-            {outOfStock && (
-
-              <span className="bg-black px-3 py-1 text-sm font-bold text-white shadow-md">
-
-                Out of Stock
-
-              </span>
-
-            )}
-
-
 
             {!outOfStock && product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (() => {
 
@@ -556,7 +546,12 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
 
 
-              <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500 hover:fill-red-500'}`} />
+              <motion.div
+                whileTap={{ scale: 1.4 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <Heart className={`w-5 h-5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-400 hover:text-red-500 hover:fill-red-500'}`} />
+              </motion.div>
 
 
 
@@ -638,7 +633,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           <div className="flex items-baseline gap-2">
 
-            <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
+            <span className="text-lg font-medium text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
 
             <span className="text-sm font-medium text-slate-500 line-through">
 

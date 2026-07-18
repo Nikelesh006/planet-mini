@@ -817,8 +817,11 @@ export default function AddProduct() {
         </motion.div>
       )}
 
-      <form onSubmit={(e) => handleSubmit(e, formData.status)} className="mx-auto grid max-w-7xl gap-4 px-4 py-6 sm:px-6 lg:grid-cols-12 lg:px-8">
-        <Section title="Basic Information" icon={Package} className="lg:col-span-8">
+      <form onSubmit={(e) => handleSubmit(e, formData.status)} className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-4 lg:flex-row">
+          {/* LEFT COLUMN — all input sections stacked vertically */}
+          <div className="flex min-w-0 flex-col gap-4 lg:order-1 lg:w-2/3">
+        <Section title="Basic Information" icon={Package}>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
               <Label required>Product Type</Label>
@@ -1058,40 +1061,7 @@ export default function AddProduct() {
           </div>
         </Section>
 
-        <Section title="Store Preview" icon={Eye} className="lg:col-span-4 lg:row-span-2 lg:self-start">
-          <div className="space-y-4">
-            <div className="aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-              {formData.images[0] ? (
-                <img src={formData.images[0]} alt="Product preview" className="h-full w-full object-cover" />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-slate-400">
-                  <ImageIcon className="h-10 w-10" />
-                </div>
-              )}
-            </div>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-[#5F6F46]">{previewCategory} / {previewSubcategory}</p>
-              <h3 className="mt-2 text-lg font-semibold leading-snug text-slate-950">{formData.name || "Product name preview"}</h3>
-              <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-5 text-slate-600">
-                {formData.description || "Product description preview appears here once you start typing."}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
-              <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">{formData.inStock ? "In stock" : "Out of stock"}</span>
-              {formData.isNew && <span className="rounded-full bg-[#F1F5EB] px-3 py-1 text-[#5F6F46]">New arrival</span>}
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{formData.rating} rating</span>
-            </div>
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-              <p className="text-2xl font-bold text-slate-950">Rs {Number(formData.sellingPrice || 0).toLocaleString("en-IN")}</p>
-              <div className="mt-1 flex flex-wrap items-center gap-2">
-                {formData.mrp && <p className="text-sm text-slate-500 line-through">Rs {Number(formData.mrp).toLocaleString("en-IN")}</p>}
-                {discount && <p className="text-sm font-semibold text-emerald-700">{discount.percent}% off</p>}
-              </div>
-            </div>
-          </div>
-        </Section>
-
-        <Section title="Pricing" icon={BadgeIndianRupee} className="lg:col-span-4">
+        <Section title="Pricing" icon={BadgeIndianRupee}>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             <div>
               <Label required>Selling Price</Label>
@@ -1133,7 +1103,7 @@ export default function AddProduct() {
           )}
         </Section>
 
-        <Section title="Product Images" icon={ImageIcon} className="lg:col-span-12">
+        <Section title="Product Images" icon={ImageIcon}>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
             {[0, 1, 2, 3, 4].map((index) => (
               <div key={index} className="relative">
@@ -1180,6 +1150,7 @@ export default function AddProduct() {
         </Section>
 
 
+        <div className="grid gap-4 lg:grid-cols-12">
         <Section title="Inventory" icon={Package} className="lg:col-span-5">
           <div className="space-y-4">
             <div>
@@ -1309,7 +1280,9 @@ export default function AddProduct() {
             </div>
           </div>
         </Section>
+        </div>
 
+        <div className="grid gap-4 lg:grid-cols-12">
         <Section title="Description" icon={Tag} className="lg:col-span-6 flex flex-col">
           <Label required>Description</Label>
           <textarea
@@ -1429,8 +1402,51 @@ export default function AddProduct() {
             </div>
           </div>
         </Section>
+        </div>
+        </div>
+        {/* /LEFT COLUMN */}
 
-        <div className="sticky bottom-0 z-10 -mx-4 border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:col-span-12 lg:-mx-8 lg:px-8">
+        {/* RIGHT COLUMN — sticky Store Preview */}
+        <div className="flex min-w-0 flex-col gap-4 order-first lg:order-2 lg:w-1/3">
+          <div className="lg:sticky lg:top-20">
+            <Section title="Store Preview" icon={Eye}>
+              <div className="space-y-4 lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto lg:-mx-4 lg:px-4 lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-thumb]:rounded-full lg:[&::-webkit-scrollbar-thumb]:bg-slate-200">
+                <div className="aspect-square overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                  {formData.images[0] ? (
+                    <img src={formData.images[0]} alt="Product preview" className="h-full w-full object-cover" />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-slate-400">
+                      <ImageIcon className="h-10 w-10" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[#5F6F46]">{previewCategory} / {previewSubcategory}</p>
+                  <h3 className="mt-2 text-lg font-semibold leading-snug text-slate-950">{formData.name || "Product name preview"}</h3>
+                  <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-5 text-slate-600">
+                    {formData.description || "Product description preview appears here once you start typing."}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2 text-xs font-medium">
+                  <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">{formData.inStock ? "In stock" : "Out of stock"}</span>
+                  {formData.isNew && <span className="rounded-full bg-[#F1F5EB] px-3 py-1 text-[#5F6F46]">New arrival</span>}
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-700">{formData.rating} rating</span>
+                </div>
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-2xl font-bold text-slate-950">Rs {Number(formData.sellingPrice || 0).toLocaleString("en-IN")}</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    {formData.mrp && <p className="text-sm text-slate-500 line-through">Rs {Number(formData.mrp).toLocaleString("en-IN")}</p>}
+                    {discount && <p className="text-sm font-semibold text-emerald-700">{discount.percent}% off</p>}
+                  </div>
+                </div>
+              </div>
+            </Section>
+          </div>
+        </div>
+        </div>
+        {/* /2-COLUMN WRAPPER */}
+
+        <div className="sticky bottom-0 z-20 -mx-4 mt-4 border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
           <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
             <button
               type="button"

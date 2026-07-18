@@ -31,6 +31,8 @@ interface LikeContextType {
 
 const LikeContext = createContext<LikeContextType | undefined>(undefined);
 
+const BRAND = "#b4c49a";
+
 export const LikeProvider = ({ children }: { children: ReactNode }) => {
   const [likedProducts, setLikedProducts] = useState<LikedProduct[]>([]);
   const [loading, setLoading] = useState(false);

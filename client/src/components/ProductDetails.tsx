@@ -1,6 +1,6 @@
     import { motion, AnimatePresence } from "framer-motion";
 
-import { X, Heart, ShoppingBag, Star, Minus, Plus } from "lucide-react";
+import { X, Heart, ShoppingBag, Star, Minus, Plus, Eye } from "lucide-react";
 
 import { useEffect, useMemo, useState } from "react";
 
@@ -76,7 +76,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
   const [selectedSize, setSelectedSize] = useState(sizeOptions[0] || "");
 
-
+  const [viewerCount, setViewerCount] = useState(() => Math.floor(Math.random() * 20) + 1);
 
   useEffect(() => {
 
@@ -84,7 +84,22 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
     setSelectedSize(sizeOptions[0] || "");
 
-  }, [product?.colors, sizeOptions]);
+    setViewerCount(Math.floor(Math.random() * 20) + 1);
+
+  }, [product?.colors, sizeOptions, product?.id]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const interval = setInterval(() => {
+      // Rare case (~15% chance) bump up to 30, otherwise stay within 1-20
+      const useExtendedRange = Math.random() < 0.15;
+      const max = useExtendedRange ? 30 : 20;
+      setViewerCount(Math.floor(Math.random() * max) + 1);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [isOpen]);
 
 
 
@@ -431,6 +446,14 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
                       </p>
 
                     )}
+
+                    <div className="mt-2 flex items-center gap-1.5 text-sm text-gray-600">
+
+                      <Eye className="w-4 h-4 font-bold text-black" strokeWidth={2.5} />
+
+                      <span>{viewerCount} people are viewing this right now</span>
+
+                    </div>
 
                   {!outOfStock && lowStock && (
 

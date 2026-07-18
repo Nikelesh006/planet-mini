@@ -322,7 +322,7 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
 
             <div className="flex items-baseline justify-center gap-2">
 
-              <span className="text-lg sm:text-xl font-extrabold text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              <span className="text-sm font-medium text-slate-900">&#8377;{Number(product.sellingPrice || 0).toFixed(2)}</span>
 
               {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
 

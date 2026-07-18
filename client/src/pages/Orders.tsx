@@ -670,7 +670,7 @@ export default function Orders() {
 
 
 
-            className="bg-gray-800 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-colors"
+            className="text-white px-4 py-2 rounded-xl font-medium transition-colors" style={{ backgroundColor: '#b4c49a' }}
 
 
 
@@ -714,7 +714,7 @@ export default function Orders() {
 
 
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-28 sm:pt-32 pb-6 sm:pb-8">
 
 
 
@@ -750,7 +750,7 @@ export default function Orders() {
 
 
 
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-1 sm:mb-2">My Orders</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-black mb-1 sm:mb-2">My Orders</h1>
 
 
 
@@ -774,7 +774,7 @@ export default function Orders() {
 
 
 
-              <button className="bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 text-sm sm:text-base">
+              <button className="text-white px-3 sm:px-4 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 text-sm sm:text-base" style={{ backgroundColor: '#b4c49a' }}>
 
 
 
@@ -1366,7 +1366,7 @@ export default function Orders() {
 
 
 
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 sm:mb-4">No orders yet</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-black mb-3 sm:mb-4">No orders yet</h2>
 
 
 
@@ -1386,7 +1386,7 @@ export default function Orders() {
 
 
 
-              <button className="bg-gray-800 text-white px-3 sm:px-4 py-2 rounded-xl font-medium hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto text-sm sm:text-base">
+              <button className="text-white px-3 sm:px-4 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center gap-2 mx-auto text-sm sm:text-base" style={{ backgroundColor: '#b4c49a' }}>
 
 
 
@@ -1490,7 +1490,7 @@ export default function Orders() {
 
 
 
-                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                  <h2 className="text-xl sm:text-2xl font-bold text-black">
 
 
 
@@ -1550,7 +1550,7 @@ export default function Orders() {
 
 
 
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Order Status</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-black mb-3 sm:mb-4">Order Status</h3>
 
 
 
@@ -1674,7 +1674,7 @@ export default function Orders() {
 
 
 
-                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Order Items</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-black mb-3 sm:mb-4">Order Items</h3>
 
 
 
@@ -1726,7 +1726,7 @@ export default function Orders() {
 
 
 
-                          <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{item.name}</h4>
+                          <h4 className="font-medium text-black text-sm sm:text-base truncate">{item.name}</h4>
 
 
 

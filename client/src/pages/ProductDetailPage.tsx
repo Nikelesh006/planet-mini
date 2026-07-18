@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { useParams, Link } from "wouter";
 
-import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy, Trash2, Gift } from "lucide-react";
+import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy, Trash2, Gift, Eye } from "lucide-react";
 
 import { useState, useEffect, useMemo } from "react";
 
@@ -21,6 +21,7 @@ import { useProduct, useProductById, useProducts } from "@/hooks/useProducts";
 import { BabyCareCard } from "@/components/BabyCareCard";
 
 import { getAvailableStock, isLowStock, isOutOfStock } from "@shared/stock";
+import { useToast } from "@/hooks/use-toast";
 
 
 
@@ -41,9 +42,8 @@ const getCloudinaryImageUrl = (url: string, transformation: string) => {
 
 
 export default function ProductDetailPage() {
-
+  const { toast } = useToast();
   const params = useParams();
-
   const slug = params.slug as string;
 
 
@@ -141,6 +141,8 @@ export default function ProductDetailPage() {
   const [showStickyBar, setShowStickyBar] = useState(false);
 
   const [isStickyBarDismissed, setIsStickyBarDismissed] = useState(false);
+
+  const [viewerCount, setViewerCount] = useState(() => Math.floor(Math.random() * 20) + 1);
 
   const availableStock = getAvailableStock(product);
 
@@ -392,6 +394,32 @@ export default function ProductDetailPage() {
 
 
 
+  // Reset viewer count when product changes and swap randomly every 4s
+
+  useEffect(() => {
+
+    if (!product) return;
+
+    setViewerCount(Math.floor(Math.random() * 20) + 1);
+
+    const interval = setInterval(() => {
+
+      // Rare case (~15% chance) bump up to 30, otherwise stay within 1-20
+
+      const useExtendedRange = Math.random() < 0.15;
+
+      const max = useExtendedRange ? 30 : 20;
+
+      setViewerCount(Math.floor(Math.random() * max) + 1);
+
+    }, 4000);
+
+    return () => clearInterval(interval);
+
+  }, [product?.id]);
+
+
+
   if (isLoading) {
 
     return (
@@ -488,6 +516,8 @@ export default function ProductDetailPage() {
 
     executeWithAuth(() => {
 
+      const isCurrentlyLiked = isLiked(product.id);
+
       toggleLike({
 
         id: product.id,
@@ -520,6 +550,14 @@ export default function ProductDetailPage() {
 
         sizes: product.sizes || null,
 
+      });
+
+      toast({
+        title: isCurrentlyLiked ? "Removed from Likes" : "Added to Likes!",
+        description: isCurrentlyLiked 
+          ? `${product.name} has been removed from your liked products.` 
+          : `${product.name} has been added to your liked products.`,
+        variant: isCurrentlyLiked ? "default" : "success"
       });
 
     });
@@ -994,6 +1032,14 @@ export default function ProductDetailPage() {
 
                     )}
 
+                    <div className="mt-2 flex items-center gap-1.5 text-sm text-gray-600">
+
+                      <Eye className="w-4 h-4 font-bold text-black" strokeWidth={2.5} />
+
+                      <span>{viewerCount} people are viewing this right now</span>
+
+                    </div>
+
                     {!outOfStock && lowStock && (
 
                       <p className="mt-2 inline-flex rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
@@ -1262,19 +1308,24 @@ export default function ProductDetailPage() {
 
                   >
 
-                    <Heart 
+                    <motion.div
+                      whileTap={{ scale: 1.4 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    >
+                      <Heart 
 
-                      className={`w-4 h-4 transition-colors sm:w-5 sm:h-5 ${
+                        className={`w-4 h-4 transition-colors sm:w-5 sm:h-5 ${
 
-                        isLiked(product.id) 
+                          isLiked(product.id) 
 
-                          ? 'fill-red-500 text-red-500' 
+                            ? 'fill-red-500 text-red-500' 
 
-                          : 'text-gray-600 hover:text-red-500 hover:fill-red-500'
+                            : 'text-gray-600 hover:text-red-500 hover:fill-red-500'
 
-                      }`} 
+                        }`} 
 
-                    />
+                      />
+                    </motion.div>
 
                   </button>
 

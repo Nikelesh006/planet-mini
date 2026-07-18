@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Zap, Check } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ProductResponse } from "@shared/routes";
 
 interface BoostModalProps {
@@ -20,6 +20,18 @@ export function BoostModal({ isOpen, onClose, product, onSave }: BoostModalProps
     product.boostSections || []
   );
   const [isSaving, setIsSaving] = useState(false);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
 
   const handleToggleSection = (sectionId: string) => {
     setSelectedSections(prev => {
@@ -57,7 +69,7 @@ export function BoostModal({ isOpen, onClose, product, onSave }: BoostModalProps
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100]"
           />
 
           {/* Modal */}
@@ -65,7 +77,7 @@ export function BoostModal({ isOpen, onClose, product, onSave }: BoostModalProps
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 lg:p-8"
           >
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
               {/* Header */}

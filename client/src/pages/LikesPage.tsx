@@ -12,6 +12,8 @@ import type { ProductResponse } from "@shared/routes";
 
 
 
+const BRAND = "#b4c49a";
+
 export default function LikesPage() {
 
   const { likedProducts, loading } = useLikes();
@@ -58,7 +60,7 @@ export default function LikesPage() {
 
               href="/"
 
-              className="p-3 text-black hover:text-primary rounded-full hover:bg-primary/10 transition-colors"
+              className="p-3 text-black hover:text-[#b4c49a] rounded-full hover:bg-[#b4c49a]/10 transition-colors"
 
             >
 
@@ -70,7 +72,7 @@ export default function LikesPage() {
 
               <h1 className="text-4xl font-bold text-black flex items-center gap-3">
 
-                <div className="w-10 h-10 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: BRAND }}>
 
                   <Heart className="w-6 h-6 text-white" />
 
@@ -98,7 +100,7 @@ export default function LikesPage() {
 
           <div className="text-center py-16">
 
-            <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: BRAND, borderTopColor: 'transparent' }}></div>
 
             <p className="text-gray-600 text-lg">Loading your liked items...</p>
 
@@ -108,9 +110,9 @@ export default function LikesPage() {
 
           <div className="text-center py-16">
 
-            <div className="w-32 h-32 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-full flex items-center justify-center mx-auto mb-8 border-2 border-primary/20">
+            <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8 border-2" style={{ backgroundColor: `${BRAND}1A`, borderColor: `${BRAND}33` }}>
 
-              <Heart className="w-16 h-16 text-primary" />
+              <Heart className="w-16 h-16" style={{ color: BRAND }} />
 
             </div>
 
@@ -122,7 +124,9 @@ export default function LikesPage() {
 
               href="/"
 
-              className="inline-flex items-center gap-3 bg-black text-white px-8 py-4 rounded-2xl font-bold hover:bg-gray-800 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="inline-flex items-center gap-3 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:opacity-90"
+
+              style={{ backgroundColor: BRAND }}
 
             >
 

@@ -48,21 +48,21 @@ export default function TermsOfService() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFF8F3] py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           className="text-center mb-12 relative"
           {...fadeIn}
         >
           <div className="flex justify-center mb-4">
-             <img 
-                src="/Planet-mini-logo.png" 
-                alt="Planet Mini Logo" 
+             <img
+                src="/Planet-mini-logo.png"
+                alt="Planet Mini Logo"
                 className="h-16 w-auto object-contain"
               />
           </div>
-          <p className="text-[#FF7B9C] font-medium tracking-wide mb-2 uppercase text-sm">Premium Baby & Kids Wear</p>
+          <p className="text-[#7E9560] font-medium tracking-wide mb-2 uppercase text-sm">Premium Baby & Kids Wear</p>
           <h1 className="text-4xl md:text-5xl font-display font-bold text-[#1D3557] mb-4">Terms of Service</h1>
           <p className="text-[#4A5568] text-lg">Please read these terms carefully before using Planet Mini.</p>
         </motion.div>
@@ -70,7 +70,7 @@ export default function TermsOfService() {
         {/* Sections */}
         <div className="space-y-8">
           {sections.map((section, index) => (
-            <motion.div 
+            <motion.div
               key={index}
               className="bg-white p-8 rounded-3xl border border-[#E2E8F0] shadow-sm hover:shadow-md transition-shadow"
               initial={{ opacity: 0, y: 20 }}
@@ -79,8 +79,8 @@ export default function TermsOfService() {
               transition={{ delay: index * 0.1 }}
             >
               <div className="flex items-start gap-6">
-                <div className="w-12 h-12 bg-[#FEE2E2] rounded-2xl flex items-center justify-center flex-shrink-0">
-                  <section.icon className="w-6 h-6 text-[#EF4444]" />
+                <div className="w-12 h-12 bg-[#EEF3E5] rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <section.icon className="w-6 h-6 text-[#7E9560]" />
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-[#1D3557] mb-4">{section.title}</h2>
@@ -92,7 +92,7 @@ export default function TermsOfService() {
         </div>
 
         {/* Footer Info */}
-        <motion.div 
+        <motion.div
           className="mt-12 text-center bg-white/50 p-8 rounded-3xl border border-[#E2E8F0]"
           {...fadeIn}
           transition={{ delay: 0.6 }}
@@ -101,7 +101,7 @@ export default function TermsOfService() {
           <p className="text-[#4A5568] mb-8">If you have any questions regarding these Terms of Service, please contact our support team.</p>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 bg-[#FEE2E2] text-[#EF4444] px-8 py-4 rounded-2xl font-semibold hover:bg-[#FECACA] transition-all duration-300 transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-[#B4C49A] text-white px-8 py-4 rounded-2xl font-semibold hover:bg-[#9CB082] transition-all duration-300 transform hover:scale-105"
           >
             Contact Support
           </Link>

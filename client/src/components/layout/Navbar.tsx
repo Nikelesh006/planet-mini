@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Search, Menu, User, X, Heart, LogOut, UserCircle, ShoppingBag as OrdersIcon, ChevronRight, ChevronDown, Phone } from "lucide-react";
+import { ShoppingBag, Search, Menu, User, X, Heart, LogOut, UserCircle, ShoppingBag as OrdersIcon, Phone } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
 import { useState, useEffect, useRef, useMemo } from "react";
@@ -145,9 +145,16 @@ export default function Navbar() {
 
       setIsScrolled(currentScrollY > 20);
 
-      // Hide navbar when scrolling down, show when scrolling up
-      if (currentScrollY > lastScrollY.current) {
-        // Scrolling down - hide navbar
+      // Only apply hide-on-scroll behavior once the user has scrolled past
+      // the announcement bar + navbar height. Until then, keep the navbar
+      // pinned in place so it never "disappears" on first load or when the
+      // loading screen transitions out.
+      const SCROLL_THRESHOLD = 160;
+
+      if (currentScrollY < SCROLL_THRESHOLD) {
+        setIsNavbarHidden(false);
+      } else if (currentScrollY > lastScrollY.current && currentScrollY - lastScrollY.current > 4) {
+        // Scrolling down (with a small delta buffer) - hide navbar
         setIsNavbarHidden(true);
       } else if (currentScrollY < lastScrollY.current) {
         // Scrolling up - show navbar
@@ -156,7 +163,9 @@ export default function Navbar() {
 
       lastScrollY.current = currentScrollY;
     };
-    window.addEventListener("scroll", handleScroll);
+    // Run once on mount so the initial state is correct
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -383,20 +392,10 @@ export default function Navbar() {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={handleProfileClick}
-                  className="hidden sm:flex p-2 text-muted-foreground hover:bg-gray-200 rounded-full transition-all"
+                  className="hidden sm:flex p-2 text-black hover:bg-gray-200 rounded-full transition-all"
                 >
                   {isLoading ? (
                     <div className="w-5 h-5 animate-spin rounded-full border-2 border-gray-300 border-t-blue-500" />
-                  ) : user ? (
-                    profile?.image || user.image ? (
-                      <img src={profile?.image || user.image} alt="Avatar" className="w-5 h-5 rounded-full" draggable={false} />
-                    ) : (
-                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">
-                          {user.name?.charAt(0) || 'U'}
-                        </span>
-                      </div>
-                    )
                   ) : (
                     <User className="w-5 h-5" />
                   )}
@@ -432,38 +431,29 @@ export default function Navbar() {
                       <Link
                         href="/profile"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
                       >
-                        <div className="flex items-center gap-3">
-                          <UserCircle className="w-5 h-5 text-red-500" />
-                          <span className="text-gray-700">My Profile</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                        <UserCircle className="w-5 h-5 text-black" />
+                        <span className="text-gray-700">My Profile</span>
                       </Link>
 
                       <Link
                         href="/orders"
                         onClick={() => setProfileDropdownOpen(false)}
-                        className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
                       >
-                        <div className="flex items-center gap-3">
-                          <OrdersIcon className="w-5 h-5 text-red-500" />
-                          <span className="text-gray-700">My Orders</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-gray-400" />
+                        <OrdersIcon className="w-5 h-5 text-black" />
+                        <span className="text-gray-700">My Orders</span>
                       </Link>
 
                       <div className="h-px bg-gray-100 my-2" />
 
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors text-red-600"
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-red-600"
                       >
-                        <div className="flex items-center gap-3">
-                          <LogOut className="w-5 h-5" />
-                          <span>Sign Out</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4" />
+                        <LogOut className="w-5 h-5" />
+                        <span>Sign Out</span>
                       </button>
                     </div>
                   </motion.div>
@@ -509,7 +499,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed inset-y-0 left-0 z-50 w-[85%] max-w-xs sm:max-w-sm bg-white shadow-2xl lg:hidden flex flex-col"
+              className="fixed inset-y-0 left-0 z-[60] w-[85%] max-w-xs sm:max-w-sm bg-white shadow-2xl lg:hidden flex flex-col"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
@@ -529,7 +519,7 @@ export default function Navbar() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="p-3 bg-gray-100 rounded-full text-gray-600 hover:text-black hover:bg-gray-200 transition-all duration-300 active:scale-95"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
               {/* Navigation Links */}
