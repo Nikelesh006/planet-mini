@@ -8,8 +8,8 @@ export default function ShopOffers() {
       description: "Essential onesies pack for everyday comfort",
       icon: "👕",
       image: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=400",
-      originalPrice: 45.00,
-      salePrice: 29.99,
+      originalPrice: 45,
+      salePrice: 30,
       discount: "33% OFF",
       badge: null,
       savings: "Save $15"
@@ -19,8 +19,8 @@ export default function ShopOffers() {
       description: "Traditional baby wear set",
       icon: "🧥",
       image: "https://images.unsplash.com/photo-1522771930-78848d9293e8?auto=format&fit=crop&q=80&w=400",
-      originalPrice: 55.00,
-      salePrice: 39.99,
+      originalPrice: 55,
+      salePrice: 40,
       discount: "27% OFF",
       badge: null,
       savings: "Save $15"
@@ -30,8 +30,8 @@ export default function ShopOffers() {
       description: "Ultra-absorbent diapers for all-day protection",
       icon: "🚀",
       image: "https://images.unsplash.com/photo-1601288496920-b6154fe3626a?auto=format&fit=crop&q=80&w=400",
-      originalPrice: 35.00,
-      salePrice: 19.99,
+      originalPrice: 35,
+      salePrice: 20,
       discount: "43% OFF",
       badge: "BEST OFFER",
       savings: "Save $15"
@@ -41,8 +41,8 @@ export default function ShopOffers() {
       description: "Soft and gentle nappies for sensitive skin",
       icon: "📦",
       image: "https://images.unsplash.com/photo-1541697960113-1ca22342bd6d?auto=format&fit=crop&q=80&w=400",
-      originalPrice: 40.00,
-      salePrice: 24.99,
+      originalPrice: 40,
+      salePrice: 25,
       discount: "38% OFF",
       badge: null,
       savings: "Save $15"

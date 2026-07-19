@@ -36,12 +36,15 @@ export default function GoogleAuthModal({ isOpen, onClose, initialMode = 'signin
 
     if (isOpen) {
       document.addEventListener('keydown', handleEscape);
+      // Prevent background scrolling on iOS/Android
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
   }, [isOpen, onClose]);
 

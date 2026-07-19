@@ -130,26 +130,26 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.9 }}
         transition={{ duration: 0.3 }}
-        className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-8"
+        className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-8"
       >
-        <div className="relative bg-white rounded-3xl shadow-2xl max-w-5xl w-full flex flex-col lg:flex-row overflow-hidden">
+        <div className="relative bg-white rounded-2xl sm:rounded-3xl shadow-2xl max-w-5xl w-full max-h-[calc(100dvh-1rem)] sm:max-h-none flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
           {/* Close button */}
           <button
             onClick={handleClose}
             disabled={isSpinning}
-            className="absolute top-4 right-4 z-20 p-2 bg-white/80 hover:bg-white rounded-full shadow-lg transition-colors disabled:opacity-50"
+            className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 p-2 bg-white/80 hover:bg-white rounded-full shadow-lg transition-colors disabled:opacity-50"
           >
             <X className="w-5 h-5 text-gray-700" />
           </button>
 
           {/* Left side - Wheel */}
-          <div className="flex-1 p-8 sm:p-12 flex items-center justify-center bg-gradient-to-br from-teal-50 to-yellow-50">
+          <div className="flex-1 p-4 pt-10 sm:p-12 flex items-center justify-center bg-gradient-to-br from-teal-50 to-yellow-50">
             <div className="relative">
               {/* Modern Pointer on right edge */}
-              <div className="absolute -right-8 top-1/2 -translate-y-1/2 z-10">
+              <div className="absolute -right-5 sm:-right-8 top-1/2 -translate-y-1/2 z-10">
                 <div className="relative">
-                  <div className="w-12 h-12 bg-black rounded-full shadow-2xl flex items-center justify-center border-4 border-white">
-                    <span className="text-white text-3xl font-black flex items-center justify-center">←</span>
+                  <div className="w-9 h-9 sm:w-12 sm:h-12 bg-black rounded-full shadow-2xl flex items-center justify-center border-[3px] sm:border-4 border-white">
+                    <span className="text-white text-2xl sm:text-3xl font-black flex items-center justify-center">←</span>
                   </div>
                   {/* Glow effect */}
                   <div className="absolute inset-0 bg-black/20 rounded-full blur-md -z-10" />
@@ -157,11 +157,11 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
               </div>
 
               {/* Wheel */}
-              <div className="relative w-72 h-72 sm:w-96 sm:h-96">
+              <div className="relative w-56 h-56 sm:w-96 sm:h-96">
                 <motion.div
                   animate={{ rotate: rotation }}
                   transition={{ duration: 6, ease: [0.25, 0.1, 0.25, 1] }}
-                  className="w-full h-full rounded-full overflow-hidden shadow-2xl border-8 border-white"
+                  className="w-full h-full rounded-full overflow-hidden shadow-2xl border-4 sm:border-8 border-white"
                   style={{
                     background: `conic-gradient(
                       ${segments.map((seg, i) => `${seg.color} ${i * 12.5}% ${(i + 1) * 12.5}%`).join(", ")}
@@ -180,7 +180,7 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
                     return (
                       <div
                         key={index}
-                        className="absolute text-xs sm:text-sm font-bold text-white"
+                        className="absolute text-[10px] sm:text-sm font-bold text-white"
                         style={{
                           left: `${x}%`,
                           top: `${y}%`,
@@ -195,16 +195,16 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
                 </motion.div>
 
                 {/* Center Circle */}
-                <div className="absolute inset-0 m-auto w-10 h-10 sm:w-12 sm:h-12 bg-black rounded-full shadow-lg flex items-center justify-center">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-gray-800 to-black rounded-full" />
+                <div className="absolute inset-0 m-auto w-9 h-9 sm:w-12 sm:h-12 bg-black rounded-full shadow-lg flex items-center justify-center">
+                  <div className="w-7 h-7 sm:w-10 sm:h-10 bg-gradient-to-br from-gray-800 to-black rounded-full" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Right side - Form */}
-          <div className="flex-1 p-8 sm:p-12 bg-white flex flex-col justify-center">
-            <div className="max-w-md mx-auto w-full space-y-6">
+          <div className="flex-1 p-4 sm:p-12 bg-white flex flex-col justify-center">
+            <div className="max-w-md mx-auto w-full space-y-4 sm:space-y-6">
               {/* Result Display */}
               <AnimatePresence>
                 {showResult && (
@@ -214,7 +214,7 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
                     exit={{ opacity: 0, scale: 0.8 }}
                     className="text-center p-4 bg-gradient-to-r from-teal-100 to-yellow-100 rounded-2xl"
                   >
-                    <p className="text-lg font-semibold text-gray-700">
+                    <p className="text-sm sm:text-lg font-semibold text-gray-700">
                       {result === "No Luck" ? "Better luck next time!" : `Congratulations! ${result}`}
                     </p>
                   </motion.div>
@@ -223,8 +223,8 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
 
               {/* Header */}
               <div>
-                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">Welcome</h2>
-                <p className="text-gray-600 text-sm sm:text-base">
+                <h2 className="text-2xl sm:text-4xl font-bold text-gray-900 mb-1 sm:mb-2">Welcome</h2>
+                <p className="text-gray-600 text-xs sm:text-base">
                   Spin the wheel to unlock exclusive discounts on your favorite baby products. Enter your details to get started!
                 </p>
               </div>
@@ -239,7 +239,7 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
                     placeholder="Phone Number"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                    className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors bg-gray-50"
+                    className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors bg-gray-50 text-sm sm:text-base"
                     disabled={isSpinning}
                   />
                 </div>
@@ -252,7 +252,7 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
                     placeholder="Email Address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors bg-gray-50"
+                    className="w-full pl-11 sm:pl-12 pr-4 py-3 sm:py-4 border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors bg-gray-50 text-sm sm:text-base"
                     disabled={isSpinning}
                   />
                 </div>
@@ -275,7 +275,7 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
                       {termsAccepted && <Check className="w-3 h-3 text-white" />}
                     </div>
                   </div>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-xs sm:text-sm text-gray-600">
                     I accept the{" "}
                     <a href="/terms" className="text-teal-600 hover:underline font-medium">
                       Terms of Service
@@ -296,7 +296,7 @@ export default function SpinWheel({ onClose, onDiscountWon }: SpinWheelProps) {
                   <button
                     onClick={spinWheel}
                     disabled={!isFormValid || isSpinning}
-                    className={`w-full py-4 rounded-xl font-bold text-lg transition-all ${
+                    className={`w-full py-3 sm:py-4 rounded-xl font-bold text-base sm:text-lg transition-all ${
                       isFormValid && !isSpinning
                         ? "bg-black text-white hover:bg-gray-800 hover:shadow-lg hover:scale-[1.02]"
                         : "bg-gray-300 text-gray-500 cursor-not-allowed"

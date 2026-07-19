@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -13,7 +13,6 @@ import { GiftingCard } from "@/components/GiftingCard";
 
 import { useProducts, useStyleProducts, useHomeProducts, useShopByStyleProducts, useLatestStyleProducts, useBabyCareProducts, useMuslinProducts, useComboProducts, useSuperSaverProducts, useFeaturedProducts, useGiftingProducts, useNewArrivalsProducts, useTrendingProducts } from "@/hooks/useProducts";
 
-import { WelcomeModal } from "@/components/WelcomeModal";
 
 import Slider from "@/components/Slider";
 
@@ -713,7 +712,7 @@ export default function Home() {
 
       {/* Shop by Style Section */}
 
-      <section className="w-full pt-8 sm:pt-20">
+      <section className="w-full py-10 sm:py-20">
 
         <div className="pt-0 pb-0 sm:pb-8 lg:pb-16 lg:pt-2 px-4 sm:px-6 lg:px-8">
 
@@ -725,12 +724,12 @@ export default function Home() {
 
             transition={{ duration: 0.8, ease: "easeOut" }}
 
-            className="text-center mb-4 sm:mb-12"
+            className="text-center mb-8 sm:mb-14"
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-0 sm:mb-4" id="shop-by-style">
-              <h2 className="text-2xl sm:text-4xl font-bold text-black">Shop by Style</h2>
+            <div className="flex items-center justify-center gap-4 mb-2 sm:mb-4" id="shop-by-style">
+              <h2 className="text-xl sm:text-4xl font-bold text-black">Shop by Style</h2>
               <img 
                 src="/babies.png" 
                 alt="Babies" 
@@ -739,9 +738,9 @@ export default function Home() {
               />
             </div>
 
-            <p className="text-gray-600 text-lg">Discover our latest collection of stylish baby wear</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Discover our latest collection of stylish baby wear</p>
 
-            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
+            <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
 
@@ -934,7 +933,7 @@ export default function Home() {
 
       {/* Hospital Bags Section */}
 
-      <section className="w-full py-4 pb-8 sm:py-12">
+      <section className="w-full py-10 sm:py-16">
 
         <div className="px-4 sm:px-6 lg:px-8">
 
@@ -948,10 +947,10 @@ export default function Home() {
 
           >
 
-            <div className="flex items-center justify-center gap-4 sm:gap-8 mb-0 sm:mb-4" id="hospital-bags">
+            <div className="flex items-center justify-center gap-4 sm:gap-8 mb-2 sm:mb-4" id="hospital-bags">
               <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
               <div className="flex items-center gap-3">
-                <h2 className="text-2xl sm:text-4xl font-bold">Hospital Bags</h2>
+                <h2 className="text-xl sm:text-4xl font-bold">Hospital Bags</h2>
                 <img
                   src="/online-shopping.png"
                   alt="Hospital Bags"
@@ -962,9 +961,9 @@ export default function Home() {
               <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
             </div>
 
-            <p className="text-gray-600 text-lg">Ready-to-pack essentials for hospital stays and first days</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Ready-to-pack essentials for hospital stays and first days</p>
 
-            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
+            <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
 
@@ -976,7 +975,7 @@ export default function Home() {
 
           </motion.div>
 
-          <div className="mt-8 sm:mt-16">
+          <div className="mt-10 sm:mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Hospital Bag Image 1 */}
               <Link href="/shop/style?filter=hospital-bags">
@@ -1049,7 +1048,7 @@ export default function Home() {
 
       {/*New Arrivals Section */}
 
-      <section className="w-full bg-red">
+      <section className="w-full bg-red py-10 sm:py-16">
 
         <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-8 pb-2 sm:pb-8">
 
@@ -1061,14 +1060,14 @@ export default function Home() {
 
             whileInView={{ opacity: 1, y: 0 }}
 
-            className="text-center mb-4 sm:mb-12"
+            className="text-center mb-8 sm:mb-14"
 
           >
 
-            <div className="flex items-center justify-center gap-16 mb-0 sm:mb-4" id="new-arrivals">
-              <div className="flex-1 h-0.5 bg-black"></div>
+            <div className="flex items-center justify-center gap-16 mb-2 sm:mb-4" id="new-arrivals">
+              <div className="flex-1 h-0.5 bg-black hidden sm:block"></div>
               <div className="flex items-center gap-4">
-                <h2 className="text-2xl sm:text-4xl font-bold text-black">New Arrivals</h2>
+                <h2 className="text-xl sm:text-4xl font-bold text-black">New Arrivals</h2>
                 <img 
                   src="/playtime.png" 
                   alt="Playtime" 
@@ -1076,12 +1075,12 @@ export default function Home() {
                   draggable={false}
                 />
               </div>
-              <div className="flex-1 h-0.5 bg-black"></div>
+              <div className="flex-1 h-0.5 bg-black hidden sm:block"></div>
             </div>
 
-            <p className="text-gray-600 text-lg">Everything you need for your baby's daily care routine</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Everything you need for your baby's daily care routine</p>
 
-            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
+            <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
 
@@ -1135,9 +1134,9 @@ export default function Home() {
 
                 <Baby className="w-16 h-16 mx-auto text-gray-400 mb-4" />
 
-                <h3 className="text-xl font-semibold text-black mb-2">No New Arrivals</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-black mb-2">No New Arrivals</h3>
 
-                <p className="text-gray-500">Add new arrival products to showcase here!</p>
+                <p className="text-sm sm:text-base text-gray-500">Add new arrival products to showcase here!</p>
 
               </div>
 
@@ -1163,7 +1162,7 @@ export default function Home() {
 
       {/*Trending Products Section */}
 
-      <section className="w-full">
+      <section className="w-full py-10 sm:py-16">
 
         <div className="px-4 sm:px-6 lg:px-8 pt-0 sm:pt-4 pb-8 sm:pb-12">
 
@@ -1175,14 +1174,14 @@ export default function Home() {
 
             whileInView={{ opacity: 1, y: 0 }}
 
-            className="text-center mb-4 sm:mb-12"
+            className="text-center mb-8 sm:mb-14"
 
           >
 
-            <div className="flex items-center justify-center gap-4 mb-0 sm:mb-4 sm:gap-16" id="trending-products">
+            <div className="flex items-center justify-center gap-4 mb-2 sm:mb-4 sm:gap-16" id="trending-products">
               <div className="hidden sm:block flex-1 h-0.5 bg-black"></div>
               <div className="flex items-center gap-4">
-                <h2 className="text-2xl sm:text-4xl font-bold text-black">Trending Products</h2>
+                <h2 className="text-xl sm:text-4xl font-bold text-black">Trending Products</h2>
                 <img 
                   src="/baby.png" 
                   alt="Baby" 
@@ -1194,9 +1193,9 @@ export default function Home() {
             </div>
             
 
-            <p className="text-gray-600 text-lg">Breathable, lightweight cotton fabric perfect for comfortable everyday wear</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Breathable, lightweight cotton fabric perfect for comfortable everyday wear</p>
 
-            <div className="flex justify-center gap-2 mt-0 sm:mt-4">
+            <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
 
@@ -1250,9 +1249,9 @@ export default function Home() {
 
                 <Shirt className="w-16 h-16 mx-auto text-gray-400 mb-4" />
 
-                <h3 className="text-xl font-semibold text-black mb-2">No Trending Products</h3>
+                <h3 className="text-lg sm:text-xl font-semibold text-black mb-2">No Trending Products</h3>
 
-                <p className="text-gray-500">Add trending products to showcase here!</p>
+                <p className="text-sm sm:text-base text-gray-500">Add trending products to showcase here!</p>
 
               </div>
 
@@ -1278,7 +1277,7 @@ export default function Home() {
 
       {/* Blockbuster Combo's Section */}
 
-      <section className="w-full bg-red-50 py-8 sm:py-12">
+      <section className="w-full bg-red-50 py-10 sm:py-16">
 
         <div className="px-4 sm:px-6 lg:px-8">
 
@@ -1288,12 +1287,12 @@ export default function Home() {
 
             whileInView={{ opacity: 1, y: 0 }}
 
-            className="text-center"
+            className="text-center mb-10 sm:mb-14"
 
           >
 
             <div className="flex items-center justify-center gap-3 mb-4" id="blockbuster-combos">
-              <h2 className="text-2xl sm:text-4xl font-bold ">Blockbuster Combo's</h2>
+              <h2 className="text-xl sm:text-4xl font-bold ">Blockbuster Combo's</h2>
               <img
                 src="/puzzle.png"
                 alt="Combo"
@@ -1302,9 +1301,9 @@ export default function Home() {
               />
             </div>
 
-            <p className="text-gray-600 text-lg">Amazing deals and discounts on your favorite baby products</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Amazing deals and discounts on your favorite baby products</p>
 
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-primary rounded-full"></div>
 
@@ -1317,7 +1316,7 @@ export default function Home() {
             
           </motion.div>
 
-          <div className="mt-16">
+          <div className="mt-10 sm:mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Combo Offer Image 1 */}
               <Link href="/shop/style?section=blockbuster-combos">
@@ -1400,7 +1399,7 @@ export default function Home() {
 
       {/* Gifting Section */}
 
-      <section className="w-full">
+      <section className="w-full py-10 sm:py-16">
 
         <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
@@ -1412,14 +1411,14 @@ export default function Home() {
 
             whileInView={{ opacity: 1, y: 0 }}
 
-            className="text-center mb-12"
+            className="text-center mb-10 sm:mb-14"
 
           >
 
             <div className="flex items-center justify-center gap-16 mb-4" id="gifting">
               <div className="flex-1 h-px bg-black"></div>
               <div className="flex items-center gap-4">
-                <h2 className="text-2xl sm:text-4xl font-bold text-black">Gifting</h2>
+                <h2 className="text-xl sm:text-4xl font-bold text-black">Gifting</h2>
                 <img 
                   src="/giftbox.png" 
                   alt="Gift Box" 
@@ -1430,9 +1429,9 @@ export default function Home() {
               <div className="flex-1 h-px bg-black"></div>
             </div>
 
-            <p className="text-gray-600 text-lg">Thoughtfully curated presents for every special occasion</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Thoughtfully curated presents for every special occasion</p>
 
-            <div className="flex justify-center gap-2 mt-4">
+            <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
               <div className="w-8 h-1 sm:w-12 sm:h-1 bg-gradient-to-r from-secondary to-secondary/80 rounded-full"></div>
 
@@ -1445,7 +1444,7 @@ export default function Home() {
           </motion.div>
 
           {/* Gifting Products Grid - Mixed Layout */}
-          <div className="mt-12">
+          <div className="mt-10 sm:mt-14">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Combined Card 1 & 2 - Rectangle */}
               <Link href="/shop/style?section=gifting" className="md:col-span-2">
@@ -1559,33 +1558,33 @@ export default function Home() {
           <div className="flex animate-scroll whitespace-nowrap">
             {/* First set of announcements */}
             <div className="inline-flex items-center gap-4 sm:gap-6 md:gap-8 px-4 sm:px-6 md:px-8">
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Comfort Starts Here</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Dress Your Baby in Care</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Wrap Them in Wonder</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Elevate Every Cuddle</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Comfort Starts Here</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Dress Your Baby in Care</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Wrap Them in Wonder</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Elevate Every Cuddle</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
             </div>
             {/* Second set for seamless loop */}
             <div className="inline-flex items-center gap-4 sm:gap-6 md:gap-8 px-4 sm:px-6 md:px-8">
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Comfort Starts Here</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Dress Your Baby in Care</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Wrap Them in Wonder</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Elevate Every Cuddle</span>
-              <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Happy Babies , Happy Parents !</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Comfort Starts Here</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Pure Comfort for Tiny Hugs</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Dress Your Baby in Care</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Wrap Them in Wonder</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-bold text-black">Elevate Every Cuddle</span>
+              <span className="text-xs sm:text-lg md:text-xl lg:text-2xl font-semibold text-black/80">·</span>
             </div>
           </div>
         </div>
@@ -1593,7 +1592,7 @@ export default function Home() {
 
       {/* Our Commitment Section */}
 
-      <section className="w-full py-12 sm:py-20 bg-gradient-to-b from-white via-red-50/50 to-red-100/30">
+      <section className="w-full py-14 sm:py-24 bg-gradient-to-b from-white via-red-50/50 to-red-100/30">
 
         <div className="px-4 sm:px-6 lg:px-8 max-w-[95%] mx-auto">
 
@@ -1607,15 +1606,15 @@ export default function Home() {
 
             transition={{ duration: 0.8, ease: "easeOut" }}
 
-            className="text-center mb-16"
+            className="text-center mb-12 sm:mb-16"
 
           >
 
-            <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-black mb-4">Our commitment to your baby</h2>
+            <h2 className="text-xl sm:text-4xl md:text-5xl font-bold text-black mb-4">Our commitment to your baby</h2>
 
-            <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto">We prioritize safety, comfort, and sustainability in every product we create</p>
+            <p className="text-gray-600 text-sm sm:text-lg md:text-xl max-w-2xl mx-auto">We prioritize safety, comfort, and sustainability in every product we create</p>
 
-            <div className="flex justify-center gap-2 mt-6">
+            <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
               <div className="w-16 h-1 bg-primary rounded-full"></div>
 
@@ -1673,7 +1672,7 @@ export default function Home() {
 
               <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
 
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">100% Organic Cotton</h3>
+                <h3 className="text-base sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">100% Organic Cotton</h3>
 
                 <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">Pure, natural fabric that's gentle on your baby's delicate skin. Our cotton is sourced from certified organic farms, ensuring no pesticides or harmful chemicals are used in the cultivation process.</p>
 
@@ -1723,7 +1722,7 @@ export default function Home() {
 
               <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
 
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Chemical Free</h3>
+                <h3 className="text-base sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Chemical Free</h3>
 
                 <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">No harmful chemicals or dyes, ensuring complete safety for your little one. Our products undergo rigorous testing to guarantee they meet the highest safety standards.</p>
 
@@ -1773,7 +1772,7 @@ export default function Home() {
 
               <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
 
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Skin Friendly</h3>
+                <h3 className="text-base sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Skin Friendly</h3>
 
                 <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">Soft, breathable materials that prevent irritation and rashes. Our fabrics are carefully selected and tested to ensure they are hypoallergenic and suitable for sensitive baby skin.</p>
 
@@ -1823,7 +1822,7 @@ export default function Home() {
 
               <div className="w-full sm:w-3/5 text-left pt-8 sm:pt-10">
 
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Sustainable</h3>
+                <h3 className="text-base sm:text-xl md:text-2xl font-bold text-black mb-2 sm:mb-3">Sustainable</h3>
 
                 <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed">Eco-friendly production that protects our planet for future generations. We use sustainable practices and materials to minimize our environmental footprint while delivering quality products.</p>
 
@@ -1842,7 +1841,7 @@ export default function Home() {
 
       {/* Customer Reviews Gallery Section */}
 
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-14 sm:py-20">
 
         <motion.div
 
@@ -1850,7 +1849,7 @@ export default function Home() {
 
           whileInView={{ opacity: 1, y: 0 }}
 
-          className="text-center mb-12"
+          className="text-center mb-10 sm:mb-14"
 
         >
 
@@ -1860,19 +1859,19 @@ export default function Home() {
 
           </div>
 
-          <h2 className="text-2xl sm:text-4xl font-bold text-black mb-4">
+          <h2 className="text-xl sm:text-4xl font-bold text-black mb-4">
 
             Happy Parents & Happy Babies
 
           </h2>
 
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="text-sm sm:text-lg text-gray-600 max-w-3xl mx-auto">
 
             See what our wonderful customers have to say about their Planet Mini experience
 
           </p>
 
-          <div className="flex justify-center gap-2 mt-4">
+          <div className="flex justify-center gap-2 mt-4 sm:mt-6">
 
             <div className="w-8 h-1 sm:w-12 sm:h-1 bg-gradient-to-r from-primary to-primary/80 rounded-full"></div>
 
@@ -2271,8 +2270,7 @@ export default function Home() {
         )}
       </AnimatePresence>
       
-      <WelcomeModal />
-    </motion.div>
+          </motion.div>
   );
 
 }

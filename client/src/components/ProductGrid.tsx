@@ -40,7 +40,7 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
 
   const formatPrice = (price: number | string) => {
     const num = typeof price === 'string' ? parseFloat(price) : price;
-    return `₹${num.toFixed(2)}`;
+    return `₹${num.toFixed(0)}`;
   };
 
   const getDiscountPercentage = (original: number | string | undefined, current: number | string) => {
@@ -154,11 +154,11 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                     <div className="px-3 py-2 text-center">
                       <div className="text-gray-400 text-xs line-through">
                         {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && 
-                          `₹${Number(product.mrp).toFixed(2)}`
+                          `₹${Number(product.mrp).toFixed(0)}`
                         }
                       </div>
                       <div className="text-red-600 text-lg font-bold">
-                        ₹{Number(product.sellingPrice || 0).toFixed(2)}
+                        ₹{Number(product.sellingPrice || 0).toFixed(0)}
                       </div>
                     </div>
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gray-300 rotate-45 border-l border-b border-gray-400"></div>
@@ -242,9 +242,9 @@ export default function ProductGrid({ products, title, showLoadMore = false, lay
                   </h3>
 
                   <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
+                    <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(0)}</span>
                     <span className="text-sm font-medium text-slate-500 line-through">
-                      {product.mrp ? `₹${Number(product.mrp).toFixed(2)}` : ''}
+                      {product.mrp ? `₹${Number(product.mrp).toFixed(0)}` : ''}
                     </span>
                   </div>
                 </div>

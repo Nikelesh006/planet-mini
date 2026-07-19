@@ -181,10 +181,10 @@ ORDER ITEMS
 
     if (order.items && order.items.length > 0) {
       order.items.forEach((item: any, index: number) => {
-        const itemTotal = (item.sellingPrice * item.quantity).toFixed(2);
+        const itemTotal = (item.sellingPrice * item.quantity).toFixed(0);
         content += `${index + 1}. ${item.name}
    Quantity: ${item.quantity}
-   Price: ₹${item.sellingPrice.toFixed(2)}
+   Price: ₹${item.sellingPrice.toFixed(0)}
    Subtotal: ₹${itemTotal}
 \n`;
       });
@@ -202,9 +202,9 @@ Payment Status: ${order.paymentStatus || 'pending'}
 ----------------------------------------
 ORDER SUMMARY
 ----------------------------------------
-Subtotal: ₹${order.totalAmount.toFixed(2)}
+Subtotal: ₹${order.totalAmount.toFixed(0)}
 Shipping: Free
-Total Amount: ₹${order.totalAmount.toFixed(2)}
+Total Amount: ₹${order.totalAmount.toFixed(0)}
 
 ========================================
 Thank you for shopping with Planet Mini!

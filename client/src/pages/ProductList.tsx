@@ -1896,7 +1896,7 @@ const handleProductSelect = (productId: string) => {
 
 
 
-                        ₹{Number(product.sellingPrice).toFixed(2)}
+                        ₹{Number(product.sellingPrice).toFixed(0)}
 
 
 
@@ -1912,7 +1912,7 @@ const handleProductSelect = (productId: string) => {
 
 
 
-                          ₹{Number(product.mrp).toFixed(2)}
+                          ₹{Number(product.mrp).toFixed(0)}
 
 
 

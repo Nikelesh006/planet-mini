@@ -186,7 +186,7 @@ export default function CartPage() {
 
   const formatPrice = (sellingPrice: number) => {
 
-    return `₹${sellingPrice}`;
+    return `₹${Math.round(Number(sellingPrice || 0)).toLocaleString('en-IN')}`;
 
   };
 
@@ -552,21 +552,21 @@ export default function CartPage() {
 
           <div className="text-center max-w-md mx-auto">
 
-            <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8 border-2" style={{ backgroundColor: 'rgba(180, 196, 154, 0.15)', borderColor: 'rgba(180, 196, 154, 0.3)' }}>
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 border-2" style={{ backgroundColor: 'rgba(180, 196, 154, 0.15)', borderColor: 'rgba(180, 196, 154, 0.3)' }}>
 
-              <ShoppingBag className="w-16 h-16" style={{ color: '#b4c49a' }} />
+              <ShoppingBag className="w-12 h-12 sm:w-16 sm:h-16" style={{ color: '#b4c49a' }} />
 
             </div>
 
-            <h1 className="text-3xl font-bold text-black mb-4">Your Cart is Empty</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-black mb-3 sm:mb-4">Your Cart is Empty</h1>
 
-            <p className="text-gray-600 mb-8 text-lg">Looks like you haven't added anything to your cart yet.</p>
+            <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-lg">Looks like you haven't added anything to your cart yet.</p>
 
             <Link 
 
               href="/"
 
-              className="inline-flex items-center gap-3 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:opacity-90"
+              className="inline-flex items-center gap-2 sm:gap-3 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:opacity-90 text-sm sm:text-base"
 
               style={{ backgroundColor: '#b4c49a' }}
 
@@ -612,9 +612,9 @@ export default function CartPage() {
 
         <div className="flex items-center justify-between mb-6 sm:mb-8">
 
-          <h1 className="text-2xl sm:text-4xl font-bold text-black">Your Cart</h1>
+          <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold text-black">Your Cart</h1>
 
-          <span className="text-sm sm:text-base text-gray-500">{state.totalItems} Items</span>
+          <span className="text-xs sm:text-sm lg:text-base text-gray-500">{state.totalItems} Items</span>
 
         </div>
 
@@ -748,13 +748,13 @@ export default function CartPage() {
 
                       crossOrigin="anonymous"
 
-                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl shadow-md"
+                      className="w-16 h-16 sm:w-20 sm:h-24 object-cover rounded-xl shadow-md"
 
                     />
 
                     <div className="flex flex-col justify-center flex-1">
 
-                      <h3 className="text-lg sm:text-xl font-bold text-black">{item.name}</h3>
+                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-black">{item.name}</h3>
 
                       <p className="text-sm text-gray-600 mb-2">
 
@@ -952,7 +952,7 @@ export default function CartPage() {
 
             <div className="bg-gray-50 rounded-3xl shadow-lg p-6 sm:p-8 border border-gray-200 hover:shadow-xl transition-all duration-300 lg:sticky lg:top-24">
 
-              <h2 className="text-xl sm:text-2xl font-bold text-black mb-6">Order Summary</h2>
+              <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-black mb-4 sm:mb-6">Order Summary</h2>
 
               
 
@@ -1192,9 +1192,9 @@ export default function CartPage() {
 
               <div className="flex justify-between items-center pt-4 border-t border-gray-200 mb-6">
 
-                <span className="text-lg sm:text-xl font-bold text-black">Total</span>
+                <span className="text-base sm:text-lg lg:text-xl font-bold text-black">Total</span>
 
-                <span className="text-lg sm:text-xl font-bold text-black">{formatPrice(subtotal)}</span>
+                <span className="text-base sm:text-lg lg:text-xl font-bold text-black">{formatPrice(subtotal)}</span>
 
               </div>
 

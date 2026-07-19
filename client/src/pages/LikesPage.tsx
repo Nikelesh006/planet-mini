@@ -64,17 +64,17 @@ export default function LikesPage() {
 
             >
 
-              <ArrowLeft className="w-6 h-6" />
+              <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />
 
             </Link>
 
             <div>
 
-              <h1 className="text-4xl font-bold text-black flex items-center gap-3">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-black flex items-center gap-2 sm:gap-3">
 
-                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: BRAND }}>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: BRAND }}>
 
-                  <Heart className="w-6 h-6 text-white" />
+                  <Heart className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
 
                 </div>
 
@@ -82,7 +82,7 @@ export default function LikesPage() {
 
               </h1>
 
-              <p className="text-gray-600 mt-1 text-lg">
+              <p className="text-gray-600 mt-1 text-sm sm:text-lg">
 
                 {likedProducts.length} {likedProducts.length === 1 ? 'item' : 'items'} liked
 
@@ -100,9 +100,9 @@ export default function LikesPage() {
 
           <div className="text-center py-16">
 
-            <div className="w-16 h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: BRAND, borderTopColor: 'transparent' }}></div>
+            <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-4" style={{ borderColor: BRAND, borderTopColor: 'transparent' }}></div>
 
-            <p className="text-gray-600 text-lg">Loading your liked items...</p>
+            <p className="text-gray-600 text-sm sm:text-lg">Loading your liked items...</p>
 
           </div>
 
@@ -110,21 +110,21 @@ export default function LikesPage() {
 
           <div className="text-center py-16">
 
-            <div className="w-32 h-32 rounded-full flex items-center justify-center mx-auto mb-8 border-2" style={{ backgroundColor: `${BRAND}1A`, borderColor: `${BRAND}33` }}>
+            <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 border-2" style={{ backgroundColor: `${BRAND}1A`, borderColor: `${BRAND}33` }}>
 
-              <Heart className="w-16 h-16" style={{ color: BRAND }} />
+              <Heart className="w-12 h-12 sm:w-16 sm:h-16" style={{ color: BRAND }} />
 
             </div>
 
-            <h2 className="text-3xl font-bold text-black mb-4">No liked items yet</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-black mb-3 sm:mb-4">No liked items yet</h2>
 
-            <p className="text-gray-600 mb-8 text-lg">Start liking products to see them here</p>
+            <p className="text-gray-600 mb-6 sm:mb-8 text-sm sm:text-lg">Start liking products to see them here</p>
 
             <Link
 
               href="/"
 
-              className="inline-flex items-center gap-3 text-white px-8 py-4 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:opacity-90"
+              className="inline-flex items-center gap-2 sm:gap-3 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-2xl font-bold transition-all duration-300 transform hover:scale-105 shadow-lg hover:opacity-90 text-sm sm:text-base"
 
               style={{ backgroundColor: BRAND }}
 

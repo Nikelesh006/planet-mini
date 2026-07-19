@@ -111,6 +111,15 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [mobileMenuOpen]);
+
   const handleProfileClick = () => {
     if (!user && !isLoading) {
       openSignInModal();
@@ -187,7 +196,7 @@ export default function Navbar() {
       <div className="fixed top-0 left-0 right-0 z-50 bg-[#B4C49A] text-black py-3 overflow-hidden">
         <div className="flex items-center overflow-hidden">
           <div className="animate-marquee whitespace-nowrap">
-            <span className="text-base font-semibold inline-block">
+            <span className="text-xs sm:text-base font-semibold inline-block">
               10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles
             </span>
           </div>
@@ -238,7 +247,7 @@ export default function Navbar() {
               <img
                 src="/Planet-mini-logo.png"
                 alt="Planet Mini Logo"
-                className="h-10 sm:h-12 lg:h-14 w-auto object-contain block"
+                className="h-12 sm:h-12 lg:h-14 w-auto object-contain block"
                 draggable={false}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
@@ -491,6 +500,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
@@ -498,8 +508,8 @@ export default function Navbar() {
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed inset-y-0 left-0 z-[60] w-[85%] max-w-xs sm:max-w-sm bg-white shadow-2xl lg:hidden flex flex-col"
+              transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
+              className="fixed inset-y-0 left-0 z-[60] w-full bg-white shadow-2xl lg:hidden flex flex-col overflow-hidden"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
@@ -523,7 +533,7 @@ export default function Navbar() {
                 </button>
               </div>
               {/* Navigation Links */}
-              <nav className="flex-1 overflow-y-auto p-4 sm:p-6">
+              <nav className="flex-1 overflow-hidden p-4 sm:p-6">
                 <div className="flex flex-col gap-1">
                   {navLinks.map((link) => (
                     <Link
@@ -665,34 +675,38 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm lg:hidden"
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 z-[60] bg-background/80 backdrop-blur-sm lg:hidden"
               onClick={() => setSearchDropdownOpen(false)}
             />
             <motion.div
-              initial={{ y: "-100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "-100%" }}
-              transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-              className="fixed top-10 left-0 right-0 z-50 bg-white shadow-2xl p-4 lg:hidden"
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "tween", duration: 0.2, ease: "easeOut" }}
+              className="fixed top-0 right-0 bottom-0 w-full z-[61] bg-white shadow-2xl p-4 lg:hidden overflow-y-auto scrollbar-hide"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-black">Search</h2>
+                <button
+                  onClick={() => setSearchDropdownOpen(false)}
+                  className="p-2 text-gray-600 hover:text-black hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <div className="flex items-center gap-3 bg-gray-100 rounded-2xl p-3">
                 <Search className="w-5 h-5 text-gray-400 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder={typewriterText ? `Search for ${typewriterText}...` : "Search..."}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 bg-transparent border-none outline-none text-base placeholder:text-gray-500"
+                  className="flex-1 bg-transparent border-none outline-none text-base placeholder:text-gray-500 bg-transparent"
                   autoFocus
                 />
-                <button
-                  onClick={() => setSearchDropdownOpen(false)}
-                  className="p-2 text-gray-600 hover:text-black transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
               </div>
-              <div className="mt-4 max-h-80 overflow-y-auto">
+              <div className="mt-4 max-h-80 overflow-y-auto scrollbar-hide">
                 <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recommended</p>
                 {recommendedProducts.map((product) => (
                   <Link

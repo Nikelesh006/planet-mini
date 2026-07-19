@@ -4,7 +4,7 @@ import { useParams, Link } from "wouter";
 
 import { Heart, ShoppingBag, Minus, Plus, Share2, ChevronLeft, ChevronRight, X, Copy, Trash2, Gift, Eye } from "lucide-react";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 import type { MouseEvent } from "react";
 
@@ -131,6 +131,11 @@ export default function ProductDetailPage() {
   const [isImageZoomed, setIsImageZoomed] = useState(false);
 
   const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [scale, setScale] = useState(1);
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+
+  const touchStartDistance = useRef(0);
+  const touchStartScale = useRef(1);
 
   const [openInfoSection, setOpenInfoSection] = useState<string | null>(null);
 
@@ -177,6 +182,12 @@ export default function ProductDetailPage() {
     return () => window.removeEventListener("scroll", handleScroll);
 
   }, []);
+
+  // Reset zoom when image changes
+  useEffect(() => {
+    setScale(1);
+    setOffset({ x: 0, y: 0 });
+  }, [selectedImage]);
 
 
 
@@ -557,7 +568,8 @@ export default function ProductDetailPage() {
         description: isCurrentlyLiked 
           ? `${product.name} has been removed from your liked products.` 
           : `${product.name} has been added to your liked products.`,
-        variant: isCurrentlyLiked ? "default" : "success"
+        variant: isCurrentlyLiked ? "default" : "success",
+        hideIcon: isCurrentlyLiked
       });
 
     });
@@ -786,6 +798,14 @@ export default function ProductDetailPage() {
 
                   onMouseLeave={() => setIsImageZoomed(false)}
 
+                  onTouchStart={handleTouchStart}
+
+                  onTouchMove={handleTouchMove}
+
+                  onTouchEnd={handleTouchEnd}
+
+                  onTouchCancel={handleTouchCancel}
+
                 >
 
                   <img
@@ -1004,7 +1024,7 @@ export default function ProductDetailPage() {
 
                       <span className="text-xl font-bold text-black sm:text-3xl">
 
-                        ₹{Number(product.sellingPrice).toFixed(2)}
+                        ₹{Number(product.sellingPrice).toFixed(0)}
 
                       </span>
 
@@ -1012,7 +1032,7 @@ export default function ProductDetailPage() {
 
                         <span className="text-sm text-gray-500 line-through sm:text-lg">
 
-                          ₹{Number(product.mrp).toFixed(2)}
+                          ₹{Number(product.mrp).toFixed(0)}
 
                         </span>
 
@@ -1026,7 +1046,7 @@ export default function ProductDetailPage() {
 
                         <Gift className="w-4 h-4" />
 
-                        You save ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
+                        You save ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(0)}
 
                       </p>
 
@@ -1531,7 +1551,7 @@ export default function ProductDetailPage() {
 
                   <div className="flex items-baseline gap-2 mt-1">
 
-                    <span className="font-extrabold text-[#1D3557]">₹{Number(product.sellingPrice).toFixed(2)}</span>
+                    <span className="font-extrabold text-[#1D3557]">₹{Number(product.sellingPrice).toFixed(0)}</span>
 
                   </div>
 
@@ -1567,7 +1587,7 @@ export default function ProductDetailPage() {
 
                             <option key={index} value={size.trim()}>
 
-                              {size.trim()} - Rs. {Number(product.sellingPrice).toFixed(2)}
+                              {size.trim()} - Rs. {Number(product.sellingPrice).toFixed(0)}
 
                             </option>
 
@@ -1667,7 +1687,7 @@ export default function ProductDetailPage() {
 
                     state.totalItems > 1
 
-                      ? `Checkout (${state.totalItems} items • ₹${state.totalPrice.toFixed(2)})`
+                      ? `Checkout (${state.totalItems} items • ₹${state.totalPrice.toFixed(0)})`
 
                       : "Checkout"
 

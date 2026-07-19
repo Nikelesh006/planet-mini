@@ -421,7 +421,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
                       <span className="text-3xl font-bold text-gray-900">
 
-                        ₹{Number(product.sellingPrice).toFixed(2)}
+                        ₹{Number(product.sellingPrice).toFixed(0)}
 
                       </span>
 
@@ -429,7 +429,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
                         <span className="text-lg text-gray-500 line-through">
 
-                          ₹{Number(product.mrp).toFixed(2)}
+                          ₹{Number(product.mrp).toFixed(0)}
 
                         </span>
 
@@ -441,7 +441,7 @@ export function ProductDetails({ product, isOpen, onClose }: ProductDetailsProps
 
                       <p className="mt-2 text-sm font-medium text-green-600">
 
-                        You save ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(2)}
+                        You save ₹{(Number(product.mrp) - Number(product.sellingPrice)).toFixed(0)}
 
                       </p>
 

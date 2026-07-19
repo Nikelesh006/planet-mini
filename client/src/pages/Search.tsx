@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Search as SearchIcon, X, Filter, Plus, ShoppingCart } from "lucide-react";
 
@@ -108,7 +108,7 @@ export default function Search() {
                 <h3 className="font-semibold text-gray-900 mb-2">Baby Onesie</h3>
                 <p className="text-sm text-gray-600 mb-3">Soft and comfortable for everyday wear</p>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-primary">$19.99</span>
+                  <span className="text-lg font-bold text-primary">$20</span>
                   <button className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90 transition-colors">
                     <Plus className="w-4 h-4" />
                   </button>

@@ -48,7 +48,7 @@ export function CustomBagBundleSummary({
                   {totalItems} {totalItems === 1 ? 'item' : 'items'}
                 </p>
                 <p className="text-lg font-bold text-gray-900">
-                  &#8377;{bundleTotal.toFixed(2)}
+                  &#8377;{bundleTotal.toFixed(0)}
                 </p>
               </div>
             </div>
@@ -119,7 +119,7 @@ export function CustomBagBundleSummary({
                         )}
                         <div className="flex items-center gap-2 mt-1">
                           <span className="text-sm font-bold text-gray-900">
-                            &#8377;{(Number(item.product.sellingPrice || 0) * item.quantity).toFixed(2)}
+                            &#8377;{(Number(item.product.sellingPrice || 0) * item.quantity).toFixed(0)}
                           </span>
                           <span className="text-xs text-gray-500">
                             ×{item.quantity}
@@ -163,7 +163,7 @@ export function CustomBagBundleSummary({
                   <div className="flex items-center justify-between">
                     <span className="text-base font-semibold text-gray-900">Bundle Total</span>
                     <span className="text-xl font-bold text-gray-900">
-                      &#8377;{bundleTotal.toFixed(2)}
+                      &#8377;{bundleTotal.toFixed(0)}
                     </span>
                   </div>
                 </div>

@@ -9,18 +9,18 @@ export default function About() {
       <section className="relative px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-20">
         <div>
           <div className="text-center">
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6"
+              className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6"
             >
               About Planet Mini
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto"
+              className="text-sm sm:text-lg md:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto"
             >
               We're dedicated to providing the softest, safest, and most adorable baby wear for your little ones.
             </motion.p>
@@ -35,23 +35,23 @@ export default function About() {
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
-            <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
+            <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6">Our Story</h2>
+            <p className="text-sm sm:text-lg text-gray-600 mb-6 leading-relaxed">
               At Planet Mini, we believe baby clothing should be created with the same love, care, and protection that parents give their little ones every single day. That’s why Planet Mini was thoughtfully built by people who understand what parents truly look for — softness for delicate skin, safety you can trust, comfort for every moment, and quality that lasts.
             </p>
-            <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-sm sm:text-lg text-gray-600 mb-6 leading-relaxed">
               From a baby’s first cuddle to their first tiny steps, we design every piece to make children feel cozy, happy, and free to move comfortably. Our collections are made for newborns, infants, toddlers, and growing kids using premium fabrics that are gentle, breathable, and perfect for everyday wear.
             </p>
-            <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-sm sm:text-lg text-gray-600 mb-6 leading-relaxed">
               At Planet Mini, safety always comes first. Our products are manufactured in OEKO-TEX® certified factories, and every fabric is carefully tested to ensure it is free from harmful substances and safe for sensitive baby skin. We pay close attention to every detail — from fabric selection and stitching to finishing and fit — because we know parents never compromise when it comes to their children.
             </p>
-            <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-sm sm:text-lg text-gray-600 mb-6 leading-relaxed">
               Backed by the manufacturing expertise of Tricircle Group, Planet Mini combines trusted craftsmanship with modern quality standards to create baby and kids wear that parents can confidently choose. As parents ourselves, we understand that clothing is not just about style — it’s about comfort during naps, softness during cuddles, and protection throughout every precious moment of childhood.
             </p>
-            <p className="text-base sm:text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-sm sm:text-lg text-gray-600 mb-6 leading-relaxed">
               Our vision is to build a trusted baby wear brand loved by families for its commitment to safety, premium quality, thoughtful design, and parent-inspired comfort. Every outfit we create carries warmth, care, and the belief that little ones deserve the very best from the very beginning.
             </p>
-            <p className="text-xl font-bold  mb-8 italic">
+            <p className="text-lg font-bold  mb-8 italic">
               At Planet Mini, every tiny stitch is made with a parent’s heart.
             </p>
             <Link 
@@ -80,8 +80,8 @@ export default function About() {
       {/* Values Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black mb-4">Our Values</h2>
-          <p className="text-sm sm:text-base text-gray-600 max-w-2xl mx-auto">
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-black mb-4">Our Values</h2>
+          <p className="text-xs sm:text-base text-gray-600 max-w-2xl mx-auto">
             The principles that guide everything we do
           </p>
         </div>
@@ -128,7 +128,7 @@ export default function About() {
               <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-300 bg-gradient-to-br from-gray-500 to-gray-600 border-2 border-gray-300">
                 <value.icon className="w-6 h-6 sm:w-8 sm:h-8 text-black" />
               </div>
-              <h3 className="text-base sm:text-xl font-semibold mb-2 transition-colors duration-300 text-black hover:text-gray-700">{value.title}</h3>
+              <h3 className="text-sm sm:text-xl font-semibold mb-2 transition-colors duration-300 text-black hover:text-gray-700">{value.title}</h3>
               <p className="text-xs sm:text-sm text-gray-600 transition-colors duration-300 hover:text-black">{value.description}</p>
             </motion.div>
           ))}
@@ -147,13 +147,13 @@ export default function About() {
               <div className="w-8 h-8 rounded-full border border-dashed border-[#1D3557] flex items-center justify-center">
                 <span className="text-[#1D3557] text-xs">🪐</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-[#1D3557]">
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-display font-bold text-[#1D3557]">
                 WHY CHOOSE <br /> PLANET MINI?
               </h2>
             </div>
             <div className="flex items-center gap-2 mb-8">
               <Heart className="w-4 h-4 text-[#FF7B9C] fill-[#FF7B9C]" />
-              <p className="text-[#4A5568] text-lg italic">
+              <p className="text-[#4A5568] text-base italic">
                 Because your little one deserves the very best.
               </p>
             </div>
@@ -163,8 +163,8 @@ export default function About() {
                 <div className="w-16 h-16 bg-[#F1F9F1] rounded-full flex items-center justify-center mb-4 border border-[#E4F4E4]">
                   <Leaf className="w-8 h-8 text-[#2D6A4F]" />
                 </div>
-                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">OEKO-TEX® CERTIFIED</h4>
-                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-sm sm:text-lg">OEKO-TEX® CERTIFIED</h4>
+                <p className="text-[#555] text-xs sm:text-base leading-relaxed">
                   Fabrics tested for harmful substances. Safe for baby's delicate skin.
                 </p>
               </div>
@@ -174,7 +174,7 @@ export default function About() {
                   <Crown className="w-8 h-8 text-[#D97706]" />
                 </div>
                 <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">PREMIUM QUALITY</h4>
-                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                <p className="text-[#555] text-xs sm:text-base leading-relaxed">
                   Made with high quality fabrics for long-lasting comfort.
                 </p>
               </div>
@@ -184,7 +184,7 @@ export default function About() {
                   <CloudRain className="w-8 h-8 text-[#3182CE]" />
                 </div>
                 <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">ULTRA SOFT & BREATHABLE</h4>
-                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                <p className="text-[#555] text-xs sm:text-base leading-relaxed">
                   Gentle, breathable materials for all-day comfort.
                 </p>
               </div>
@@ -194,7 +194,7 @@ export default function About() {
                   <Heart className="w-8 h-8 text-[#E63946]" />
                 </div>
                 <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">SKIN FRIENDLY</h4>
-                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                <p className="text-[#555] text-xs sm:text-base leading-relaxed">
                   Soft and gentle on sensitive and delicate baby skin.
                 </p>
               </div>
@@ -204,7 +204,7 @@ export default function About() {
                   <ShieldCheck className="w-8 h-8 text-[#2D6A4F]" />
                 </div>
                 <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">SAFE & NON-TOXIC</h4>
-                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                <p className="text-[#555] text-xs sm:text-base leading-relaxed">
                   Free from harmful chemicals and irritants.
                 </p>
               </div>
@@ -214,7 +214,7 @@ export default function About() {
                   <Factory className="w-8 h-8 text-[#1D3557]" />
                 </div>
                 <h4 className="font-bold text-[#1D3557] mb-2 uppercase tracking-tight text-base sm:text-lg">TRUSTED MANUFACTURER</h4>
-                <p className="text-[#555] text-sm sm:text-base leading-relaxed">
+                <p className="text-[#555] text-xs sm:text-base leading-relaxed">
                   Crafted with care by Tricircle Group with strict quality standards.
                 </p>
               </div>
@@ -256,10 +256,10 @@ export default function About() {
       {/* CTA Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto py-16">
         <div className="p-8 lg:p-12 text-center">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Join the Planet Mini Family
           </h2>
-          <p className="text-sm sm:text-base text-gray-600 mb-8 max-w-2xl mx-auto">
+          <p className="text-xs sm:text-base text-gray-600 mb-8 max-w-2xl mx-auto">
             Discover why thousands of parents trust us for their baby's essentials
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

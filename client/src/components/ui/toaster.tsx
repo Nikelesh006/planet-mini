@@ -14,7 +14,7 @@ export function Toaster() {
 
   return (
     <ToastProvider>
-      {toasts.map(function ({ id, title, description, action, variant, ...props }) {
+      {toasts.map(function ({ id, title, description, action, variant, hideIcon, ...props }) {
         const getIcon = () => {
           switch (variant) {
             case 'success':
@@ -35,7 +35,7 @@ export function Toaster() {
         return (
           <Toast key={id} {...props} variant={variant}>
             <div className="flex items-start gap-3">
-              {getIcon()}
+              {!hideIcon && getIcon()}
               <div className="grid gap-1 flex-1">
                 {title && <ToastTitle className="font-semibold">{title}</ToastTitle>}
                 {description && (

@@ -299,7 +299,7 @@ export default function RecentPurchasePopup() {
         animate={{ opacity: 1, x: 0, y: 0 }}
         exit={{ opacity: 0, x: -100, y: 100 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="fixed bottom-4 left-4 z-[100] max-w-sm w-[calc(100vw-2rem)] sm:w-auto"
+        className="fixed bottom-4 left-4 z-[100] max-w-xs w-[calc(100vw-2rem)] sm:max-w-sm sm:w-auto"
         role="dialog"
         aria-live="polite"
         aria-label="Recent purchase notification"
@@ -314,9 +314,9 @@ export default function RecentPurchasePopup() {
             <X className="w-3.5 h-3.5 text-gray-600" />
           </button>
 
-          <div className="flex items-start p-4 pr-10 gap-4">
+          <div className="flex items-start p-3 pr-6 gap-3 sm:p-4 sm:pr-10 sm:gap-4">
             {/* Product image */}
-            <div className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gray-50 border border-gray-200">
+            <div className="flex-shrink-0 w-14 h-14 rounded-xl overflow-hidden bg-gray-50 border border-gray-200 sm:w-20 sm:h-20">
               <img
                 src={getCloudinaryImageUrl(
                   currentPurchase.product.image,
@@ -333,10 +333,10 @@ export default function RecentPurchasePopup() {
 
             {/* Content */}
             <div className="flex-1 min-w-0 pt-1">
-              <p className="text-sm font-semibold text-gray-900 mb-1">
+              <p className="text-xs font-semibold text-gray-900 mb-1 sm:text-sm">
                 {currentPurchase.buyer.name} ({currentPurchase.buyer.district})
               </p>
-              <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+              <p className="text-xs text-gray-600 mb-2 line-clamp-2 sm:text-sm">
                 purchased{' '}
                 <span className="font-medium text-gray-900">
                   {currentPurchase.product.name}
@@ -344,7 +344,7 @@ export default function RecentPurchasePopup() {
               </p>
 
               {/* Time ago */}
-              <p className="text-xs text-gray-500 mb-2">
+              <p className="text-xs text-gray-500 mb-2 sm:text-sm">
                 {currentPurchase.timeAgo}{' '}
                 {currentPurchase.timeAgo === 1 ? 'minute' : 'minutes'} ago
               </p>
@@ -352,13 +352,13 @@ export default function RecentPurchasePopup() {
               {/* Verify badge */}
               <div className="flex items-center gap-1.5 text-[#B4C49A]">
                 <CheckCircle className="w-3.5 h-3.5" strokeWidth={2.5} />
-                <span className="text-xs font-semibold">Verify</span>
+                <span className="text-xs font-semibold sm:text-sm">Verify</span>
               </div>
             </div>
           </div>
 
           {/* Progress bar */}
-          <div className="h-1 bg-gray-200 w-full">
+          <div className="h-0.5 bg-gray-200 w-full sm:h-1">
             <div
               className="h-full bg-[#B4C49A] transition-all duration-75 ease-linear"
               style={{ width: `${Math.max(0, progress)}%` }}
@@ -368,7 +368,7 @@ export default function RecentPurchasePopup() {
           {/* Permanent disable option */}
           <button
             onClick={handlePermanentDisable}
-            className="w-full py-2 px-4 text-xs text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
+            className="w-full py-1 px-2 text-xs sm:py-2 sm:px-4 text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors border-t border-gray-100"
           >
             Don&apos;t show again
           </button>

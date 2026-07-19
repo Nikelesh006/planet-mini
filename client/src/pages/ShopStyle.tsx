@@ -4772,7 +4772,7 @@ export default function ShopStyle() {
 
         {/* Style Groups Row */}
 
-        <div className="flex justify-center gap-3 sm:gap-8 md:gap-10 overflow-x-auto scrollbar-hide">
+        <div className="flex justify-center gap-2 sm:gap-8 md:gap-10 overflow-x-auto scrollbar-hide px-2 sm:px-0 -mx-2 sm:mx-0">
 
           {Object.entries(STYLE_MAPPING)
 
@@ -4794,7 +4794,7 @@ export default function ShopStyle() {
 
               className={`
 
-                flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-4 rounded-xl transition-all duration-300 border-2
+                flex flex-col items-center gap-1 sm:gap-2 p-1.5 sm:p-2 md:p-4 rounded-xl transition-all duration-300 border-2 flex-shrink-0
 
                 ${selectedFilters.includes(groupId)
 

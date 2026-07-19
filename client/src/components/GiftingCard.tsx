@@ -286,13 +286,13 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
 
             <div className="flex items-baseline gap-2 mb-3">
 
-              <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
+              <span className="text-xl font-extrabold text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(0)}</span>
 
               {product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0) && (
 
                 <span className="text-sm font-medium text-slate-500 line-through">
 
-                  ₹{Number(product.mrp).toFixed(2)}
+                  ₹{Number(product.mrp).toFixed(0)}
 
                 </span>
 

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { ShoppingCart, Minus, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { useState } from "react";
@@ -22,7 +22,7 @@ export default function Cart() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-8 border border-primary/20 hover:shadow-xl transition-all duration-300"
             >
-              <h2 className="text-3xl font-bold text-black mb-8">Shopping Cart</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-black mb-6 sm:mb-8">Shopping Cart</h2>
               
               {/* Cart Items List */}
               <div className="space-y-4 mb-6">
@@ -31,13 +31,13 @@ export default function Cart() {
                     <img 
                       src="https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=100"
                       alt="Product" 
-                      className="w-24 h-24 object-cover rounded-xl shadow-md"
+                      className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-xl shadow-md"
                     />
                     <div className="flex-1">
-                      <h3 className="text-xl font-bold text-black group-hover:text-primary transition-colors">Baby Onesie</h3>
+                      <h3 className="text-lg sm:text-xl font-bold text-black group-hover:text-primary transition-colors">Baby Onesie</h3>
                       <p className="text-sm text-gray-600 mb-3">Size: 6-12 months | Color: Pink</p>
                       <div className="flex items-center justify-between">
-                        <span className="text-xl font-bold text-black">₹24.99</span>
+                        <span className="text-xl font-bold text-black">₹25</span>
                         <button className="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors">
                           <Trash2 className="w-5 h-5" />
                         </button>
@@ -75,20 +75,20 @@ export default function Cart() {
               <div className="border-t-2 border-gray-200 pt-8">
                 <div className="flex justify-between mb-4 p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Subtotal</span>
-                  <span className="font-bold text-black">₹74.97</span>
+                  <span className="font-bold text-black">₹75</span>
                 </div>
                 <div className="flex justify-between mb-4 p-3 bg-white/50 rounded-xl">
                   <span className="text-gray-700 font-medium">Shipping</span>
-                  <span className="font-bold text-black">₹5.00</span>
+                  <span className="font-bold text-black">₹5</span>
                 </div>
                 <div className="flex justify-between mb-6 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/30">
                   <span className="text-xl font-bold text-black">Total</span>
-                  <span className="text-xl font-bold text-primary">₹79.97</span>
+                  <span className="text-xl font-bold text-primary">₹80</span>
                 </div>
                 
                 <Link 
                   href="/checkout"
-                  className="w-full bg-gradient-to-r from-primary to-secondary text-black px-8 py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg text-center"
+                  className="w-full bg-gradient-to-r from-primary to-secondary text-black px-6 py-3 sm:px-8 sm:py-4 rounded-2xl font-bold hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg text-center text-sm sm:text-base"
                 >
                   Proceed to Checkout
                 </Link>
@@ -104,7 +104,7 @@ export default function Cart() {
               transition={{ delay: 0.2 }}
               className="bg-gradient-to-br from-primary/5 to-secondary/5 rounded-3xl shadow-lg p-8 border border-primary/20 hover:shadow-xl transition-all duration-300"
             >
-              <h3 className="text-2xl font-bold text-black mb-6">Order Summary</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-black mb-4 sm:mb-6">Order Summary</h3>
               
               <div className="space-y-4">
                 <div className="flex justify-between py-3 border-b border-gray-200">
@@ -113,26 +113,26 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between py-3 border-b border-gray-200">
                   <span className="text-gray-700 font-medium">Subtotal</span>
-                  <span className="font-bold text-black">$74.97</span>
+                  <span className="font-bold text-black">$75</span>
                 </div>
                 <div className="flex justify-between py-3 border-b border-gray-200">
                   <span className="text-gray-700 font-medium">Shipping</span>
-                  <span className="font-bold text-black">$5.00</span>
+                  <span className="font-bold text-black">$5</span>
                 </div>
                 <div className="flex justify-between py-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/30">
                   <span className="text-xl font-bold text-black">Total</span>
-                  <span className="text-xl font-bold text-primary">$79.97</span>
+                  <span className="text-xl font-bold text-primary">$80</span>
                 </div>
               </div>
 
               <div className="mt-8 space-y-4">
                 <Link
                   href="/shop/style"
-                  className="w-full bg-gradient-to-r from-primary to-secondary text-black py-3 rounded-xl hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg text-center font-semibold"
+                  className="w-full bg-gradient-to-r from-primary to-secondary text-black py-2 sm:py-3 rounded-xl hover:from-primary/90 hover:to-secondary/90 transition-all duration-300 transform hover:scale-105 shadow-lg text-center font-semibold text-sm sm:text-base"
                 >
                   Continue Shopping
                 </Link>
-                <button className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-3 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 text-center font-medium shadow-lg">
+                <button className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 sm:py-3 rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 text-center font-medium shadow-lg text-sm sm:text-base">
                   Clear Cart
                 </button>
               </div>

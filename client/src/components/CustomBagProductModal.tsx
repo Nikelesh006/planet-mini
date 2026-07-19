@@ -424,7 +424,7 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
 
                         <span className="text-3xl font-extrabold text-slate-900">
 
-                          &#8377;{Number(product.sellingPrice || 0).toFixed(2)}
+                          &#8377;{Number(product.sellingPrice || 0).toFixed(0)}
 
                         </span>
 
@@ -434,13 +434,13 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
 
                             <span className="text-xl font-medium text-slate-500 line-through">
 
-                              &#8377;{Number(product.mrp).toFixed(2)}
+                              &#8377;{Number(product.mrp).toFixed(0)}
 
                             </span>
 
                             <span className="text-sm font-medium text-green-600">
 
-                              Save &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+                              Save &#8377;{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(0)}
 
                             </span>
 

@@ -223,11 +223,11 @@ export default function BundleReview() {
                             {/* Price */}
                             <div className="flex-1 text-right">
                               <p className="text-lg font-bold text-gray-900">
-                                &#8377;{(Number(item.product.sellingPrice || 0) * item.quantity).toFixed(2)}
+                                &#8377;{(Number(item.product.sellingPrice || 0) * item.quantity).toFixed(0)}
                               </p>
                               {item.product.mrp && Number(item.product.mrp) > Number(item.product.sellingPrice || 0) && (
                                 <p className="text-sm text-gray-500 line-through">
-                                  &#8377;{(Number(item.product.mrp) * item.quantity).toFixed(2)}
+                                  &#8377;{(Number(item.product.mrp) * item.quantity).toFixed(0)}
                                 </p>
                               )}
                             </div>
@@ -252,7 +252,7 @@ export default function BundleReview() {
                   <div className="flex justify-between text-base">
                     <span className="text-gray-600">Subtotal</span>
                     <span className="font-semibold text-gray-900">
-                      &#8377;{bundleTotal.toFixed(2)}
+                      &#8377;{bundleTotal.toFixed(0)}
                     </span>
                   </div>
 
@@ -267,7 +267,7 @@ export default function BundleReview() {
                       <div className="flex justify-between text-base">
                         <span className="text-gray-600">Discount</span>
                         <span className="font-semibold text-green-600">
-                          -&#8377;{discount.toFixed(2)}
+                          -&#8377;{discount.toFixed(0)}
                         </span>
                       </div>
                     ) : null;
@@ -278,7 +278,7 @@ export default function BundleReview() {
                     <div className="flex justify-between text-lg">
                       <span className="font-bold text-gray-900">Total</span>
                       <span className="font-bold text-gray-900">
-                        &#8377;{bundleTotal.toFixed(2)}
+                        &#8377;{bundleTotal.toFixed(0)}
                       </span>
                     </div>
                   </div>

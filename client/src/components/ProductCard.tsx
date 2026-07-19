@@ -633,11 +633,11 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
           <div className="flex items-baseline gap-2">
 
-            <span className="text-lg font-medium text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(2)}</span>
+            <span className="text-lg font-medium text-slate-900">₹{Number(product.sellingPrice || 0).toFixed(0)}</span>
 
             <span className="text-sm font-medium text-slate-500 line-through">
 
-              {product.mrp ? `₹${Number(product.mrp).toFixed(2)}` : ''}
+              {product.mrp ? `₹${Number(product.mrp).toFixed(0)}` : ''}
 
             </span>
 
@@ -649,7 +649,7 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
               <Gift className="w-3 h-3" />
 
-              You save ₹{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(2)}
+              You save ₹{(Number(product.mrp) - Number(product.sellingPrice || 0)).toFixed(0)}
 
             </p>
 
