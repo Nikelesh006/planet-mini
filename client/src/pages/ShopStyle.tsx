@@ -5832,7 +5832,7 @@ export default function ShopStyle() {
 
 
 
-      {homeFilter === 'hospital-bags' && (
+      {(homeFilter === 'hospital-bags' || customMode) && (
 
 
 
@@ -5896,7 +5896,7 @@ export default function ShopStyle() {
 
 
 
-              onClick={() => setLocation('/shop/style?custom=true')}
+              onClick={() => window.location.href = '/shop/style?custom=true'}
 
 
 
