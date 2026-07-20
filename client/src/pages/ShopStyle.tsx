@@ -546,23 +546,23 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
   },
 
-  'nappies': { 
+  'nappies': {
 
-    name: 'Nappies', 
+    name: 'Nappies',
 
     icon: '👕',
 
-    variants: [] 
+    variants: [{ id: 'newborn-nappies', name: 'Newborn Nappies' }, { id: 'small-nappies', name: 'Small Nappies' }, { id: 'medium-nappies', name: 'Medium Nappies' }, { id: 'large-nappies', name: 'Large Nappies' }]
 
   },
 
-  'wipes': { 
+  'wipes': {
 
-    name: 'Wipes', 
+    name: 'Wipes',
 
     icon: '🧻',
 
-    variants: [] 
+    variants: [{ id: 'wet-wipes', name: 'Wet Wipes' }, { id: 'dry-wipes', name: 'Dry Wipes' }, { id: 'baby-wipes', name: 'Baby Wipes' }]
 
   },
 

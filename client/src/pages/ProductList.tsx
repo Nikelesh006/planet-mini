@@ -198,7 +198,21 @@ export default function ProductList() {
 
 
 
-      let filtered = [...products];
+      // Sort products by Product ID in descending order first
+      let sorted = [...products].sort((a, b) => {
+        const extractNumericId = (id: string | number) => {
+          const idStr = String(id);
+          const match = idStr.match(/PM-(\d+)/);
+          return match ? parseInt(match[1], 10) : 0;
+        };
+
+        const aId = extractNumericId(a.id);
+        const bId = extractNumericId(b.id);
+
+        return bId - aId;
+      });
+
+      let filtered = [...sorted];
 
 
 
@@ -275,57 +289,7 @@ export default function ProductList() {
 
 
       filtered.sort((a, b) => {
-
-
-
-        const aBoosted = a.isBoosted === true;
-
-
-
-        const bBoosted = b.isBoosted === true;
-
-
-
-        if (aBoosted !== bBoosted) {
-
-
-
-          return aBoosted ? -1 : 1;
-
-
-
-        }
-
-
-
-
-
-
-
-        const aBoostTime = a.boostUpdatedAt ? new Date(String(a.boostUpdatedAt)).getTime() : 0;
-
-
-
-        const bBoostTime = b.boostUpdatedAt ? new Date(String(b.boostUpdatedAt)).getTime() : 0;
-
-
-
-        if (aBoostTime !== bBoostTime) {
-
-
-
-          return bBoostTime - aBoostTime;
-
-
-
-        }
-
-
-
-
-
-
-
+        // Drafts should appear last
         const aDraft = (a.status || "").toLowerCase() === "draft";
 
 
@@ -354,7 +318,8 @@ export default function ProductList() {
 
 
 
-        return a.name.localeCompare(b.name);
+        // Maintain existing order from pre-filtering sort
+        return 0;
 
 
 

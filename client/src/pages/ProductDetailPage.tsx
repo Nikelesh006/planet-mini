@@ -798,14 +798,6 @@ export default function ProductDetailPage() {
 
                   onMouseLeave={() => setIsImageZoomed(false)}
 
-                  onTouchStart={handleTouchStart}
-
-                  onTouchMove={handleTouchMove}
-
-                  onTouchEnd={handleTouchEnd}
-
-                  onTouchCancel={handleTouchCancel}
-
                 >
 
                   <img
