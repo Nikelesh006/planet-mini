@@ -522,6 +522,18 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 };
 
+// Helper function to find parent category of a variant
+const findParentCategory = (variantId: string): string | null => {
+  for (const [categoryId, category] of Object.entries(STYLE_MAPPING)) {
+    if (category.variants.some(v => v.id === variantId)) {
+      return categoryId;
+    }
+  }
+  return null;
+};
+
+
+
 
 
 const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id: string; name: string }[] }> = {
@@ -587,6 +599,8 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
   }
 
 };
+// Helper function to find parent category of a variant
+
 
 
 

@@ -1,0 +1,10 @@
+
+// Helper function to find parent category of a variant
+const findParentCategory = (variantId: string): string | null => {
+  for (const [categoryId, category] of Object.entries(STYLE_MAPPING)) {
+    if (category.variants.some(v => v.id === variantId)) {
+      return categoryId;
+    }
+  }
+  return null;
+};
