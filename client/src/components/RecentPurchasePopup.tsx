@@ -304,7 +304,7 @@ export default function RecentPurchasePopup() {
         aria-live="polite"
         aria-label="Recent purchase notification"
       >
-        <div className="bg-white rounded-2xl shadow-2xl border-2 border-[#B4C49A] overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-2xl border-2 border-gray-200 overflow-hidden">
           {/* Close button */}
           <button
             onClick={handleClose}

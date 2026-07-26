@@ -100,8 +100,8 @@ export default function AdminDashboard() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-16 h-16 text-[#B4C49A] mx-auto mb-4 animate-spin" />
-          <p className="text-gray-600">{isLoading ? 'Verifying admin access...' : 'Loading dashboard data...'}</p>
+          <Loader2 className="w-10 h-10 sm:w-16 sm:h-16 text-[#B4C49A] mx-auto mb-3 sm:mb-4 animate-spin" />
+          <p className="text-sm sm:text-base text-gray-600 px-4">{isLoading ? 'Verifying admin access...' : 'Loading dashboard data...'}</p>
         </div>
       </div>
     );
@@ -111,24 +111,24 @@ export default function AdminDashboard() {
   if (!isAuthorized) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8">
-          <Shield className="w-20 h-20 text-red-600 mx-auto mb-6" />
-          <AlertTriangle className="w-12 h-12 text-orange-600 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Access Denied</h1>
-          <p className="text-gray-600 mb-8">
+        <div className="text-center max-w-md mx-auto p-5 sm:p-8">
+          <Shield className="w-14 h-14 sm:w-20 sm:h-20 text-red-600 mx-auto mb-4 sm:mb-6" />
+          <AlertTriangle className="w-9 h-9 sm:w-12 sm:h-12 text-orange-600 mx-auto mb-3 sm:mb-4" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">Access Denied</h1>
+          <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8">
             You don't have permission to access the admin dashboard. This area is restricted to authorized administrators only.
           </p>
-          <div className="space-y-4">
-            <Link 
+          <div className="space-y-3 sm:space-y-4">
+            <Link
               href="/"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Home className="w-4 h-4 mr-2" />
               Return to Home
             </Link>
             <button
               onClick={handleLogout}
-              className="block w-full px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              className="block w-full px-5 py-2.5 sm:px-6 sm:py-3 text-sm sm:text-base bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
             >
               <LogOut className="w-4 h-4 mr-2 inline" />
               Logout
@@ -228,117 +228,117 @@ Thank you for shopping with Planet Mini!
     : [];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pt-20">
       {/* Header */}
       <div className="bg-[#B4C49A] backdrop-blur-lg shadow-lg border-b border-[#9EAF84]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <Link href="/" className="flex items-center gap-2 text-xl font-bold text-black">
-                <div className="w-8 h-8 rounded-full bg-[#B4C49A] border border-[#5F6F46]/30 flex items-center justify-center text-black shadow-lg transform hover:scale-110 transition-transform">
-                  <span className="text-sm font-bold">PM</span>
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+              <Link href="/" className="flex items-center gap-2 text-base sm:text-xl font-bold text-black">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#B4C49A] border border-[#5F6F46]/30 flex items-center justify-center text-black shadow-lg transform hover:scale-110 transition-transform">
+                  <span className="text-xs sm:text-sm font-bold">PM</span>
                 </div>
-                <span>Planet Mini</span>
+                <span className="hidden xs:inline sm:inline">Planet Mini</span>
               </Link>
-              <div className="h-8 w-px bg-[#5F6F46]/30"></div>
-              <h1 className="text-xl font-semibold text-black">Admin Dashboard</h1>
+              <div className="hidden sm:block h-8 w-px bg-[#5F6F46]/30"></div>
+              <h1 className="text-sm sm:text-xl font-semibold text-black truncate">Admin Dashboard</h1>
             </div>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-[#F1F5EB] rounded-2xl shadow-lg p-6 border border-[#B4C49A]/40"
+          className="bg-[#F1F5EB] rounded-2xl shadow-lg p-4 sm:p-6 border border-[#B4C49A]/40"
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center">
-              <Settings className="w-6 h-6 text-black" />
+          <div className="flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="w-9 h-9 sm:w-12 sm:h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center">
+              <Settings className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
             </div>
-            <h2 className="text-2xl font-bold ">Quick Actions</h2>
+            <h2 className="text-lg sm:text-2xl font-bold ">Quick Actions</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-            <Link href="/admin/add-product" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-[#B4C49A]/40">
-              <div className="w-12 h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Plus className="w-6 h-6 text-black" />
+          <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 sm:gap-4">
+            <Link href="/admin/add-product" className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-[#B4C49A]/40">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Plus className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </div>
-              <span className="font-medium text-sm text-center group-hover:text-[#5F6F46] transition-colors">Add Product</span>
+              <span className="font-medium text-xs sm:text-sm text-center group-hover:text-[#5F6F46] transition-colors leading-tight">Add Product</span>
             </Link>
-            <Link href="/admin/product-list" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-[#B4C49A]/40">
-              <div className="w-12 h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <List className="w-6 h-6 text-black" />
+            <Link href="/admin/product-list" className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-[#B4C49A]/40">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <List className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </div>
-              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-[#5F6F46] transition-colors">Products</span>
+              <span className="font-medium text-gray-700 text-xs sm:text-sm text-center group-hover:text-[#5F6F46] transition-colors leading-tight">Products</span>
             </Link>
-            <Link href="/admin/orders" className="group flex flex-col items-center gap-3 p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-[#B4C49A]/40">
-              <div className="w-12 h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Package className="w-6 h-6 text-black" />
+            <Link href="/admin/orders" className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-[#B4C49A]/40">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Package className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </div>
-              <span className="font-medium text-gray-700 text-sm text-center group-hover:text-[#5F6F46] transition-colors">Orders</span>
+              <span className="font-medium text-gray-700 text-xs sm:text-sm text-center group-hover:text-[#5F6F46] transition-colors leading-tight">Orders</span>
             </Link>
           </div>
         </motion.div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
           {stats.map((stat, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-2xl shadow-sm p-6"
+              className="bg-white rounded-2xl shadow-sm p-3 sm:p-6"
             >
-              <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 ${stat.color} rounded-xl flex items-center justify-center`}>
-                  <stat.icon className="w-6 h-6 text-black" />
+              <div className="flex items-center justify-between mb-2 sm:mb-4">
+                <div className={`w-9 h-9 sm:w-12 sm:h-12 ${stat.color} rounded-xl flex items-center justify-center`}>
+                  <stat.icon className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
                 </div>
-                <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-lg">
+                <span className="text-xs sm:text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-lg">
                   {stat.change}
                 </span>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</h3>
-              <p className="text-gray-600 text-sm">{stat.label}</p>
+              <h3 className="text-base sm:text-2xl font-bold text-gray-900 mb-1 truncate">{stat.value}</h3>
+              <p className="text-gray-600 text-xs sm:text-sm">{stat.label}</p>
             </motion.div>
           ))}
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:gap-8">
           {/* Recent Orders */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
           >
             <div className="bg-white rounded-2xl shadow-sm">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-bold text-gray-900">Recent Orders</h2>
+              <div className="p-4 sm:p-6 border-b border-gray-200">
+                <h2 className="text-base sm:text-xl font-bold text-gray-900">Recent Orders</h2>
               </div>
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 {recentOrderedProducts.length > 0 ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {recentOrderedProducts.map((item: any, index: number) => (
-                      <div key={`${item.id}-${index}`} className="flex items-center gap-4">
-                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover border border-gray-200" />
+                      <div key={`${item.id}-${index}`} className="flex items-center gap-3 sm:gap-4">
+                        <img src={item.image} alt={item.name} className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover border border-gray-200 flex-shrink-0" />
                         <div className="min-w-0 flex-1">
-                          <p className="font-medium text-gray-900 truncate">{item.name}</p>
-                          <p className="text-xs text-gray-500">
+                          <p className="font-medium text-sm sm:text-base text-gray-900 truncate">{item.name}</p>
+                          <p className="text-xs text-gray-500 truncate">
                             Order #{item.orderNumber} · Qty {item.quantity}
                           </p>
                         </div>
-                        <span className="text-sm font-semibold text-gray-900">
+                        <span className="text-xs sm:text-sm font-semibold text-gray-900 whitespace-nowrap">
                           ₹{Number(item.sellingPrice || item.price || 0).toFixed(0)}
                         </span>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-500">No orders</p>
+                  <p className="text-xs sm:text-sm text-gray-500">No orders</p>
                 )}
               </div>
             </div>

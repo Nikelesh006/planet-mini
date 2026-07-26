@@ -197,7 +197,7 @@ export default function Navbar() {
         <div className="flex items-center overflow-hidden">
           <div className="animate-marquee whitespace-nowrap">
             <span className="text-xs sm:text-base font-semibold inline-block">
-              10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 10% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles
+              5% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 5% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 5% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; 5% OFF on orders above ₹3000 | Use code: PMOFF10 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Free shipping on orders above ₹999 &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; New Arrivals Every Week! &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Exclusive Combo Deals Available &nbsp;&nbsp;&nbsp;&nbsp; ✦ &nbsp;&nbsp;&nbsp;&nbsp; Special Baby Care Bundles
             </span>
           </div>
         </div>
@@ -541,9 +541,9 @@ export default function Navbar() {
                       href={link.href}
                       onClick={() => setMobileMenuOpen(false)}
                       className={cn(
-                        "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                        "text-sm sm:text-lg font-semibold transition-all duration-300 relative py-3 sm:py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
                         "hover:bg-gray-100 hover:text-black active:bg-gray-200",
-                        location === link.href 
+                        location === link.href
                           ? "text-black bg-gray-100"
                           : "text-gray-700"
                       )}
@@ -557,7 +557,7 @@ export default function Navbar() {
                   href="/likes"
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                    "text-sm sm:text-lg font-semibold transition-all duration-300 relative py-3 sm:py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
                     "hover:bg-gray-100 hover:text-black active:bg-gray-200",
                     location === '/likes'
                       ? "text-black bg-gray-100"
@@ -574,30 +574,38 @@ export default function Navbar() {
                 </Link>
                 <div className="h-px bg-gray-200 my-4" />
                 {user ? (
-                  <Link
-                    href="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
-                      "hover:bg-gray-100 hover:text-black active:bg-gray-200",
-                      location === '/profile'
-                        ? "text-black bg-gray-100"
-                        : "text-gray-700"
-                    )}
-                  >
-                    {profile?.image || user.image ? (
-                      <img src={profile?.image || user.image} alt="Avatar" className="w-6 h-6 rounded-full object-cover" draggable={false} />
-                    ) : (
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                        <span className="text-white text-xs font-bold">
-                          {user.name?.charAt(0) || 'U'}
-                        </span>
-                      </div>
-                    )}
-                    <span className="text-sm sm:text-base font-medium">
-                      {user.name || 'Profile'}
-                    </span>
-                  </Link>
+                  <>
+                    <Link
+                      href="/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={cn(
+                        "text-sm sm:text-lg font-semibold transition-all duration-300 relative py-3 sm:py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                        "hover:bg-gray-100 hover:text-black active:bg-gray-200",
+                        location === '/profile'
+                          ? "text-black bg-gray-100"
+                          : "text-gray-700"
+                      )}
+                    >
+                      <User className="w-5 h-5" />
+                      <span className="text-xs sm:text-base font-medium">
+                        Profile
+                      </span>
+                    </Link>
+                    <div className="flex items-center gap-3 px-4 sm:px-5 py-2 text-gray-600">
+                      {profile?.image || user.image ? (
+                        <img src={profile?.image || user.image} alt="Avatar" className="w-8 h-8 rounded-full object-cover" draggable={false} />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                          <span className="text-white text-xs sm:text-sm font-bold">
+                            {user.name?.charAt(0) || 'U'}
+                          </span>
+                        </div>
+                      )}
+                      <span className="text-xs sm:text-sm font-medium truncate">
+                        {user.name || user.email}
+                      </span>
+                    </div>
+                  </>
                 ) : (
                   <button
                     onClick={() => {
@@ -605,7 +613,7 @@ export default function Navbar() {
                       openSignInModal();
                     }}
                     className={cn(
-                      "w-full text-left text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                      "w-full text-left text-sm sm:text-lg font-semibold transition-all duration-300 relative py-3 sm:py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
                       "hover:bg-gray-100 hover:text-black active:bg-gray-200 text-gray-700"
                     )}
                   >
@@ -614,7 +622,7 @@ export default function Navbar() {
                     ) : (
                       <User className="w-5 h-5" />
                     )}
-                    <span className="text-sm sm:text-base font-medium">
+                    <span className="text-xs sm:text-base font-medium">
                       Profile
                     </span>
                   </button>
@@ -623,7 +631,7 @@ export default function Navbar() {
                   href="/orders"
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
-                    "text-base sm:text-lg font-semibold transition-all duration-300 relative py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
+                    "text-sm sm:text-lg font-semibold transition-all duration-300 relative py-3 sm:py-4 px-4 sm:px-5 rounded-xl flex items-center gap-3",
                     "hover:bg-gray-100 hover:text-black active:bg-gray-200",
                     location === '/orders'
                       ? "text-black bg-gray-100"
@@ -644,7 +652,7 @@ export default function Navbar() {
                 >
                   <div className="flex items-center gap-3">
                     <ShoppingBag className="w-5 h-5 text-gray-700" />
-                    <span className="text-base sm:text-lg font-semibold text-gray-700">Cart</span>
+                    <span className="text-sm sm:text-lg font-semibold text-gray-700">Cart</span>
                   </div>
                   {state.totalItems > 0 && (
                     <span className="bg-red-600 text-white rounded-full text-xs font-bold px-2.5 py-1">

@@ -81,6 +81,7 @@ import Shop from "./pages/Shop";
 
 import ShopStyle from "./pages/ShopStyle";
 import BundleReview from "./pages/BundleReview";
+import BundleCheckoutPage from "./pages/BundleCheckoutPage";
 
 
 
@@ -171,6 +172,7 @@ function Router() {
         <Route path="/shop/care" component={ShopCare} />
         <Route path="/shop/offers" component={ShopOffers} />
         <Route path="/bundle-review" component={BundleReview} />
+        <Route path="/bundle-checkout" component={BundleCheckoutPage} />
         <Route path="/shop" component={Shop} />
         <Route path="/cart" component={CartPage} />
         <Route path="/likes" component={LikesPage} />

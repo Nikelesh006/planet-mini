@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useSearch } from "wouter";
 import {
@@ -222,10 +222,10 @@ const Section = ({
   <motion.section
     initial={{ opacity: 0, y: 16 }}
     animate={{ opacity: 1, y: 0 }}
-    className={`rounded-lg border border-slate-200 bg-white p-4 shadow-sm min-w-0 w-full ${className}`}
+    className={`rounded-lg border border-slate-200 bg-white p-3 sm:p-4 shadow-sm min-w-0 w-full ${className}`}
   >
-    <div className="mb-4 flex items-center gap-2">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F1F5EB] text-[#5F6F46]">
+    <div className="mb-3 sm:mb-4 flex items-center gap-2">
+      <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-[#F1F5EB] text-[#5F6F46]">
         <Icon className="h-4 w-4" />
       </span>
       <h2 className="text-sm font-semibold text-slate-950">{title}</h2>
@@ -262,6 +262,8 @@ export default function AddProduct() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [isAgeGroupOpen, setIsAgeGroupOpen] = useState(false);
+  const [isActionBarVisible, setIsActionBarVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const [comboItems, setComboItems] = useState<ComboItem[]>([
     { id: "knot-jabla", product: "Belle Scribbles Knot Jabla", variant: "Newborn (0-1M)", quantity: 2, selected: true },
     { id: "muslin-cap", product: "Muslin Cap - White", variant: "Newborn", quantity: 1, selected: true },
@@ -467,6 +469,51 @@ export default function AddProduct() {
       }
     }
   }, [formData.category, formData.subcategory, formData.subcategoryItem, formData.productClassification, formData.styleVariant, usesClassificationFlow]);
+
+  // Hide sticky action bar on scroll-down, show on scroll-up — mobile only.
+  // Also hide the bar once the page's footer enters the viewport so the footer isn't covered.
+  useEffect(() => {
+    lastScrollY.current = window.scrollY;
+
+    const isMobileViewport = () => window.innerWidth < 640;
+
+    const handleScroll = () => {
+      // On desktop (>= 640px) keep the bar pinned and visible at all times.
+      if (!isMobileViewport()) {
+        if (!isActionBarVisible) setIsActionBarVisible(true);
+        lastScrollY.current = window.scrollY;
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY.current;
+      const docHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+      // ~64px buffer so the bar is dismissed slightly before the footer fully enters view.
+      const FOOTER_BUFFER = 80;
+      const reachedFooter = currentScrollY + viewportHeight >= docHeight - FOOTER_BUFFER;
+
+      if (currentScrollY < 20 || reachedFooter) {
+        // Near top, or page footer is on screen — keep the bar visible so user can save.
+        setIsActionBarVisible(true);
+      } else if (delta > 4) {
+        // Scrolling down — hide the bar so it doesn't cover the form.
+        setIsActionBarVisible(false);
+      } else if (delta < -4) {
+        // Scrolling up — reveal the bar so the user can act.
+        setIsActionBarVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [isActionBarVisible]);
 
   const resetForm = () => {
     setFormData(emptyForm);
@@ -788,16 +835,16 @@ export default function AddProduct() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50 pb-24 sm:pb-0">
       <div className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4">
-            <Link href="/admin" className="inline-flex items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-slate-950">
+        <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <Link href="/admin" className="inline-flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium text-slate-600 transition hover:text-slate-950">
               <ArrowLeft className="h-4 w-4" />
-              Back to Admin
+              <span className="hidden xs:inline sm:inline">Back to Admin</span>
             </Link>
-            <div className="h-6 w-px bg-slate-200" />
-            <h1 className="text-lg font-semibold text-slate-950">{isEdit ? "Edit Product" : "Add Product"}</h1>
+            <div className="hidden sm:block h-6 w-px bg-slate-200" />
+            <h1 className="text-base sm:text-lg font-semibold text-slate-950 truncate">{isEdit ? "Edit Product" : "Add Product"}</h1>
           </div>
           <div className="hidden items-center gap-2 text-xs font-medium text-slate-500 sm:flex">
             <Eye className="h-4 w-4" />
@@ -810,17 +857,17 @@ export default function AddProduct() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="fixed right-4 top-20 z-50 flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-3 text-sm font-semibold text-white shadow-lg"
+          className="fixed right-3 top-16 sm:right-4 sm:top-20 z-50 flex items-center gap-2 rounded-lg bg-emerald-600 px-3 py-2 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold text-white shadow-lg"
         >
           <Check className="h-4 w-4" />
           {isEdit ? "Product updated successfully!" : "Product created successfully!"}
         </motion.div>
       )}
 
-      <form onSubmit={(e) => handleSubmit(e, formData.status)} className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <form onSubmit={(e) => handleSubmit(e, formData.status)} className="mx-auto max-w-7xl px-3 py-4 sm:px-6 sm:py-6 lg:px-8">
         <div className="flex flex-col gap-4 lg:flex-row">
           {/* LEFT COLUMN — all input sections stacked vertically */}
-          <div className="flex min-w-0 flex-col gap-4 lg:order-1 lg:w-2/3">
+          <div className="flex min-w-0 flex-col gap-4 order-1 lg:order-1 lg:w-2/3">
         <Section title="Basic Information" icon={Package}>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
@@ -1104,7 +1151,7 @@ export default function AddProduct() {
         </Section>
 
         <Section title="Product Images" icon={ImageIcon}>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 sm:grid-cols-3 md:grid-cols-5">
             {[0, 1, 2, 3, 4].map((index) => (
               <div key={index} className="relative">
                 {formData.images[index] ? (
@@ -1289,14 +1336,14 @@ export default function AddProduct() {
             name="description"
             value={formData.description}
             onChange={handleInputChange}
-            rows={14}
-            className={`${fieldClass} min-h-[320px] h-full resize-y ${errors.description ? errorFieldClass : ""}`}
+            rows={8}
+            className={`${fieldClass} min-h-[200px] sm:min-h-[320px] h-full resize-y ${errors.description ? errorFieldClass : ""}`}
             placeholder="Describe the product for the store page..."
           />
           {errors.description && <p className="mt-1 text-xs text-red-500">{errors.description}</p>}
         </Section>
         <Section title="Status" icon={Star} className="lg:col-span-6">
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div>
               <Label required>Product Status</Label>
               <select
@@ -1318,7 +1365,7 @@ export default function AddProduct() {
               <p className="mt-1 text-xs text-slate-500">
                 Select one or more sections where this product should appear.
               </p>
-              <div className="mt-3 space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="mt-2 sm:mt-3 space-y-3 sm:space-y-4 rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
                 <label className="flex items-center gap-3">
                   <input
                     type="checkbox"
@@ -1406,8 +1453,8 @@ export default function AddProduct() {
         </div>
         {/* /LEFT COLUMN */}
 
-        {/* RIGHT COLUMN — sticky Store Preview */}
-        <div className="flex min-w-0 flex-col gap-4 order-first lg:order-2 lg:w-1/3">
+        {/* RIGHT COLUMN — sticky Store Preview (bottom on mobile, right on desktop) */}
+        <div className="flex min-w-0 flex-col gap-4 order-2 lg:order-2 lg:w-1/3">
           <div className="lg:sticky lg:top-20">
             <Section title="Store Preview" icon={Eye}>
               <div className="space-y-4 lg:max-h-[calc(100vh-12rem)] lg:overflow-y-auto lg:-mx-4 lg:px-4 lg:[&::-webkit-scrollbar]:w-1.5 lg:[&::-webkit-scrollbar-thumb]:rounded-full lg:[&::-webkit-scrollbar-thumb]:bg-slate-200">
@@ -1446,14 +1493,18 @@ export default function AddProduct() {
         </div>
         {/* /2-COLUMN WRAPPER */}
 
-        <div className="sticky bottom-0 z-20 -mx-4 mt-4 border-t border-slate-200 bg-white/95 px-4 py-4 backdrop-blur sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8">
-          <div className="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-end">
+        <div
+          className={`sticky bottom-0 z-20 -mx-3 mt-4 border-t border-slate-200 bg-white/95 px-3 py-3 backdrop-blur sm:-mx-6 sm:px-6 sm:py-4 lg:-mx-8 lg:px-8 transition-transform duration-200 ease-out sm:translate-y-0 ${
+            isActionBarVisible ? "translate-y-0" : "translate-y-full"
+          }`}
+        >
+          <div className="mx-auto flex max-w-7xl flex-col gap-2 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
             <button
               type="button"
               onClick={() => {
                 setLocation("/admin");
               }}
-              className="rounded-lg border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              className="rounded-lg border border-slate-300 px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -1463,16 +1514,16 @@ export default function AddProduct() {
               onClick={(e) => {
                 void handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>, DRAFT_STATUS);
               }}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#B4C49A] bg-white px-5 py-2.5 text-sm font-semibold text-[#5F6F46] transition hover:bg-[#F1F5EB] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-lg border border-[#B4C49A] bg-white px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-[#5F6F46] transition hover:bg-[#F1F5EB] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#B4C49A]/30 border-b-[#5F6F46]" />
+                  <span className="h-4 w-4 sm:h-4 sm:w-4 animate-spin rounded-full border-2 border-[#B4C49A]/30 border-b-[#5F6F46]" />
                   Saving Draft...
                 </>
               ) : (
                 <>
-                  <Save className="h-4 w-4" />
+                  <Save className="h-4 w-4 sm:h-4 sm:w-4" />
                   Save as Draft
                 </>
               )}
@@ -1481,16 +1532,16 @@ export default function AddProduct() {
               type="button"
               disabled={isSubmitting}
               onClick={(e) => void handleSubmit(e as unknown as React.FormEvent<HTMLFormElement>, ACTIVE_STATUS)}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#B4C49A] px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-[#A4B68A] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-1.5 sm:gap-2 rounded-lg bg-[#B4C49A] px-3.5 py-2 sm:px-5 sm:py-2.5 text-xs sm:text-sm font-semibold text-black transition hover:bg-[#A4B68A] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-b-white" />
+                  <span className="h-4 w-4 sm:h-4 sm:w-4 animate-spin rounded-full border-2 border-white/30 border-b-white" />
                   {isEdit ? "Updating..." : "Saving..."}
                 </>
               ) : (
                 <>
-                  <Save className="h-4 w-4" />
+                  <Save className="h-4 w-4 sm:h-4 sm:w-4" />
                   {isEdit ? "Update Product" : "Save Product"}
                 </>
               )}

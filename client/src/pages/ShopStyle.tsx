@@ -5926,8 +5926,7 @@ export default function ShopStyle() {
 
 
 
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold transition-colors shadow-lg hover:shadow-xl"
-              style={{ backgroundColor: '#b4c49a', color: 'black' }}
+              className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-colors shadow-lg hover:shadow-xl bg-black text-white hover:bg-gray-800"
 
 
 
@@ -6004,22 +6003,21 @@ export default function ShopStyle() {
 
                   onClick={() => handleStepClick(1)}
 
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors shadow-lg ${
+                  className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-colors shadow-lg ${
 
                     currentStep === 1
 
-                      ? ''
+                      ? 'bg-black text-white hover:bg-gray-800'
 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
 
                   }`}
-                  style={currentStep === 1 ? { backgroundColor: '#b4c49a', color: 'black' } : {}}
 
                 >
 
-                  <span className="text-sm font-semibold">Step 1:</span>
+                  <span className="text-xs sm:text-sm font-semibold">Step 1:</span>
 
-                  <span className="text-sm">Nursing & Bedding</span>
+                  <span className="text-xs sm:text-sm">Nursing & Bedding</span>
 
                 </button>
 
@@ -6027,22 +6025,21 @@ export default function ShopStyle() {
 
                   onClick={() => handleStepClick(2)}
 
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors shadow-lg ${
+                  className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-colors shadow-lg ${
 
                     currentStep === 2
 
-                      ? ''
+                      ? 'bg-black text-white hover:bg-gray-800'
 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
 
                   }`}
-                  style={currentStep === 2 ? { backgroundColor: '#b4c49a', color: 'black' } : {}}
 
                 >
 
-                  <span className="text-sm font-semibold">Step 2:</span>
+                  <span className="text-xs sm:text-sm font-semibold">Step 2:</span>
 
-                  <span className="text-sm">Baby Clothing</span>
+                  <span className="text-xs sm:text-sm">Baby Clothing</span>
 
                 </button>
 
@@ -6050,22 +6047,21 @@ export default function ShopStyle() {
 
                   onClick={() => handleStepClick(3)}
 
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-medium transition-colors shadow-lg ${
+                  className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-colors shadow-lg ${
 
                     currentStep === 3
 
-                      ? ''
+                      ? 'bg-black text-white hover:bg-gray-800'
 
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
 
                   }`}
-                  style={currentStep === 3 ? { backgroundColor: '#b4c49a', color: 'black' } : {}}
 
                 >
 
-                  <span className="text-sm font-semibold">Step 3:</span>
+                  <span className="text-xs sm:text-sm font-semibold">Step 3:</span>
 
-                  <span className="text-sm">Other Essentials</span>
+                  <span className="text-xs sm:text-sm">Other Essentials</span>
 
                 </button>
 

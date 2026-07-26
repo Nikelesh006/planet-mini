@@ -204,27 +204,9 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
 
             <div className="absolute top-4 left-4 z-20">
 
-              <div className="bg-red-600 px-3 py-1 text-sm font-bold text-white shadow-md">
+              <div className="bg-red-600 px-2 py-0.5 sm:px-3 sm:py-1 text-xs sm:text-sm font-bold text-white shadow-md">
 
                 {Math.round(((Number(product.mrp) - Number(product.sellingPrice)) / Number(product.mrp)) * 100)}% OFF
-
-              </div>
-
-            </div>
-
-          )}
-
-
-
-          {/* Combo Badge for Muslin - only show if no discount */}
-
-          {!(product.mrp && Number(product.mrp) > Number(product.sellingPrice || 0)) && (
-
-            <div className="absolute top-4 left-4 z-20">
-
-              <div className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">
-
-                3 PACK COMBO
 
               </div>
 
@@ -237,21 +219,6 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
           {/* Large Product Image */}
 
           <div className="aspect-[2/3] sm:aspect-[3/4] flex items-center justify-center relative bg-transparent">
-
-            {(lowStock && product.inStock) && (
-
-              <div className="absolute top-4 left-4 z-30">
-
-                <div className="bg-amber-500 text-white text-xs font-bold px-2 py-1 rounded shadow-md">
-
-                  Low Stock
-
-                </div>
-
-              </div>
-
-            )}
-
             <img
 
               src={getCloudinaryImageUrl(product.image, "f_auto,q_100,dpr_auto")}
