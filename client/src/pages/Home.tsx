@@ -1038,7 +1038,7 @@ export default function Home() {
 
           {/* Customise Button */}
           <div className="text-center mt-8 sm:mt-12">
-            <Link href="/shop/style">
+            <Link href="/shop/style?custom=true">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

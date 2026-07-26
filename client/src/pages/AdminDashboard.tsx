@@ -14,7 +14,8 @@ import {
   List,
   Shield,
   AlertTriangle,
-  Loader2
+  Loader2,
+  RefreshCw
 } from "lucide-react";
 import { isUserAdminAuthorized, logUnauthorizedAccess } from "@/lib/admin-auth";
 import { API_BASE_URL } from "@/lib/api";
@@ -279,6 +280,12 @@ Thank you for shopping with Planet Mini!
                 <Package className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </div>
               <span className="font-medium text-gray-700 text-xs sm:text-sm text-center group-hover:text-[#5F6F46] transition-colors leading-tight">Orders</span>
+            </Link>
+            <Link href="/admin/spin-wheel" className="group flex flex-col items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white rounded-xl hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border border-[#B4C49A]/40">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#B4C49A] rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <RefreshCw className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
+              </div>
+              <span className="font-medium text-gray-700 text-xs sm:text-sm text-center group-hover:text-[#5F6F46] transition-colors leading-tight">Spin Wheel</span>
             </Link>
           </div>
         </motion.div>

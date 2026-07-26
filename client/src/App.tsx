@@ -125,6 +125,8 @@ import OrdersTest from "./pages/OrdersTest";
 
 import AdminOrders from "./pages/AdminOrders";
 
+import AdminSpinWheel from "./pages/AdminSpinWheel";
+
 import NotFound from "@/pages/not-found";
 
 
@@ -163,6 +165,7 @@ function Router() {
         <Route path="/admin/add-product" component={AddProduct} />
         <Route path="/admin/product-list" component={ProductList} />
         <Route path="/admin/orders" component={AdminOrders} />
+        <Route path="/admin/spin-wheel" component={AdminSpinWheel} />
         <Route path="/account" component={Profile} />
         <Route path="/profile" component={Profile} />
         <Route path="/orders" component={Orders} />

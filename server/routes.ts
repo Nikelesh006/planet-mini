@@ -170,6 +170,10 @@ import paymentRoutes from "./routes/payment.js";
 
 
 
+import spinWheelRoutes from "./routes/spinWheel.js";
+
+
+
 
 
 
@@ -5595,6 +5599,8 @@ export async function registerRoutes(
 
 
   app.use('/api/addresses', addressRoutes);
+
+  app.use('/api/spin-wheel', spinWheelRoutes);
 
 
 
