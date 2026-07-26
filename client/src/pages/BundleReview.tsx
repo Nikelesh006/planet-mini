@@ -28,6 +28,9 @@ export default function BundleReview() {
     executeWithAuth(async () => {
       setIsProcessing(true);
       
+      // Generate a unique bundle ID for this batch
+      const bundleId = `bundle-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      
       // Add all bundle items to cart
       let successCount = 0;
       let failedItems: string[] = [];
@@ -47,6 +50,8 @@ export default function BundleReview() {
             subcategory: item.product.subcategory || undefined,
             quantity: item.quantity,
             stockQuantity: item.product.stockQuantity ? Number(item.product.stockQuantity) : undefined,
+            source: 'bundle',
+            bundleId: bundleId,
           });
           
           if (success) {

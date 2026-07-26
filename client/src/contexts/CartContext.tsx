@@ -18,7 +18,7 @@ import { getAvailableStock, isOutOfStock } from '@shared/stock';
 
 
 
-interface CartItem {
+export interface CartItem {
 
 
 
@@ -95,6 +95,10 @@ interface CartItem {
   color?: string;
 
   stockQuantity?: number | null;
+
+  source?: 'normal' | 'bundle';
+
+  bundleId?: string;
 
 
 

@@ -20,6 +20,17 @@ import { apiFetch } from '@/lib/api';
 
 import { getAvailableStock, isOutOfStock } from '@shared/stock';
 
+import BundleItemsModal from '@/components/BundleItemsModal';
+
+import type { CartItem } from '@/contexts/CartContext';
+
+interface DisplayItem extends CartItem {
+  bundleId?: string;
+  bundleItemCount?: number;
+  bundleTotal?: number;
+  bundleTotalQty?: number;
+}
+
 
 
 export default function CartPage() {
@@ -41,6 +52,39 @@ export default function CartPage() {
   const { initializePayment, isLoading: isPaymentLoading, error: paymentError } = useRazorpay();
 
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
+
+  const [selectedBundle, setSelectedBundle] = useState<{ bundleId: string; items: CartItem[] } | null>(null);
+
+  // Group bundle items together
+  const bundleGroups = state.items
+    .filter(item => item.source === 'bundle' && item.bundleId)
+    .reduce((acc, item) => {
+      const bundleId = item.bundleId!;
+      if (!acc[bundleId]) {
+        acc[bundleId] = [];
+      }
+      acc[bundleId].push(item);
+      return acc;
+    }, {} as Record<string, CartItem[]>);
+
+  // Get first item from each bundle for display
+  const bundleDisplayItems = Object.entries(bundleGroups).map(([bundleId, items]) => ({
+    ...items[0],
+    bundleId,
+    bundleItemCount: items.length,
+    bundleTotal: items.reduce((sum, item) => sum + (item.sellingPrice * item.quantity), 0),
+    bundleTotalQty: items.reduce((sum, item) => sum + item.quantity, 0)
+  }));
+
+  const normalItems = state.items.filter(item => item.source !== 'bundle');
+
+  // Combine for display: normal items + bundle display items
+  const displayItems: DisplayItem[] = [...normalItems, ...bundleDisplayItems];
+
+  const handleBundleClick = (bundleId: string) => {
+    const bundleItems = bundleGroups[bundleId] || [];
+    setSelectedBundle({ bundleId, items: bundleItems });
+  };
 
 
 
@@ -732,7 +776,7 @@ export default function CartPage() {
 
             <div className="space-y-4">
 
-              {state.items.map((item, index) => (
+              {displayItems.map((item, index) => (
 
                 <div key={getCartItemKey(item, index)} className={`bg-white border rounded-2xl p-4 lg:p-6 lg:grid lg:grid-cols-12 lg:gap-4 lg:border-b lg:rounded-none lg:border-t-0 lg:border-x-0 items-center ${hasStockIssue(item) ? "border-red-200 bg-red-50/30" : "border-gray-200"}`}>
 
@@ -754,17 +798,31 @@ export default function CartPage() {
 
                     <div className="flex flex-col justify-center flex-1">
 
-                      <h3 className="text-base sm:text-lg lg:text-xl font-bold text-black">{item.name}</h3>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="text-base sm:text-lg lg:text-xl font-bold text-black">
+                          {item.bundleId ? `Hospital Bundle (${item.bundleItemCount} items)` : item.name}
+                        </h3>
+                        {item.source === 'bundle' && item.bundleId && (
+                          <button
+                            onClick={() => handleBundleClick(item.bundleId!)}
+                            className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-200 transition-colors cursor-pointer"
+                          >
+                            View Items
+                          </button>
+                        )}
+                      </div>
 
-                      <p className="text-sm text-gray-600 mb-2">
+                      {!item.bundleId && (
+                        <p className="text-sm text-gray-600 mb-2">
 
-                        {item.size && `Size: ${item.size}`}
+                          {item.size && `Size: ${item.size}`}
 
-                        {item.size && item.color && ' · '}
+                          {item.size && item.color && ' · '}
 
-                        {item.color && `Color: ${item.color}`}
+                          {item.color && `Color: ${item.color}`}
 
-                      </p>
+                        </p>
+                      )}
 
                       {hasStockIssue(item) && (
 
@@ -802,41 +860,51 @@ export default function CartPage() {
 
                   <div className="flex items-center justify-between lg:hidden">
 
-                    <span className="text-base font-semibold text-black">{formatPrice(item.sellingPrice)}</span>
+                    <span className="text-base font-semibold text-black">
+                      {formatPrice(item.bundleId ? ((item as DisplayItem).bundleTotal ?? item.sellingPrice) : item.sellingPrice)}
+                    </span>
 
                     <div className="flex items-center gap-2">
 
-                      <button
+                      {!item.bundleId && (
+                        <>
+                          <button
 
-                        onClick={() => decreaseQuantity(item.id)}
+                            onClick={() => decreaseQuantity(item.id)}
 
-                        className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                            className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
 
-                        aria-label="Decrease quantity"
+                            aria-label="Decrease quantity"
 
-                      >
+                          >
 
-                        <Minus className="w-4 h-4 text-gray-600" />
+                            <Minus className="w-4 h-4 text-gray-600" />
 
-                      </button>
+                          </button>
 
-                      <span className="w-8 text-center font-semibold text-black">{item.quantity}</span>
+                          <span className="w-8 text-center font-semibold text-black">{item.quantity}</span>
 
-                      <button
+                          <button
 
-                        onClick={() => increaseQuantity(item.id)}
+                            onClick={() => increaseQuantity(item.id)}
 
-                        disabled={isOutOfStock(item) || item.quantity >= getAvailableStock(item)}
+                            disabled={isOutOfStock(item) || item.quantity >= getAvailableStock(item)}
 
-                        className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 
-                        aria-label="Increase quantity"
+                            aria-label="Increase quantity"
 
-                      >
+                          >
 
-                        <Plus className="w-4 h-4 text-gray-600" />
+                            <Plus className="w-4 h-4 text-gray-600" />
 
-                      </button>
+                          </button>
+                        </>
+                      )}
+
+                      {item.bundleId && (
+                        <span className="text-sm text-gray-600">{item.bundleTotalQty} items</span>
+                      )}
 
                     </div>
 
@@ -848,7 +916,9 @@ export default function CartPage() {
 
                   <div className="hidden lg:block lg:col-span-2 lg:text-center">
 
-                    <span className="text-base font-semibold text-black">{formatPrice(item.sellingPrice)}</span>
+                    <span className="text-base font-semibold text-black">
+                      {formatPrice(item.bundleId ? ((item as DisplayItem).bundleTotal ?? item.sellingPrice) : item.sellingPrice)}
+                    </span>
 
                   </div>
 
@@ -858,37 +928,43 @@ export default function CartPage() {
 
                   <div className="hidden lg:flex lg:col-span-2 lg:items-center lg:justify-center lg:gap-2">
 
-                    <button
+                    {!item.bundleId ? (
+                      <>
+                        <button
 
-                      onClick={() => decreaseQuantity(item.id)}
+                          onClick={() => decreaseQuantity(item.id)}
 
-                      className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
+                          className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors"
 
-                      aria-label="Decrease quantity"
+                          aria-label="Decrease quantity"
 
-                    >
+                        >
 
-                      <Minus className="w-4 h-4 text-gray-600" />
+                          <Minus className="w-4 h-4 text-gray-600" />
 
-                    </button>
+                        </button>
 
-                    <span className="w-10 text-center font-semibold text-black">{item.quantity}</span>
+                        <span className="w-10 text-center font-semibold text-black">{item.quantity}</span>
 
-                    <button
+                        <button
 
-                      onClick={() => increaseQuantity(item.id)}
+                          onClick={() => increaseQuantity(item.id)}
 
-                      disabled={isOutOfStock(item) || item.quantity >= getAvailableStock(item)}
+                          disabled={isOutOfStock(item) || item.quantity >= getAvailableStock(item)}
 
-                      className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 
-                      aria-label="Increase quantity"
+                          aria-label="Increase quantity"
 
-                    >
+                        >
 
-                      <Plus className="w-4 h-4 text-gray-600" />
+                          <Plus className="w-4 h-4 text-gray-600" />
 
-                    </button>
+                        </button>
+                      </>
+                    ) : (
+                      <span className="text-sm text-gray-600">{(item as DisplayItem).bundleTotalQty} items</span>
+                    )}
 
                   </div>
 
@@ -1273,6 +1349,16 @@ export default function CartPage() {
       {/* Confetti Animation */}
 
       <Confetti trigger={showConfetti} />
+
+      {/* Bundle Items Modal */}
+      {selectedBundle && (
+        <BundleItemsModal
+          isOpen={!!selectedBundle}
+          onClose={() => setSelectedBundle(null)}
+          bundleItems={selectedBundle.items}
+          bundleId={selectedBundle.bundleId}
+        />
+      )}
 
     </motion.div>
 
