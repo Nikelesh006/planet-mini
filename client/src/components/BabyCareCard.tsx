@@ -11,6 +11,7 @@ import type { ProductResponse } from "../shared/routes";
 import { isLowStock } from "../shared/stock";
 import { CustomBagProductModal } from "@/components/CustomBagProductModal";
 import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
+import { useGiftBundle } from "@/contexts/GiftBundleContext";
 
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
   if (!url || typeof url !== 'string') return url;
@@ -24,12 +25,14 @@ interface BabyCareCardProps {
   product: ProductResponse;
   index: number;
   customMode?: boolean;
+  giftMode?: boolean;
 }
 
-export function BabyCareCard({ product, index, customMode = false }: BabyCareCardProps) {
+export function BabyCareCard({ product, index, customMode = false, giftMode = false }: BabyCareCardProps) {
   const { likedProducts, toggleLike } = useLikes();
   const { addToCart } = useCart();
   const { addToBundle } = useCustomBagBundle();
+  const { addToGiftBundle } = useGiftBundle();
   const { showAuthModal, executeWithAuth, handleAuthCancel } = useAuthGuard();
   const { toast } = useToast();
   const isWishlisted = likedProducts.some(p => p.id === product.id);
@@ -51,6 +54,16 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
         toast({
           title: "Added to Bag!",
           description: `${product.name} has been added to your custom bag bundle.`,
+          variant: "success"
+        });
+      } else if (giftMode) {
+        // Add to gift bundle in gift mode
+        console.log('Adding to gift bundle:', product);
+        addToGiftBundle(product, 1, product.styleVariant || undefined);
+        console.log('After addToGiftBundle call');
+        toast({
+          title: "Added to Gift Bundle!",
+          description: `${product.name} has been added to your gift bundle.`,
           variant: "success"
         });
       } else {
@@ -101,7 +114,7 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
   };
 
   const handleCardClick = (e: React.MouseEvent) => {
-    if (customMode) {
+    if (customMode || giftMode) {
       e.preventDefault();
       setShowModal(true);
     }
@@ -109,8 +122,8 @@ export function BabyCareCard({ product, index, customMode = false }: BabyCareCar
 
   return (
     <>
-      {customMode ? (
-        <div 
+      {customMode || giftMode ? (
+        <div
           className="block cursor-pointer"
           onClick={handleCardClick}
         >
