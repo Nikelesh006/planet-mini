@@ -431,6 +431,76 @@ export default function ProductDetailPage() {
 
 
 
+  // Recently viewed products management
+
+  const [recentlyViewed, setRecentlyViewed] = useState<any[]>([]);
+
+
+
+  useEffect(() => {
+
+    if (!product) return;
+
+
+
+    // Load recently viewed from localStorage
+
+    const stored = localStorage.getItem('recentlyViewed');
+
+    const viewed: any[] = stored ? JSON.parse(stored) : [];
+
+
+
+    // Add current product to recently viewed if not already present
+
+    const updatedViewed = viewed.filter((p: any) => p.id !== product.id);
+
+    updatedViewed.unshift({
+
+      id: product.id,
+
+      name: product.name,
+
+      image: product.image,
+
+      sellingPrice: product.sellingPrice,
+
+      mrp: product.mrp,
+
+      slug: product.slug,
+
+      category: product.category,
+
+      subcategory: product.subcategory,
+
+      rating: product.rating,
+
+      reviews: product.reviews,
+
+      inStock: product.inStock,
+
+      isNew: product.isNew,
+
+      isBoosted: product.isBoosted,
+
+      boostUpdatedAt: product.boostUpdatedAt
+
+    });
+
+
+
+    // Keep only the last 8 products (we'll display 4)
+
+    const trimmedViewed = updatedViewed.slice(0, 8);
+
+    localStorage.setItem('recentlyViewed', JSON.stringify(trimmedViewed));
+
+    setRecentlyViewed(trimmedViewed.slice(0, 4)); // Display only 4
+
+  }, [product?.id]);
+
+
+
   if (isLoading) {
 
     return (
@@ -1352,6 +1422,42 @@ export default function ProductDetailPage() {
         </div>
 
       </div>
+
+
+
+      {/* Recently Viewed Products */}
+
+      {recentlyViewed.length > 0 && (
+
+        <div className="px-4 sm:px-6 lg:px-8 py-12 bg-white">
+
+          <div className="max-w-7xl mx-auto">
+
+            <h2 className="text-2xl font-bold text-gray-900 mb-8">Recently Viewed</h2>
+
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+
+              {recentlyViewed.map((viewedProduct: any, index: number) => (
+
+                <BabyCareCard
+
+                  key={viewedProduct.id}
+
+                  product={viewedProduct}
+
+                  index={index}
+
+                />
+
+              ))}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      )}
 
 
 

@@ -28,6 +28,7 @@ import { CartProvider } from "@/contexts/CartContext";
 
 import { LikeProvider } from "@/contexts/LikeContext";
 import { CustomBagBundleProvider } from "@/contexts/CustomBagBundleContext";
+import { GiftBundleProvider } from "@/contexts/GiftBundleContext";
 
 
 
@@ -127,6 +128,8 @@ import AdminOrders from "./pages/AdminOrders";
 
 import AdminSpinWheel from "./pages/AdminSpinWheel";
 
+import GiftBundleReview from "./pages/GiftBundleReview";
+
 import NotFound from "@/pages/not-found";
 
 
@@ -175,6 +178,7 @@ function Router() {
         <Route path="/shop/care" component={ShopCare} />
         <Route path="/shop/offers" component={ShopOffers} />
         <Route path="/bundle-review" component={BundleReview} />
+        <Route path="/gift-bundle-review" component={GiftBundleReview} />
         <Route path="/bundle-checkout" component={BundleCheckoutPage} />
         <Route path="/shop" component={Shop} />
         <Route path="/cart" component={CartPage} />
@@ -306,6 +310,8 @@ function App() {
 
               <CustomBagBundleProvider>
 
+                <GiftBundleProvider>
+
 
 
               <AnimatePresence>
@@ -319,6 +325,7 @@ function App() {
 
 
 
+              </GiftBundleProvider>
               </CustomBagBundleProvider>
             </LikeProvider>
 

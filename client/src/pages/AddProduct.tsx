@@ -122,26 +122,27 @@ const homeSubcategoryItemOptions = [
   "Jhablas",
   "Towels & blankets",
   "Nappies",
-  "Wipes",
   "Beds",
   "New born accessories",
+  "Hats",
 ];
 
 const shopByStyleClassificationOptions = [
   "Jhablas",
   "Towels & blankets",
   "Nappies",
-  "Wipes",
   "Beds",
   "New born accessories",
+  "Hats",
 ];
 
 const productClassificationOptionsBySubcategoryItem: Record<string, string[]> = {
   Jhablas: ["Knot Jhablas", "Button Jhablas"],
   Nappies: ["Nappies"],
-  "Towels & blankets": ["Hooded towels", "Swaddle"],
+  "Towels & blankets": ["Hooded towels", "Swaddle", "Bath towels", "Quilt towels"],
   Beds: ["Baby nest", "Baby net bed"],
   "New born accessories": ["Hats", "Mittens", "Booties"],
+  Hats: ["Hats"],
   "Blockbuster Combos": [
     "Below ₹499",
     "Below ₹999",
@@ -154,11 +155,11 @@ const productClassificationOptionsBySubcategoryItem: Record<string, string[]> = 
 
 const shopByStyleVariantOptionsByGroup: Record<string, string[]> = {
   Jhablas: ["Knot Jhablas", "Button Jhablas"],
-  "Towels & blankets": ["Hooded towels", "Swaddle"],
+  "Towels & blankets": ["Hooded towels", "Swaddle", "Bath towels", "Quilt towels"],
   Beds: ["Baby nest", "Baby net bed"],
   "New born accessories": ["Hats", "Mittens", "Booties"],
   Nappies: ["Nappies"],
-  Wipes: ["Wipes"],
+  Hats: ["Hats"],
 };
 
 const hospitalBagPackOptions = Array.from({ length: 100 }, (_, index) => String(index + 1));

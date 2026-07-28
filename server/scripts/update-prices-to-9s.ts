@@ -28,6 +28,7 @@ async function updatePricesTo9s() {
     console.log('✅ Connected to MongoDB');
 
     const db = mongoose.connection.db;
+    if (!db) throw new Error('Database connection failed');
     const products = await db.collection('products').find({}).toArray();
     
     console.log(`📦 Found ${products.length} products`);

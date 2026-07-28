@@ -1580,6 +1580,127 @@ export async function registerRoutes(
 
 
 
+  // GET /api/products/shop-by-style endpoint for cascading Shop by Style filtering
+  app.get("/api/products/shop-by-style", async (req, res) => {
+    try {
+      const { styleGroup, styleVariant, size, color, minPrice, maxPrice } = req.query;
+
+      const parseParam = (param: any): string[] => {
+        if (!param) return [];
+        if (Array.isArray(param)) return param.map(p => String(p).trim()).filter(Boolean);
+        return String(param).split(',').map(s => s.trim()).filter(Boolean);
+      };
+
+      const selectedStyleGroups = parseParam(styleGroup);
+      const selectedStyleVariants = parseParam(styleVariant);
+      const selectedSizes = parseParam(size);
+      const selectedColors = parseParam(color);
+
+      const allProducts = await productsStorage.getProducts();
+
+      let filteredProducts = allProducts.filter((product: any) => {
+        const isActive = (product.status || "Active").toLowerCase() === "active";
+        const isInStock = product.inStock !== false;
+        if (!isActive || !isInStock) return false;
+
+        const inShopByStyle =
+          (Array.isArray(product.sections) && product.sections.includes("Shop by Style")) ||
+          product.visibleInShopByStyle === true ||
+          (product.category && product.category.toLowerCase() === "style");
+
+        if (!inShopByStyle) return false;
+
+        // Keep price filtering logic intact
+        if (minPrice !== undefined && !isNaN(Number(minPrice))) {
+          if ((product.sellingPrice ?? product.price ?? 0) < Number(minPrice)) return false;
+        }
+        if (maxPrice !== undefined && !isNaN(Number(maxPrice))) {
+          if ((product.sellingPrice ?? product.price ?? 0) > Number(maxPrice)) return false;
+        }
+
+        // 1. Filter by Style Group ($in)
+        if (selectedStyleGroups.length > 0) {
+          const prodGroup = (product.styleGroup || "").toLowerCase().trim();
+          const matchGroup = selectedStyleGroups.some(sg => prodGroup === sg.toLowerCase().trim());
+          if (!matchGroup) return false;
+        }
+
+        // 2. Filter by Style Variant ($in) - only if styleGroup is provided
+        if (selectedStyleVariants.length > 0 && selectedStyleGroups.length > 0) {
+          const prodVariant = (product.styleVariant || "").toLowerCase().trim();
+          const matchVariant = selectedStyleVariants.some(sv => prodVariant === sv.toLowerCase().trim());
+          if (!matchVariant) return false;
+        }
+
+        // 3. Filter by Size ($in)
+        if (selectedSizes.length > 0) {
+          const prodSize = (product.size || "").toLowerCase().trim();
+          const prodSizes = Array.isArray(product.sizes)
+            ? product.sizes.map((s: any) => String(s).toLowerCase().trim())
+            : typeof product.sizes === "string" ? product.sizes.toLowerCase().split(",") : [];
+
+          const matchSize = selectedSizes.some(s => {
+            const lowerS = s.toLowerCase().trim();
+            return prodSize === lowerS || prodSizes.some((ps: string) => ps.includes(lowerS));
+          });
+          if (!matchSize) return false;
+        }
+
+        // 4. Filter by Color ($in)
+        if (selectedColors.length > 0) {
+          const prodColor = (product.color || "").toLowerCase().trim();
+          const prodColors = Array.isArray(product.colors)
+            ? product.colors.map((c: any) => String(c).toLowerCase().trim())
+            : typeof product.colors === "string" ? product.colors.toLowerCase().split(",") : [];
+
+          const matchColor = selectedColors.some(c => {
+            const lowerC = c.toLowerCase().trim();
+            return prodColor === lowerC || prodColors.some((pc: string) => pc.includes(lowerC));
+          });
+          if (!matchColor) return false;
+        }
+
+        return true;
+      });
+
+      // Counts per Style Group and per Style Variant
+      const baseSectionProducts = allProducts.filter((product: any) => {
+        const isActive = (product.status || "Active").toLowerCase() === "active";
+        const isInStock = product.inStock !== false;
+        const inShopByStyle =
+          (Array.isArray(product.sections) && product.sections.includes("Shop by Style")) ||
+          product.visibleInShopByStyle === true ||
+          (product.category && product.category.toLowerCase() === "style");
+        return isActive && isInStock && inShopByStyle;
+      });
+
+      const styleGroupCounts: Record<string, number> = {};
+      const styleVariantCounts: Record<string, number> = {};
+
+      baseSectionProducts.forEach((product: any) => {
+        if (product.styleGroup) {
+          const groupName = product.styleGroup;
+          styleGroupCounts[groupName] = (styleGroupCounts[groupName] || 0) + 1;
+        }
+        if (product.styleVariant) {
+          const variantName = product.styleVariant;
+          styleVariantCounts[variantName] = (styleVariantCounts[variantName] || 0) + 1;
+        }
+      });
+
+      return res.json({
+        products: filteredProducts,
+        counts: {
+          styleGroups: styleGroupCounts,
+          styleVariants: styleVariantCounts
+        }
+      });
+    } catch (error) {
+      console.error("Error in GET /api/products/shop-by-style:", error);
+      return res.status(500).json({ error: "Failed to fetch shop-by-style products" });
+    }
+  });
+
   app.get(api.products.list.path, async (req, res) => {
 
 

@@ -49,7 +49,7 @@ export const products = sqliteTable("products", {
   careInstructions: text("care_instructions"),
 });
 
-export const insertProductSchema = createInsertSchema(products).omit({ id: true });
+export const insertProductSchema = createInsertSchema(products as any).omit({ id: true });
 export type Product = typeof products.$inferSelect;
 export type InsertProduct = z.infer<typeof insertProductSchema>;
 

@@ -897,11 +897,11 @@ export default function Home() {
 
               <div className="bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 border-primary/20 hover:border-primary/40">
 
-                <img 
+                <img
 
-                  src="/pmf6.png" 
+                  src="/pmf6.png"
 
-                  alt="Bath" 
+                  alt="Bath"
 
                   className="w-full h-full object-cover"
                   draggable={false}
@@ -917,6 +917,38 @@ export default function Home() {
               </div>
 
               <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Beds</h3>
+
+            </Link>
+
+            {/* Hats */}
+
+            <Link
+              href="/shop/style?filter=hats"
+              className="group flex flex-col items-center"
+            >
+
+              <div className="bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20 w-40 h-40 sm:w-56 sm:h-56 md:w-60 md:h-60 lg:w-64 lg:h-64 border-primary/20 hover:border-primary/40">
+
+                <img
+
+                  src="/pmf3.png"
+
+                  alt="Hats"
+
+                  className="w-full h-full object-cover"
+                  draggable={false}
+
+                  onError={(e) => {
+
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%238B5CF6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EHats%3C/text%3E%3C/svg%3E";
+
+                  }}
+
+                />
+
+              </div>
+
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Hats</h3>
 
             </Link>
 
@@ -1462,7 +1494,7 @@ export default function Home() {
           {/* Gifting Products - Single Centered Banner */}
           <div className="mt-10 sm:mt-14 flex justify-center px-4 sm:px-6 lg:px-8">
             <div className="w-full">
-              <Link href="/shop/style?section=gifting">
+              <Link href="/shop/style?custom=gift">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

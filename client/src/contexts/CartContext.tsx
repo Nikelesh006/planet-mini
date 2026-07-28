@@ -96,7 +96,7 @@ export interface CartItem {
 
   stockQuantity?: number | null;
 
-  source?: 'normal' | 'bundle';
+  source?: 'normal' | 'bundle' | 'gift-bundle';
 
   bundleId?: string;
 
