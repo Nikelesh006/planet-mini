@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
-import { connectDB } from '../db';
-import SpinWheelPrize from '../models/SpinWheelPrize';
+import { connectDB } from '../db.js';
+import SpinWheelPrize from '../models/SpinWheelPrize.js';
 
 async function seedSpinWheelPrizes() {
   try {

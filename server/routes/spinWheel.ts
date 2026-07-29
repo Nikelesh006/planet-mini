@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { connectDB } from '../db';
-import SpinWheelPrize from '../models/SpinWheelPrize';
-import SpinWheelUser from '../models/SpinWheelUser';
-import SpinWheelResult from '../models/SpinWheelResult';
+import { connectDB } from '../db.js';
+import SpinWheelPrize from '../models/SpinWheelPrize.js';
+import SpinWheelUser from '../models/SpinWheelUser.js';
+import SpinWheelResult from '../models/SpinWheelResult.js';
 
 const router = Router();
 
