@@ -155,6 +155,7 @@ import { CustomBagBundleSummary } from "@/components/CustomBagBundleSummary";
 
 
 import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
+import { useGiftBundle } from "@/contexts/GiftBundleContext";
 
 
 
@@ -1041,6 +1042,57 @@ const isProductInStep = (product: any, stepNumber: number) => {
 };
 
 
+// Gift mode step filtering function
+const isGiftProductInStep = (product: any, stepNumber: number) => {
+  const category = (product.category || "").toLowerCase().trim();
+  const subcategory = (product.subcategory || "").toLowerCase().trim();
+  const subcategoryItem = (product.subcategoryItem || "").toLowerCase().trim();
+  const styleGroup = (product.styleGroup || "").toLowerCase().trim();
+  const productName = (product.name || "").toLowerCase().trim();
+  const description = (product.description || "").toLowerCase().trim();
+  const styleVariant = (product.styleVariant || "").toLowerCase().trim();
+
+  if (stepNumber === 1) {
+    // Step 1: Baby Clothing
+    const targetTerms = ['jhablas', 'new born accessories', 'newborn accessories', 'nappies'];
+    return targetTerms.some(term =>
+      styleGroup.includes(term) ||
+      subcategoryItem.includes(term) ||
+      subcategory.includes(term) ||
+      productName.includes(term) ||
+      description.includes(term) ||
+      styleVariant.includes(term)
+    );
+  }
+
+  if (stepNumber === 2) {
+    // Step 2: Essentials
+    const targetTerms = ['towels and blankets', 'towels & blankets', 'towels', 'blankets'];
+    return targetTerms.some(term =>
+      styleGroup.includes(term) ||
+      subcategoryItem.includes(term) ||
+      subcategory.includes(term) ||
+      productName.includes(term) ||
+      description.includes(term) ||
+      styleVariant.includes(term)
+    );
+  }
+
+  if (stepNumber === 3) {
+    // Step 3: Bedding & Comfort
+    const targetTerms = ['beds', 'hats'];
+    return targetTerms.some(term =>
+      styleGroup.includes(term) ||
+      subcategoryItem.includes(term) ||
+      subcategory.includes(term) ||
+      productName.includes(term) ||
+      description.includes(term) ||
+      styleVariant.includes(term)
+    );
+  }
+
+  return false;
+};
 
 // Helper function to find parent category of a variant
 
@@ -1251,9 +1303,7 @@ export default function ShopStyle() {
 
 
   const [currentStep, setCurrentStep] = useState<number>(0);
-
-
-
+  const [currentGiftStep, setCurrentGiftStep] = useState<number>(0);
 
 
 
@@ -1437,6 +1487,180 @@ export default function ShopStyle() {
 
 
       setCurrentStep(stepId);
+
+
+
+    } else if (giftMode) {
+
+
+
+      // Gift mode validation
+
+
+
+      // Validate step 1
+
+
+
+      if (stepId > 1) {
+
+
+
+        const hasStep1Item = giftBundleItems.some((item: any) => isGiftProductInStep(item.product, 1));
+
+
+
+        if (!hasStep1Item) {
+
+
+
+          toast({
+
+
+
+            title: "Action Required",
+
+
+
+            description: "Please add at least one product from Baby Clothing (Step 1) to your gift bundle.",
+
+
+
+            variant: "destructive"
+
+
+
+          });
+
+
+
+          return;
+
+
+
+        }
+
+
+
+      }
+
+
+
+      
+
+
+      // Validate step 2
+
+
+
+      if (stepId > 2) {
+
+
+
+        const hasStep2Item = giftBundleItems.some((item: any) => isGiftProductInStep(item.product, 2));
+
+
+
+        if (!hasStep2Item) {
+
+
+
+          toast({
+
+
+
+            title: "Action Required",
+
+
+
+            description: "Please add at least one product from Essentials (Step 2) to your gift bundle.",
+
+
+
+            variant: "destructive"
+
+
+
+          });
+
+
+
+          return;
+
+
+
+        }
+
+
+
+      }
+
+
+
+      
+
+
+
+      // Validate step 3 and navigate to gift review
+
+
+
+      if (stepId === 4) {
+
+
+
+        const hasStep3Item = giftBundleItems.some((item: any) => isGiftProductInStep(item.product, 3));
+
+
+
+        if (!hasStep3Item) {
+
+
+
+          toast({
+
+
+
+            title: "Action Required",
+
+
+
+            description: "Please add at least one product from Bedding & Comfort (Step 3) to your gift bundle.",
+
+
+
+            variant: "destructive"
+
+
+
+          });
+
+
+
+          return;
+
+
+
+        }
+
+
+
+        setLocation('/gift-bundle-review');
+
+
+
+        return;
+
+
+
+      }
+
+
+
+      
+
+
+      setCurrentGiftStep(stepId);
 
 
 
@@ -1821,6 +2045,7 @@ export default function ShopStyle() {
 
 
   const customMode = searchParams.get("custom") === "true";
+  const giftMode = searchParams.get("custom") === "gift";
 
 
 
@@ -1841,9 +2066,7 @@ export default function ShopStyle() {
 
 
   const { bundleItems, addToBundle, removeFromBundle, updateQuantity, bundleTotal, totalItems } = useCustomBagBundle();
-
-
-
+  const { giftBundleItems, addToGiftBundle, removeFromGiftBundle, updateGiftQuantity, giftBundleTotal, giftTotalItems } = useGiftBundle();
 
 
 
@@ -1876,7 +2099,27 @@ export default function ShopStyle() {
 
 
 
-  }, [customMode]);
+    if (giftMode) {
+
+
+
+      setCurrentGiftStep(1);
+
+
+
+    } else {
+
+
+
+      setCurrentGiftStep(0);
+
+
+
+    }
+
+
+
+  }, [customMode, giftMode]);
 
 
 
@@ -6541,6 +6784,26 @@ export default function ShopStyle() {
 
 
         .filter(product => {
+
+
+
+          if (!customMode && !giftMode) return true;
+
+
+
+          if (giftMode) {
+
+
+
+            if (!currentGiftStep) return true;
+
+
+
+            return isGiftProductInStep(product, currentGiftStep);
+
+
+
+          }
 
 
 
@@ -11706,7 +11969,7 @@ export default function ShopStyle() {
 
 
 
-      {(homeFilter === 'hospital-bags' || customMode) && (
+      {(homeFilter === 'hospital-bags' || customMode || giftMode) && (
 
 
 
@@ -12000,11 +12263,11 @@ export default function ShopStyle() {
 
 
 
-            {/* Step Filters - Only in custom mode */}
+            {/* Step Filters - Only in custom mode or gift mode */}
 
 
 
-            {customMode && (
+            {(customMode || giftMode) && (
 
 
 
@@ -12024,7 +12287,7 @@ export default function ShopStyle() {
 
 
 
-                    currentStep === 1
+                    (customMode ? currentStep : currentGiftStep) === 1
 
 
 
@@ -12068,7 +12331,7 @@ export default function ShopStyle() {
 
 
 
-                    currentStep === 2
+                    (customMode ? currentStep : currentGiftStep) === 2
 
 
 
@@ -12092,7 +12355,7 @@ export default function ShopStyle() {
 
 
 
-                  <span className="text-xs sm:text-sm">Other Essentials</span>
+                  <span className="text-xs sm:text-sm">{giftMode ? 'Essentials' : 'Other Essentials'}</span>
 
 
 
@@ -12112,7 +12375,7 @@ export default function ShopStyle() {
 
 
 
-                    currentStep === 3
+                    (customMode ? currentStep : currentGiftStep) === 3
 
 
 
@@ -12136,7 +12399,7 @@ export default function ShopStyle() {
 
 
 
-                  <span className="text-xs sm:text-sm">Nursing and Bedding</span>
+                  <span className="text-xs sm:text-sm">{giftMode ? 'Bedding & Comfort' : 'Nursing and Bedding'}</span>
 
 
 
@@ -12156,11 +12419,11 @@ export default function ShopStyle() {
 
 
 
-            {/* Next Step Buttons - Only in custom mode */}
+            {/* Next Step Buttons - Only in custom mode or gift mode */}
 
 
 
-            {customMode && (
+            {(customMode || giftMode) && (
 
 
 
@@ -12168,7 +12431,7 @@ export default function ShopStyle() {
 
 
 
-                {currentStep === 1 && (
+                {(customMode ? currentStep : currentGiftStep) === 1 && (
 
 
 
@@ -12212,7 +12475,7 @@ export default function ShopStyle() {
 
 
 
-                {currentStep === 2 && (
+                {(customMode ? currentStep : currentGiftStep) === 2 && (
 
 
 
@@ -12256,7 +12519,7 @@ export default function ShopStyle() {
 
 
 
-                {currentStep === 3 && (
+                {(customMode ? currentStep : currentGiftStep) === 3 && (
 
 
 
@@ -23468,7 +23731,7 @@ export default function ShopStyle() {
 
 
 
-                      <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} customMode={customMode} />
+                      <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} customMode={customMode} giftMode={giftMode} />
 
 
 
@@ -24377,6 +24640,58 @@ export default function ShopStyle() {
 
 
             onUpdateQuantity={updateQuantity}
+
+
+
+          />
+
+
+
+        </>
+
+
+
+      )}
+
+
+
+      {/* Gift Bundle Summary - Show when in gift mode and has items */}
+
+
+
+      {giftMode && (
+
+
+
+        <>
+
+
+
+          {console.log('GiftBundleSummary render check:', { giftMode, giftBundleItemsLength: giftBundleItems.length })}
+
+
+
+          <CustomBagBundleSummary
+
+
+
+            bundleItems={giftBundleItems}
+
+
+
+            bundleTotal={giftBundleTotal}
+
+
+
+            totalItems={giftTotalItems}
+
+
+
+            onRemoveItem={removeFromGiftBundle}
+
+
+
+            onUpdateQuantity={updateGiftQuantity}
 
 
 

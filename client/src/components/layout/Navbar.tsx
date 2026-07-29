@@ -323,7 +323,7 @@ export default function Navbar() {
                           ))}
                         </>
                       ) : (
-                        <p className="text-sm text-gray-500 text-center py-4">No products found</p>
+                        <p className="text-sm text-gray-500 text-center py-4">Start typing to search products</p>
                       )}
                     </div>
                   </motion.div>
