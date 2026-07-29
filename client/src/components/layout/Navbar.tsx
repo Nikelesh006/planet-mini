@@ -63,14 +63,6 @@ export default function Navbar() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);
 
-  // Recommended products data
-  const recommendedProducts = [
-    { id: 1, name: "Soft Cotton Jhabla", category: "Jhablas", sellingPrice: 299 },
-    { id: 2, name: "Premium Bath Towel", category: "Towels", sellingPrice: 499 },
-    { id: 3, name: "Muslin Swaddle Cloth", category: "Muslin Clothes", sellingPrice: 399 },
-    { id: 4, name: "Baby Care Combo", category: "Combo", sellingPrice: 899 },
-    { id: 5, name: "Organic Baby Bib", category: "Muslin Clothes", sellingPrice: 199 },
-  ];
 
   useEffect(() => {
     const currentTerm = searchTerms[currentTermIndex];
@@ -330,25 +322,8 @@ export default function Navbar() {
                             </Link>
                           ))}
                         </>
-                      ) : searchQuery.trim() ? (
-                        <p className="text-sm text-gray-500 text-center py-4">No products found</p>
                       ) : (
-                        <>
-                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recommended</p>
-                          {recommendedProducts.map((product) => (
-                            <Link
-                              key={product.id}
-                              href={`/products/${product.id}`}
-                              onClick={() => setSearchDropdownOpen(false)}
-                              className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
-                            >
-                              <div>
-                                <p className="text-sm font-medium text-gray-900">{product.name}</p>
-                                <p className="text-xs text-gray-500">{product.category}</p>
-                              </div>
-                            </Link>
-                          ))}
-                        </>
+                        <p className="text-sm text-gray-500 text-center py-4">No products found</p>
                       )}
                     </div>
                   </motion.div>
@@ -715,20 +690,36 @@ export default function Navbar() {
                 />
               </div>
               <div className="mt-4 max-h-80 overflow-y-auto scrollbar-hide">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Recommended</p>
-                {recommendedProducts.map((product) => (
-                  <Link
-                    key={product.id}
-                    href={`/product/${product.id}`}
-                    onClick={() => setSearchDropdownOpen(false)}
-                    className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
-                  >
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">{product.name}</p>
-                      <p className="text-xs text-gray-500">{product.category}</p>
-                    </div>
-                  </Link>
-                ))}
+                {searchQuery.trim() && searchResults.length > 0 ? (
+                  <>
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Search Results</p>
+                    {searchResults.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/products/${product.slug}`}
+                        onClick={() => {
+                          setSearchDropdownOpen(false);
+                          setSearchQuery('');
+                        }}
+                        className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
+                      >
+                        <img 
+                          src={product.image} 
+                          alt={product.name}
+                          className="w-10 h-10 rounded-md object-cover mr-3"
+                        />
+                        <div>
+                          <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                          <p className="text-xs text-gray-500">₹{product.sellingPrice}</p>
+                        </div>
+                      </Link>
+                    ))}
+                  </>
+                ) : searchQuery.trim() ? (
+                  <p className="text-sm text-gray-500 text-center py-4">No products found</p>
+                ) : (
+                  <p className="text-sm text-gray-500 text-center py-4">Start typing to search products</p>
+                )}
               </div>
             </motion.div>
           </>
