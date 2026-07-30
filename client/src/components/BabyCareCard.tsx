@@ -166,7 +166,7 @@ export function BabyCareCard({ product, index, customMode = false, giftMode = fa
                 disabled={!product.inStock}
                 className="w-full bg-white text-black py-2 px-3 text-sm font-medium hover:bg-red-100 hover:text-red-700 transition-all duration-200 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg border border-gray-300"
               >
-                {product.inStock ? (customMode ? "Add to Bag" : "Quick Add") : "Out of Stock"}
+                {product.inStock ? (customMode ? "Add to Bag" : giftMode ? "Add to Gift" : "Quick Add") : "Out of Stock"}
               </button>
             </div>
           </div>
@@ -237,7 +237,7 @@ export function BabyCareCard({ product, index, customMode = false, giftMode = fa
                 disabled={!product.inStock}
                 className="w-full bg-white text-black py-2 px-3 text-sm font-medium hover:bg-red-100 hover:text-red-700 transition-all duration-200 disabled:bg-gray-200 disabled:text-gray-600 disabled:cursor-not-allowed rounded-lg border border-gray-300"
               >
-                {product.inStock ? (customMode ? "Add to Bag" : "Quick Add") : "Out of Stock"}
+                {product.inStock ? (customMode ? "Add to Bag" : giftMode ? "Add to Gift" : "Quick Add") : "Out of Stock"}
               </button>
             </div>
           </div>
@@ -274,6 +274,8 @@ export function BabyCareCard({ product, index, customMode = false, giftMode = fa
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         product={product}
+        customMode={customMode}
+        giftMode={giftMode}
       />
 
       {/* Google Auth Modal */}

@@ -15,7 +15,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useLikes } from "@/contexts/LikeContext";
 
 import { useCustomBagBundle } from "@/hooks/useCustomBagBundle";
-
+import { useGiftBundle } from "@/contexts/GiftBundleContext";
 import type { ProductResponse } from "@shared/routes";
 
 import { isLowStock } from "@shared/stock";
@@ -29,6 +29,9 @@ interface CustomBagProductModalProps {
   onClose: () => void;
 
   product: ProductResponse;
+
+  customMode?: boolean;
+  giftMode?: boolean;
 
 }
 
@@ -50,7 +53,7 @@ const getCloudinaryImageUrl = (url: string, transformation: string) => {
 
 
 
-export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagProductModalProps) {
+export function CustomBagProductModal({ isOpen, onClose, product, customMode = false, giftMode = false }: CustomBagProductModalProps) {
 
   const [quantity, setQuantity] = useState(1);
 
@@ -67,6 +70,7 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
   const { likedProducts, toggleLike } = useLikes();
 
   const { addToBundle } = useCustomBagBundle();
+  const { addToGiftBundle } = useGiftBundle();
 
   const isWishlisted = likedProducts.some(p => p.id === product.id);
 
@@ -94,19 +98,21 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
 
     executeWithAuth(() => {
 
-      addToBundle(product, quantity, product.styleVariant || undefined, selectedVariant);
-
-
-
-      toast({
-
-        title: "Added to Bundle!",
-
-        description: `${product.name} has been added to your custom bag bundle.`,
-
-        variant: "success"
-
-      });
+      if (giftMode) {
+        addToGiftBundle(product, quantity, product.styleVariant || undefined, selectedVariant);
+        toast({
+          title: "Added to Gift Bundle!",
+          description: `${product.name} has been added to your gift bundle.`,
+          variant: "success"
+        });
+      } else {
+        addToBundle(product, quantity, product.styleVariant || undefined, selectedVariant);
+        toast({
+          title: "Added to Bundle!",
+          description: `${product.name} has been added to your custom bag bundle.`,
+          variant: "success"
+        });
+      }
 
       onClose();
 
@@ -589,7 +595,7 @@ export function CustomBagProductModal({ isOpen, onClose, product }: CustomBagPro
 
                         <ShoppingBag className="w-5 h-5" />
 
-                        {product.inStock ? 'Add to Bag' : 'Out of Stock'}
+                        {product.inStock ? (giftMode ? 'Add to Gift' : 'Add to Bag') : 'Out of Stock'}
 
                       </button>
 

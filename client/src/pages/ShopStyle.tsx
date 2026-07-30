@@ -24620,29 +24620,12 @@ export default function ShopStyle() {
 
 
           <CustomBagBundleSummary
-
-
-
             bundleItems={bundleItems}
-
-
-
             bundleTotal={bundleTotal}
-
-
-
             totalItems={totalItems}
-
-
-
             onRemoveItem={removeFromBundle}
-
-
-
             onUpdateQuantity={updateQuantity}
-
-
-
+            reviewPageUrl="/bundle-review"
           />
 
 
@@ -24672,29 +24655,12 @@ export default function ShopStyle() {
 
 
           <CustomBagBundleSummary
-
-
-
             bundleItems={giftBundleItems}
-
-
-
             bundleTotal={giftBundleTotal}
-
-
-
             totalItems={giftTotalItems}
-
-
-
             onRemoveItem={removeFromGiftBundle}
-
-
-
             onUpdateQuantity={updateGiftQuantity}
-
-
-
+            reviewPageUrl="/gift-bundle-review"
           />
 
 

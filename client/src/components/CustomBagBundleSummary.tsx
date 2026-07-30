@@ -18,6 +18,7 @@ interface CustomBagBundleSummaryProps {
   totalItems: number;
   onRemoveItem: (itemId: string) => void;
   onUpdateQuantity: (itemId: string, quantity: number) => void;
+  reviewPageUrl?: string;
 }
 
 export function CustomBagBundleSummary({
@@ -25,7 +26,8 @@ export function CustomBagBundleSummary({
   bundleTotal,
   totalItems,
   onRemoveItem,
-  onUpdateQuantity
+  onUpdateQuantity,
+  reviewPageUrl = '/bundle-review'
 }: CustomBagBundleSummaryProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -81,7 +83,7 @@ export function CustomBagBundleSummary({
             </div>
 
             <div className="flex items-center gap-2">
-              <Link href="/bundle-review" className="flex-1 sm:flex-none">
+              <Link href={reviewPageUrl} className="flex-1 sm:flex-none">
                 <button className="w-full bg-black text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold hover:bg-gray-800 transition-all active:scale-95 text-xs sm:text-sm">
                   Checkout
                 </button>
