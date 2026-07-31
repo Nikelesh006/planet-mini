@@ -46,7 +46,103 @@ import { motion } from "framer-motion";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { Link, useLocation } from "wouter";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -98,7 +194,59 @@ import { useState, useEffect } from "react";
 
 
 
+
+
+
+
 import { useToast } from "@/hooks/use-toast";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -150,12 +298,69 @@ import { BabyCareCard } from "@/components/BabyCareCard";
 
 
 
+
+
+
+
 import { CustomBagBundleSummary } from "@/components/CustomBagBundleSummary";
 
 
 
+
+
+
+
 import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
+
 import { useGiftBundle } from "@/contexts/GiftBundleContext";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -251,6 +456,54 @@ import { Sparkles, Filter, Search, X } from "lucide-react";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useProducts } from "@/hooks/useProducts";
 
 
@@ -267,7 +520,71 @@ import { useProducts } from "@/hooks/useProducts";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { useQueryClient } from "@tanstack/react-query";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -411,7 +728,115 @@ import { Slider } from "@/components/ui/slider";
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 interface FilterSection {
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -427,7 +852,59 @@ interface FilterSection {
 
 
 
+
+
+
+
   title: string;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -523,7 +1000,103 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   items?: { id: string; name: string; count: number }[];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -619,7 +1192,103 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   min?: number;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -715,7 +1384,103 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   step?: number;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -859,11 +1624,115 @@ interface FilterSection {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
   const category = (product.category || "").toLowerCase().trim();
+
+
+
+
 
 
 
@@ -871,7 +1740,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
   const subcategoryItem = (product.subcategoryItem || "").toLowerCase().trim();
+
+
+
+
 
 
 
@@ -879,7 +1756,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
   const productName = (product.name || "").toLowerCase().trim();
+
+
+
+
 
 
 
@@ -887,7 +1772,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
   const styleVariant = (product.styleVariant || "").toLowerCase().trim();
+
+
+
+
 
 
 
@@ -895,7 +1788,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
     const targetTerms = ['jhablas', 'new born accessories', 'newborn accessories', 'nappies'];
+
+
+
+
 
 
 
@@ -903,7 +1804,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       styleGroup.includes(term) || 
+
+
+
+
 
 
 
@@ -911,7 +1820,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       subcategory.includes(term) ||
+
+
+
+
 
 
 
@@ -919,7 +1836,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       description.includes(term) || 
+
+
+
+
 
 
 
@@ -927,7 +1852,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
     );
+
+
+
+
 
 
 
@@ -935,7 +1868,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -943,7 +1884,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
     const targetTerms = ['towels and blankets', 'towels & blankets', 'towels', 'blankets'];
+
+
+
+
 
 
 
@@ -951,7 +1900,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       styleGroup.includes(term) || 
+
+
+
+
 
 
 
@@ -959,7 +1916,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       subcategory.includes(term) ||
+
+
+
+
 
 
 
@@ -967,7 +1932,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       description.includes(term) || 
+
+
+
+
 
 
 
@@ -975,7 +1948,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
     );
+
+
+
+
 
 
 
@@ -983,7 +1964,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -991,7 +1980,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
     const targetTerms = ['beds', 'hats'];
+
+
+
+
 
 
 
@@ -999,7 +1996,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       styleGroup.includes(term) || 
+
+
+
+
 
 
 
@@ -1007,7 +2012,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       subcategory.includes(term) ||
+
+
+
+
 
 
 
@@ -1015,7 +2028,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
       description.includes(term) || 
+
+
+
+
 
 
 
@@ -1023,7 +2044,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
     );
+
+
+
+
 
 
 
@@ -1031,7 +2060,15 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
   
+
+
+
+
 
 
 
@@ -1039,78 +2076,165 @@ const isProductInStep = (product: any, stepNumber: number) => {
 
 
 
+
+
+
+
 };
+
+
+
 
 
 // Gift mode step filtering function
+
 const isGiftProductInStep = (product: any, stepNumber: number) => {
+
   const category = (product.category || "").toLowerCase().trim();
+
   const subcategory = (product.subcategory || "").toLowerCase().trim();
+
   const subcategoryItem = (product.subcategoryItem || "").toLowerCase().trim();
+
   const styleGroup = (product.styleGroup || "").toLowerCase().trim();
+
   const productName = (product.name || "").toLowerCase().trim();
+
   const description = (product.description || "").toLowerCase().trim();
+
   const styleVariant = (product.styleVariant || "").toLowerCase().trim();
 
+
+
   if (stepNumber === 1) {
+
     // Step 1: Baby Clothing
+
     const targetTerms = ['jhablas', 'new born accessories', 'newborn accessories', 'nappies'];
+
     return targetTerms.some(term =>
+
       styleGroup.includes(term) ||
+
       subcategoryItem.includes(term) ||
+
       subcategory.includes(term) ||
+
       productName.includes(term) ||
+
       description.includes(term) ||
+
       styleVariant.includes(term)
+
     );
+
   }
+
+
 
   if (stepNumber === 2) {
+
     // Step 2: Essentials
+
     const targetTerms = ['towels and blankets', 'towels & blankets', 'towels', 'blankets'];
+
     return targetTerms.some(term =>
+
       styleGroup.includes(term) ||
+
       subcategoryItem.includes(term) ||
+
       subcategory.includes(term) ||
+
       productName.includes(term) ||
+
       description.includes(term) ||
+
       styleVariant.includes(term)
+
     );
+
   }
+
+
 
   if (stepNumber === 3) {
+
     // Step 3: Bedding & Comfort
+
     const targetTerms = ['beds', 'hats'];
+
     return targetTerms.some(term =>
+
       styleGroup.includes(term) ||
+
       subcategoryItem.includes(term) ||
+
       subcategory.includes(term) ||
+
       productName.includes(term) ||
+
       description.includes(term) ||
+
       styleVariant.includes(term)
+
     );
+
   }
 
+
+
   return false;
+
 };
+
+
 
 // Helper function to find parent category of a variant
 
+
+
 const findParentCategory = (variantId: string): string | null => {
+
+
 
   for (const [categoryId, category] of Object.entries(STYLE_MAPPING)) {
 
+
+
     if (category.variants.some(v => v.id === variantId)) {
+
+
 
       return categoryId;
 
+
+
     }
+
+
 
   }
 
+
+
   return null;
 
+
+
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1126,7 +2250,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
   'jhablas': { 
+
+
+
+
 
 
 
@@ -1134,7 +2266,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     icon: '👶',
+
+
+
+
 
 
 
@@ -1142,7 +2282,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
   },
+
+
+
+
 
 
 
@@ -1150,7 +2298,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     name: 'Towels and Blankets', 
+
+
+
+
 
 
 
@@ -1158,11 +2314,23 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     variants: [{ id: 'hooded-towels', name: 'Hooded Towels' }, { id: 'swaddle', name: 'Swaddle' }] 
 
 
 
+
+
+
+
   },
+
+
+
+
 
 
 
@@ -1170,7 +2338,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     name: 'Nappies',
+
+
+
+
 
 
 
@@ -1178,11 +2354,23 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     variants: [{ id: 'newborn-nappies', name: 'Newborn Nappies' }, { id: 'small-nappies', name: 'Small Nappies' }, { id: 'medium-nappies', name: 'Medium Nappies' }, { id: 'large-nappies', name: 'Large Nappies' }]
 
 
 
+
+
+
+
   },
+
+
+
+
 
 
 
@@ -1190,7 +2378,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     name: 'Wipes',
+
+
+
+
 
 
 
@@ -1198,11 +2394,23 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     variants: [{ id: 'wet-wipes', name: 'Wet Wipes' }, { id: 'dry-wipes', name: 'Dry Wipes' }, { id: 'baby-wipes', name: 'Baby Wipes' }]
 
 
 
+
+
+
+
   },
+
+
+
+
 
 
 
@@ -1210,7 +2418,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     name: 'Newborn Accessories',
+
+
+
+
 
 
 
@@ -1218,11 +2434,23 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
-    variants: [{ id: 'hat', name: 'Hat' }, { id: 'mittens', name: 'Mittens' }, { id: 'booties', name: 'Booties' }]
+
+
+
+
+    variants: [{ id: 'dry-sheets', name: 'Dry Sheets' }, { id: 'wipes', name: 'Wipes' }, { id: 'booties', name: 'Booties' }, { id: 'mittens', name: 'Mittens' }]
+
+
+
+
 
 
 
   },
+
+
+
+
 
 
 
@@ -1230,7 +2458,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     name: 'Hats',
+
+
+
+
 
 
 
@@ -1238,7 +2474,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     variants: [{ id: 'hat', name: 'Hat' }]
+
+
+
+
 
 
 
@@ -1246,7 +2490,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
   'beds': {
+
+
+
+
 
 
 
@@ -1254,7 +2506,15 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
     icon: '🛏️',
+
+
+
+
 
 
 
@@ -1262,13 +2522,33 @@ const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id
 
 
 
+
+
+
+
   }
+
+
+
+
 
 
 
 };
 
+
+
 // Helper function to find parent category of a variant
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1282,11 +2562,27 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   const [location, setLocation] = useLocation();
 
 
 
+
+
+
+
   const { toast } = useToast();
+
+
+
+
+
+
+
+
 
 
 
@@ -1302,8 +2598,28 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
   const [currentStep, setCurrentStep] = useState<number>(0);
+
   const [currentGiftStep, setCurrentGiftStep] = useState<number>(0);
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1318,7 +2634,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     if (customMode) {
+
+
+
+
 
 
 
@@ -1326,7 +2650,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       if (stepId > 1) {
+
+
+
+
 
 
 
@@ -1334,7 +2666,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         if (!hasStep1Item) {
+
+
+
+
 
 
 
@@ -1342,7 +2682,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             title: "Action Required",
+
+
+
+
 
 
 
@@ -1350,7 +2698,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             variant: "destructive"
+
+
+
+
 
 
 
@@ -1358,7 +2714,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           return;
+
+
+
+
 
 
 
@@ -1366,7 +2730,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -1374,7 +2746,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       // Validate step 2
+
+
+
+
 
 
 
@@ -1382,7 +2762,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         const hasStep2Item = bundleItems.some((item: any) => isProductInStep(item.product, 2));
+
+
+
+
 
 
 
@@ -1390,7 +2778,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           toast({
+
+
+
+
 
 
 
@@ -1398,7 +2794,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             description: "Please add at least one product from Other Essentials (Step 2) to your bundle.",
+
+
+
+
 
 
 
@@ -1406,7 +2810,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           });
+
+
+
+
 
 
 
@@ -1414,11 +2826,27 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         }
 
 
 
+
+
+
+
       }
+
+
+
+
+
+
+
+
 
 
 
@@ -1430,7 +2858,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       if (stepId === 4) {
+
+
+
+
 
 
 
@@ -1438,7 +2874,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         if (!hasStep3Item) {
+
+
+
+
 
 
 
@@ -1446,7 +2890,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             title: "Action Required",
+
+
+
+
 
 
 
@@ -1454,7 +2906,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             variant: "destructive"
+
+
+
+
 
 
 
@@ -1462,11 +2922,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           return;
 
 
 
+
+
+
+
         }
+
+
+
+
 
 
 
@@ -1474,7 +2946,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         return;
+
+
+
+
 
 
 
@@ -1482,11 +2962,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       
 
 
 
+
+
+
+
       setCurrentStep(stepId);
+
+
+
+
 
 
 
@@ -1494,7 +2986,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       // Gift mode validation
+
+
+
+
 
 
 
@@ -1502,7 +3002,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       if (stepId > 1) {
+
+
+
+
 
 
 
@@ -1510,7 +3018,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         if (!hasStep1Item) {
+
+
+
+
 
 
 
@@ -1518,7 +3034,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             title: "Action Required",
+
+
+
+
 
 
 
@@ -1526,7 +3050,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             variant: "destructive"
+
+
+
+
 
 
 
@@ -1534,7 +3066,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           return;
+
+
+
+
 
 
 
@@ -1542,14 +3082,29 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
       
 
 
+
+
+
       // Validate step 2
+
+
+
+
 
 
 
@@ -1557,7 +3112,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         const hasStep2Item = giftBundleItems.some((item: any) => isGiftProductInStep(item.product, 2));
+
+
+
+
 
 
 
@@ -1565,11 +3128,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           toast({
 
 
 
+
+
+
+
             title: "Action Required",
+
+
+
+
 
 
 
@@ -1577,7 +3152,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             variant: "destructive"
+
+
+
+
 
 
 
@@ -1585,7 +3168,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           return;
+
+
+
+
 
 
 
@@ -1593,11 +3184,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       }
 
 
 
+
+
+
+
       
+
+
+
+
 
 
 
@@ -1605,7 +3208,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       if (stepId === 4) {
+
+
+
+
 
 
 
@@ -1613,7 +3224,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         if (!hasStep3Item) {
+
+
+
+
 
 
 
@@ -1621,7 +3240,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             title: "Action Required",
+
+
+
+
 
 
 
@@ -1629,7 +3256,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             variant: "destructive"
+
+
+
+
 
 
 
@@ -1637,7 +3272,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           return;
+
+
+
+
 
 
 
@@ -1645,7 +3288,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         setLocation('/gift-bundle-review');
+
+
+
+
 
 
 
@@ -1653,14 +3304,29 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
       
 
 
+
+
+
       setCurrentGiftStep(stepId);
+
+
+
+
 
 
 
@@ -1668,7 +3334,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       setCurrentStep(stepId);
+
+
+
+
 
 
 
@@ -1676,7 +3350,59 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1772,6 +3498,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   useEffect(() => {
 
 
@@ -1820,7 +3594,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     window.scrollTo(0, 0);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1964,7 +3834,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const searchParams = new URLSearchParams(window.location.search);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2028,6 +4042,22 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const searchParam = searchParams.get("search");
 
 
@@ -2044,8 +4074,29 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const customMode = searchParams.get("custom") === "true";
+
   const giftMode = searchParams.get("custom") === "gift";
+
+
+
+
 
 
 
@@ -2053,7 +4104,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   const isBlockbusterSection = sectionParam === "blockbuster-combos";
+
+
+
+
 
 
 
@@ -2061,12 +4120,26 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   const isGiftingSection = sectionParam === "gifting";
 
 
 
+
+
+
+
   const { bundleItems, addToBundle, removeFromBundle, updateQuantity, bundleTotal, totalItems } = useCustomBagBundle();
+
   const { giftBundleItems, addToGiftBundle, removeFromGiftBundle, updateGiftQuantity, giftBundleTotal, giftTotalItems } = useGiftBundle();
+
+
+
+
+
 
 
 
@@ -2075,7 +4148,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   useEffect(() => {
+
+
+
+
 
 
 
@@ -2083,11 +4164,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       setCurrentStep(1);
 
 
 
+
+
+
+
     } else {
+
+
+
+
 
 
 
@@ -2095,7 +4188,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -2103,7 +4204,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       setCurrentGiftStep(1);
+
+
+
+
 
 
 
@@ -2111,11 +4220,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       setCurrentGiftStep(0);
 
 
 
+
+
+
+
     }
+
+
+
+
 
 
 
@@ -2191,7 +4312,83 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Fetch all products for the master catalog
+
+
+
+
 
 
 
@@ -2203,7 +4400,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
   const products = (allProducts || []).filter((product: any) => {
+
+
+
+
 
 
 
@@ -2211,11 +4420,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     if (customMode) return true;
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -2223,7 +4444,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     const isHomeOrStyle = product.category === 'home' || product.category === 'style';
+
+
+
+
 
 
 
@@ -2231,7 +4460,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     
+
+
+
+
 
 
 
@@ -2239,7 +4476,59 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2335,7 +4624,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2431,11 +4816,67 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [selectedFilters, setSelectedFilters] = useState<string[]>(
 
 
 
+
+
+
+
     homeFilter && STYLE_MAPPING[homeFilter] ? [homeFilter] : []
+
+
+
+
 
 
 
@@ -2447,7 +4888,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
   // Sync selectedFilters from homeFilter URL param on mount / param change
+
+
+
+
 
 
 
@@ -2455,7 +4908,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     if (homeFilter && STYLE_MAPPING[homeFilter]) {
+
+
+
+
 
 
 
@@ -2463,7 +4924,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         if (!prev.includes(homeFilter)) return [homeFilter];
+
+
+
+
 
 
 
@@ -2471,7 +4940,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       });
+
+
+
+
 
 
 
@@ -2479,7 +4956,59 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   }, [homeFilter]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2575,7 +5104,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2655,7 +5280,135 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2799,7 +5552,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const filterCategories = [
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2895,7 +5744,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     { id: 'towels', name: 'Towels & Blankets', count: 18 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2991,7 +5936,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     { id: 'wipes', name: 'Wipes', count: 15 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3087,7 +6128,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     { id: 'newborn-accessories', name: 'Newborn Accessories', count: 12 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3183,7 +6320,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   ];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3327,6 +6608,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const filterSections: FilterSection[] = [
 
 
@@ -3375,7 +6704,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3471,6 +6896,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Categories',
 
 
@@ -3519,7 +6992,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       icon: Filter,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3615,6 +7184,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     },
 
 
@@ -3663,7 +7280,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3759,7 +7472,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Size',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3855,7 +7664,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       items: [
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3951,7 +7856,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'infant', name: 'Infant (3-6M)', count: 22 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4047,7 +8048,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'toddler', name: 'Toddler (1-2Y)', count: 19 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4143,7 +8240,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4239,7 +8432,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4335,6 +8624,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Color',
 
 
@@ -4383,7 +8720,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       icon: Filter,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4479,7 +8912,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'white', name: 'White', count: 31 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4575,7 +9104,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'blue', name: 'Blue', count: 24 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4671,7 +9296,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         { id: 'green', name: 'Green', count: 12 },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4767,7 +9488,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4863,7 +9680,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -4959,7 +9872,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       title: 'Price Range',
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5055,7 +10064,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       isSlider: true,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5151,7 +10256,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       max: 5000,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5247,7 +10448,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5391,7 +10688,107 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const handleFilterToggle = (filterId: string) => {
+
+
+
+
 
 
 
@@ -5399,7 +10796,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     const isCurrentlySelected = selectedFilters.includes(filterId);
+
+
+
+
 
 
 
@@ -5411,7 +10816,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
     if (isStyleGroup && !isCategory) {
+
+
+
+
 
 
 
@@ -5419,7 +10836,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       const newParams = new URLSearchParams(window.location.search);
+
+
+
+
 
 
 
@@ -5427,7 +10852,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         // Deselecting: remove group and its variants from selectedFilters, clear URL filter
+
+
+
+
 
 
 
@@ -5435,7 +10868,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         setSelectedFilters(prev => prev.filter(id => id !== filterId && !groupVariantIds.includes(id)));
+
+
+
+
 
 
 
@@ -5443,7 +10884,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       } else {
+
+
+
+
 
 
 
@@ -5451,7 +10900,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         setSelectedFilters([filterId]);
+
+
+
+
 
 
 
@@ -5459,7 +10916,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       }
+
+
+
+
 
 
 
@@ -5467,7 +10932,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     } else {
+
+
+
+
 
 
 
@@ -5475,7 +10948,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       setSelectedFilters(prev =>
+
+
+
+
 
 
 
@@ -5483,7 +10964,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           ? prev.filter(id => id !== filterId)
+
+
+
+
 
 
 
@@ -5491,7 +10980,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       );
+
+
+
+
 
 
 
@@ -5499,7 +10996,107 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5643,7 +11240,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     setExpandedCategories(prev => 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5739,7 +11432,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         ? prev.filter(id => id !== categoryId)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5835,6 +11624,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     );
 
 
@@ -5883,7 +11720,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -5983,7 +11964,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     setSelectedFilters([]);
+
+
+
+
 
 
 
@@ -5991,7 +11980,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     // Also clear the filter URL param
+
+
+
+
 
 
 
@@ -5999,7 +11996,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     newParams.delete('filter');
+
+
+
+
 
 
 
@@ -6007,11 +12012,115 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     setLocation(`/shop/style${paramStr ? '?' + paramStr : ''}`);
 
 
 
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6109,11 +12218,33 @@ export default function ShopStyle() {
 
   const normalizeText = (value: string | undefined | null) =>
 
+
+
     (value || "").toLowerCase().trim().replace(/\s+/g, " ");
 
 
 
+
+
+
+
   const matchesHomeFilter = (product: any, filter: string | null) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6161,7 +12292,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Style filter: match styleGroup, styleVariant, name, description, or printName
+
+
+
+
 
 
 
@@ -6169,7 +12336,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     const productName = normalizeText(product.name);
+
+
+
+
 
 
 
@@ -6177,7 +12352,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     const productPrintName = normalizeText(product.printName);
+
+
+
+
 
 
 
@@ -6185,37 +12368,75 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     const productStyleVariant = normalizeText(product.styleVariant);
+
+
+
+
 
 
 
     // Also check subcategory for additional matching
 
+
+
     const productSubcategory = normalizeText(product.subcategory);
+
+
 
     const productSubcategoryItem = normalizeText(product.subcategoryItem);
 
 
 
+
+
+
+
     // Define search terms for each filter (similar to hospital custom mode)
+
+
 
     const filterTerms: Record<string, string[]> = {
 
+
+
       'jhablas': ['jhablas', 'knot jhablas', 'button jhablas'],
+
+
 
       'towels': ['towels and blankets', 'towels & blankets', 'towels', 'blankets', 'hooded towels', 'swaddle'],
 
+
+
       'nappies': ['nappies', 'newborn nappies', 'small nappies', 'medium nappies', 'large nappies'],
+
+
 
       'wipes': ['wipes', 'wet wipes', 'dry wipes', 'baby wipes'],
 
+
+
       'newborn-accessories': ['newborn accessories', 'newborn accessory', 'hats', 'mittens', 'booties'],
+
+
 
       'hats': ['hats', 'hat'],
 
+
+
       'beds': ['beds', 'baby nest', 'baby net bed']
 
+
+
     };
+
+
+
+
 
 
 
@@ -6223,15 +12444,59 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
     // Term-based matching like hospital custom mode - only check styleGroup and styleVariant
+
+
 
     const matchesStyle = targetTerms.some(term =>
 
+
+
       productStyleGroup.includes(term) ||
+
+
 
       productStyleVariant.includes(term)
 
+
+
     );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6279,23 +12544,87 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if (filter.toLowerCase() === 'hospital-bags') {
 
+
+
       const subcategory = normalizeText(product.subcategory);
+
+
 
       const category = normalizeText(product.category);
 
+
+
       // Match both "hospital bag" and "hospital bags" AND ensure category is 'home'
+
+
 
       return (subcategory.includes('hospital bag') || subcategory.includes('hospital bags')) && category === 'home';
 
+
+
     } else if (filter.toLowerCase() === 'blockbuster-combos') {
+
+
 
       const subcategory = normalizeText(product.subcategory);
 
+
+
       return subcategory.includes('blockbuster combo');
 
+
+
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6343,7 +12672,55 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6391,7 +12768,55 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     if (!keyword) return true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6455,7 +12880,55 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Search filter: match any of the specified fields
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6487,7 +12960,39 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       (product as any).styleGroup?.toLowerCase().includes(searchTerm) ||
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6519,7 +13024,39 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       (product as any).printName?.toLowerCase().includes(searchTerm) ||
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6551,7 +13088,39 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       (product as any).collectionPrintName?.toLowerCase().includes(searchTerm) ||
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6583,6 +13152,22 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       product.description?.toLowerCase().includes(searchTerm)
 
 
@@ -6599,7 +13184,39 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6647,7 +13264,87 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const filteredProducts = products
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6743,7 +13440,87 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         .filter(product => Number(product.sellingPrice) <= maxPrice)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6783,7 +13560,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
         .filter(product => {
+
+
+
+
 
 
 
@@ -6791,7 +13580,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           if (giftMode) {
+
+
+
+
 
 
 
@@ -6799,7 +13596,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             return isGiftProductInStep(product, currentGiftStep);
+
+
+
+
 
 
 
@@ -6807,7 +13612,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           if (!currentStep) return true;
+
+
+
+
 
 
 
@@ -6815,7 +13628,43 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -6855,7 +13704,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
         // Style Variant filter: if any variant IDs are selected, filter by styleVariant, name, desc, etc.
+
+
+
+
 
 
 
@@ -6863,7 +13724,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           if (customMode || isBlockbusterSection) return true;
+
+
+
+
 
 
 
@@ -6871,7 +13740,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           const selectedVariantIds = selectedFilters.filter(id => !STYLE_MAPPING[id]);
+
+
+
+
 
 
 
@@ -6879,7 +13756,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           
+
+
+
+
 
 
 
@@ -6887,7 +13772,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           const productStyleGroup = normalizeText(product.styleGroup);
+
+
+
+
 
 
 
@@ -6895,7 +13788,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           const productDesc = normalizeText(product.description);
+
+
+
+
 
 
 
@@ -6903,27 +13804,55 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           
+
+
+
+
 
 
 
           return selectedVariantIds.some(variantId => {
 
+
+
             // Convert variant ID to search term
+
+
 
             const searchTerm = normalizeText(variantId.replace(/-/g, ' '));
 
 
 
+
+
+
+
             // Simple term-based matching - only check styleGroup and styleVariant
 
+
+
             return productStyleVariant.includes(searchTerm) ||
+
+
 
                    productStyleGroup.includes(searchTerm);
 
 
 
+
+
+
+
           });
+
+
+
+
 
 
 
@@ -6975,7 +13904,71 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         .filter(product => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7007,7 +14000,55 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           if (customMode) return true;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7087,15 +14128,373 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           const subcategory = normalizeText(product.subcategory);
+
+
+
+
 
 
 
           if (isBlockbusterSection) {
 
+
+
             return category === "home" && subcategory.includes('blockbuster combo');
 
+
+
           }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7491,6 +14890,100 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               subcategory === "hospital bags" ||
 
 
@@ -7539,7 +15032,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               subcategory === "hospital bag" ||
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7681,7 +15270,149 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -7823,6 +15554,100 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               subcategory === "gifting" ||
 
 
@@ -7871,7 +15696,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               subcategory === "gift" ||
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8013,7 +15934,149 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8109,7 +16172,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8205,7 +16364,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8301,7 +16556,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       {/* Hero Banner Section */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8397,7 +16748,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div className="relative w-full h-full overflow-hidden">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8493,6 +16940,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <div className="sm:hidden relative w-full h-auto select-none">
 
 
@@ -8541,7 +17036,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <img 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8637,7 +17228,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               alt="Shop by Style - Planet Mini Baby Wear"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8733,7 +17420,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               draggable={false}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8829,7 +17612,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               onError={(e) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -8925,7 +17804,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9021,7 +17996,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9117,7 +18188,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <div className="hidden sm:block relative w-full h-full select-none">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9213,7 +18380,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               src="/shopbystyle-banner.png"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9309,7 +18572,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               className="w-full h-full object-cover pointer-events-none"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9405,7 +18764,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               onContextMenu={(e) => e.preventDefault()}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9501,7 +18956,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1920' height='600' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23FEE2E2'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%23DC2626' font-size='16' font-family='Arial'%3EShop by Style Banner%3C/text%3E%3C/svg%3E";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9597,7 +19148,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9693,6 +19340,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
 
 
@@ -9741,7 +19436,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -9841,7 +19680,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 py-6">
+
+
+
+
 
 
 
@@ -9849,7 +19696,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         <div className="flex justify-center gap-2 sm:gap-8 md:gap-10 overflow-x-auto scrollbar-hide px-2 sm:px-0 -mx-2 sm:mx-0">
+
+
+
+
 
 
 
@@ -9857,7 +19712,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             .filter(([groupId]) => {
+
+
+
+
 
 
 
@@ -9865,7 +19728,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               return activeGroupId ? groupId === activeGroupId : true;
+
+
+
+
 
 
 
@@ -9873,7 +19744,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             .map(([groupId, group]) => (
+
+
+
+
 
 
 
@@ -9881,7 +19760,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               key={groupId}
+
+
+
+
 
 
 
@@ -9889,7 +19776,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               className={`
+
+
+
+
 
 
 
@@ -9897,7 +19792,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 ${selectedFilters.includes(groupId)
+
+
+
+
 
 
 
@@ -9905,7 +19808,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-105'
+
+
+
+
 
 
 
@@ -9913,7 +19824,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               `}
+
+
+
+
 
 
 
@@ -9921,7 +19840,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               <div className={`
+
+
+
+
 
 
 
@@ -9929,11 +19856,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 ${selectedFilters.includes(groupId) ? 'scale-110' : 'hover:scale-110'}
 
 
 
+
+
+
+
               `}>
+
+
+
+
 
 
 
@@ -9941,7 +19880,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
 
 
 
@@ -9949,7 +19896,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 text-[10px] sm:text-sm font-semibold transition-colors
+
+
+
+
 
 
 
@@ -9957,7 +19912,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               `}>
+
+
+
+
 
 
 
@@ -9965,7 +19928,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               </span>
+
+
+
+
 
 
 
@@ -9973,7 +19944,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           ))}
+
+
+
+
 
 
 
@@ -9985,7 +19964,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
         {/* Style Variants Row — only shown when a group with variants is selected */}
+
+
+
+
 
 
 
@@ -9993,11 +19984,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           const activeGroupId = selectedFilters.find(id => STYLE_MAPPING[id]);
 
 
 
+
+
+
+
           const activeGroup = activeGroupId ? STYLE_MAPPING[activeGroupId] : null;
+
+
+
+
 
 
 
@@ -10009,7 +20012,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
           return (
+
+
+
+
 
 
 
@@ -10017,7 +20032,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               <h3 className="text-center text-sm font-bold text-gray-500 uppercase tracking-wider mb-4">
+
+
+
+
 
 
 
@@ -10025,7 +20048,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               </h3>
+
+
+
+
 
 
 
@@ -10033,7 +20064,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 {activeGroup.variants.map(variant => (
+
+
+
+
 
 
 
@@ -10041,7 +20080,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     key={variant.id}
+
+
+
+
 
 
 
@@ -10049,7 +20096,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     className={`
+
+
+
+
 
 
 
@@ -10057,7 +20112,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                       ${selectedFilters.includes(variant.id)
+
+
+
+
 
 
 
@@ -10065,7 +20128,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                         : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:shadow-md'
+
+
+
+
 
 
 
@@ -10073,7 +20144,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     `}
+
+
+
+
 
 
 
@@ -10081,7 +20160,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     {variant.name}
+
+
+
+
 
 
 
@@ -10089,7 +20176,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 ))}
+
+
+
+
 
 
 
@@ -10097,11 +20192,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             </div>
 
 
 
+
+
+
+
           );
+
+
+
+
 
 
 
@@ -10113,7 +20220,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
         {/* Clear filters button when any filter is active */}
+
+
+
+
 
 
 
@@ -10121,7 +20240,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           <div className="flex justify-center mt-4">
+
+
+
+
 
 
 
@@ -10129,7 +20256,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               onClick={clearFilters}
+
+
+
+
 
 
 
@@ -10137,7 +20272,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             >
+
+
+
+
 
 
 
@@ -10145,7 +20288,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               Clear Filters
+
+
+
+
 
 
 
@@ -10153,7 +20304,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           </div>
+
+
+
+
 
 
 
@@ -10161,7 +20320,235 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10433,7 +20820,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 pt-10">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10529,7 +21012,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           <motion.div
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10625,7 +21204,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             animate={{ opacity: 1, y: 0 }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10721,7 +21396,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10817,7 +21588,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               <div className="hidden sm:block flex-1 h-0.5 bg-gray-400"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -10913,7 +21780,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-black">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11009,7 +21972,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11105,7 +22164,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   src="/baby-cloth.png"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11201,7 +22356,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   className="w-8 h-8 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11297,7 +22548,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   onError={(e) => {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11393,7 +22740,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11489,7 +22932,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11585,7 +23124,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11681,7 +23316,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               Find the perfect style for your little one with our curated collection of adorable baby wear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11777,6 +23508,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           </motion.div>
 
 
@@ -11825,7 +23604,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -11937,7 +23812,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       {/* Customise Hospital Bags Button */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12001,7 +23972,71 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12065,7 +24100,71 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <button
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12129,7 +24228,71 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-colors shadow-lg hover:shadow-xl bg-black text-white hover:bg-gray-800"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12223,7 +24386,101 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               Customise Your Own Hospital Bags
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12263,7 +24520,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
             {/* Step Filters - Only in custom mode or gift mode */}
+
+
+
+
 
 
 
@@ -12271,11 +24540,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               <div className="mt-6 flex flex-wrap justify-center gap-3">
 
 
 
+
+
+
+
                 <button
+
+
+
+
 
 
 
@@ -12283,7 +24564,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-colors shadow-lg ${
+
+
+
+
 
 
 
@@ -12291,7 +24580,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                       ? 'bg-black text-white hover:bg-gray-800'
+
+
+
+
 
 
 
@@ -12299,11 +24596,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   }`}
 
 
 
+
+
+
+
                 >
+
+
+
+
 
 
 
@@ -12311,7 +24620,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   <span className="text-xs sm:text-sm">Baby Clothing</span>
+
+
+
+
 
 
 
@@ -12319,7 +24636,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 <button
+
+
+
+
 
 
 
@@ -12327,7 +24652,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-colors shadow-lg ${
+
+
+
+
 
 
 
@@ -12335,7 +24668,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                       ? 'bg-black text-white hover:bg-gray-800'
+
+
+
+
 
 
 
@@ -12343,11 +24684,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   }`}
 
 
 
+
+
+
+
                 >
+
+
+
+
 
 
 
@@ -12355,11 +24708,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   <span className="text-xs sm:text-sm">{giftMode ? 'Essentials' : 'Other Essentials'}</span>
 
 
 
+
+
+
+
                 </button>
+
+
+
+
 
 
 
@@ -12367,7 +24732,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   onClick={() => handleStepClick(3)}
+
+
+
+
 
 
 
@@ -12375,7 +24748,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     (customMode ? currentStep : currentGiftStep) === 3
+
+
+
+
 
 
 
@@ -12383,7 +24764,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+
+
+
+
 
 
 
@@ -12391,7 +24780,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 >
+
+
+
+
 
 
 
@@ -12399,7 +24796,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   <span className="text-xs sm:text-sm">{giftMode ? 'Bedding & Comfort' : 'Nursing and Bedding'}</span>
+
+
+
+
 
 
 
@@ -12407,11 +24812,27 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               </div>
 
 
 
+
+
+
+
             )}
+
+
+
+
+
+
+
+
 
 
 
@@ -12423,7 +24844,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
             {(customMode || giftMode) && (
+
+
+
+
 
 
 
@@ -12431,11 +24860,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 {(customMode ? currentStep : currentGiftStep) === 1 && (
 
 
 
+
+
+
+
                   <button
+
+
+
+
 
 
 
@@ -12443,7 +24884,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     className="inline-flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-colors bg-black text-white shadow-lg hover:bg-gray-800"
+
+
+
+
 
 
 
@@ -12451,7 +24900,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     <span className="text-sm font-semibold">Next</span>
+
+
+
+
 
 
 
@@ -12459,7 +24916,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+
+
+
+
 
 
 
@@ -12467,11 +24932,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   </button>
 
 
 
+
+
+
+
                 )}
+
+
+
+
 
 
 
@@ -12479,7 +24956,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   <button
+
+
+
+
 
 
 
@@ -12487,11 +24972,23 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     className="inline-flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-colors bg-black text-white shadow-lg hover:bg-gray-800"
 
 
 
+
+
+
+
                   >
+
+
+
+
 
 
 
@@ -12499,7 +24996,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+
+
+
 
 
 
@@ -12507,7 +25012,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     </svg>
+
+
+
+
 
 
 
@@ -12515,7 +25028,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                 )}
+
+
+
+
 
 
 
@@ -12523,7 +25044,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   <button
+
+
+
+
 
 
 
@@ -12531,7 +25060,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     className="inline-flex items-center gap-2 px-6 py-2 rounded-full font-medium transition-colors bg-black text-white shadow-lg hover:bg-gray-800"
+
+
+
+
 
 
 
@@ -12539,7 +25076,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                     <span className="text-sm font-semibold">Review Bundle</span>
+
+
+
+
 
 
 
@@ -12547,7 +25092,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+
+
+
+
 
 
 
@@ -12555,7 +25108,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
                   </button>
+
+
+
+
 
 
 
@@ -12563,7 +25124,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
               </div>
+
+
+
+
 
 
 
@@ -12575,7 +25144,47 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12639,7 +25248,135 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12783,7 +25520,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <div className="lg:hidden px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-4">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12879,7 +25712,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -12975,7 +25904,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13071,7 +26096,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           Filters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13167,7 +26288,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13263,7 +26480,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13359,7 +26672,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13503,7 +26912,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       {/* Products Section with Full Width Layout */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13599,7 +27152,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         <div className="flex flex-col lg:flex-row">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13695,7 +27344,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Filter Sidebar - Fixed to Left Corner */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13791,7 +27536,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             ${isMobileFilterOpen ? 'block' : 'hidden'}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -13887,7 +27728,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           `}>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14031,7 +27968,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               {/* Mobile Close Button - Sticky */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14127,7 +28208,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <h2 className="text-base sm:text-lg font-bold text-black flex items-center gap-2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14223,7 +28400,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   Filters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14319,7 +28592,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <button
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14415,7 +28784,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14511,7 +28976,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   <X className="w-4 h-4 sm:w-5 sm:h-5" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14607,7 +29168,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14751,7 +29456,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               <div className="hidden lg:flex items-center justify-between p-4 bg-white/60 backdrop-blur-sm border-b border-primary/30">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14847,7 +29648,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   <Filter className="w-5 h-5 text-red-500" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -14943,7 +29840,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15039,7 +30032,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   <button
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15135,7 +30224,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     className="text-sm font-semibold bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15231,7 +30416,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     Clear all
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15327,6 +30608,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 )}
 
 
@@ -15375,7 +30704,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15519,7 +30992,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               <div className="flex-1 overflow-y-auto p-3 sm:p-4 pb-2 space-y-2 sm:space-y-3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15615,7 +31184,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   <div key={section.id} className="border-2 border-black rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-200">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15711,7 +31376,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <button
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15807,7 +31568,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       className={`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15903,7 +31760,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         ${index % 2 === 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -15999,7 +31952,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           : 'bg-gradient-to-l from-[#e6ecdb] via-[#d6e0c2] to-[#c5d2a8] hover:from-[#dde3d0] hover:via-[#cdd9b6] hover:to-[#bccb9b] border-l-4 border-white'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16095,7 +32144,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       `}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16191,7 +32336,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       <div className="flex items-center gap-1 sm:gap-2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16287,7 +32528,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           w-3 h-3 sm:w-4 sm:h-4 transition-colors
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16383,7 +32720,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         `} />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16479,7 +32912,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16623,7 +33200,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       <svg
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16719,7 +33392,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           w-3 h-3 sm:w-4 sm:h-4 transition-transform duration-200 text-black
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16815,7 +33584,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         `}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -16911,7 +33776,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         stroke="currentColor"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17007,7 +33968,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17103,7 +34160,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       </svg>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17247,7 +34400,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     {/* Expandable Content */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17343,7 +34640,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       transition-all duration-300 ease-in-out overflow-hidden
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17439,7 +34832,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     `}>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17535,7 +35024,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         p-2 sm:p-3 space-y-2 sm:space-y-4
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17631,7 +35216,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       `}>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17727,7 +35408,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           // Price Range Slider
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17823,7 +35600,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             <div className="flex items-center justify-between text-xs sm:text-sm font-medium text-black">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -17919,6 +35792,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               <span>₹{maxPrice}</span>
 
 
@@ -17967,7 +35888,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18063,7 +36080,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               value={[maxPrice]}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18159,7 +36272,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               max={section.max || 5000}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18255,7 +36464,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               step={section.step || 100}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18351,7 +36656,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18447,7 +36848,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               Drag to adjust price range
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18543,7 +37040,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18639,7 +37232,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           // Regular checkbox items
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18735,7 +37424,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             <label
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18831,7 +37616,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               className={`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -18927,7 +37808,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 ${selectedFilters.includes(item.id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19023,7 +38000,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     ? 'bg-[#b4c49a] border-[#b4c49a] shadow-sm'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19119,7 +38192,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                   : 'bg-white border-gray-200 hover:bg-gray-50'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19215,7 +38384,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               `}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19311,7 +38576,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               <div className="flex items-center gap-2 sm:gap-3">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19407,7 +38768,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <div className="relative">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19503,7 +38960,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     type="checkbox"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19599,7 +39152,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     onChange={() => handleFilterToggle(item.id)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19695,7 +39344,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                   />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19791,7 +39536,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     w-3 h-3 sm:w-4 sm:h-4 rounded border-2 transition-all duration-200 flex items-center justify-center
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19887,7 +39728,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                       ? index % 2 === 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -19983,7 +39920,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                         : 'bg-[#b4c49a] border-[#b4c49a] shadow-md'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20079,7 +40112,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20175,7 +40304,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     {selectedFilters.includes(item.id) && (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20271,7 +40496,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20367,6 +40688,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     )}
 
 
@@ -20415,7 +40784,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20559,7 +41024,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 <span className="text-xs sm:text-sm font-semibold text-black select-none">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20655,7 +41264,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20799,7 +41504,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               <span className={`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20895,7 +41744,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                 ${expandedCategories.includes(section.id)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -20991,7 +41936,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                   : index % 2 === 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21087,7 +42128,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                                     : 'bg-gray-200 text-gray-700 border-gray-400'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21183,7 +42320,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               `}>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21279,7 +42512,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                               </span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21375,7 +42704,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21471,7 +42896,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21567,7 +43088,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21663,6 +43280,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -21711,7 +43376,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21855,7 +43616,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Mobile Overlay */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -21951,7 +43856,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <div 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22047,6 +44048,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               onClick={() => setIsMobileFilterOpen(false)}
 
 
@@ -22095,7 +44144,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22239,7 +44384,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           {/* Products Content */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22335,7 +44624,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-4 pb-8 lg:pb-16">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22431,7 +44816,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               {/* Active Filters Display */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22527,7 +45008,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="mb-6 flex flex-wrap gap-2">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22623,7 +45200,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     const section = filterSections.find(sec => sec.id === filterId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22719,7 +45392,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     return (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22815,7 +45584,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         key={filterId}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -22911,7 +45776,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23007,7 +45968,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <button
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23103,7 +46160,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           className="hover:text-red-800"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23199,7 +46352,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                           <X className="w-3 h-3" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23295,11 +46544,111 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       </span>
+
+
 
                     );
 
+
+
                   })}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23395,7 +46744,151 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23539,7 +47032,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               {!isLoading && filteredProducts && filteredProducts.length > 0 && (
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23635,7 +47224,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-12">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23731,7 +47416,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                       <BabyCareCard key={product.id || `style-${index}`} product={product} index={index} customMode={customMode} giftMode={giftMode} />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23827,7 +47608,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -23923,7 +47800,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24019,7 +47992,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="flex justify-center py-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24115,6 +48184,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
 
 
@@ -24163,7 +48280,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24259,7 +48472,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 <div className="text-center py-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24355,7 +48664,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24451,7 +48856,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24547,7 +49048,103 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24603,7 +49200,19 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
       {/* Custom Bag Bundle Summary - Show when in custom mode and has items */}
+
+
+
+
 
 
 
@@ -24611,7 +49220,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
         <>
+
+
+
+
 
 
 
@@ -24619,14 +49236,29 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           <CustomBagBundleSummary
+
             bundleItems={bundleItems}
+
             bundleTotal={bundleTotal}
+
             totalItems={totalItems}
+
             onRemoveItem={removeFromBundle}
+
             onUpdateQuantity={updateQuantity}
+
             reviewPageUrl="/bundle-review"
+
           />
+
+
+
+
 
 
 
@@ -24634,7 +49266,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       )}
+
+
+
+
 
 
 
@@ -24642,7 +49282,15 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       {giftMode && (
+
+
+
+
 
 
 
@@ -24650,18 +49298,37 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
           {console.log('GiftBundleSummary render check:', { giftMode, giftBundleItemsLength: giftBundleItems.length })}
 
 
 
+
+
+
+
           <CustomBagBundleSummary
+
             bundleItems={giftBundleItems}
+
             bundleTotal={giftBundleTotal}
+
             totalItems={giftTotalItems}
+
             onRemoveItem={removeFromGiftBundle}
+
             onUpdateQuantity={updateGiftQuantity}
+
             reviewPageUrl="/gift-bundle-review"
+
           />
+
+
+
+
 
 
 
@@ -24669,7 +49336,59 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
       )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -24765,6 +49484,54 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   );
 
 
@@ -24813,7 +49580,643 @@ export default function ShopStyle() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

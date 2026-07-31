@@ -950,11 +950,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     console.log('User:', user?.id, user?.email);
 
+    console.log('All cart item IDs:', state.items.map(i => ({ id: i.id, name: i.name })));
+
 
 
     if (!user) {
 
       console.error('ERROR: No user logged in');
+
+      alert('Please log in to modify your cart');
 
       return;
 
@@ -974,15 +978,25 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       console.error('ERROR: Item not found in cart state');
 
+      alert('Item not found in cart');
+
       return;
 
     }
 
 
 
-    if (item.quantity >= getAvailableStock(item)) {
+    const availableStock = getAvailableStock(item);
+
+    console.log('Available stock:', availableStock, 'Current quantity:', item.quantity);
+
+
+
+    if (item.quantity >= availableStock) {
 
       console.error('ERROR: Requested quantity exceeds available stock');
+
+      alert(`Only ${availableStock} items available in stock`);
 
       await loadCart();
 
@@ -1008,6 +1022,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         console.error('ERROR: No auth token found');
 
+        alert('Authentication error. Please log in again');
+
+        await loadCart();
+
         return;
 
       }
@@ -1030,7 +1048,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           'Authorization': `Bearer ${token}`,
 
+          'Content-Type': 'application/json',
+
         },
+
+        credentials: 'include',
 
       });
 
@@ -1058,6 +1080,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         console.error('API error:', response.status, errorText);
 
+        alert(`Failed to update quantity: ${errorText}`);
+
         // Re-sync to correct state if API failed
 
         await loadCart();
@@ -1067,6 +1091,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
 
       console.error('Network/Error in increaseQuantity:', error);
+
+      alert('Network error. Please check your connection');
 
       await loadCart();
 
@@ -1084,11 +1110,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     console.log('Item ID:', id);
 
+    console.log('User:', user?.id, user?.email);
+
+    console.log('All cart item IDs:', state.items.map(i => ({ id: i.id, name: i.name })));
+
 
 
     if (!user) {
 
       console.error('ERROR: No user logged in');
+
+      alert('Please log in to modify your cart');
 
       return;
 
@@ -1101,6 +1133,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!item) {
 
       console.error('ERROR: Item not found in cart state');
+
+      alert('Item not found in cart');
 
       return;
 
@@ -1140,6 +1174,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         console.error('ERROR: No auth token found');
 
+        alert('Authentication error. Please log in again');
+
+        await loadCart();
+
         return;
 
       }
@@ -1160,7 +1198,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
           'Authorization': `Bearer ${token}`,
 
+          'Content-Type': 'application/json',
+
         },
+
+        credentials: 'include',
 
       });
 
@@ -1184,6 +1226,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         console.error('API error:', response.status, errorText);
 
+        alert(`Failed to update quantity: ${errorText}`);
+
         await loadCart();
 
       }
@@ -1191,6 +1235,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
 
       console.error('Network/Error in decreaseQuantity:', error);
+
+      alert('Network error. Please check your connection');
 
       await loadCart();
 

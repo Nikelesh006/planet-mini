@@ -42,7 +42,21 @@ const profileSchema = new mongoose.Schema({
 
   wishlist:  { type: [String], default: [] },
 
-  cartItems: { type: Array, default: [] },
+  cartItems: [{
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    sellingPrice: { type: Number, required: true },
+    mrp: Number,
+    image: { type: String, required: true },
+    quantity: { type: Number, required: true, default: 1 },
+    category: String,
+    subcategory: String,
+    size: String,
+    color: String,
+    stockQuantity: Number,
+    source: { type: String, enum: ['normal', 'bundle', 'gift-bundle'] },
+    bundleId: String
+  }],
 
   orders: [{
     orderId: String,
