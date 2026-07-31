@@ -19852,7 +19852,18 @@ export default function ShopStyle() {
 
 
 
-                text-xl sm:text-3xl transition-transform duration-300
+                flex items-center justify-center w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-white border-2 transition-all duration-300 shadow-sm
+
+
+
+
+
+
+
+                ${selectedFilters.includes(groupId)
+                  ? 'border-red-500 shadow-md ring-2 ring-red-300'
+                  : 'border-gray-200 hover:border-red-300'
+                }
 
 
 
@@ -19876,7 +19887,23 @@ export default function ShopStyle() {
 
 
 
-                {group.icon}
+                <span className="text-xl sm:text-3xl leading-none">
+
+
+
+
+
+
+
+                  {group.icon}
+
+
+
+
+
+
+
+                </span>
 
 
 
@@ -32480,6 +32507,102 @@ export default function ShopStyle() {
 
 
 
+                        <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-white border border-black/10 shadow-sm flex-shrink-0">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <section.icon className={`
 
 
@@ -32576,7 +32699,7 @@ export default function ShopStyle() {
 
 
 
-                          w-3 h-3 sm:w-4 sm:h-4 transition-colors
+                          w-3 h-3 sm:w-3.5 sm:h-3.5 transition-colors
 
 
 
@@ -32769,6 +32892,102 @@ export default function ShopStyle() {
 
 
                         `} />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        </span>
 
 
 
