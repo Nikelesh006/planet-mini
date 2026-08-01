@@ -1471,10 +1471,21 @@ export default function Home() {
                   className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
                 >
                   <div className="w-full h-auto flex items-center justify-center overflow-hidden">
+                    {/* Mobile banner - shows on small screens */}
+                    <img
+                      src="/pmfgm.png"
+                      alt="Gifting Collection"
+                      className="sm:hidden w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                      draggable={false}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='400' viewBox='0 0 24 24' fill='%23E5E7EB'%3E%3Crect width='24' height='24' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239CA3AF' font-size='16' font-family='Arial'%3EGifting Collection%3C/text%3E%3C/svg%3E";
+                      }}
+                    />
+                    {/* Desktop banner - shows on sm and larger screens */}
                     <img
                       src="/pmg1.jpeg"
                       alt="Gifting Collection"
-                      className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                      className="hidden sm:block w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
                       draggable={false}
                       onError={(e) => {
                         (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='400' viewBox='0 0 24 24' fill='%23E5E7EB'%3E%3Crect width='24' height='24' fill='%23E5E7EB'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='%239CA3AF' font-size='16' font-family='Arial'%3EGifting Collection%3C/text%3E%3C/svg%3E";

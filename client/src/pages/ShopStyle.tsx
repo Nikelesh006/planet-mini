@@ -2224,27 +2224,33 @@ const findParentCategory = (variantId: string): string | null => {
 
 };
 
+// Map each style group id to a circular image asset (mirrors the Home page Shop by Style).
+// Used as a fallback when no dedicated image exists for a style group.
+const STYLE_GROUP_IMAGES: Record<string, string> = {
+  'jhablas': '/pmf2.jpeg',
+  'towels': '/pmf3.jpeg',
+  'nappies': '/pmf4.jpeg',
+  'wipes': '/pmf10.jpeg',
+  'newborn-accessories': '/pmf8.jpeg',
+  'hats': '/pmf7.jpeg',
+  'beds': '/pmf5.jpeg',
+  'jhlablas': '/pmf2.jpeg',
+  'knot-jhablas': '/pmf9.jpeg',
+  'button-jhablas': '/pmf2.jpeg',
+  'baby-nest': '/pmf6.jpeg',
+  'baby-net-bed': '/pmf5.jpeg',
+  'newborn-nappies': '/pmf4.jpeg',
+  'small-nappies': '/pmf4.jpeg',
+  'medium-nappies': '/pmf4.jpeg',
+  'large-nappies': '/pmf4.jpeg',
+  'dry-sheets': '/pmf8.jpeg',
+  'hooded-towels': '/pmf12.jpeg',
+  'swaddle': '/pmf11.jpeg',
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const getStyleGroupImage = (groupId: string): string => {
+  return STYLE_GROUP_IMAGES[groupId] || '/pmf1.jpeg';
+};
 
 const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id: string; name: string }[] }> = {
 
@@ -10824,7 +10830,7 @@ export default function ShopStyle() {
 
 
 
-    if (isStyleGroup && !isCategory) {
+    if (isStyleGroup) {
 
 
 
@@ -10852,23 +10858,11 @@ export default function ShopStyle() {
 
 
 
-
-
-
-
-        // Deselecting: remove group and its variants from selectedFilters, clear URL filter
-
-
-
-
+        // Deselecting: remove group and its variants from selectedFilters, keep other groups
 
 
 
         const groupVariantIds = STYLE_MAPPING[filterId].variants.map(v => v.id);
-
-
-
-
 
 
 
@@ -10880,7 +10874,35 @@ export default function ShopStyle() {
 
 
 
-        newParams.delete('filter');
+        // Check if there are still any style groups selected
+
+
+
+        const remainingStyleGroups = selectedFilters.filter(id => STYLE_MAPPING[id] && id !== filterId);
+
+
+
+        if (remainingStyleGroups.length > 0) {
+
+
+
+          // Keep the first remaining style group in URL
+
+
+
+          newParams.set('filter', remainingStyleGroups[0]);
+
+
+
+        } else {
+
+
+
+          newParams.delete('filter');
+
+
+
+        }
 
 
 
@@ -10892,23 +10914,51 @@ export default function ShopStyle() {
 
 
 
+        // Selecting: add this group to selected filters, clear variants and other groups
+
+
+
+        setSelectedFilters(prev => {
+
+
+
+          // Remove all variants from all groups
+
+
+
+          const allVariantIds = Object.values(STYLE_MAPPING).flatMap(group => group.variants.map(v => v.id));
+
+
+
+          // Remove all style groups except the new one
+
+
+
+          const allStyleGroupIds = Object.keys(STYLE_MAPPING);
+
+
+
+          const filtered = prev.filter(id => !allVariantIds.includes(id) && (id === filterId || !allStyleGroupIds.includes(id)));
+
+
+
+          // Add the new group if not already selected
+
+
+
+          return filtered.includes(filterId) ? filtered : [...filtered, filterId];
+
+
+
+        });
 
 
 
 
-        // Selecting: set only this group, clear any previous variants from other groups
 
 
 
-
-
-
-
-        setSelectedFilters([filterId]);
-
-
-
-
+        // Set the newly selected group as the primary filter in URL
 
 
 
@@ -10948,43 +10998,91 @@ export default function ShopStyle() {
 
 
 
+      // If it's a variant, ensure its parent group is selected
 
 
 
-
-      setSelectedFilters(prev =>
-
+      const parentGroup = Object.entries(STYLE_MAPPING).find(([_, group]) =>
 
 
 
-
-
-
-        prev.includes(filterId)
-
-
-
-
-
-
-
-          ? prev.filter(id => id !== filterId)
-
-
-
-
-
-
-
-          : [...prev, filterId]
-
-
-
-
+        group.variants.some(v => v.id === filterId)
 
 
 
       );
+
+
+
+      if (parentGroup) {
+
+
+
+        // It's a variant, ensure parent group is selected
+
+
+
+        setSelectedFilters(prev => {
+
+
+
+          const hasParentGroup = prev.includes(parentGroup[0]);
+
+
+
+          const filtered = prev.includes(filterId)
+
+
+
+            ? prev.filter(id => id !== filterId)
+
+
+
+            : [...prev, filterId];
+
+
+
+          // Ensure parent group is selected when variant is selected
+
+
+
+          return hasParentGroup ? filtered : [...filtered, parentGroup[0]];
+
+
+
+        });
+
+
+
+      } else {
+
+
+
+        // Regular category toggle
+
+
+
+        setSelectedFilters(prev =>
+
+
+
+          prev.includes(filterId)
+
+
+
+            ? prev.filter(id => id !== filterId)
+
+
+
+            : [...prev, filterId]
+
+
+
+        );
+
+
+
+      }
 
 
 
@@ -19684,7 +19782,7 @@ export default function ShopStyle() {
 
 
 
-      <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8 py-6">
+      <section className="px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto mb-8 py-6">
 
 
 
@@ -19700,289 +19798,36 @@ export default function ShopStyle() {
 
 
 
-        <div className="flex justify-center gap-2 sm:gap-8 md:gap-10 overflow-x-auto scrollbar-hide px-2 sm:px-0 -mx-2 sm:mx-0">
-
-
-
-
-
-
-
+        <div className="flex overflow-x-auto justify-start gap-4 sm:gap-6 md:gap-8 lg:gap-10 px-4 sm:px-6 py-4 md:flex-wrap md:justify-center scrollbar-hide">
           {Object.entries(STYLE_MAPPING)
-
-
-
-
-
-
-
-            .filter(([groupId]) => {
-
-
-
-
-
-
-
-              const activeGroupId = selectedFilters.find(id => STYLE_MAPPING[id]);
-
-
-
-
-
-
-
-              return activeGroupId ? groupId === activeGroupId : true;
-
-
-
-
-
-
-
-            })
-
-
-
-
-
-
-
             .map(([groupId, group]) => (
-
-
-
-
-
-
-
-            <button
-
-
-
-
-
-
-
-              key={groupId}
-
-
-
-
-
-
-
-              onClick={() => handleFilterToggle(groupId)}
-
-
-
-
-
-
-
-              className={`
-
-
-
-
-
-
-
-                flex flex-col items-center gap-1 sm:gap-2 p-1.5 sm:p-2 md:p-4 rounded-xl transition-all duration-300 border-2 flex-shrink-0
-
-
-
-
-
-
-
-                ${selectedFilters.includes(groupId)
-
-
-
-
-
-
-
-                  ? 'bg-red-100 border-red-500 shadow-xl scale-105'
-
-
-
-
-
-
-
-                  : 'bg-white border-gray-200 hover:border-red-300 hover:shadow-lg hover:scale-105'
-
-
-
-
-
-
-
-                }
-
-
-
-
-
-
-
-              `}
-
-
-
-
-
-
-
-            >
-
-
-
-
-
-
-
-              <div className={`
-
-
-
-
-
-
-
-                flex items-center justify-center w-10 h-10 sm:w-16 sm:h-16 rounded-full bg-white border-2 transition-all duration-300 shadow-sm
-
-
-
-
-
-
-
-                ${selectedFilters.includes(groupId)
-                  ? 'border-red-500 shadow-md ring-2 ring-red-300'
-                  : 'border-gray-200 hover:border-red-300'
-                }
-
-
-
-
-
-
-
-                ${selectedFilters.includes(groupId) ? 'scale-110' : 'hover:scale-110'}
-
-
-
-
-
-
-
-              `}>
-
-
-
-
-
-
-
-                <span className="text-xl sm:text-3xl leading-none">
-
-
-
-
-
-
-
-                  {group.icon}
-
-
-
-
-
-
-
-                </span>
-
-
-
-
-
-
-
-              </div>
-
-
-
-
-
-
-
-              <span className={`
-
-
-
-
-
-
-
-                text-[10px] sm:text-sm font-semibold transition-colors
-
-
-
-
-
-
-
-                ${selectedFilters.includes(groupId) ? 'text-red-600' : 'text-gray-700'}
-
-
-
-
-
-
-
-              `}>
-
-
-
-
-
-
-
-                {group.name}
-
-
-
-
-
-
-
-              </span>
-
-
-
-
-
-
-
-            </button>
-
-
-
-
-
-
-
-          ))}
-
-
-
-
-
-
-
+              <button
+                key={groupId}
+                onClick={() => handleFilterToggle(groupId)}
+                className="group flex flex-col items-center flex-shrink-0"
+              >
+                <div className={`
+                  bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20
+                  w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40
+                  ${groupId === 'jhablas' || groupId === 'nappies' || groupId === 'beds'
+                    ? 'border-primary/20 hover:border-primary/40'
+                    : 'border-secondary/20 hover:border-secondary/40'
+                  }
+                  ${selectedFilters.includes(groupId) ? 'ring-6 ring-red-500 ring-offset-4 ring-offset-red-100 scale-110 shadow-2xl shadow-red-500/50' : ''}
+                `}>
+                  <img
+                    src={getStyleGroupImage(groupId)}
+                    alt={group.name}
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23A855F7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3E" + encodeURIComponent(group.name) + "%3C/text%3E%3C/svg%3E";
+                    }}
+                  />
+                </div>
+                <h3 className={`text-sm sm:text-base font-bold text-center mt-2 sm:mt-3 ${selectedFilters.includes(groupId) ? 'text-red-600' : 'text-black'}`}>{group.name}</h3>
+              </button>
+            ))}
         </div>
 
 
@@ -20087,11 +19932,7 @@ export default function ShopStyle() {
 
 
 
-              <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
-
-
-
-
+              <div className="flex overflow-x-auto justify-start gap-4 sm:gap-6 md:gap-8 lg:gap-10 px-4 sm:px-6 py-4 md:flex-wrap md:justify-center scrollbar-hide">
 
 
 
@@ -20099,111 +19940,55 @@ export default function ShopStyle() {
 
 
 
-
-
-
-
                   <button
-
-
-
-
-
-
 
                     key={variant.id}
 
-
-
-
-
-
-
                     onClick={() => handleFilterToggle(variant.id)}
 
-
-
-
-
-
-
-                    className={`
-
-
-
-
-
-
-
-                      px-4 py-2 sm:px-6 sm:py-3 rounded-xl text-sm sm:text-base font-medium transition-all duration-300 border-2
-
-
-
-
-
-
-
-                      ${selectedFilters.includes(variant.id)
-
-
-
-
-
-
-
-                        ? 'bg-red-500 text-white border-red-500 shadow-lg scale-105'
-
-
-
-
-
-
-
-                        : 'bg-white text-gray-700 border-gray-200 hover:border-red-300 hover:shadow-md'
-
-
-
-
-
-
-
-                      }
-
-
-
-
-
-
-
-                    `}
-
-
-
-
-
-
+                    className="group flex flex-col items-center flex-shrink-0"
 
                   >
 
+                    <div className={`
 
+                      bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20
 
+                      w-24 h-24 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-40 lg:h-40
 
+                      ${selectedFilters.includes(variant.id)
 
+                        ? 'ring-6 ring-red-500 ring-offset-4 ring-offset-red-100 scale-110 shadow-2xl shadow-red-500/50 border-red-500'
 
+                        : 'border-gray-200 hover:border-red-300'
 
-                    {variant.name}
+                      }
 
+                    `}>
 
+                      <img
 
+                        src={getStyleGroupImage(variant.id)}
 
+                        alt={variant.name}
 
+                        className="w-full h-full object-cover"
 
+                        draggable={false}
+
+                        onError={(e) => {
+
+                          (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23A855F7'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3E" + encodeURIComponent(variant.name) + "%3C/text%3E%3C/svg%3E";
+
+                        }}
+
+                      />
+
+                    </div>
+
+                    <h3 className={`text-sm sm:text-base font-bold text-center mt-2 sm:mt-3 ${selectedFilters.includes(variant.id) ? 'text-red-600' : 'text-black'}`}>{variant.name}</h3>
 
                   </button>
-
-
-
-
 
 
 
