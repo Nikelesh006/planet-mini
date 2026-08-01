@@ -121,15 +121,15 @@ const isGiftProductInStep = (product: any, stepNumber: number) => {
   return false;
 };
 
-// Helper function to find parent category of a variant
-const findParentCategory = (variantId: string): string | null => {
 
-  for (const [categoryId, category] of Object.entries(STYLE_MAPPING)) {
-    if (category.variants.some(v => v.id === variantId)) {
-      return categoryId;
-    }
-  }
-  return null;
+// Product classification mapping (single source of truth for Shop by Style filtering)
+const PRODUCT_CLASSIFICATION: Record<string, string[]> = {
+  Jhablas: ["Knot Jhablas", "Button Jhablas"],
+  Nappies: ["Nappies"],
+  "Towels & blankets": ["Hooded towels", "Swaddle", "Bath towels", "Quilt towels"],
+  Beds: ["Baby nest", "Baby net bed"],
+  "New born accessories": ["Dry Sheets", "Wipes", "Booties", "Mittens"],
+  Hats: ["Hats"]
 };
 
 // Map each style group id to a circular image asset (mirrors the Home page Shop by Style).
@@ -156,51 +156,173 @@ const STYLE_GROUP_IMAGES: Record<string, string> = {
   'swaddle': '/pmf11.jpeg',
 };
 
-const getStyleGroupImage = (groupId: string): string => {
+// Helper function to normalize text values for comparison
+const normalizeValue = (value: string | undefined | null): string => {
+  return (value || "").toLowerCase().trim().replace(/\s+/g, " ");
+};
 
+// Helper function to get parent group of a variant (from filter ID)
+const getParentGroup = (variantId: string): string | null => {
+  const normalizedVariant = normalizeValue(variantId).replace(/-/g, ' ');
+  for (const [groupName, variants] of Object.entries(PRODUCT_CLASSIFICATION)) {
+    if (variants.some(v => normalizeValue(v) === normalizedVariant)) {
+      return groupName;
+    }
+  }
+  return null;
+};
+
+// Helper function to get all variants of a group
+const getVariantsOfGroup = (groupName: string): string[] => {
+  return PRODUCT_CLASSIFICATION[groupName] || [];
+};
+
+// Helper function to convert filter ID to variant name
+const filterIdToVariantName = (filterId: string): string => {
+  // Convert "knot-jhablas" to "Knot Jhablas" by looking up in PRODUCT_CLASSIFICATION
+  const normalizedId = normalizeValue(filterId).replace(/-/g, ' ');
+  for (const [groupName, variants] of Object.entries(PRODUCT_CLASSIFICATION)) {
+    const match = variants.find(v => normalizeValue(v) === normalizedId);
+    if (match) return match;
+  }
+  return filterId;
+};
+
+// Helper function to convert filter ID to group name
+const filterIdToGroupName = (filterId: string): string => {
+  // Convert "jhablas" to "Jhablas" by looking up in PRODUCT_CLASSIFICATION
+  const normalizedId = normalizeValue(filterId);
+  for (const [groupName, variants] of Object.entries(PRODUCT_CLASSIFICATION)) {
+    if (normalizeValue(groupName) === normalizedId) {
+      return groupName;
+    }
+  }
+  return filterId;
+};
+
+// Helper function to parse subcategory to extract group and variant
+const parseSubcategory = (subcategory: string | undefined | null) => {
+  if (!subcategory) return { group: '', variant: '' };
+  
+  const parts = subcategory.split('/').map(p => p.trim());
+  if (parts.length === 2) {
+    return { group: parts[0], variant: parts[1] };
+  } else if (parts.length === 1) {
+    return { group: parts[0], variant: '' };
+  }
+  return { group: '', variant: '' };
+};
+
+// Helper function to check if product matches a style group
+const matchesStyleGroup = (product: any, groupId: string): boolean => {
+  const groupName = filterIdToGroupName(groupId);
+  const normalizedGroupName = normalizeValue(groupName);
+  
+  // Parse subcategory to get actual group
+  const { group: subcategoryGroup } = parseSubcategory(product.subcategory);
+  const normalizedSubcategoryGroup = normalizeValue(subcategoryGroup);
+  
+  console.log('🔍 matchesStyleGroup:', {
+    groupId,
+    groupName,
+    normalizedGroupName,
+    subcategoryGroup,
+    normalizedSubcategoryGroup,
+    product: product.name,
+    productSubcategoryRaw: product.subcategory,
+    match: normalizedSubcategoryGroup === normalizedGroupName
+  });
+  
+  // Check if product's subcategory group matches the selected group
+  return normalizedSubcategoryGroup === normalizedGroupName;
+};
+
+// Helper function to check if product matches a style variant
+const matchesStyleVariant = (product: any, variantId: string): boolean => {
+  const variantName = filterIdToVariantName(variantId);
+  const normalizedVariant = normalizeValue(variantName);
+  
+  // Parse subcategory to get actual variant
+  const { variant: subcategoryVariant } = parseSubcategory(product.subcategory);
+  const normalizedSubcategoryVariant = normalizeValue(subcategoryVariant);
+  
+  console.log('🔍 matchesStyleVariant:', {
+    variantId,
+    variantName,
+    normalizedVariant,
+    subcategoryVariant,
+    normalizedSubcategoryVariant,
+    product: product.name,
+    productSubcategoryRaw: product.subcategory,
+    match: normalizedSubcategoryVariant === normalizedVariant
+  });
+  
+  return normalizedSubcategoryVariant === normalizedVariant;
+};
+
+// Helper function to check if product matches Shop by Style filters
+const matchesShopStyleFilters = (product: any, selectedFilters: string[]): boolean => {
+  if (selectedFilters.length === 0) return true;
+  
+  console.log('🔍 matchesShopStyleFilters called:', {
+    productName: product.name,
+    selectedFilters,
+    productStyleGroup: product.styleGroup,
+    productStyleVariant: product.styleVariant,
+    productSubcategory: product.subcategory,
+    productSubcategoryItem: product.subcategoryItem,
+    productCategory: product.category
+  });
+  
+  // Separate parent groups and variants from selected filters
+  const selectedGroups = selectedFilters.filter(filter => PRODUCT_CLASSIFICATION[filter]);
+  const selectedVariants = selectedFilters.filter(filter => !PRODUCT_CLASSIFICATION[filter]);
+  
+  // If no filters selected, return true
+  if (selectedGroups.length === 0 && selectedVariants.length === 0) return true;
+  
+  // Check if product matches any selected variant (variant takes priority)
+  if (selectedVariants.length > 0) {
+    const matchesAnyVariant = selectedVariants.some(variant => matchesStyleVariant(product, variant));
+    if (matchesAnyVariant) return true;
+  }
+  
+  // Check if product matches any selected group (only if no variant match)
+  if (selectedGroups.length > 0) {
+    const matchesAnyGroup = selectedGroups.some(group => matchesStyleGroup(product, group));
+    if (matchesAnyGroup) return true;
+  }
+  
+  return false;
+};
+
+const getStyleGroupImage = (groupId: string): string => {
   return STYLE_GROUP_IMAGES[groupId] || '/pmf1.jpeg';
 };
 
-const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id: string; name: string }[] }> = {
-  'jhablas': { 
-    name: 'Jhablas', 
-    icon: '👶',
-    variants: [{ id: 'knot-jhablas', name: 'Knot Jhablas' }, { id: 'button-jhablas', name: 'Button Jhablas' }] 
-  },
-  'towels': { 
-    name: 'Towels and Blankets', 
-    icon: '🧸',
-    variants: [{ id: 'hooded-towels', name: 'Hooded Towels' }, { id: 'swaddle', name: 'Swaddle' }] 
-  },
-  'nappies': {
-    name: 'Nappies',
-    icon: '👕',
-    variants: [{ id: 'newborn-nappies', name: 'Newborn Nappies' }, { id: 'small-nappies', name: 'Small Nappies' }, { id: 'medium-nappies', name: 'Medium Nappies' }, { id: 'large-nappies', name: 'Large Nappies' }]
-  },
-  'wipes': {
-    name: 'Wipes',
-    icon: '🧻',
-    variants: [{ id: 'wet-wipes', name: 'Wet Wipes' }, { id: 'dry-wipes', name: 'Dry Wipes' }, { id: 'baby-wipes', name: 'Baby Wipes' }]
-  },
-  'newborn-accessories': {
-    name: 'Newborn Accessories',
-    icon: '🎀',
-    variants: [{ id: 'dry-sheets', name: 'Dry Sheets' }, { id: 'wipes', name: 'Wipes' }, { id: 'booties', name: 'Booties' }, { id: 'mittens', name: 'Mittens' }]
-  },
-  'hats': {
-    name: 'Hats',
-    icon: '🧢',
-    variants: [{ id: 'hat', name: 'Hat' }]
-  },
-  'beds': {
-    name: 'Beds',
-    icon: '🛏️',
-    variants: [{ id: 'baby-nest', name: 'Baby Nest' }, { id: 'baby-net-bed', name: 'Baby Net Bed' }]
-  }
-
+// Dynamically build STYLE_MAPPING from PRODUCT_CLASSIFICATION for scalability
+const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id: string; name: string }[] }> = {};
+const GROUP_ICONS: Record<string, string> = {
+  'Jhablas': '👶',
+  'Nappies': '👕',
+  'Towels & blankets': '🧸',
+  'Beds': '🛏️',
+  'New born accessories': '🎀',
+  'Hats': '🧢'
 };
 
-// Helper function to find parent category of a variant
+for (const [groupName, variants] of Object.entries(PRODUCT_CLASSIFICATION)) {
+  const normalizedGroupId = normalizeValue(groupName).replace(/\s+/g, '-');
+  STYLE_MAPPING[normalizedGroupId] = {
+    name: groupName,
+    icon: GROUP_ICONS[groupName] || '📦',
+    variants: variants.map(variant => ({
+      id: normalizeValue(variant).replace(/\s+/g, '-'),
+      name: variant
+    }))
+  };
+}
+
 export default function ShopStyle() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
@@ -340,34 +462,19 @@ export default function ShopStyle() {
     return isHomeOrStyle || hasVisibilityFlag;
   });
   const isLoading = allProductsLoading;
-  // Filter state
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(
-    homeFilter && STYLE_MAPPING[homeFilter] ? [homeFilter] : []
-  );
-  // Sync selectedFilters from homeFilter URL param on mount / param change
-  useEffect(() => {
-    if (homeFilter && STYLE_MAPPING[homeFilter]) {
-      setSelectedFilters(prev => {
-        if (!prev.includes(homeFilter)) return [homeFilter];
-        return prev;
-      });
-    }
-
-  }, [homeFilter]);
+  // Filter state for Shop by Style
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState(5000);
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
-  // Filter categories for Shop by Style
-  const filterCategories = [
-    { id: 'jhlablas', name: 'Jhablas', count: 24 },
-    { id: 'towels', name: 'Towels & Blankets', count: 18 },
-    { id: 'nappies', name: 'Nappies', count: 32 },
-    { id: 'wipes', name: 'Wipes', count: 15 },
-    { id: 'beds', name: 'Beds', count: 21 },
-    { id: 'newborn-accessories', name: 'Newborn Accessories', count: 12 },
-    { id: 'hospital-bags', name: 'Hospital Bags', count: 15 },
-  ];
+  
+  // Dynamically build filter categories from PRODUCT_CLASSIFICATION
+  const filterCategories = Object.entries(PRODUCT_CLASSIFICATION).map(([groupName, variants]) => ({
+    id: normalizeValue(groupName).replace(/\s+/g, '-'),
+    name: groupName,
+    count: variants.length
+  }));
   // Filter sections with expandable categories
   const filterSections: FilterSection[] = [
     {
@@ -413,67 +520,47 @@ export default function ShopStyle() {
 
   ];
   const handleFilterToggle = (filterId: string) => {
-
-    const isStyleGroup = !!STYLE_MAPPING[filterId];
-    const isCurrentlySelected = selectedFilters.includes(filterId);
-    const isCategory = filterCategories.some(cat => cat.id === filterId);
-    if (isStyleGroup) {
-      // When toggling a Style Group (not category), update the URL filter param
-      const newParams = new URLSearchParams(window.location.search);
-      if (isCurrentlySelected) {
-        // Deselecting: remove group and its variants from selectedFilters, keep other groups
-        const groupVariantIds = STYLE_MAPPING[filterId].variants.map(v => v.id);
-        setSelectedFilters(prev => prev.filter(id => id !== filterId && !groupVariantIds.includes(id)));
-        // Check if there are still any style groups selected
-        const remainingStyleGroups = selectedFilters.filter(id => STYLE_MAPPING[id] && id !== filterId);
-        if (remainingStyleGroups.length > 0) {
-          // Keep the first remaining style group in URL
-          newParams.set('filter', remainingStyleGroups[0]);
-        } else {
-          newParams.delete('filter');
+    const isGroup = !!STYLE_MAPPING[filterId];
+    setSelectedFilters(prev => {
+      if (prev.includes(filterId)) {
+        // Deselecting
+        if (isGroup) {
+          // If deselecting a group, also deselect all its variants
+          const groupVariants = STYLE_MAPPING[filterId].variants.map(v => v.id);
+          return prev.filter(id => id !== filterId && !groupVariants.includes(id));
         }
-
+        // If deselecting a variant, check if any variants of its parent are still selected
+        const parentGroup = getParentGroup(filterId);
+        if (parentGroup) {
+          const parentGroupId = normalizeValue(parentGroup).replace(/\s+/g, '-');
+          const parentVariants = STYLE_MAPPING[parentGroupId]?.variants.map(v => v.id) || [];
+          const hasOtherVariants = prev.some(id => id !== filterId && parentVariants.includes(id));
+          if (!hasOtherVariants) {
+            // Also deselect the parent group if no variants remain
+            return prev.filter(id => id !== filterId && id !== parentGroupId);
+          }
+        }
+        return prev.filter(id => id !== filterId);
       } else {
-        // Selecting: add this group to selected filters, clear variants and other groups
-        setSelectedFilters(prev => {
-          // Remove all variants from all groups
-          const allVariantIds = Object.values(STYLE_MAPPING).flatMap(group => group.variants.map(v => v.id));
-          // Remove all style groups except the new one
-          const allStyleGroupIds = Object.keys(STYLE_MAPPING);
-          const filtered = prev.filter(id => !allVariantIds.includes(id) && (id === filterId || !allStyleGroupIds.includes(id)));
-          // Add the new group if not already selected
-          return filtered.includes(filterId) ? filtered : [...filtered, filterId];
-        });
-        // Set the newly selected group as the primary filter in URL
-        newParams.set('filter', filterId);
+        // Selecting
+        if (isGroup) {
+          // If selecting a group, deselect all other groups and their variants
+          const allGroupIds = Object.keys(STYLE_MAPPING);
+          const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
+          return [...prev.filter(id => !allGroupIds.includes(id) && !allVariantIds.includes(id)), filterId];
+        } else {
+          // If selecting a variant, ensure its parent group is also selected
+          const parentGroup = getParentGroup(filterId);
+          if (parentGroup) {
+            const parentGroupId = normalizeValue(parentGroup).replace(/\s+/g, '-');
+            if (!prev.includes(parentGroupId)) {
+              return [...prev, parentGroupId, filterId];
+            }
+          }
+          return [...prev, filterId];
+        }
       }
-
-      setLocation(`/shop/style?${newParams.toString()}`);
-    } else {
-      // Toggling a Category or Style Variant — allow multiple selection
-      // If it's a variant, ensure its parent group is selected
-      const parentGroup = Object.entries(STYLE_MAPPING).find(([_, group]) =>
-        group.variants.some(v => v.id === filterId)
-      );
-      if (parentGroup) {
-        // It's a variant, ensure parent group is selected
-        setSelectedFilters(prev => {
-          const hasParentGroup = prev.includes(parentGroup[0]);
-          const filtered = prev.includes(filterId)
-            ? prev.filter(id => id !== filterId)
-            : [...prev, filterId];
-          // Ensure parent group is selected when variant is selected
-          return hasParentGroup ? filtered : [...filtered, parentGroup[0]];
-        });
-      } else {
-        // Regular category toggle
-        setSelectedFilters(prev =>
-          prev.includes(filterId)
-            ? prev.filter(id => id !== filterId)
-            : [...prev, filterId]
-        );
-      }
-    }
+    });
   };
 
   const toggleCategory = (categoryId: string) => {
@@ -486,61 +573,8 @@ export default function ShopStyle() {
   };
 
   const clearFilters = () => {
-
     setSelectedFilters([]);
     setMaxPrice(5000);
-    // Also clear the filter URL param
-    const newParams = new URLSearchParams(window.location.search);
-    newParams.delete('filter');
-    const paramStr = newParams.toString();
-    setLocation(`/shop/style${paramStr ? '?' + paramStr : ''}`);
-  };
-
-  const normalizeText = (value: string | undefined | null) =>
-
-    (value || "").toLowerCase().trim().replace(/\s+/g, " ");
-  const matchesHomeFilter = (product: any, filter: string | null) => {
-
-    if (!filter) return true;
-    // Style filter: match styleGroup, styleVariant, name, description, or printName
-    const filterLower = normalizeText(filter);
-    const productName = normalizeText(product.name);
-    const productDesc = normalizeText(product.description);
-    const productPrintName = normalizeText(product.printName);
-    const productStyleGroup = normalizeText(product.styleGroup);
-    const productStyleVariant = normalizeText(product.styleVariant);
-    // Also check subcategory for additional matching
-    const productSubcategory = normalizeText(product.subcategory);
-    const productSubcategoryItem = normalizeText(product.subcategoryItem);
-    // Define search terms for each filter (similar to hospital custom mode)
-    const filterTerms: Record<string, string[]> = {
-      'jhablas': ['jhablas', 'knot jhablas', 'button jhablas'],
-      'towels': ['towels and blankets', 'towels & blankets', 'towels', 'blankets', 'hooded towels', 'swaddle'],
-      'nappies': ['nappies', 'newborn nappies', 'small nappies', 'medium nappies', 'large nappies'],
-      'wipes': ['wipes', 'wet wipes', 'dry wipes', 'baby wipes'],
-      'newborn-accessories': ['newborn accessories', 'newborn accessory', 'hats', 'mittens', 'booties'],
-      'hats': ['hats', 'hat'],
-      'beds': ['beds', 'baby nest', 'baby net bed']
-    };
-
-    const targetTerms = filterTerms[filter] || [filterLower];
-    // Term-based matching like hospital custom mode - only check styleGroup and styleVariant
-    const matchesStyle = targetTerms.some(term =>
-      productStyleGroup.includes(term) ||
-      productStyleVariant.includes(term)
-    );
-    // Special handling for hospital-bags filter - match subcategory and category
-    if (filter.toLowerCase() === 'hospital-bags') {
-      const subcategory = normalizeText(product.subcategory);
-      const category = normalizeText(product.category);
-      // Match both "hospital bag" and "hospital bags" AND ensure category is 'home'
-      return (subcategory.includes('hospital bag') || subcategory.includes('hospital bags')) && category === 'home';
-    } else if (filter.toLowerCase() === 'blockbuster-combos') {
-      const subcategory = normalizeText(product.subcategory);
-      return subcategory.includes('blockbuster combo');
-    }
-
-    return matchesStyle;
   };
 
   const matchesSearch = (product: any, keyword: string) => {
@@ -561,61 +595,42 @@ export default function ShopStyle() {
 
   const filteredProducts = products
     ? products
-        .filter(product => Number(product.sellingPrice) <= maxPrice)
-        .filter(product => customMode || isBlockbusterSection || matchesHomeFilter(product, homeFilter))
+        // 1. Section-based filtering (Hospital Bags, Blockbuster, Gifting)
+        .filter(product => {
+          if (customMode) return true;
+          const category = normalizeValue(product.category);
+          const subcategory = normalizeValue(product.subcategory);
+          if (isBlockbusterSection) {
+            return category === "home" && subcategory.includes('blockbuster combo');
+          }
+          if (isHospitalBagsSection) {
+            return (subcategory === "hospital bags" ||
+              subcategory === "hospital bag" ||
+              subcategory.includes("hospital bag")) && category === 'home';
+          }
+          if (isGiftingSection) {
+            return subcategory === "gifting" ||
+              subcategory === "gift" ||
+              subcategory.includes("gift");
+          }
+          return true;
+        })
+        // 2. Bundle Builder step filtering (Custom/Gift mode)
         .filter(product => {
           if (!customMode && !giftMode) return true;
           if (giftMode) {
             if (!currentGiftStep) return true;
             return isGiftProductInStep(product, currentGiftStep);
           }
-
           if (!currentStep) return true;
           return isProductInStep(product, currentStep);
         })
+        // 3. Shop by Style filtering
+        .filter(product => matchesShopStyleFilters(product, selectedFilters))
+        // 4. Search filtering
         .filter(product => matchesSearch(product, searchQuery))
-        // Style Variant filter: if any variant IDs are selected, filter by styleVariant, name, desc, etc.
-        .filter(product => {
-          if (customMode || isBlockbusterSection) return true;
-          // Get variant IDs from selectedFilters (exclude group-level keys)
-          const selectedVariantIds = selectedFilters.filter(id => !STYLE_MAPPING[id]);
-          if (selectedVariantIds.length === 0) return true;
-          const productStyleVariant = normalizeText(product.styleVariant);
-          const productStyleGroup = normalizeText(product.styleGroup);
-          const productName = normalizeText(product.name);
-          const productDesc = normalizeText(product.description);
-          const productPrintName = normalizeText(product.printName);
-          return selectedVariantIds.some(variantId => {
-            // Convert variant ID to search term
-            const searchTerm = normalizeText(variantId.replace(/-/g, ' '));
-            // Simple term-based matching - only check styleGroup and styleVariant
-            return productStyleVariant.includes(searchTerm) ||
-                   productStyleGroup.includes(searchTerm);
-          });
-        })
-        .filter(product => {
-          // Skip section filters in custom mode
-          if (customMode) return true;
-          const category = normalizeText(product.category);
-          const subcategory = normalizeText(product.subcategory);
-          if (isBlockbusterSection) {
-            return category === "home" && subcategory.includes('blockbuster combo');
-          }
-
-          if (isHospitalBagsSection) {
-              subcategory === "hospital bags" ||
-              subcategory === "hospital bag" ||
-              subcategory.includes("hospital bag")
-          }
-
-          if (isGiftingSection) {
-              subcategory === "gifting" ||
-              subcategory === "gift" ||
-              subcategory.includes("gift")
-          }
-
-          return true;
-        })
+        // 5. Price filtering
+        .filter(product => Number(product.sellingPrice) <= maxPrice)
     : [];
   return (
     <div className="min-h-screen bg-white">

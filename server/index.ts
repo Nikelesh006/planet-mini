@@ -65,6 +65,7 @@ const configuredOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5002",
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://planet-mini.vercel.app",
   "https://planet-mini-api.vercel.app",
   "https://planet-mini-e4oc.vercel.app",
