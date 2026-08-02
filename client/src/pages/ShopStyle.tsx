@@ -235,32 +235,78 @@ const matchesStyleVariant = (product: any, variantId: string): boolean => {
   const { variant: subcategoryVariant } = parseSubcategory(product.subcategory);
   const normalizedSubcategoryVariant = normalizeValue(subcategoryVariant);
   
+  console.log('🔍 matchesStyleVariant details:', {
+    variantId,
+    variantName,
+    normalizedVariant,
+    productSubcategory: product.subcategory,
+    parsedVariant: subcategoryVariant,
+    normalizedSubcategoryVariant,
+    match: normalizedSubcategoryVariant === normalizedVariant
+  });
+  
   return normalizedSubcategoryVariant === normalizedVariant;
 };
 
 // Helper function to check if product matches Shop by Style filters
 const matchesShopStyleFilters = (product: any, selectedFilters: string[]): boolean => {
+  console.log('🎨 matchesShopStyleFilters called:', {
+    productName: product.name,
+    selectedFilters,
+    productSubcategory: product.subcategory
+  });
+  
   if (selectedFilters.length === 0) return true;
   
-  // Separate parent groups and variants from selected filters
+  // Separate groups and variants
   const selectedGroups = selectedFilters.filter(filter => PRODUCT_CLASSIFICATION[filter]);
   const selectedVariants = selectedFilters.filter(filter => !PRODUCT_CLASSIFICATION[filter]);
+  
+  console.log('🎨 Filter separation:', {
+    selectedGroups,
+    selectedVariants
+  });
   
   // If no filters selected, return true
   if (selectedGroups.length === 0 && selectedVariants.length === 0) return true;
   
   // Check if product matches any selected variant (variant takes priority)
   if (selectedVariants.length > 0) {
-    const matchesAnyVariant = selectedVariants.some(variant => matchesStyleVariant(product, variant));
-    if (matchesAnyVariant) return true;
+    const matchesAnyVariant = selectedVariants.some(variant => {
+      const match = matchesStyleVariant(product, variant);
+      console.log('🎨 Variant check:', {
+        variant,
+        productName: product.name,
+        productSubcategory: product.subcategory,
+        match
+      });
+      return match;
+    });
+    if (matchesAnyVariant) {
+      console.log('🎨 Product matched variant:', product.name);
+      return true;
+    }
   }
   
   // Check if product matches any selected group (only if no variant match)
   if (selectedGroups.length > 0) {
-    const matchesAnyGroup = selectedGroups.some(group => matchesStyleGroup(product, group));
-    if (matchesAnyGroup) return true;
+    const matchesAnyGroup = selectedGroups.some(group => {
+      const match = matchesStyleGroup(product, group);
+      console.log('🎨 Group check:', {
+        group,
+        productName: product.name,
+        productSubcategory: product.subcategory,
+        match
+      });
+      return match;
+    });
+    if (matchesAnyGroup) {
+      console.log('🎨 Product matched group:', product.name);
+      return true;
+    }
   }
   
+  console.log('🎨 No match found for product:', product.name);
   return false;
 };
 
@@ -548,17 +594,7 @@ export default function ShopStyle() {
             const groupVariants = STYLE_MAPPING[filterId].variants.map(v => v.id);
             return prev.filter(id => id !== filterId && !groupVariants.includes(id));
           }
-          // If deselecting a variant, check if any variants of its parent are still selected
-          const parentGroup = getParentGroup(filterId);
-          if (parentGroup) {
-            const parentGroupId = normalizeValue(parentGroup).replace(/\s+/g, '-');
-            const parentVariants = STYLE_MAPPING[parentGroupId]?.variants.map(v => v.id) || [];
-            const hasOtherVariants = prev.some(id => id !== filterId && parentVariants.includes(id));
-            if (!hasOtherVariants) {
-              // Also deselect the parent group if no variants remain
-              return prev.filter(id => id !== filterId && id !== parentGroupId);
-            }
-          }
+          // If deselecting a variant, just remove it (don't touch parent group)
           return prev.filter(id => id !== filterId);
         } else {
           // Selecting
@@ -568,20 +604,10 @@ export default function ShopStyle() {
             const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
             return [...prev.filter(id => !allGroupIds.includes(id) && !allVariantIds.includes(id)), filterId];
           } else {
-            // If selecting a variant, deselect all other variants and ensure its parent group is selected
-            const parentGroup = getParentGroup(filterId);
-            if (parentGroup) {
-              const parentGroupId = normalizeValue(parentGroup).replace(/\s+/g, '-');
-              // Remove all other variant IDs, keep only non-variant filters and the new variant
-              const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
-              const nonVariantFilters = prev.filter(id => !allVariantIds.includes(id));
-              
-              if (!nonVariantFilters.includes(parentGroupId)) {
-                return [...nonVariantFilters, parentGroupId, filterId];
-              }
-              return [...nonVariantFilters, filterId];
-            }
-            return [...prev, filterId];
+            // If selecting a variant, deselect all other variants but don't add parent group
+            const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
+            const nonVariantFilters = prev.filter(id => !allVariantIds.includes(id));
+            return [...nonVariantFilters, filterId];
           }
         }
       })();
@@ -677,6 +703,11 @@ export default function ShopStyle() {
           const styleFilters = selectedFilters.filter(id => 
             !['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(id)
           );
+          console.log('🎨 Style Filter - Before matching:', {
+            productName: product.name,
+            productSubcategory: product.subcategory,
+            styleFilters
+          });
           const result = matchesShopStyleFilters(product, styleFilters);
           console.log('🎨 Style Filter Check:', {
             productName: product.name,
