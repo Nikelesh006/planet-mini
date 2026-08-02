@@ -94,6 +94,8 @@ export function ComboCard({ product, index }: ComboCardProps) {
 
         subcategory: product.subcategory || undefined,
 
+        stockQuantity: product.stockQuantity,
+
       });
 
       

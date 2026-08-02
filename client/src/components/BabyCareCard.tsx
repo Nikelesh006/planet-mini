@@ -76,6 +76,7 @@ export function BabyCareCard({ product, index, customMode = false, giftMode = fa
           image: product.image,
           category: product.category,
           subcategory: product.subcategory || undefined,
+          stockQuantity: product.stockQuantity,
         });
         toast({
           title: "Added to Cart!",

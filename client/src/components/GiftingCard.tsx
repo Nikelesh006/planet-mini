@@ -90,6 +90,8 @@ export function GiftingCard({ product, index }: GiftingCardProps) {
 
         subcategory: product.subcategory || undefined,
 
+        stockQuantity: product.stockQuantity,
+
       });
 
       

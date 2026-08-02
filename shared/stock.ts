@@ -1,5 +1,10 @@
-export const isOutOfStock = (product: { stockQuantity?: unknown } | null | undefined) =>
-  Number(product?.stockQuantity ?? 0) <= 0;
+export const isOutOfStock = (product: { stockQuantity?: unknown } | null | undefined) => {
+  // Treat undefined/null stockQuantity as in stock (assume available if not specified)
+  if (product?.stockQuantity === undefined || product?.stockQuantity === null) {
+    return false;
+  }
+  return Number(product.stockQuantity) <= 0;
+};
 
 export const getAvailableStock = (product: { stockQuantity?: unknown } | null | undefined) =>
   Math.max(0, Number(product?.stockQuantity ?? 0));

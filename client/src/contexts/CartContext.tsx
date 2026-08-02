@@ -798,6 +798,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     console.log('Product:', product);
 
+    console.log('Product stockQuantity:', product.stockQuantity);
+
+    console.log('Product stockQuantity type:', typeof product.stockQuantity);
+
+    console.log('Number(stockQuantity):', Number(product.stockQuantity ?? 0));
+
     console.log('Is out of stock:', isOutOfStock(product));
 
     

@@ -104,6 +104,8 @@ export function MuslinCard({ product, index }: MuslinCardProps) {
 
         subcategory: product.subcategory || undefined,
 
+        stockQuantity: product.stockQuantity,
+
       });
 
       

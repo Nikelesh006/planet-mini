@@ -974,7 +974,7 @@ export default function Home() {
           <div className="mt-10 sm:mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Hospital Bag Image 1 */}
-              <Link href="/shop/style?filter=hospital-bags">
+              <Link href="/shop/style?section=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -994,7 +994,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Hospital Bag Image 2 */}
-              <Link href="/shop/style?filter=hospital-bags">
+              <Link href="/shop/style?section=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1014,7 +1014,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Hospital Bag Image 3 */}
-              <Link href="/shop/style?filter=hospital-bags">
+              <Link href="/shop/style?section=hospital-bags">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

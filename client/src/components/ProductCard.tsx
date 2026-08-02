@@ -127,9 +127,10 @@ export function ProductCard({ product, index }: ProductCardProps) {
     e.preventDefault();
 
 
-
     e.stopPropagation();
 
+
+    console.log('🔍 handleQuickAdd clicked:', { productName: product.name, productId: product.id, isUserLoggedIn, outOfStock });
 
 
     if (outOfStock) {
@@ -148,62 +149,50 @@ export function ProductCard({ product, index }: ProductCardProps) {
 
     }
 
-    
-
-
 
     // Execute add to cart with auth guard
 
+
+    console.log('🔍 Calling executeWithAuth...');
 
 
     executeWithAuth(() => {
 
 
+      console.log('🔍 Inside executeWithAuth callback, calling addToCart...');
+
 
       addToCart({
-
 
 
         id: product.id.toString(),
 
 
-
         name: product.name,
-
 
 
         sellingPrice: Number(product.sellingPrice),
 
 
-
         mrp: product.mrp ? Number(product.mrp) : undefined,
-
 
 
         image: product.image,
 
 
-
         category: product.category,
-
 
 
         subcategory: product.subcategory || undefined,
 
-        stockQuantity: product.stockQuantity,
 
+        stockQuantity: product.stockQuantity,
 
 
       });
 
 
-
-      
-
-
-
       // Show toast notification instead of redirecting
-
 
 
       toast({

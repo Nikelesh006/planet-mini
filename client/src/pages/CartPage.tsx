@@ -57,7 +57,7 @@ export default function CartPage() {
 
   // Group bundle items together
   const bundleGroups = state.items
-    .filter(item => item.source === 'bundle' && item.bundleId)
+    .filter(item => (item.source === 'bundle' || item.source === 'gift-bundle') && item.bundleId)
     .reduce((acc, item) => {
       const bundleId = item.bundleId!;
       if (!acc[bundleId]) {
@@ -76,7 +76,7 @@ export default function CartPage() {
     bundleTotalQty: items.reduce((sum, item) => sum + item.quantity, 0)
   }));
 
-  const normalItems = state.items.filter(item => item.source !== 'bundle');
+  const normalItems = state.items.filter(item => item.source !== 'bundle' && item.source !== 'gift-bundle');
 
   // Combine for display: normal items + bundle display items
   const displayItems: DisplayItem[] = [...normalItems, ...bundleDisplayItems];
@@ -84,6 +84,19 @@ export default function CartPage() {
   const handleBundleClick = (bundleId: string) => {
     const bundleItems = bundleGroups[bundleId] || [];
     setSelectedBundle({ bundleId, items: bundleItems });
+  };
+
+  const handleRemoveItem = (item: DisplayItem) => {
+    // If item has a bundleId, remove all items with that bundleId
+    if (item.bundleId) {
+      const bundleItems = bundleGroups[item.bundleId] || [];
+      bundleItems.forEach(bundleItem => {
+        removeFromCart(bundleItem.id);
+      });
+    } else {
+      // Remove single item
+      removeFromCart(item.id);
+    }
   };
 
 
@@ -730,7 +743,7 @@ export default function CartPage() {
 
                               <button
 
-                                onClick={() => removeFromCart(item.id)}
+                                onClick={() => handleRemoveItem(item)}
 
                                 className="text-sm text-red-500 hover:text-red-700 font-medium"
 
@@ -800,9 +813,9 @@ export default function CartPage() {
 
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="text-base sm:text-lg lg:text-xl font-bold text-black">
-                          {item.bundleId ? `Hospital Bundle (${item.bundleItemCount} items)` : item.name}
+                          {item.bundleId ? (item.source === 'gift-bundle' ? `Gift Box (${item.bundleItemCount} items)` : `Hospital Bundle (${item.bundleItemCount} items)`) : item.name}
                         </h3>
-                        {item.source === 'bundle' && item.bundleId && (
+                        {(item.source === 'bundle' || item.source === 'gift-bundle') && item.bundleId && (
                           <button
                             onClick={() => handleBundleClick(item.bundleId!)}
                             className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-purple-100 text-purple-700 border border-purple-200 hover:bg-purple-200 transition-colors cursor-pointer"
@@ -840,7 +853,7 @@ export default function CartPage() {
 
                       <button
 
-                        onClick={() => removeFromCart(item.id)}
+                        onClick={() => handleRemoveItem(item)}
 
                         className="text-sm text-red-500 hover:text-red-700 text-left"
 

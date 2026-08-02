@@ -222,17 +222,6 @@ const matchesStyleGroup = (product: any, groupId: string): boolean => {
   const { group: subcategoryGroup } = parseSubcategory(product.subcategory);
   const normalizedSubcategoryGroup = normalizeValue(subcategoryGroup);
   
-  console.log('🔍 matchesStyleGroup:', {
-    groupId,
-    groupName,
-    normalizedGroupName,
-    subcategoryGroup,
-    normalizedSubcategoryGroup,
-    product: product.name,
-    productSubcategoryRaw: product.subcategory,
-    match: normalizedSubcategoryGroup === normalizedGroupName
-  });
-  
   // Check if product's subcategory group matches the selected group
   return normalizedSubcategoryGroup === normalizedGroupName;
 };
@@ -246,33 +235,12 @@ const matchesStyleVariant = (product: any, variantId: string): boolean => {
   const { variant: subcategoryVariant } = parseSubcategory(product.subcategory);
   const normalizedSubcategoryVariant = normalizeValue(subcategoryVariant);
   
-  console.log('🔍 matchesStyleVariant:', {
-    variantId,
-    variantName,
-    normalizedVariant,
-    subcategoryVariant,
-    normalizedSubcategoryVariant,
-    product: product.name,
-    productSubcategoryRaw: product.subcategory,
-    match: normalizedSubcategoryVariant === normalizedVariant
-  });
-  
   return normalizedSubcategoryVariant === normalizedVariant;
 };
 
 // Helper function to check if product matches Shop by Style filters
 const matchesShopStyleFilters = (product: any, selectedFilters: string[]): boolean => {
   if (selectedFilters.length === 0) return true;
-  
-  console.log('🔍 matchesShopStyleFilters called:', {
-    productName: product.name,
-    selectedFilters,
-    productStyleGroup: product.styleGroup,
-    productStyleVariant: product.styleVariant,
-    productSubcategory: product.subcategory,
-    productSubcategoryItem: product.subcategoryItem,
-    productCategory: product.category
-  });
   
   // Separate parent groups and variants from selected filters
   const selectedGroups = selectedFilters.filter(filter => PRODUCT_CLASSIFICATION[filter]);
@@ -451,6 +419,26 @@ export default function ShopStyle() {
     }
 
   }, [customMode, giftMode]);
+
+  // Apply filter from URL parameter on page load
+  useEffect(() => {
+    if (homeFilter) {
+      // Map home filter IDs to actual filter IDs (based on PRODUCT_CLASSIFICATION)
+      const filterMapping: Record<string, string> = {
+        'wipes': 'new-born-accessories',
+        'jhablas': 'jhablas',
+        'towels': 'towels-blankets',
+        'nappies': 'nappies',
+        'beds': 'beds',
+        'hospital-bags': 'hospital-bags'
+      };
+      
+      const mappedFilter = filterMapping[homeFilter];
+      if (mappedFilter) {
+        setSelectedFilters([mappedFilter]);
+      }
+    }
+  }, [homeFilter]);
   // Fetch all products for the master catalog
   const { data: allProducts, isLoading: allProductsLoading } = useProducts();
   const products = (allProducts || []).filter((product: any) => {
@@ -469,12 +457,38 @@ export default function ShopStyle() {
   const [maxPrice, setMaxPrice] = useState(5000);
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
   
-  // Dynamically build filter categories from PRODUCT_CLASSIFICATION
-  const filterCategories = Object.entries(PRODUCT_CLASSIFICATION).map(([groupName, variants]) => ({
-    id: normalizeValue(groupName).replace(/\s+/g, '-'),
-    name: groupName,
-    count: variants.length
-  }));
+  // Dynamically build filter categories from PRODUCT_CLASSIFICATION with real product counts
+  const filterCategories = Object.entries(PRODUCT_CLASSIFICATION).map(([groupName, variants]) => {
+    // Count actual products that belong to this category based on subcategory
+    const normalizedGroupName = normalizeValue(groupName);
+    const categoryCount = products.filter((product: any) => {
+      const { group: subcategoryGroup } = parseSubcategory(product.subcategory);
+      const normalizedSubcategoryGroup = normalizeValue(subcategoryGroup);
+      const match = normalizedSubcategoryGroup === normalizedGroupName;
+      
+      // Debug logging for Jhablas
+      if (groupName === 'Jhablas' && match) {
+        console.log('🔍 Jhablas product match:', {
+          productName: product.name,
+          subcategory: product.subcategory,
+          subcategoryGroup,
+          normalizedSubcategoryGroup,
+          normalizedGroupName,
+          match
+        });
+      }
+      
+      return match;
+    }).length;
+    
+    console.log('🔍 Category count:', { groupName, count: categoryCount });
+    
+    return {
+      id: normalizeValue(groupName).replace(/\s+/g, '-'),
+      name: groupName,
+      count: categoryCount
+    };
+  });
   // Filter sections with expandable categories
   const filterSections: FilterSection[] = [
     {
@@ -488,11 +502,13 @@ export default function ShopStyle() {
       title: 'Size',
       icon: Filter,
       items: [
-        { id: 'newborn', name: 'Newborn (0-3M)', count: 15 },
-        { id: 'infant', name: 'Infant (3-6M)', count: 22 },
-        { id: 'baby', name: 'Baby (6-12M)', count: 28 },
-        { id: 'toddler', name: 'Toddler (1-2Y)', count: 19 },
-        { id: 'kids', name: 'Kids (2-3Y)', count: 14 },
+        { id: 'newborn', name: 'Newborn (0-1M)', count: 15 },
+        { id: '0-3-months', name: '0-3 Months', count: 22 },
+        { id: '3-6-months', name: '3-6 Months', count: 28 },
+        { id: '6-9-months', name: '6-9 Months', count: 19 },
+        { id: '9-12-months', name: '9-12 Months', count: 14 },
+        { id: '12-18-months', name: '12-18 Months', count: 10 },
+        { id: '18-24-months', name: '18-24 Months', count: 8 },
       ]
     },
     {
@@ -520,46 +536,57 @@ export default function ShopStyle() {
 
   ];
   const handleFilterToggle = (filterId: string) => {
+    console.log('🔄 Filter Toggle:', { filterId, isSizeFilter: ['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(filterId) });
     const isGroup = !!STYLE_MAPPING[filterId];
     setSelectedFilters(prev => {
-      if (prev.includes(filterId)) {
-        // Deselecting
-        if (isGroup) {
-          // If deselecting a group, also deselect all its variants
-          const groupVariants = STYLE_MAPPING[filterId].variants.map(v => v.id);
-          return prev.filter(id => id !== filterId && !groupVariants.includes(id));
-        }
-        // If deselecting a variant, check if any variants of its parent are still selected
-        const parentGroup = getParentGroup(filterId);
-        if (parentGroup) {
-          const parentGroupId = normalizeValue(parentGroup).replace(/\s+/g, '-');
-          const parentVariants = STYLE_MAPPING[parentGroupId]?.variants.map(v => v.id) || [];
-          const hasOtherVariants = prev.some(id => id !== filterId && parentVariants.includes(id));
-          if (!hasOtherVariants) {
-            // Also deselect the parent group if no variants remain
-            return prev.filter(id => id !== filterId && id !== parentGroupId);
+      console.log('🔄 Previous filters:', prev);
+      const newFilters = (() => {
+        if (prev.includes(filterId)) {
+          // Deselecting
+          if (isGroup) {
+            // If deselecting a group, also deselect all its variants
+            const groupVariants = STYLE_MAPPING[filterId].variants.map(v => v.id);
+            return prev.filter(id => id !== filterId && !groupVariants.includes(id));
           }
-        }
-        return prev.filter(id => id !== filterId);
-      } else {
-        // Selecting
-        if (isGroup) {
-          // If selecting a group, deselect all other groups and their variants
-          const allGroupIds = Object.keys(STYLE_MAPPING);
-          const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
-          return [...prev.filter(id => !allGroupIds.includes(id) && !allVariantIds.includes(id)), filterId];
-        } else {
-          // If selecting a variant, ensure its parent group is also selected
+          // If deselecting a variant, check if any variants of its parent are still selected
           const parentGroup = getParentGroup(filterId);
           if (parentGroup) {
             const parentGroupId = normalizeValue(parentGroup).replace(/\s+/g, '-');
-            if (!prev.includes(parentGroupId)) {
-              return [...prev, parentGroupId, filterId];
+            const parentVariants = STYLE_MAPPING[parentGroupId]?.variants.map(v => v.id) || [];
+            const hasOtherVariants = prev.some(id => id !== filterId && parentVariants.includes(id));
+            if (!hasOtherVariants) {
+              // Also deselect the parent group if no variants remain
+              return prev.filter(id => id !== filterId && id !== parentGroupId);
             }
           }
-          return [...prev, filterId];
+          return prev.filter(id => id !== filterId);
+        } else {
+          // Selecting
+          if (isGroup) {
+            // If selecting a group, deselect all other groups and their variants
+            const allGroupIds = Object.keys(STYLE_MAPPING);
+            const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
+            return [...prev.filter(id => !allGroupIds.includes(id) && !allVariantIds.includes(id)), filterId];
+          } else {
+            // If selecting a variant, deselect all other variants and ensure its parent group is selected
+            const parentGroup = getParentGroup(filterId);
+            if (parentGroup) {
+              const parentGroupId = normalizeValue(parentGroup).replace(/\s+/g, '-');
+              // Remove all other variant IDs, keep only non-variant filters and the new variant
+              const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
+              const nonVariantFilters = prev.filter(id => !allVariantIds.includes(id));
+              
+              if (!nonVariantFilters.includes(parentGroupId)) {
+                return [...nonVariantFilters, parentGroupId, filterId];
+              }
+              return [...nonVariantFilters, filterId];
+            }
+            return [...prev, filterId];
+          }
         }
-      }
+      })();
+      console.log('🔄 New filters:', newFilters);
+      return newFilters;
     });
   };
 
@@ -604,9 +631,29 @@ export default function ShopStyle() {
             return category === "home" && subcategory.includes('blockbuster combo');
           }
           if (isHospitalBagsSection) {
-            return (subcategory === "hospital bags" ||
+            const productType = normalizeValue(product.productType || '');
+            const matchesSubcategory = subcategory === "hospital bags" ||
               subcategory === "hospital bag" ||
-              subcategory.includes("hospital bag")) && category === 'home';
+              subcategory.includes("hospital bag");
+            const matchesCategory = category === 'home';
+            const matchesProductType = productType === 'combo product';
+            
+            console.log('🏥 Hospital Bags Filter Check:', {
+              productName: product.name,
+              category: product.category,
+              normalizedCategory: category,
+              subcategory: product.subcategory,
+              normalizedSubcategory: subcategory,
+              productType: product.productType,
+              normalizedProductType: productType,
+              matchesSubcategory,
+              matchesCategory,
+              matchesProductType,
+              willPass: matchesSubcategory && matchesCategory && matchesProductType
+            });
+            
+            // Relaxed criteria: only check subcategory for now
+            return matchesSubcategory;
           }
           if (isGiftingSection) {
             return subcategory === "gifting" ||
@@ -626,10 +673,67 @@ export default function ShopStyle() {
           return isProductInStep(product, currentStep);
         })
         // 3. Shop by Style filtering
-        .filter(product => matchesShopStyleFilters(product, selectedFilters))
+        .filter(product => {
+          const styleFilters = selectedFilters.filter(id => 
+            !['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(id)
+          );
+          const result = matchesShopStyleFilters(product, styleFilters);
+          console.log('🎨 Style Filter Check:', {
+            productName: product.name,
+            selectedFilters,
+            styleFilters,
+            result
+          });
+          return result;
+        })
         // 4. Search filtering
         .filter(product => matchesSearch(product, searchQuery))
-        // 5. Price filtering
+        // 5. Size/Age Group filtering
+        .filter(product => {
+          const sizeFilterIds = selectedFilters.filter(id => 
+            ['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(id)
+          );
+          console.log('📏 Size Filter - Before check:', {
+            productName: product.name,
+            sizeFilterIds,
+            productAgeGroup: product.ageGroup
+          });
+          if (sizeFilterIds.length === 0) return true;
+          const productAgeGroup = normalizeValue(product.ageGroup || '');
+          const matches = sizeFilterIds.some(sizeId => {
+            const sizeMap: Record<string, string> = {
+              'newborn': 'newborn (0-1m)',
+              '0-3-months': '0-3 months',
+              '3-6-months': '3-6 months',
+              '6-9-months': '6-9 months',
+              '9-12-months': '9-12 months',
+              '12-18-months': '12-18 months',
+              '18-24-months': '18-24 months'
+            };
+            const expectedValue = sizeMap[sizeId];
+            // Check if expected value is contained in the product's age group (handles comma-separated values)
+            const match = productAgeGroup.includes(expectedValue);
+            
+            console.log('📏 Size Filter Check:', {
+              productName: product.name,
+              productAgeGroup: product.ageGroup,
+              normalizedAgeGroup: productAgeGroup,
+              selectedSizeId: sizeId,
+              expectedValue,
+              match
+            });
+            
+            return match;
+          });
+          
+          console.log('📏 Size Filter - Final result:', {
+            productName: product.name,
+            matches
+          });
+          
+          return matches;
+        })
+        // 6. Price filtering
         .filter(product => Number(product.sellingPrice) <= maxPrice)
     : [];
   return (
