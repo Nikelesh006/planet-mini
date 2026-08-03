@@ -328,9 +328,12 @@ const matchesShopStyleFilters = (product: any, selectedFilters: string[]): boole
       console.log('🎨 Product matched variant:', product.name);
       return true;
     }
+    // If variant is selected but product doesn't match, return false (don't check group)
+    console.log('🎨 Product did not match any variant, filtering out:', product.name);
+    return false;
   }
   
-  // Check if product matches any selected group (only if no variant match)
+  // Check if product matches any selected group (only if no variant selected)
   if (selectedGroups.length > 0) {
     const matchesAnyGroup = selectedGroups.some(group => {
       const match = matchesStyleGroup(product, group);
@@ -646,10 +649,10 @@ export default function ShopStyle() {
             const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
             return [...prev.filter(id => !allGroupIds.includes(id) && !allVariantIds.includes(id)), filterId];
           } else {
-            // If selecting a variant, deselect all other variants and also deselect the parent group
+            // If selecting a variant, deselect all other variants but keep the parent group selected
             const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
             const allGroupIds = Object.keys(STYLE_MAPPING);
-            const nonVariantFilters = prev.filter(id => !allVariantIds.includes(id) && !allGroupIds.includes(id));
+            const nonVariantFilters = prev.filter(id => !allVariantIds.includes(id));
             return [...nonVariantFilters, filterId];
           }
         }
