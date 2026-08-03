@@ -1511,9 +1511,22 @@ export default function AddProduct() {
 
     productClassification: formData.productClassification,
 
-    styleGroup: formData.styleGroup || (formData.category === "style" ? formData.subcategory : formData.subcategoryItem),
+    styleGroup: (() => {
+      if (formData.category === "style") {
+        return formData.styleGroup || formData.subcategory;
+      } else if (formData.category === "home" && formData.productClassification) {
+        // Map productClassification to styleGroup
+        for (const [groupName, variants] of Object.entries(shopByStyleVariantOptionsByGroup)) {
+          if (variants.includes(formData.productClassification)) {
+            return groupName;
+          }
+        }
+        return formData.styleGroup || formData.subcategoryItem;
+      }
+      return formData.styleGroup || formData.subcategoryItem;
+    })(),
 
-    styleVariant: formData.styleVariant,
+    styleVariant: formData.styleVariant || (formData.category === "home" ? formData.productClassification : ""),
 
     hospitalBagsPackSize: formData.hospitalBagsPackSize,
 

@@ -190,8 +190,8 @@ const filterIdToVariantName = (filterId: string): string => {
 
 // Helper function to convert filter ID to group name
 const filterIdToGroupName = (filterId: string): string => {
-  // Convert "jhablas" to "Jhablas" by looking up in PRODUCT_CLASSIFICATION
-  const normalizedId = normalizeValue(filterId);
+  // Convert "towels-&-blankets" to "Towels & blankets" by looking up in PRODUCT_CLASSIFICATION
+  const normalizedId = normalizeValue(filterId).replace(/-/g, ' ');
   for (const [groupName, variants] of Object.entries(PRODUCT_CLASSIFICATION)) {
     if (normalizeValue(groupName) === normalizedId) {
       return groupName;
@@ -222,8 +222,27 @@ const matchesStyleGroup = (product: any, groupId: string): boolean => {
   const { group: subcategoryGroup } = parseSubcategory(product.subcategory);
   const normalizedSubcategoryGroup = normalizeValue(subcategoryGroup);
   
-  // Check if product's subcategory group matches the selected group
-  return normalizedSubcategoryGroup === normalizedGroupName;
+  // Check product's styleGroup field if it exists
+  const productStyleGroup = normalizeValue((product as any).styleGroup || '');
+  const styleGroupMatch = productStyleGroup === normalizedGroupName || productStyleGroup.includes(normalizedGroupName);
+  
+  // Check if subcategory contains the group name
+  const subcategoryContainsGroup = normalizeValue(product.subcategory || '').includes(normalizedGroupName);
+  
+  console.log('🏷️ matchesStyleGroup details:', {
+    groupId,
+    groupName,
+    normalizedGroupName,
+    productSubcategory: product.subcategory,
+    parsedGroup: subcategoryGroup,
+    normalizedSubcategoryGroup,
+    productStyleGroup,
+    styleGroupMatch,
+    subcategoryContainsGroup,
+    match: normalizedSubcategoryGroup === normalizedGroupName || styleGroupMatch || subcategoryContainsGroup
+  });
+  
+  return normalizedSubcategoryGroup === normalizedGroupName || styleGroupMatch || subcategoryContainsGroup;
 };
 
 // Helper function to check if product matches a style variant
@@ -232,8 +251,19 @@ const matchesStyleVariant = (product: any, variantId: string): boolean => {
   const normalizedVariant = normalizeValue(variantName);
   
   // Parse subcategory to get actual variant
-  const { variant: subcategoryVariant } = parseSubcategory(product.subcategory);
+  const { variant: subcategoryVariant, group: subcategoryGroup } = parseSubcategory(product.subcategory);
   const normalizedSubcategoryVariant = normalizeValue(subcategoryVariant);
+  const normalizedSubcategoryGroup = normalizeValue(subcategoryGroup);
+  
+  // Also check if the variant name appears anywhere in the subcategory
+  const subcategoryContainsVariant = normalizeValue(product.subcategory || '').includes(normalizedVariant);
+  
+  // Check product's styleVariant field if it exists
+  const productStyleVariant = normalizeValue((product as any).styleVariant || '');
+  const styleVariantMatch = productStyleVariant === normalizedVariant || productStyleVariant.includes(normalizedVariant);
+  
+  // Check product's name for variant match
+  const productNameMatch = normalizeValue(product.name || '').includes(normalizedVariant);
   
   console.log('🔍 matchesStyleVariant details:', {
     variantId,
@@ -241,11 +271,17 @@ const matchesStyleVariant = (product: any, variantId: string): boolean => {
     normalizedVariant,
     productSubcategory: product.subcategory,
     parsedVariant: subcategoryVariant,
+    parsedGroup: subcategoryGroup,
     normalizedSubcategoryVariant,
-    match: normalizedSubcategoryVariant === normalizedVariant
+    normalizedSubcategoryGroup,
+    subcategoryContainsVariant,
+    productStyleVariant,
+    styleVariantMatch,
+    productNameMatch,
+    match: normalizedSubcategoryVariant === normalizedVariant || subcategoryContainsVariant || styleVariantMatch || productNameMatch
   });
   
-  return normalizedSubcategoryVariant === normalizedVariant;
+  return normalizedSubcategoryVariant === normalizedVariant || subcategoryContainsVariant || styleVariantMatch || productNameMatch;
 };
 
 // Helper function to check if product matches Shop by Style filters
@@ -258,9 +294,15 @@ const matchesShopStyleFilters = (product: any, selectedFilters: string[]): boole
   
   if (selectedFilters.length === 0) return true;
   
-  // Separate groups and variants
-  const selectedGroups = selectedFilters.filter(filter => PRODUCT_CLASSIFICATION[filter]);
-  const selectedVariants = selectedFilters.filter(filter => !PRODUCT_CLASSIFICATION[filter]);
+  // Separate groups and variants - normalize filter IDs to match PRODUCT_CLASSIFICATION keys
+  const selectedGroups = selectedFilters.filter(filter => {
+    const normalizedFilter = normalizeValue(filter).replace(/-/g, ' ');
+    return Object.keys(PRODUCT_CLASSIFICATION).some(key => normalizeValue(key) === normalizedFilter);
+  });
+  const selectedVariants = selectedFilters.filter(filter => {
+    const normalizedFilter = normalizeValue(filter).replace(/-/g, ' ');
+    return !Object.keys(PRODUCT_CLASSIFICATION).some(key => normalizeValue(key) === normalizedFilter);
+  });
   
   console.log('🎨 Filter separation:', {
     selectedGroups,
@@ -604,9 +646,10 @@ export default function ShopStyle() {
             const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
             return [...prev.filter(id => !allGroupIds.includes(id) && !allVariantIds.includes(id)), filterId];
           } else {
-            // If selecting a variant, deselect all other variants but don't add parent group
+            // If selecting a variant, deselect all other variants and also deselect the parent group
             const allVariantIds = Object.values(STYLE_MAPPING).flatMap(g => g.variants.map(v => v.id));
-            const nonVariantFilters = prev.filter(id => !allVariantIds.includes(id));
+            const allGroupIds = Object.keys(STYLE_MAPPING);
+            const nonVariantFilters = prev.filter(id => !allVariantIds.includes(id) && !allGroupIds.includes(id));
             return [...nonVariantFilters, filterId];
           }
         }
@@ -1176,18 +1219,6 @@ export default function ShopStyle() {
                                   {item.name}
                                 </span>
                               </div>
-                              <span className={`
-                                text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full border
-                                ${expandedCategories.includes(section.id)
-                                  ? 'bg-[#b4c49a] text-white border-[#b4c49a]'
-                                  : index % 2 === 0
-                                    ? 'bg-gray-200 text-gray-700 border-gray-400'
-                                    : 'bg-gray-200 text-gray-700 border-gray-400'
-                                }
-
-                              `}>
-                                {item.count}
-                              </span>
                             </label>
                           ))
                         )}
