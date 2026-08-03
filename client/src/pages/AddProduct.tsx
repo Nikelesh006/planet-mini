@@ -1082,25 +1082,14 @@ export default function AddProduct() {
 
     const checked = (e.target as HTMLInputElement).checked;
 
-    
-
-    // Convert price to 9s pattern for sellingPrice and mrp
-
+    // Prevent negative values for price fields
     let processedValue = value;
-
     if ((name === "sellingPrice" || name === "mrp") && type === "number") {
-
       const numValue = parseFloat(value);
-
-      if (!isNaN(numValue) && numValue > 0) {
-
-        processedValue = convertPriceStringTo9(value);
-
+      if (!isNaN(numValue) && numValue < 0) {
+        processedValue = ""; // Clear negative values
       }
-
     }
-
-    
 
       setFormData((prev) => ({
 
@@ -2238,6 +2227,12 @@ export default function AddProduct() {
 
                 onChange={handleInputChange}
 
+                onKeyDown={(e) => {
+                  if (e.key === '-') {
+                    e.preventDefault();
+                  }
+                }}
+
                 step="0.01"
 
                 min="0"
@@ -2273,6 +2268,12 @@ export default function AddProduct() {
                 value={formData.mrp}
 
                 onChange={handleInputChange}
+
+                onKeyDown={(e) => {
+                  if (e.key === '-') {
+                    e.preventDefault();
+                  }
+                }}
 
                 step="0.01"
 

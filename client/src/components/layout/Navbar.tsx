@@ -57,6 +57,12 @@ export default function Navbar() {
     }).slice(0, 8); // Limit to 8 results
   }, [searchQuery, allProducts]);
 
+  // Suggested products - first 5 products to show when search is empty
+  const suggestedProducts = useMemo(() => {
+    if (!allProducts) return [];
+    return allProducts.slice(0, 5);
+  }, [allProducts]);
+
   // Typewriter effect for search placeholder
   const searchTerms = ["Jhablas", "Towels", "Muslin Clothes", "Combo", "Blanket", "Bed"];
   const [currentTermIndex, setCurrentTermIndex] = useState(0);
@@ -322,8 +328,33 @@ export default function Navbar() {
                             </Link>
                           ))}
                         </>
+                      ) : !searchQuery.trim() && suggestedProducts.length > 0 ? (
+                        <>
+                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Suggested Products</p>
+                          {suggestedProducts.map((product) => (
+                            <Link
+                              key={product.id}
+                              href={`/products/${product.slug}`}
+                              onClick={() => {
+                                setSearchDropdownOpen(false);
+                                setSearchQuery('');
+                              }}
+                              className="flex items-center p-3 hover:bg-gray-50 rounded-lg transition-colors mb-1"
+                            >
+                              <img 
+                                src={product.image} 
+                                alt={product.name}
+                                className="w-10 h-10 rounded-md object-cover mr-3"
+                              />
+                              <div>
+                                <p className="text-sm font-medium text-gray-900">{product.name}</p>
+                                <p className="text-xs text-gray-500">₹{product.sellingPrice}</p>
+                              </div>
+                            </Link>
+                          ))}
+                        </>
                       ) : (
-                        <p className="text-sm text-gray-500 text-center py-4">Start typing to search products</p>
+                        <p className="text-sm text-gray-500 text-center py-4">No products found</p>
                       )}
                     </div>
                   </motion.div>
