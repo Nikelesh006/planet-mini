@@ -128,7 +128,7 @@ const PRODUCT_CLASSIFICATION: Record<string, string[]> = {
   Nappies: ["Nappies"],
   "Towels & blankets": ["Hooded towels", "Swaddle", "Bath towels", "Quilt towels"],
   Beds: ["Baby nest", "Baby net bed"],
-  "New born accessories": ["Dry Sheets", "Wipes", "Booties", "Mittens"],
+  "New born accessories": ["Dry Sheets", "Wipes", "Booties", "Mittens", "Booties , Hats & Mittens"],
   Hats: ["Hats"]
 };
 
