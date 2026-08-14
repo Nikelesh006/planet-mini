@@ -240,7 +240,7 @@ const ACTIVE_STATUS = "Active";
 
 const homeSubcategoryItemOptions = [
 
-  "Jhablas",
+  "Jablas",
 
   "Towels & blankets",
 
@@ -258,7 +258,7 @@ const homeSubcategoryItemOptions = [
 
 const shopByStyleClassificationOptions = [
 
-  "Jhablas",
+  "Jablas",
 
   "Towels & blankets",
 
@@ -276,7 +276,7 @@ const shopByStyleClassificationOptions = [
 
 const productClassificationOptionsBySubcategoryItem: Record<string, string[]> = {
 
-  Jhablas: ["Knot Jhablas", "Button Jhablas"],
+  Jablas: ["Knot Jablas", "Button Jablas"],
 
   Nappies: ["Nappies"],
 
@@ -310,7 +310,7 @@ const productClassificationOptionsBySubcategoryItem: Record<string, string[]> = 
 
 const shopByStyleVariantOptionsByGroup: Record<string, string[]> = {
 
-  Jhablas: ["Knot Jhablas", "Button Jhablas"],
+  Jablas: ["Knot Jablas", "Button Jablas"],
 
   "Towels & blankets": ["Hooded towels", "Swaddle", "Bath towels", "Quilt towels"],
 

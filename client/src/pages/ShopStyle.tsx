@@ -124,7 +124,7 @@ const isGiftProductInStep = (product: any, stepNumber: number) => {
 
 // Product classification mapping (single source of truth for Shop by Style filtering)
 const PRODUCT_CLASSIFICATION: Record<string, string[]> = {
-  Jhablas: ["Knot Jhablas", "Button Jhablas"],
+  Jablas: ["Knot Jablas", "Button Jablas"],
   Nappies: ["Nappies"],
   "Towels & blankets": ["Hooded towels", "Swaddle", "Bath towels", "Quilt towels"],
   Beds: ["Baby nest", "Baby net bed"],
@@ -135,16 +135,15 @@ const PRODUCT_CLASSIFICATION: Record<string, string[]> = {
 // Map each style group id to a circular image asset (mirrors the Home page Shop by Style).
 // Used as a fallback when no dedicated image exists for a style group.
 const STYLE_GROUP_IMAGES: Record<string, string> = {
-  'jhablas': '/pmf2.jpeg',
+  'jablas': '/pmf2.jpeg',
   'towels': '/pmf3.jpeg',
   'nappies': '/pmf4.jpeg',
   'wipes': '/pmf10.jpeg',
   'newborn-accessories': '/pmf8.jpeg',
   'hats': '/pmf7.jpeg',
   'beds': '/pmf5.jpeg',
-  'jhlablas': '/pmf2.jpeg',
-  'knot-jhablas': '/pmf9.jpeg',
-  'button-jhablas': '/pmf2.jpeg',
+  'knot-jablas': '/pmf9.jpeg',
+  'button-jablas': '/pmf2.jpeg',
   'baby-nest': '/pmf6.jpeg',
   'baby-net-bed': '/pmf5.jpeg',
   'newborn-nappies': '/pmf4.jpeg',
@@ -179,7 +178,7 @@ const getVariantsOfGroup = (groupName: string): string[] => {
 
 // Helper function to convert filter ID to variant name
 const filterIdToVariantName = (filterId: string): string => {
-  // Convert "knot-jhablas" to "Knot Jhablas" by looking up in PRODUCT_CLASSIFICATION
+  // Convert "knot-jablas" to "Knot Jablas" by looking up in PRODUCT_CLASSIFICATION
   const normalizedId = normalizeValue(filterId).replace(/-/g, ' ');
   for (const [groupName, variants] of Object.entries(PRODUCT_CLASSIFICATION)) {
     const match = variants.find(v => normalizeValue(v) === normalizedId);
@@ -362,7 +361,7 @@ const getStyleGroupImage = (groupId: string): string => {
 // Dynamically build STYLE_MAPPING from PRODUCT_CLASSIFICATION for scalability
 const STYLE_MAPPING: Record<string, { name: string; icon: string; variants: { id: string; name: string }[] }> = {};
 const GROUP_ICONS: Record<string, string> = {
-  'Jhablas': '👶',
+  'Jablas': '👶',
   'Nappies': '👕',
   'Towels & blankets': '🧸',
   'Beds': '🛏️',
@@ -517,7 +516,7 @@ export default function ShopStyle() {
       // Map home filter IDs to actual filter IDs (based on PRODUCT_CLASSIFICATION)
       const filterMapping: Record<string, string> = {
         'wipes': 'new-born-accessories',
-        'jhablas': 'jhablas',
+        'jablas': 'jablas',
         'towels': 'towels-blankets',
         'nappies': 'nappies',
         'beds': 'beds',
@@ -556,10 +555,10 @@ export default function ShopStyle() {
       const { group: subcategoryGroup } = parseSubcategory(product.subcategory);
       const normalizedSubcategoryGroup = normalizeValue(subcategoryGroup);
       const match = normalizedSubcategoryGroup === normalizedGroupName;
-      
-      // Debug logging for Jhablas
-      if (groupName === 'Jhablas' && match) {
-        console.log('🔍 Jhablas product match:', {
+
+      // Debug logging for Jablas
+      if (groupName === 'Jablas' && match) {
+        console.log('🔍 Jablas product match:', {
           productName: product.name,
           subcategory: product.subcategory,
           subcategoryGroup,
@@ -568,7 +567,7 @@ export default function ShopStyle() {
           match
         });
       }
-      
+
       return match;
     }).length;
     

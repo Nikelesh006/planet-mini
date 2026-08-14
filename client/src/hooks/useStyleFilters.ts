@@ -2,9 +2,9 @@ import { useState, useCallback, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 export const STYLE_MAPPING: Record<string, { name: string; variants: string[] }> = {
-  "Jhablas": {
-    name: "Jhablas",
-    variants: ["Knot Jhablas", "Button Jhablas"]
+  "Jablas": {
+    name: "Jablas",
+    variants: ["Knot Jablas", "Button Jablas"]
   },
   "Towels & Blankets": {
     name: "Towels & Blankets",

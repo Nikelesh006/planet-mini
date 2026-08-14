@@ -64,7 +64,7 @@ export default function Navbar() {
   }, [allProducts]);
 
   // Typewriter effect for search placeholder
-  const searchTerms = ["Jhablas", "Towels", "Muslin Clothes", "Combo", "Blanket", "Bed"];
+  const searchTerms = ["Jablas", "Towels", "Muslin Clothes", "Combo", "Blanket", "Bed"];
   const [currentTermIndex, setCurrentTermIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);

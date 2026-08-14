@@ -788,10 +788,10 @@ export default function Home() {
 
             </Link>
 
-            {/* Jhablas */}
+            {/* Jablas */}
 
             <Link
-              href="/shop/style?filter=jhablas"
+              href="/shop/style?filter=jablas"
               className="group flex flex-col items-center"
             >
 
@@ -801,14 +801,14 @@ export default function Home() {
 
                   src="/pmf2.jpeg"
 
-                  alt="Jhablas"
+                  alt="Jablas"
 
                   className="w-full h-full object-cover"
                   draggable={false}
 
                   onError={(e) => {
 
-                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%233B82F6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas%3C/text%3E%3C/svg%3E";
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%233B82F6'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJablas%3C/text%3E%3C/svg%3E";
 
                   }}
 
@@ -816,7 +816,7 @@ export default function Home() {
 
               </div>
 
-              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Jhablas</h3>
+              <h3 className="text-sm sm:text-lg font-bold text-center mt-2 sm:mt-4 text-black">Jablas</h3>
 
             </Link>
 
@@ -842,7 +842,7 @@ export default function Home() {
 
                   onError={(e) => {
 
-                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EC4899'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJhablas Set%3C/text%3E%3C/svg%3E";
+                    (e.target as HTMLImageElement).src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 24 24' fill='white'%3E%3Crect width='24' height='24' fill='%23EC4899'/%3E%3Ctext x='50%25' y='50%25' text-anchor='middle' dy='.3em' fill='white' font-size='16' font-family='Arial'%3EJablas Set%3C/text%3E%3C/svg%3E";
 
                   }}
 
