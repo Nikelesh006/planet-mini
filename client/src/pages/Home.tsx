@@ -258,6 +258,20 @@ export default function Home() {
 
   const featuredProductsRef = useRef<HTMLDivElement>(null);
 
+  // New Arrivals scroll state
+  const [newArrivalsScrollPosition, setNewArrivalsScrollPosition] = useState(0);
+  const [canScrollLeftNewArrivals, setCanScrollLeftNewArrivals] = useState(false);
+  const [canScrollRightNewArrivals, setCanScrollRightNewArrivals] = useState(false);
+  const [isAtEndNewArrivals, setIsAtEndNewArrivals] = useState(false);
+  const newArrivalsProductsRef = useRef<HTMLDivElement>(null);
+
+  // Trending Products scroll state
+  const [trendingScrollPosition, setTrendingScrollPosition] = useState(0);
+  const [canScrollLeftTrending, setCanScrollLeftTrending] = useState(false);
+  const [canScrollRightTrending, setCanScrollRightTrending] = useState(false);
+  const [isAtEndTrending, setIsAtEndTrending] = useState(false);
+  const trendingProductsRef = useRef<HTMLDivElement>(null);
+
 
 
   // Auto-advance slider
@@ -335,22 +349,68 @@ export default function Home() {
     const container = featuredProductsRef.current;
 
     if (!container) return;
-    
+
     const scrollLeft = container.scrollLeft;
 
     const scrollWidth = container.scrollWidth;
 
     const clientWidth = container.clientWidth;
-    
+
     setFeaturedScrollPosition(scrollLeft);
 
     const canScroll = scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
     setCanScrollRightFeatured(canScroll);
-    
+
     // Check if we've reached the end
     const atEnd = scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
     setIsAtEndFeatured(atEnd);
 
+  };
+
+  // Check scroll position for New Arrivals
+  const checkNewArrivalsScrollPosition = () => {
+    const container = newArrivalsProductsRef.current;
+    if (!container) return;
+
+    const scrollLeft = container.scrollLeft;
+    const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
+
+    setNewArrivalsScrollPosition(scrollLeft);
+
+    // Check if there's overflow content to scroll
+    const hasOverflow = scrollWidth > clientWidth;
+    const canScrollLeft = scrollLeft > 0;
+    const canScrollRight = hasOverflow && scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
+    setCanScrollLeftNewArrivals(canScrollLeft);
+    setCanScrollRightNewArrivals(canScrollRight);
+
+    // Check if we've reached the end
+    const atEnd = hasOverflow && scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
+    setIsAtEndNewArrivals(atEnd);
+  };
+
+  // Check scroll position for Trending Products
+  const checkTrendingScrollPosition = () => {
+    const container = trendingProductsRef.current;
+    if (!container) return;
+
+    const scrollLeft = container.scrollLeft;
+    const scrollWidth = container.scrollWidth;
+    const clientWidth = container.clientWidth;
+
+    setTrendingScrollPosition(scrollLeft);
+
+    // Check if there's overflow content to scroll
+    const hasOverflow = scrollWidth > clientWidth;
+    const canScrollLeft = scrollLeft > 0;
+    const canScrollRight = hasOverflow && scrollLeft < scrollWidth - clientWidth - 10; // 10px buffer
+    setCanScrollLeftTrending(canScrollLeft);
+    setCanScrollRightTrending(canScrollRight);
+
+    // Check if we've reached the end
+    const atEnd = hasOverflow && scrollLeft >= scrollWidth - clientWidth - 20; // 20px buffer for end detection
+    setIsAtEndTrending(atEnd);
   };
 
 
@@ -404,16 +464,42 @@ export default function Home() {
     const container = featuredProductsRef.current;
 
     if (!container) return;
-    
+
     checkFeaturedScrollPosition();
-    
+
     const handleScroll = () => checkFeaturedScrollPosition();
 
     container.addEventListener('scroll', handleScroll);
-    
+
     return () => container.removeEventListener('scroll', handleScroll);
 
   }, [featuredProducts]);
+
+  // Check scroll position for New Arrivals on mount and when products change
+  useEffect(() => {
+    const container = newArrivalsProductsRef.current;
+    if (!container) return;
+
+    checkNewArrivalsScrollPosition();
+
+    const handleScroll = () => checkNewArrivalsScrollPosition();
+    container.addEventListener('scroll', handleScroll);
+
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [newArrivalsProducts]);
+
+  // Check scroll position for Trending Products on mount and when products change
+  useEffect(() => {
+    const container = trendingProductsRef.current;
+    if (!container) return;
+
+    checkTrendingScrollPosition();
+
+    const handleScroll = () => checkTrendingScrollPosition();
+    container.addEventListener('scroll', handleScroll);
+
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [trendingProducts]);
 
 
 
@@ -518,17 +604,17 @@ export default function Home() {
     const container = featuredProductsRef.current;
 
     if (!container) return;
-    
+
     const scrollAmount = 264 * 3; // One full page (3 cards * 264px each)
 
     const currentScroll = container.scrollLeft;
 
-    const newPosition = direction === 'left' 
+    const newPosition = direction === 'left'
 
       ? Math.max(0, currentScroll - scrollAmount)
 
       : Math.min(container.scrollWidth - container.clientWidth, currentScroll + scrollAmount);
-    
+
     container.scrollTo({
 
       left: newPosition,
@@ -536,11 +622,11 @@ export default function Home() {
       behavior: 'smooth'
 
     });
-    
+
     // Update scroll position immediately for better dot sync
 
     setFeaturedScrollPosition(newPosition);
-    
+
     // Check scroll position after animation completes
 
     setTimeout(() => {
@@ -549,6 +635,50 @@ export default function Home() {
 
     }, 300); // Match the smooth scroll duration
 
+  };
+
+  const scrollNewArrivalsProducts = (direction: 'left' | 'right') => {
+    const container = newArrivalsProductsRef.current;
+    if (!container) return;
+
+    const scrollAmount = 288 * 2; // Scroll by 2 cards on mobile
+    const currentScroll = container.scrollLeft;
+    const newPosition = direction === 'left'
+      ? Math.max(0, currentScroll - scrollAmount)
+      : Math.min(container.scrollWidth - container.clientWidth, currentScroll + scrollAmount);
+
+    container.scrollTo({
+      left: newPosition,
+      behavior: 'smooth'
+    });
+
+    setNewArrivalsScrollPosition(newPosition);
+
+    setTimeout(() => {
+      checkNewArrivalsScrollPosition();
+    }, 300);
+  };
+
+  const scrollTrendingProducts = (direction: 'left' | 'right') => {
+    const container = trendingProductsRef.current;
+    if (!container) return;
+
+    const scrollAmount = 288 * 2; // Scroll by 2 cards on mobile
+    const currentScroll = container.scrollLeft;
+    const newPosition = direction === 'left'
+      ? Math.max(0, currentScroll - scrollAmount)
+      : Math.min(container.scrollWidth - container.clientWidth, currentScroll + scrollAmount);
+
+    container.scrollTo({
+      left: newPosition,
+      behavior: 'smooth'
+    });
+
+    setTrendingScrollPosition(newPosition);
+
+    setTimeout(() => {
+      checkTrendingScrollPosition();
+    }, 300);
   };
 
 
@@ -1104,38 +1234,92 @@ export default function Home() {
 
           </motion.div>
 
-          {/* 4-Card Grid Layout */}
-
+          {/* Mobile: Horizontal Scroll Layout, Desktop: 4-Card Grid Layout */}
           <div className="w-full px-0 sm:px-4 lg:px-8">
 
             {!newArrivalsLoading && newArrivalsProducts && newArrivalsProducts.length > 0 && (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 lg:gap-10">
+                {/* Mobile: Horizontal Scroll with Navigation */}
+                <div className="sm:hidden relative">
+                  {/* Navigation Arrows */}
+                  <div className="flex justify-between items-center mb-4">
+                    <button
+                      onClick={() => scrollNewArrivalsProducts('left')}
+                      className={`bg-white/80 hover:bg-white text-black p-2 rounded-full transition-all duration-300 shadow-lg z-10 ${
+                        !canScrollLeftNewArrivals ? 'opacity-30 cursor-not-allowed' : 'hover:scale-110'
+                      }`}
+                      disabled={!canScrollLeftNewArrivals}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => scrollNewArrivalsProducts('right')}
+                      className={`bg-white/80 hover:bg-white text-black p-2 rounded-full transition-all duration-300 shadow-lg z-10 ${
+                        !canScrollRightNewArrivals ? 'opacity-30 cursor-not-allowed' : 'hover:scale-110'
+                      }`}
+                      disabled={!canScrollRightNewArrivals}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
 
-                  {newArrivalsProducts.slice(0, 4).map((product, index) => (
-
-                    <BabyCareCard key={product.id || `new-arrivals-${index}`} product={product} index={index} />
-
-                  ))}
-
+                  {/* Horizontal Scroll Container */}
+                  <div
+                    ref={newArrivalsProductsRef}
+                    className="flex overflow-x-auto gap-3 pb-4 scrollbar-hide snap-x snap-mandatory"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  >
+                    {newArrivalsProducts.slice(0, 6).map((product, index) => (
+                      <div key={product.id || `new-arrivals-${index}`} className="flex-shrink-0 w-[calc(50%-6px)] snap-start">
+                        <BabyCareCard product={product} index={index} />
+                      </div>
+                    ))}
+                    {/* Explore More Button Card */}
+                    <div className="flex-shrink-0 w-[calc(50%-6px)] snap-start flex items-center justify-center">
+                      <Link href="/shop/style" className="w-full">
+                        <motion.button
+                          whileTap={{ scale: 0.95 }}
+                          className="w-full bg-black text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center justify-center gap-1"
+                        >
+                          <span>Explore More</span>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </motion.button>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Explore More Button */}
-                <div className="text-center mt-2 sm:mt-4">
-                  <Link href="/shop/style">
-                    <motion.button
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-black text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full text-base sm:text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
-                    >
-                      Explore More
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </motion.button>
-                  </Link>
+                {/* Desktop: 4-Card Grid Layout */}
+                <div className="hidden sm:block">
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 lg:gap-10">
+                    {newArrivalsProducts.slice(0, 4).map((product, index) => (
+                      <BabyCareCard key={product.id || `new-arrivals-${index}`} product={product} index={index} />
+                    ))}
+                  </div>
+
+                  {/* Explore More Button - Desktop Only */}
+                  <div className="text-center mt-4">
+                    <Link href="/shop/style">
+                      <motion.button
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
+                      >
+                        Explore More
+                        <svg className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </motion.button>
+                    </Link>
+                  </div>
                 </div>
               </>
             )}
@@ -1219,38 +1403,92 @@ export default function Home() {
 
           </motion.div>
 
-          {/* 4-Card Grid Layout */}
-
+          {/* Mobile: Horizontal Scroll Layout, Desktop: 4-Card Grid Layout */}
           <div className="w-full px-0 sm:px-4 lg:px-8">
 
             {!trendingLoading && trendingProducts && trendingProducts.length > 0 && (
               <>
-                <div className="grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 lg:gap-10">
+                {/* Mobile: Horizontal Scroll with Navigation */}
+                <div className="sm:hidden relative">
+                  {/* Navigation Arrows */}
+                  <div className="flex justify-between items-center mb-4">
+                    <button
+                      onClick={() => scrollTrendingProducts('left')}
+                      className={`bg-white/80 hover:bg-white text-black p-2 rounded-full transition-all duration-300 shadow-lg z-10 ${
+                        !canScrollLeftTrending ? 'opacity-30 cursor-not-allowed' : 'hover:scale-110'
+                      }`}
+                      disabled={!canScrollLeftTrending}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => scrollTrendingProducts('right')}
+                      className={`bg-white/80 hover:bg-white text-black p-2 rounded-full transition-all duration-300 shadow-lg z-10 ${
+                        !canScrollRightTrending ? 'opacity-30 cursor-not-allowed' : 'hover:scale-110'
+                      }`}
+                      disabled={!canScrollRightTrending}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
 
-                  {trendingProducts.slice(0, 4).map((product, index) => (
-
-                    <MuslinCard key={product.id || `trending-${index}`} product={product} index={index} />
-
-                  ))}
-
+                  {/* Horizontal Scroll Container */}
+                  <div
+                    ref={trendingProductsRef}
+                    className="flex overflow-x-auto gap-3 pb-4 scrollbar-hide snap-x snap-mandatory"
+                    style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                  >
+                    {trendingProducts.slice(0, 6).map((product, index) => (
+                      <div key={product.id || `trending-${index}`} className="flex-shrink-0 w-[calc(50%-6px)] snap-start">
+                        <MuslinCard product={product} index={index} />
+                      </div>
+                    ))}
+                    {/* Explore More Button Card */}
+                    <div className="flex-shrink-0 w-[calc(50%-6px)] snap-start flex items-center justify-center">
+                      <Link href="/shop/style" className="w-full">
+                        <motion.button
+                          whileTap={{ scale: 0.95 }}
+                          className="w-full bg-black text-white py-2 px-3 rounded-lg text-sm font-semibold hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center justify-center gap-1"
+                        >
+                          <span>Explore More</span>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                          </svg>
+                        </motion.button>
+                      </Link>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Explore More Button */}
-                <div className="text-center mt-4 sm:mt-8">
-                  <Link href="/shop/style">
-                    <motion.button
-                      initial={{ opacity: 0, y: 20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, delay: 0.3 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="bg-black text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full text-base sm:text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
-                    >
-                      Explore More
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </motion.button>
-                  </Link>
+                {/* Desktop: 4-Card Grid Layout */}
+                <div className="hidden sm:block">
+                  <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-8 lg:gap-10">
+                    {trendingProducts.slice(0, 4).map((product, index) => (
+                      <MuslinCard key={product.id || `trending-${index}`} product={product} index={index} />
+                    ))}
+                  </div>
+
+                  {/* Explore More Button - Desktop Only */}
+                  <div className="text-center mt-8">
+                    <Link href="/shop/style">
+                      <motion.button
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.3 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="bg-black text-white px-5 py-2 rounded-full text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
+                      >
+                        Explore More
+                        <svg className="w-5 h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </motion.button>
+                    </Link>
+                  </div>
                 </div>
               </>
             )}
@@ -1269,7 +1507,7 @@ export default function Home() {
 
             )}
 
-            {muslinLoading && (
+            {trendingLoading && (
 
               <div className="flex justify-center py-8">
 
