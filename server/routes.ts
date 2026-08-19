@@ -68,6 +68,14 @@ import { productsStorage } from "./db.js";
 
 import { getAvailableStock, isOutOfStock } from "./shared/stock.js";
 
+import { sendAdminOrderNotification } from "./services/whatsappService.js";
+import Razorpay from "razorpay";
+
+const razorpay = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_SoPV94HPAl2TGh',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || '6B4unROD9vBq42OyL9pI4efA'
+});
+
 
 
 
@@ -12709,35 +12717,54 @@ export async function registerRoutes(
 
       const orderData = req.body;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+      // Security: verify the payment signature or state with Razorpay
+      if (orderData.paymentStatus === 'paid') {
+        const paymentId = orderData.paymentId;
+        const orderId = orderData.orderId;
+        
+        if (!paymentId || !orderId) {
+          console.error('❌ Missing paymentId or orderId for paid order creation request');
+          return res.status(400).json({ message: 'Missing paymentId or orderId for paid order' });
+        }
+        
+        try {
+          console.log(`[OrdersRoute] Verifying Razorpay payment ${paymentId} for order ${orderId}...`);
+          const payment = await razorpay.payments.fetch(paymentId);
+          if (payment.status !== 'captured' || payment.order_id !== orderId) {
+            console.error(`❌ Razorpay verification failed: status is ${payment.status}, expected captured; order_id is ${payment.order_id}, expected ${orderId}`);
+            return res.status(400).json({ message: 'Razorpay payment verification failed: payment is not captured or order ID mismatch' });
+          }
+          
+          // Verify that the amount paid matches the order total
+          const razorpayAmount = Number(payment.amount) / 100;
+          const orderTotal = Number(orderData.total);
+          if (Math.abs(razorpayAmount - orderTotal) > 0.01) {
+            console.error(`❌ Razorpay verification failed: amount mismatch: Razorpay paid amount (${razorpayAmount}) does not match order total (${orderTotal})`);
+            return res.status(400).json({ message: `Amount mismatch: Razorpay paid amount (${razorpayAmount}) does not match order total (${orderTotal})` });
+          }
+          console.log('✅ Razorpay payment verified successfully on backend');
+        } catch (verifError: any) {
+          console.error('❌ Error verifying Razorpay payment on backend:', verifError);
+          return res.status(400).json({ message: 'Payment verification failed: ' + (verifError.message || verifError) });
+        }
+      }
 
       const newOrder = await ordersStorage.createOrder(userId, orderData);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+      // Trigger WhatsApp Notification if paymentStatus is paid
+      if (newOrder.paymentStatus === 'paid') {
+        try {
+          const waResult = await sendAdminOrderNotification(newOrder);
+          if (waResult.success) {
+            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, true);
+          } else {
+            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, waResult.error);
+          }
+        } catch (waError: any) {
+          console.error('❌ WhatsApp Notification error from /api/orders:', waError);
+          await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, waError.message || 'Unknown request error');
+        }
+      }
 
       res.status(201).json(newOrder);
 

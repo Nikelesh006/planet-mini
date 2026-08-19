@@ -1134,6 +1134,12 @@ const transformedItems = (order.items || order.products || []).map((item: any) =
 
         shippingAddress: shippingAddress || orderData.address || null,
 
+        whatsappAdminNotificationSent: false,
+
+        whatsappAdminNotificationSentAt: null,
+
+        whatsappAdminNotificationError: null,
+
         createdAt: new Date(),
 
         updatedAt: new Date()
@@ -1195,6 +1201,66 @@ const transformedItems = (order.items || order.products || []).map((item: any) =
     } catch (error) {
 
       console.error('Error updating order status:', error);
+
+      throw error;
+
+    }
+
+  },
+
+
+
+  async updateOrderWhatsAppStatus(orderId: string, sent: boolean, errorMsg?: string | null) {
+
+    try {
+
+      const db = mongoose.connection.db;
+
+      if (!db) throw new Error("Database not connected");
+
+      const { ObjectId } = mongoose.Types;
+
+      
+
+      const updateDoc: any = {
+
+        whatsappAdminNotificationSent: sent,
+
+        updatedAt: new Date()
+
+      };
+
+      
+
+      if (sent) {
+
+        updateDoc.whatsappAdminNotificationSentAt = new Date();
+
+        updateDoc.whatsappAdminNotificationError = null;
+
+      } else {
+
+        updateDoc.whatsappAdminNotificationError = errorMsg || 'Unknown error';
+
+      }
+
+      
+
+      const result = await db.collection("orders").updateOne(
+
+        { _id: new ObjectId(orderId) },
+
+        { $set: updateDoc }
+
+      );
+
+      
+
+      return result.modifiedCount > 0;
+
+    } catch (error) {
+
+      console.error('Error updating order WhatsApp status:', error);
 
       throw error;
 

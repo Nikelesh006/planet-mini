@@ -489,6 +489,7 @@ export default function ShopStyle() {
   const customMode = searchParams.get("custom") === "true";
   const giftMode = searchParams.get("custom") === "gift";
   const sectionParam = searchParams.get("section");
+  const maxPriceParam = searchParams.get("maxPrice");
   const isBlockbusterSection = sectionParam === "blockbuster-combos";
   const isHospitalBagsSection = sectionParam === "hospital-bags";
   const isGiftingSection = sectionParam === "gifting";
@@ -544,7 +545,7 @@ export default function ShopStyle() {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
-  const [maxPrice, setMaxPrice] = useState(5000);
+  const [maxPrice, setMaxPrice] = useState<number>(maxPriceParam ? parseInt(maxPriceParam) : 5000);
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
   
   // Dynamically build filter categories from PRODUCT_CLASSIFICATION with real product counts

@@ -2,6 +2,8 @@ import express from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import { ordersStorage } from '../storage.js';
+import { sendAdminOrderNotification } from '../services/whatsappService.js';
 
 const router = express.Router();
 
@@ -110,11 +112,54 @@ router.post('/verify', requireAuth, async (req: any, res: any) => {
 
     console.log('✅ Payment verified successfully:', razorpay_payment_id);
 
-    // Here you can:
-    // 1. Update order status in database
-    // 2. Send confirmation email
-    // 3. Update inventory
-    // 4. Create invoice
+    if (orderData) {
+      console.log('[VerifyRoute] Creating order on signature verification success');
+      const finalOrderData = {
+        ...orderData,
+        paymentId: razorpay_payment_id,
+        orderId: razorpay_order_id,
+        paymentStatus: 'paid',
+        status: 'completed'
+      };
+
+      try {
+        const newOrder = await ordersStorage.createOrder(req.user.id, finalOrderData);
+        
+        // Trigger WhatsApp Notification
+        let whatsappSent = false;
+        let whatsappError = null;
+        try {
+          const waResult = await sendAdminOrderNotification(newOrder);
+          if (waResult.success) {
+            whatsappSent = true;
+            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, true);
+          } else {
+            whatsappError = waResult.error;
+            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, waResult.error);
+          }
+        } catch (waError: any) {
+          console.error('❌ WhatsApp Notification error:', waError);
+          whatsappError = waError.message || 'WhatsApp request error';
+          await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, whatsappError);
+        }
+
+        return res.json({
+          success: true,
+          payment_id: razorpay_payment_id,
+          order_id: razorpay_order_id,
+          order: newOrder,
+          whatsappSent,
+          whatsappError,
+          message: 'Payment verified and order created successfully'
+        });
+      } catch (orderError: any) {
+        console.error('❌ Failed to create order after payment verify:', orderError);
+        return res.status(500).json({
+          error: 'Payment verified, but order creation failed',
+          details: orderError.message
+        });
+      }
+    }
 
     res.json({
       success: true,

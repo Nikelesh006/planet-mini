@@ -290,6 +290,8 @@ const productClassificationOptionsBySubcategoryItem: Record<string, string[]> = 
 
   "Blockbuster Combos": [
 
+    "Below ₹299",
+
     "Below ₹499",
 
     "Below ₹999",
@@ -329,6 +331,8 @@ const shopByStyleVariantOptionsByGroup: Record<string, string[]> = {
 const hospitalBagPackOptions = Array.from({ length: 100 }, (_, index) => String(index + 1));
 
 const blockbusterComboPriceBands = [
+
+  "Below ₹299",
 
   "Below ₹499",
 

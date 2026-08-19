@@ -1573,7 +1573,7 @@ export default function Home() {
           <div className="mt-10 sm:mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Combo Offer Image 1 */}
-              <Link href="/shop/style?section=blockbuster-combos">
+              <Link href="/shop/style?section=blockbuster-combos&maxPrice=499">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1593,7 +1593,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Combo Offer Image 2 */}
-              <Link href="/shop/style?section=blockbuster-combos">
+              <Link href="/shop/style?section=blockbuster-combos&maxPrice=999">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -1613,7 +1613,7 @@ export default function Home() {
                 </motion.div>
               </Link>
               {/* Combo Offer Image 3 */}
-              <Link href="/shop/style?section=blockbuster-combos">
+              <Link href="/shop/style?section=blockbuster-combos&maxPrice=1499">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
