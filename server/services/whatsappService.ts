@@ -74,23 +74,31 @@ export async function sendAdminOrderNotification(order: any): Promise<WhatsAppNo
     let productListText = '';
     let index = 1;
     const items = order.items || order.products || [];
+    const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'https://planet-mini-client.vercel.app';
     
     for (const item of items) {
       const dbProduct = dbProducts.find((p: any) => 
         p.id?.toString() === item.productId?.toString() || 
         p._id?.toString() === item.productId?.toString()
       );
-      const sku = item.sku || dbProduct?.sku || 'N/A';
+      const sku = item.sku || dbProduct?.sku || item.productId || 'N/A';
       const name = item.name || item.productName || 'Unknown Product';
       const qty = item.quantity || 1;
       const price = item.sellingPrice || item.price || 0;
       const itemTotal = qty * price;
+      const size = item.size || dbProduct?.size || 'Not specified';
+      const slug = item.slug || dbProduct?.slug || '';
+      const productUrl = slug ? `${frontendUrl}/products/${slug}` : '';
 
       productListText += `${index}. ${name}\n`;
-      if (sku !== 'N/A') productListText += `   SKU: ${sku}\n`;
-      productListText += `   Qty: ${qty}\n`;
+      productListText += `   Product ID: ${sku}\n`;
+      productListText += `   Size: ${size}\n`;
+      productListText += `   Quantity: ${qty}\n`;
       productListText += `   Price: ₹${price}\n`;
-      productListText += `   Total: ₹${itemTotal}\n\n`;
+      if (productUrl) {
+        productListText += `   🔗 ${productUrl}\n`;
+      }
+      productListText += '\n';
       index++;
     }
 

@@ -198,18 +198,17 @@ export default function ProductList() {
 
 
 
-      // Sort products by Product ID in descending order first
+      // Sort products by SKU in ascending order first
       let sorted = [...products].sort((a, b) => {
-        const extractNumericId = (id: string | number) => {
-          const idStr = String(id);
-          const match = idStr.match(/PM-(\d+)/);
+        const extractSkuNumber = (sku?: string) => {
+          const match = String(sku || "").match(/PM-(\d+)/);
           return match ? parseInt(match[1], 10) : 0;
         };
 
-        const aId = extractNumericId(a.id);
-        const bId = extractNumericId(b.id);
+        const aId = extractSkuNumber(a.sku);
+        const bId = extractSkuNumber(b.sku);
 
-        return bId - aId;
+        return aId - bId;
       });
 
       let filtered = [...sorted];

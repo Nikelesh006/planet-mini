@@ -4,7 +4,7 @@ import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { Confetti, useConfetti } from "@/components/ui/Confetti";
 import { ChevronDown, ArrowLeft, Minus, Plus, MapPin, Check, ShoppingBag, Trash2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { addressApi, Address } from '../utils/addressApi';
 import { useRazorpay } from '@/hooks/useRazorpay';
 import { apiFetch } from '@/lib/api';
@@ -23,10 +23,26 @@ export default function BundleCheckoutPage() {
   const { user } = useAuth();
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
-  const [location] = useLocation();
+  const [, setLocation] = useLocation();
   const { showConfetti, triggerConfetti } = useConfetti();
   const { initializePayment, isLoading: isPaymentLoading, error: paymentError } = useRazorpay();
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const isCompletingOrderRef = useRef(false);
+
+  useEffect(() => {
+    if (!orderSuccess) {
+      return;
+    }
+
+    const redirectTimer = window.setTimeout(() => {
+      setLocation('/orders');
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(redirectTimer);
+    };
+  }, [orderSuccess, setLocation]);
 
   console.log('🔍 Bundle state:', { bundleItems, bundleTotal, totalItems });
 
@@ -144,6 +160,12 @@ export default function BundleCheckoutPage() {
           }
         },
         handler: async (response) => {
+          if (isCompletingOrderRef.current) {
+            return;
+          }
+
+          isCompletingOrderRef.current = true;
+
           try {
             // Step 4: Verify payment and create order
             const verifyResponse = await apiFetch('/api/payment/verify', {
@@ -172,13 +194,11 @@ export default function BundleCheckoutPage() {
             // Trigger confetti
             triggerConfetti();
 
-            // Redirect to orders page after a short delay
-            setTimeout(() => {
-              window.location.href = '/orders';
-            }, 2000);
+            setOrderSuccess(true);
 
           } catch (error) {
             console.error('Error verifying payment:', error);
+            isCompletingOrderRef.current = false;
             alert('Payment verification failed. Please contact support.');
           }
         }
@@ -191,6 +211,49 @@ export default function BundleCheckoutPage() {
       alert(error instanceof Error ? error.message : 'Failed to place order. Please try again.');
     }
   };
+
+  if (orderSuccess) {
+    return (
+      <div className="fixed inset-0 z-[9999] flex min-h-screen items-center justify-center bg-white px-4" role="status" aria-live="polite">
+        <motion.div
+          initial={{ opacity: 0, y: 18, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="w-full max-w-md rounded-3xl border border-[#b4c49a]/30 bg-white p-8 text-center shadow-2xl sm:p-10"
+        >
+          <motion.div
+            initial={{ scale: 0.72 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 220, damping: 14 }}
+            className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[#b4c49a]/15"
+          >
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.18, type: "spring", stiffness: 260, damping: 16 }}
+              className="flex h-16 w-16 items-center justify-center rounded-full bg-[#4f8f3a] shadow-lg shadow-[#4f8f3a]/20"
+            >
+              <Check className="h-9 w-9 text-white" strokeWidth={3.2} />
+            </motion.div>
+          </motion.div>
+
+          <h1 className="text-2xl font-bold text-black sm:text-3xl">Order Placed Successfully!</h1>
+          <p className="mt-3 text-sm leading-6 text-gray-600 sm:text-base">Your order has been placed successfully.</p>
+
+          <div className="mx-auto mt-7 h-1.5 w-36 overflow-hidden rounded-full bg-[#b4c49a]/20">
+            <motion.div
+              className="h-full rounded-full bg-[#4f8f3a]"
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 3, ease: "linear" }}
+            />
+          </div>
+        </motion.div>
+
+        <Confetti trigger={showConfetti} />
+      </div>
+    );
+  }
 
   if (bundleItems.length === 0) {
     return (

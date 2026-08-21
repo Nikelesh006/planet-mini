@@ -226,7 +226,7 @@ export default function Navbar() {
             {/* Phone Number - Left */}
             <div className="hidden md:flex items-center gap-2 text-gray-700 font-medium w-1/4">
               <Phone className="w-4 h-4" />
-              <span className="text-sm">+91 82202 94678</span>
+              <span className="text-sm">+91 81244 11259</span>
             </div>
 
             {/* Mobile Menu Toggle - Left on mobile */}

@@ -764,7 +764,14 @@ export default function AddProduct() {
 
   );
 
-  const nextSku = useMemo(() => `PM-${String(products.length + 1).padStart(4, "0")}`, [products.length]);
+  const nextSku = useMemo(() => {
+    const maxSkuNumber = products.reduce((max, product) => {
+      const match = product.sku?.match(/^PM-(\d+)$/);
+      return match ? Math.max(max, Number(match[1])) : max;
+    }, 0);
+
+    return `PM-${String(maxSkuNumber + 1).padStart(4, "0")}`;
+  }, [products]);
 
   const previewSku = isEdit ? formData.sku || nextSku : nextSku;
 

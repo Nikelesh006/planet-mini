@@ -436,7 +436,19 @@ async function bootstrap() {
 
   await connectDB();
 
-
+  // Initialize WhatsApp client for order notifications
+  if (process.env.OWNER_WHATSAPP_NUMBER) {
+    console.log('📱 Initializing WhatsApp client for order notifications...');
+    try {
+      const { initializeWhatsAppClient } = await import('./services/whatsappClient.js');
+      initializeWhatsAppClient();
+    } catch (error) {
+      console.error('Failed to initialize WhatsApp client:', error);
+      console.log('WhatsApp notifications will be disabled. Server will continue running.');
+    }
+  } else {
+    console.log('⚠️ OWNER_WHATSAPP_NUMBER not set. WhatsApp notifications disabled.');
+  }
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
 

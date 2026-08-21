@@ -12753,7 +12753,7 @@ export async function registerRoutes(
       if (newOrder.paymentStatus === 'paid') {
         try {
           console.log('>>> CALLING WHATSAPP NOTIFICATION FROM /api/orders <<<');
-          notifyOwnerOnWhatsApp(newOrder);
+          await notifyOwnerOnWhatsApp(newOrder);
           console.log('>>> WHATSAPP NOTIFICATION CALLED FROM /api/orders <<<');
           await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, true);
         } catch (waError: any) {

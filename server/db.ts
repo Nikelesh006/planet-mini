@@ -113,6 +113,20 @@ const getNextSkuFromProducts = (products: any[]) => {
   return `PM-${String(maxSkuNumber + 1).padStart(4, "0")}`;
 };
 
+const getSkuNumber = (sku: unknown) => {
+  const match = typeof sku === "string" ? sku.match(/^PM-(\d+)$/) : null;
+  return match ? Number(match[1]) : Number.MAX_SAFE_INTEGER;
+};
+
+const sortProductsBySkuAscending = (products: any[]) => {
+  return [...products].sort((a, b) => {
+    const skuDiff = getSkuNumber(a.sku) - getSkuNumber(b.sku);
+    if (skuDiff !== 0) return skuDiff;
+
+    return String(a.name || "").localeCompare(String(b.name || ""));
+  });
+};
+
 
 
 
@@ -167,7 +181,7 @@ export const productsStorage = {
 
 
 
-      return products.map(product => ({
+      return sortProductsBySkuAscending(products.map(product => ({
 
 
 
@@ -179,7 +193,7 @@ export const productsStorage = {
 
 
 
-      }));
+      })));
 
 
 
@@ -207,7 +221,7 @@ export const productsStorage = {
 
 
 
-      return productsCache;
+      return sortProductsBySkuAscending(productsCache);
 
 
 

@@ -657,6 +657,34 @@ export const userStorage = {
 
 
 
+const normalizeOrderItem = (item: any, products: any[] = []) => {
+  const rawProductId = (item.productId || item.id || item._id)?.toString();
+  const rawSlug = item.slug || item.productSlug;
+  const rawName = item.name || item.productName;
+  const matchedProduct = products.find((product: any) =>
+    product.id?.toString() === rawProductId ||
+    product._id?.toString() === rawProductId ||
+    product.slug === rawProductId ||
+    product.slug === rawSlug ||
+    (rawName && product.name?.toLowerCase() === rawName.toLowerCase())
+  );
+  const productId = rawProductId || matchedProduct?.id?.toString() || matchedProduct?._id?.toString();
+  const sku = item.sku || matchedProduct?.sku;
+
+  return {
+    id: productId,
+    productId,
+    name: rawName || matchedProduct?.name,
+    sellingPrice: item.sellingPrice ?? item.price ?? matchedProduct?.sellingPrice ?? 0,
+    quantity: item.quantity || 1,
+    image: item.image || item.productImage || matchedProduct?.image,
+    slug: rawSlug || matchedProduct?.slug || (productId ? `product-${productId}` : undefined),
+    sku,
+    size: item.size,
+    color: item.color
+  };
+};
+
 // Orders storage functionality
 
 export const ordersStorage = {
@@ -719,6 +747,7 @@ export const ordersStorage = {
 
       // Convert MongoDB _id to string id and format the data
 
+      const products = await productsStorage.getProducts();
       const formattedOrders = orders.map(order => {
 
         console.log('🔍 Raw order data:', JSON.stringify(order, null, 2));
@@ -726,21 +755,10 @@ export const ordersStorage = {
         
 
         // Transform items to match frontend expectations
-
-const transformedItems = (order.items || order.products || []).map((item: any) => {
+        const transformedItems = (order.items || order.products || []).map((item: any) => {
            console.log('🔍 Raw item data:', item);
            
-           const transformedItem = {
-             id: item.productId || item.id || item._id,
-             name: item.name || item.productName,
-             sellingPrice: item.sellingPrice ?? item.price ?? 0,
-             quantity: item.quantity || 1,
-             image: item.image || item.productImage,
-             slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
-             sku: item.sku,
-             size: item.size,
-             color: item.color
-           };
+           const transformedItem = normalizeOrderItem(item, products);
            
            console.log('🔍 Transformed item:', transformedItem);
            return transformedItem;
@@ -960,20 +978,12 @@ const transformedItems = (order.items || order.products || []).map((item: any) =
       
 
       // Format orders similar to getOrders
-
+      const products = await productsStorage.getProducts();
       const formattedOrders = orders.map(order => {
 
-const transformedItems = (order.items || order.products || []).map((item: any) => ({
-           id: item.productId || item.id || item._id,
-           name: item.name || item.productName,
-           sellingPrice: item.sellingPrice ?? item.price ?? 0,
-           quantity: item.quantity || 1,
-           image: item.image || item.productImage,
-           slug: item.slug || item.productSlug || `product-${item.productId || item.id || item._id}`,
-           sku: item.sku,
-           size: item.size,
-           color: item.color
-         }));
+        const transformedItems = (order.items || order.products || []).map((item: any) =>
+          normalizeOrderItem(item, products)
+        );
 
 
 
@@ -1059,6 +1069,9 @@ const transformedItems = (order.items || order.products || []).map((item: any) =
           throw error;
         }
       }
+      const normalizedOrderItems = (orderData.items || orderData.products || []).map((item: any) =>
+        normalizeOrderItem(item, products)
+      );
 
       console.log(`🔧 Creating order for userId: ${finalUserId}`);
 
@@ -1123,6 +1136,8 @@ const transformedItems = (order.items || order.products || []).map((item: any) =
       const order = {
 
         ...orderData,
+
+        items: normalizedOrderItems,
 
         userId: finalUserId,
 
@@ -1269,4 +1284,6 @@ const transformedItems = (order.items || order.products || []).map((item: any) =
   }
 
 };
+
+
 

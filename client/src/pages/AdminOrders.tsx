@@ -22,11 +22,13 @@ import { useAdminOrders } from "../hooks/useAdminOrders";
 
 interface OrderItem {
   id: string;
+  productId?: string;
   name: string;
   sellingPrice?: number;
   price?: number;
   quantity: number;
   image: string;
+  slug?: string;
   sku?: string;
   size?: string;
   color?: string;
@@ -129,6 +131,17 @@ export default function AdminOrders() {
   const getItemSize = (item: OrderItem) => {
     const size = item.size?.trim();
     return size && size.toLowerCase() !== 'n/a' ? size : null;
+  };
+
+  const getItemProductSku = (item?: OrderItem) => {
+    return item?.sku || null;
+  };
+
+  const getItemProductHref = (item: OrderItem) => {
+    if (item.slug) return `/products/${item.slug}`;
+
+    const productId = item.productId || item.id;
+    return productId ? `/products/product-${productId}` : null;
   };
 
   // Format date
@@ -290,7 +303,7 @@ export default function AdminOrders() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            {order.items && order.items.length > 0 ? order.items[0].sku : 'N/A'}
+                            {getItemProductSku(order.items?.[0]) || 'N/A'}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -379,7 +392,7 @@ export default function AdminOrders() {
                     <div className="flex items-start justify-between mb-2.5 gap-2">
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold text-gray-900">{order.orderNumber}</p>
-                        <p className="text-[11px] text-gray-500 truncate">Product ID: {order.items && order.items.length > 0 ? order.items[0].sku : 'N/A'}</p>
+                        <p className="text-[11px] text-gray-500 truncate">Product ID: {getItemProductSku(order.items?.[0]) || 'N/A'}</p>
                         <p className="text-[11px] text-gray-500">{formatDate(order.createdAt)}</p>
                       </div>
                       <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium ${statusConfig.bgColor} ${statusConfig.color} flex-shrink-0`}>
@@ -526,6 +539,8 @@ export default function AdminOrders() {
                   <h3 className="text-sm sm:text-lg lg:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 lg:mb-5">Order Items</h3>
                   <div className="space-y-3 sm:space-y-4 lg:space-y-5">
                     {selectedOrder.items.map((item) => {
+                      const productSku = getItemProductSku(item);
+                      const productHref = getItemProductHref(item);
                       console.log('🔍 Order item:', item);
                       console.log('🔍 Item sku:', item.sku);
                       return (
@@ -537,7 +552,7 @@ export default function AdminOrders() {
                         />
                         <div className="flex-1 w-full min-w-0">
                           <h4 className="text-sm sm:text-base lg:text-lg font-medium text-gray-900 truncate">{item.name}</h4>
-                          <p className="text-[11px] sm:text-xs lg:text-sm text-gray-500 mt-0.5 sm:mt-1 lg:mt-2">Product ID: {item.sku || 'N/A'}</p>
+                          <p className="text-[11px] sm:text-xs lg:text-sm text-gray-500 mt-0.5 sm:mt-1 lg:mt-2">Product ID: {productSku || 'N/A'}</p>
                           <div className="mt-1 sm:mt-2 lg:mt-3 flex flex-wrap items-center gap-x-2 sm:gap-x-3 lg:gap-x-4 gap-y-0.5 sm:gap-y-1 text-xs sm:text-sm lg:text-base text-gray-500">
                             <span>Quantity: {item.quantity}</span>
                             {getItemSize(item) && <span>Size: {getItemSize(item)}</span>}
@@ -552,8 +567,8 @@ export default function AdminOrders() {
                           </div>
                         </div>
 <div className="w-full sm:w-auto flex-shrink-0">
-                           {item.sku ? (
-                             <Link href={`/products/${item.sku}`} className="block w-full sm:w-auto">
+                           {productHref ? (
+                             <Link href={productHref} className="block w-full sm:w-auto">
                               <button
                                 className="w-full sm:w-auto bg-yellow-100 hover:bg-yellow-200 border-yellow-300 text-yellow-800 px-3 sm:px-4 lg:px-5 py-1.5 sm:py-2 lg:py-2.5 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-all duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2"
                                 aria-label={`View product details for ${item.name}`}

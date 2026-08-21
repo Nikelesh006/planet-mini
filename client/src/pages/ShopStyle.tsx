@@ -974,8 +974,8 @@ export default function ShopStyle() {
         <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
           <div className="text-center">
             <button
-              onClick={() => window.location.href = '/shop/style?custom=true'}
-              className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-colors shadow-lg hover:shadow-xl bg-black text-white hover:bg-gray-800"
+              disabled
+              className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold text-sm sm:text-base shadow-lg bg-black text-white opacity-60 cursor-not-allowed"
             >
               Customise Your Own Hospital Bags
             </button>

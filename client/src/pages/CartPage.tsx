@@ -10,7 +10,7 @@ import { Confetti, useConfetti } from "@/components/ui/Confetti";
 
 import { ChevronDown, ArrowLeft, Minus, Plus, MapPin, Check, ShoppingBag } from 'lucide-react';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 import { addressApi, Address } from '../utils/addressApi';
 
@@ -43,7 +43,7 @@ export default function CartPage() {
 
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
 
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
 
   const [promoCode, setPromoCode] = useState('');
 
@@ -54,6 +54,24 @@ export default function CartPage() {
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
 
   const [selectedBundle, setSelectedBundle] = useState<{ bundleId: string; items: CartItem[] } | null>(null);
+
+  const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const isCompletingOrderRef = useRef(false);
+
+  useEffect(() => {
+    if (!orderSuccess) {
+      return;
+    }
+
+    const redirectTimer = window.setTimeout(() => {
+      setLocation('/orders');
+    }, 3000);
+
+    return () => {
+      window.clearTimeout(redirectTimer);
+    };
+  }, [orderSuccess, setLocation]);
 
   // Group bundle items together
   const bundleGroups = state.items
@@ -435,6 +453,14 @@ export default function CartPage() {
 
         handler: async (response) => {
 
+          if (isCompletingOrderRef.current) {
+
+            return;
+
+          }
+
+          isCompletingOrderRef.current = true;
+
           try {
 
             // Step 4: Verify payment and create order
@@ -523,19 +549,11 @@ export default function CartPage() {
 
                 
 
-                // Show success message
+                // Show success screen only after the order is created.
 
                 console.log(`Order placed successfully! Order Number: ${order.orderNumber}`);
 
-                
-
-                // Redirect to orders page
-
-                setTimeout(() => {
-
-                  window.location.href = '/profile/orders';
-
-                }, 2000);
+                setOrderSuccess(true);
 
               } else {
 
@@ -552,6 +570,8 @@ export default function CartPage() {
           } catch (error) {
 
             console.error('Error after payment:', error);
+
+            isCompletingOrderRef.current = false;
 
             alert('Payment successful but order creation failed. Please contact support.');
 
@@ -596,6 +616,66 @@ export default function CartPage() {
   const subtotal = state.totalPrice;
 
   const total = subtotal;
+
+
+
+  if (orderSuccess) {
+
+    return (
+
+      <div className="fixed inset-0 z-[9999] flex min-h-screen items-center justify-center bg-white px-4" role="status" aria-live="polite">
+
+        <motion.div
+          initial={{ opacity: 0, y: 18, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="w-full max-w-md rounded-3xl border border-[#b4c49a]/30 bg-white p-8 text-center shadow-2xl sm:p-10"
+        >
+
+          <motion.div
+            initial={{ scale: 0.72 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 220, damping: 14 }}
+            className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-[#b4c49a]/15"
+          >
+
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.18, type: "spring", stiffness: 260, damping: 16 }}
+              className="flex h-16 w-16 items-center justify-center rounded-full bg-[#4f8f3a] shadow-lg shadow-[#4f8f3a]/20"
+            >
+
+              <Check className="h-9 w-9 text-white" strokeWidth={3.2} />
+
+            </motion.div>
+
+          </motion.div>
+
+          <h1 className="text-2xl font-bold text-black sm:text-3xl">Order Placed Successfully!</h1>
+
+          <p className="mt-3 text-sm leading-6 text-gray-600 sm:text-base">Your order has been placed successfully.</p>
+
+          <div className="mx-auto mt-7 h-1.5 w-36 overflow-hidden rounded-full bg-[#b4c49a]/20">
+
+            <motion.div
+              className="h-full rounded-full bg-[#4f8f3a]"
+              initial={{ width: "0%" }}
+              animate={{ width: "100%" }}
+              transition={{ duration: 3, ease: "linear" }}
+            />
+
+          </div>
+
+        </motion.div>
+
+        <Confetti trigger={showConfetti} />
+
+      </div>
+
+    );
+
+  }
 
 
 

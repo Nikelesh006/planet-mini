@@ -1104,82 +1104,67 @@ export default function Home() {
           <div className="mt-10 sm:mt-16">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8">
               {/* Hospital Bag Image 1 */}
-              <Link href="/shop/style?section=hospital-bags">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
-                >
-                  <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
-                    <img
-                      src="/pmh1.jpeg"
-                      alt="Hospital Bag 1"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      draggable={false}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                </motion.div>
-              </Link>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="relative overflow-hidden rounded-3xl shadow-lg"
+              >
+                <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <img
+                    src="/pmh1.jpeg"
+                    alt="Hospital Bag 1"
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                  />
+                </div>
+              </motion.div>
               {/* Hospital Bag Image 2 */}
-              <Link href="/shop/style?section=hospital-bags">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
-                >
-                  <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
-                    <img
-                      src="/pmh2.jpeg"
-                      alt="Hospital Bag 2"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      draggable={false}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                </motion.div>
-              </Link>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="relative overflow-hidden rounded-3xl shadow-lg"
+              >
+                <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <img
+                    src="/pmh2.jpeg"
+                    alt="Hospital Bag 2"
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                  />
+                </div>
+              </motion.div>
               {/* Hospital Bag Image 3 */}
-              <Link href="/shop/style?section=hospital-bags">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group relative cursor-pointer overflow-hidden rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300"
-                >
-                  <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
-                    <img
-                      src="/pmh3.jpeg"
-                      alt="Hospital Bag 3"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                      draggable={false}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-                </motion.div>
-              </Link>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                className="relative overflow-hidden rounded-3xl shadow-lg"
+              >
+                <div className="aspect-[4/5] sm:aspect-square bg-gray-200 flex items-center justify-center overflow-hidden">
+                  <img
+                    src="/pmh3.jpeg"
+                    alt="Hospital Bag 3"
+                    className="w-full h-full object-cover"
+                    draggable={false}
+                  />
+                </div>
+              </motion.div>
             </div>
           </div>
 
           {/* Customise Button */}
           <div className="text-center mt-8 sm:mt-12">
-            <Link href="/shop/style?custom=true">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="bg-black text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full text-base sm:text-lg hover:bg-gray-800 transition-all duration-150 shadow-xl flex items-center gap-2 mx-auto group"
-              >
-                Customise
-                <svg className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-150 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </motion.button>
-            </Link>
+            <motion.button
+              disabled
+              className="bg-black text-white px-4 py-2 sm:px-5 sm:py-2 rounded-full text-base sm:text-lg shadow-xl flex items-center gap-2 mx-auto opacity-60 cursor-not-allowed"
+            >
+              Customise
+              <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </motion.button>
           </div>
 
         </div>

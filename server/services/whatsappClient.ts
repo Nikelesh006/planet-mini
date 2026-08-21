@@ -1,6 +1,8 @@
 import whatsapp from 'whatsapp-web.js';
 const { Client, LocalAuth } = whatsapp;
 import qrcode from 'qrcode-terminal';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 let whatsappClient: any = null;
 
@@ -12,9 +14,14 @@ export function initializeWhatsAppClient(): any {
 
   console.log('Initializing WhatsApp client...');
 
+  // Get absolute path for session data
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const authPath = path.join(__dirname, '.wwebjs_auth');
+
   whatsappClient = new Client({
     authStrategy: new LocalAuth({
-      dataPath: './.wwebjs_auth',
+      dataPath: authPath,
       clientId: 'planet-mini-whatsapp'
     }),
     puppeteer: {

@@ -271,7 +271,7 @@ export default function Contact() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Phone</h3>
-                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">+91 82202 94678</p>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium mb-1">+91 81244 11259</p>
                       <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         Mon-Fri: 9AM-6PM EST
@@ -287,11 +287,11 @@ export default function Contact() {
                     </div>
                     <div className="flex-1">
                       <h3 className="font-bold text-base sm:text-lg text-black mb-1 group-hover:text-[#6F7F54] transition-colors">Address</h3>
-                      <p className="text-sm sm:text-base text-gray-700 font-medium">123 Baby Street</p>
-                      <p className="text-sm sm:text-base text-gray-700 font-medium">New York, NY 10001</p>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium">Address - 2, vadivel nagar</p>
+                      <p className="text-sm sm:text-base text-gray-700 font-medium">Samundipuram, Tiruppur - 641603</p>
                       <p className="text-xs sm:text-sm text-gray-500 flex items-center gap-1">
                         <Globe className="w-3 h-3" />
-                        United States
+                        India
                       </p>
                     </div>
                   </div>
