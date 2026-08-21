@@ -16,10 +16,6 @@ import jwt from "jsonwebtoken";
 
 import passport from "passport";
 
-import { initializeWhatsAppClient } from "./services/whatsappClient.js";
-
-
-
 export const app = express();
 
 const httpServer = createServer(app);
@@ -436,15 +432,6 @@ app.post("/api/auth/logout", (req: Request, res: Response) => {
 
 
 async function bootstrap() {
-
-  // Initialize WhatsApp client for order notifications
-  if (!process.env.OWNER_WHATSAPP_NUMBER) {
-    console.warn('⚠️  OWNER_WHATSAPP_NUMBER not set in environment variables. WhatsApp notifications will be disabled.');
-  } else {
-    console.log('📱 Initializing WhatsApp client for order notifications...');
-    initializeWhatsAppClient();
-  }
-
   await registerRoutes(httpServer, app);
 
   await connectDB();

@@ -1,4 +1,4 @@
-import { sendWhatsAppMessage } from '../services/whatsappClient';
+import { sendAdminOrderNotification } from '../services/whatsappService.js';
 
 interface Order {
   orderId?: string;
@@ -21,72 +21,22 @@ interface Order {
   customerPhone?: string;
   paymentStatus?: string;
   createdAt?: Date | string;
+  [key: string]: any;
 }
 
 export function notifyOwnerOnWhatsApp(order: Order): void {
-  console.log('>>> notifyOwnerOnWhatsApp called with order:', JSON.stringify(order, null, 2));
-  
-  if (!process.env.OWNER_WHATSAPP_NUMBER) {
-    console.warn('OWNER_WHATSAPP_NUMBER not set in environment variables. Skipping WhatsApp notification.');
-    return;
-  }
+  const orderId = order.orderId || order.orderNumber || order.id || order._id || 'N/A';
 
-  console.log('OWNER_WHATSAPP_NUMBER:', process.env.OWNER_WHATSAPP_NUMBER);
+  void sendAdminOrderNotification(order).then((result) => {
+    if (result.success) {
+      console.log(`[WhatsApp] Admin notification sent for order ${orderId}`);
+      return;
+    }
 
-  try {
-    const orderId = order.orderId || order.orderNumber || 'N/A';
-    const items = order.items || [];
-    
-    console.log('Order items:', items);
-    
-    // Build items list
-    const itemsList = items
-      .map((item, index) => {
-        const name = item.productName || 'Unknown Product';
-        const qty = item.quantity || 1;
-        const price = item.price || 0;
-        return `${index + 1}. ${name} x${qty} - ₹${price}`;
-      })
-      .join('\n');
-
-    // Build shipping address
-    const address = order.shippingAddress || {};
-    const shippingAddress = [
-      address.fullName,
-      address.street,
-      `${address.city}, ${address.state}`,
-      address.pincode
-    ].filter(Boolean).join('\n');
-
-    // Build message
-    const message = `🛒 *NEW ORDER RECEIVED*
-
-📋 *Order ID:* ${orderId}
-💰 *Total Amount:* ₹${order.total || 0}
-💳 *Payment Status:* ${order.paymentStatus || 'N/A'}
-📅 *Order Date:* ${order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}
-
-📦 *Items:*
-${itemsList || 'No items'}
-
-📍 *Shipping Address:*
-${shippingAddress || 'No address provided'}
-
-👤 *Customer Details:*
-Name: ${order.customerName || address.fullName || 'N/A'}
-Phone: ${order.customerPhone || address.phone || 'N/A'}
-
----
-*Powered by Planet Mini*`;
-
-    console.log('Message prepared, sending WhatsApp message...');
-    console.log('Message content:', message);
-
-    // Send message
-    sendWhatsAppMessage(process.env.OWNER_WHATSAPP_NUMBER, message);
-    console.log(`WhatsApp notification sent for order ${orderId}`);
-  } catch (error) {
-    console.error('Failed to send WhatsApp notification:', error);
-    // Don't throw - we don't want notification failures to break the application
-  }
+    console.warn(
+      `[WhatsApp] Admin notification skipped for order ${orderId}: ${result.error || 'unknown error'}`,
+    );
+  }).catch((error) => {
+    console.error(`[WhatsApp] Failed to notify owner for order ${orderId}:`, error);
+  });
 }
