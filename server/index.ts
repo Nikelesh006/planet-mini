@@ -436,8 +436,9 @@ async function bootstrap() {
 
   await connectDB();
 
-  // Initialize WhatsApp client for order notifications
-  if (process.env.OWNER_WHATSAPP_NUMBER) {
+  // Initialize WhatsApp client for order notifications (only on non-Vercel platforms)
+  // whatsapp-web.js requires a long-running process and won't work on Vercel serverless
+  if (!process.env.VERCEL && process.env.OWNER_WHATSAPP_NUMBER) {
     console.log('📱 Initializing WhatsApp client for order notifications...');
     try {
       const { initializeWhatsAppClient } = await import('./services/whatsappClient.js');
@@ -446,6 +447,8 @@ async function bootstrap() {
       console.error('Failed to initialize WhatsApp client:', error);
       console.log('WhatsApp notifications will be disabled. Server will continue running.');
     }
+  } else if (process.env.VERCEL) {
+    console.log('⚠️ Running on Vercel - WhatsApp notifications disabled (requires long-running process)');
   } else {
     console.log('⚠️ OWNER_WHATSAPP_NUMBER not set. WhatsApp notifications disabled.');
   }

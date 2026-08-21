@@ -1,4 +1,3 @@
-import { sendWhatsAppMessage } from '../services/whatsappClient.js';
 import { productsStorage } from '../db.js';
 
 interface Order {
@@ -33,12 +32,21 @@ interface Order {
 }
 
 export async function notifyOwnerOnWhatsApp(order: Order): Promise<void> {
+  // Skip WhatsApp notifications on Vercel (serverless environment)
+  if (process.env.VERCEL) {
+    console.log('⚠️ WhatsApp notification skipped - running on Vercel (requires long-running process)');
+    return;
+  }
+
   if (!process.env.OWNER_WHATSAPP_NUMBER) {
     console.warn('OWNER_WHATSAPP_NUMBER not set in environment variables. Skipping WhatsApp notification.');
     return;
   }
 
   try {
+    // Dynamically import whatsappClient only when not on Vercel
+    const { sendWhatsAppMessage } = await import('../services/whatsappClient.js');
+    
     const orderId = order.orderId || order.orderNumber || 'N/A';
     const items = order.items || [];
     
