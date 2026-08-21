@@ -202,7 +202,11 @@
 
     "zod-validation-error": "^3.4.0",
 
-    "zustand": "^5.0.11"
+    "zustand": "^5.0.11",
+
+    "whatsapp-web.js": "^1.23.0",
+
+    "qrcode-terminal": "^0.12.0"
 
   },
 
