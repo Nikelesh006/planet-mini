@@ -24,11 +24,11 @@ export async function sendAdminOrderNotification(order: any): Promise<WhatsAppNo
     // 2. Load and validate WhatsApp configuration from environment variables
     const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
     const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-    const adminPhone = process.env.WHATSAPP_ADMIN_PHONE_NUMBER;
+    const adminPhone = process.env.WHATSAPP_ADMIN_PHONE_NUMBER || '9597755722';
     const apiVersion = process.env.WHATSAPP_API_VERSION || 'v20.0';
     const templateName = process.env.WHATSAPP_TEMPLATE_NAME || 'new_order_admin_notification';
 
-    if (!accessToken || !phoneNumberId || !adminPhone) {
+    if (!accessToken || !phoneNumberId) {
       const errorMsg = 'Missing WhatsApp Cloud API credentials in environment variables';
       console.error(`[WhatsAppService] ${errorMsg}`);
       return { success: false, error: errorMsg };

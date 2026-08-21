@@ -60,15 +60,14 @@ import jwt from "jsonwebtoken";
 
 
 
-
-
 import { storage, addressStorage, userStorage, ordersStorage } from "./storage.js";
 
 import { productsStorage } from "./db.js";
 
 import { getAvailableStock, isOutOfStock } from "./shared/stock.js";
 
-import { sendAdminOrderNotification } from "./services/whatsappService.js";
+import { notifyOwnerOnWhatsApp } from "./utils/notifyOwner.js";
+
 import Razorpay from "razorpay";
 
 const razorpay = new Razorpay({
@@ -12751,17 +12750,14 @@ export async function registerRoutes(
 
       const newOrder = await ordersStorage.createOrder(userId, orderData);
 
-      // Trigger WhatsApp Notification if paymentStatus is paid
       if (newOrder.paymentStatus === 'paid') {
         try {
-          const waResult = await sendAdminOrderNotification(newOrder);
-          if (waResult.success) {
-            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, true);
-          } else {
-            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, waResult.error);
-          }
+          console.log('>>> CALLING WHATSAPP NOTIFICATION FROM /api/orders <<<');
+          notifyOwnerOnWhatsApp(newOrder);
+          console.log('>>> WHATSAPP NOTIFICATION CALLED FROM /api/orders <<<');
+          await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, true);
         } catch (waError: any) {
-          console.error('❌ WhatsApp Notification error from /api/orders:', waError);
+          console.error('WhatsApp Notification error from /api/orders:', waError);
           await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, waError.message || 'Unknown request error');
         }
       }

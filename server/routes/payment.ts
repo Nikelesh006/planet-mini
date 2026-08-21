@@ -3,7 +3,7 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { ordersStorage } from '../storage.js';
-import { sendAdminOrderNotification } from '../services/whatsappService.js';
+import { notifyOwnerOnWhatsApp } from '../utils/notifyOwner.js';
 
 const router = express.Router();
 
@@ -125,22 +125,17 @@ router.post('/verify', requireAuth, async (req: any, res: any) => {
       try {
         const newOrder = await ordersStorage.createOrder(req.user.id, finalOrderData);
         
-        // Trigger WhatsApp Notification
-        let whatsappSent = false;
-        let whatsappError = null;
+        console.log('>>> ORDER CREATED SUCCESSFULLY <<<');
+        console.log('Order data:', JSON.stringify(newOrder, null, 2));
+        
+        // Send WhatsApp notification to owner
         try {
-          const waResult = await sendAdminOrderNotification(newOrder);
-          if (waResult.success) {
-            whatsappSent = true;
-            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, true);
-          } else {
-            whatsappError = waResult.error;
-            await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, waResult.error);
-          }
+          console.log('>>> CALLING WHATSAPP NOTIFICATION <<<');
+          notifyOwnerOnWhatsApp(newOrder);
+          console.log('>>> WHATSAPP NOTIFICATION FUNCTION CALLED <<<');
         } catch (waError: any) {
-          console.error('❌ WhatsApp Notification error:', waError);
-          whatsappError = waError.message || 'WhatsApp request error';
-          await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, whatsappError);
+          console.error('WhatsApp Notification error:', waError);
+          // Don't let notification failure break the order creation
         }
 
         return res.json({
@@ -148,8 +143,6 @@ router.post('/verify', requireAuth, async (req: any, res: any) => {
           payment_id: razorpay_payment_id,
           order_id: razorpay_order_id,
           order: newOrder,
-          whatsappSent,
-          whatsappError,
           message: 'Payment verified and order created successfully'
         });
       } catch (orderError: any) {
