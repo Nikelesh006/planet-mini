@@ -1123,15 +1123,37 @@ export const ordersStorage = {
 
           }
 
+      
+
         } catch (addrError) {
 
           console.error('Error fetching address:', addrError);
 
         }
-
       }
 
-      
+      // Generate sequential order number starting from TRIC-PM-ORD-0101
+      let orderNumber = 'TRIC-PM-ORD-0101';
+      try {
+        const lastOrder = await db.collection("orders")
+          .find({ orderNumber: /^TRIC-PM-ORD-\d+$/ })
+          .sort({ orderNumber: -1 })
+          .limit(1)
+          .toArray();
+
+        if (lastOrder && lastOrder.length > 0) {
+          const lastNumStr = lastOrder[0].orderNumber;
+          const match = lastNumStr.match(/TRIC-PM-ORD-(\d+)/);
+          if (match) {
+            const nextSeq = parseInt(match[1], 10) + 1;
+            // Pad sequence with leading zeros (e.g. 4 digits like 0101)
+            const paddedSeq = String(nextSeq).padStart(4, '0');
+            orderNumber = `TRIC-PM-ORD-${paddedSeq}`;
+          }
+        }
+      } catch (seqError) {
+        console.error('Error generating sequential order number:', seqError);
+      }
 
       const order = {
 
@@ -1141,7 +1163,7 @@ export const ordersStorage = {
 
         userId: finalUserId,
 
-        orderNumber: `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        orderNumber,
 
         status: orderData.status || 'pending',
 
@@ -1161,11 +1183,7 @@ export const ordersStorage = {
 
       };
 
-      
-
-      // Remove shippingAddressId since we now have the full address
-
-      delete order.shippingAddressId;
+      delete (order as any).shippingAddressId;
 
       
 
