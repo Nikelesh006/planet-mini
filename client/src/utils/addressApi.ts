@@ -25,41 +25,47 @@ export interface CreateAddressData {
   state: string;
 }
 
-// Get current user ID from auth context or localStorage - Same logic as orders
+// Get current user ID from auth context, localStorage, or jwtToken payload
 const getCurrentUserId = (): string | null => {
-  // Try to get user from auth context first (if available)
   if (typeof window !== 'undefined') {
-    // Check for auth user in localStorage (set by auth context)
+    // 1. Check for auth user in localStorage (set by auth context)
     const authUser = localStorage.getItem('authUser');
-    console.log('🔍 getCurrentUserId - Checking localStorage authUser:', authUser);
-    
     if (authUser) {
       try {
         const user = JSON.parse(authUser);
-        console.log('🔍 getCurrentUserId - Parsed user from localStorage:', user);
-        const userId = user?.id || user?.sub;
-        console.log('🔍 getCurrentUserId - Final userId from authUser:', userId);
-        return userId;
+        const userId = user?.id || user?.sub || user?.userId;
+        if (userId) return String(userId);
       } catch (e) {
         console.error('Failed to parse auth user:', e);
       }
     }
     
-    // Fallback to userId in localStorage
+    // 2. Check direct userId in localStorage
     const userId = localStorage.getItem('userId');
-    console.log('🔍 getCurrentUserId - Fallback localStorage userId:', userId);
     if (userId) {
-      return userId;
+      return String(userId);
+    }
+
+    // 3. Extract from jwtToken payload in localStorage
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      try {
+        const parts = token.split('.');
+        if (parts.length === 3) {
+          const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+          const extractedId = payload?.id || payload?.sub || payload?.userId;
+          if (extractedId) return String(extractedId);
+        }
+      } catch (err) {
+        console.warn('Could not parse jwtToken payload:', err);
+      }
     }
   }
-  
-  // No authentication found - return null instead of throwing
-  console.log('🔍 getCurrentUserId - No authentication found, returning null');
   return null;
 };
 
 export const addressApi = {
-  // Get all addresses for current user from database - Updated to match orders pattern
+  // Get all addresses for current user from database
   async getAddresses(): Promise<Address[]> {
     try {
       const userId = getCurrentUserId();
@@ -71,17 +77,8 @@ export const addressApi = {
       
       console.log(`🔍 Fetching addresses for userId: ${userId}`);
       
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      
-      if (userId) {
-        headers['x-user-id'] = userId;
-      }
-      
       const response = await apiFetch('/api/addresses', {
         method: 'GET',
-        headers,
       });
 
       console.log(`📡 Address API response status: ${response.status}`);
@@ -102,7 +99,7 @@ export const addressApi = {
     }
   },
 
-  // Create a new address and store in database - Updated to match orders pattern
+  // Create a new address and store in database
   async createAddress(addressData: CreateAddressData): Promise<Address> {
     try {
       const userId = getCurrentUserId();
@@ -114,17 +111,8 @@ export const addressApi = {
       
       console.log(`🔍 Creating address for userId: ${userId}`, addressData);
       
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      
-      if (userId) {
-        headers['x-user-id'] = userId;
-      }
-      
       const response = await apiFetch('/api/addresses', {
         method: 'POST',
-        headers,
         body: JSON.stringify(addressData),
       });
 
@@ -152,7 +140,7 @@ export const addressApi = {
     }
   },
 
-  // Update an existing address - New method to match CRUD pattern
+  // Update an existing address in database
   async updateAddress(addressId: string, addressData: Partial<CreateAddressData>): Promise<Address> {
     try {
       const userId = getCurrentUserId();
@@ -164,17 +152,8 @@ export const addressApi = {
       
       console.log(`🔍 Updating address ${addressId} for userId: ${userId}`, addressData);
       
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      
-      if (userId) {
-        headers['x-user-id'] = userId;
-      }
-      
       const response = await apiFetch(`/api/addresses/${addressId}`, {
         method: 'PUT',
-        headers,
         body: JSON.stringify(addressData),
       });
 
@@ -197,7 +176,7 @@ export const addressApi = {
     }
   },
 
-  // Delete an address - New method to match CRUD pattern
+  // Delete an address from database
   async deleteAddress(addressId: string): Promise<boolean> {
     try {
       const userId = getCurrentUserId();
@@ -209,17 +188,8 @@ export const addressApi = {
       
       console.log(`🔍 Deleting address ${addressId} for userId: ${userId}`);
       
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-      };
-      
-      if (userId) {
-        headers['x-user-id'] = userId;
-      }
-      
       const response = await apiFetch(`/api/addresses/${addressId}`, {
         method: 'DELETE',
-        headers,
       });
 
       console.log(`📡 Delete address API response status: ${response.status}`);

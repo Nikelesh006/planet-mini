@@ -82,6 +82,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 
     req.user = {
       id: String(userId),
+      sub: String(userId),
       email: decoded.email ? String(decoded.email).toLowerCase() : undefined,
       name: decoded.name || decoded.displayName,
       avatar: decoded.avatar || decoded.picture,

@@ -127,28 +127,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     
 
-    // Create new address with database fields
-
-    const newAddress: Address = {
-
-      _id: `addr${Date.now()}`, // Generate unique ID
-
-      userId: userId,
-
-      ...validatedData,
-
-      isDefault: false,
-
-      createdAt: new Date().toISOString(),
-
-      updatedAt: new Date().toISOString()
-
-    };
-
-
-
     // Save to database storage
-
     const savedAddress = await addressStorage.createAddress(userId, validatedData);
 
     

@@ -1,9 +1,6 @@
 import mongoose from 'mongoose';
-
-import { productsStorage } from './db.js';
+import { productsStorage, connectDB } from './db.js';
 import { getAvailableStock, isOutOfStock } from './shared/stock.js';
-
-
 
 // Create a unified storage object that includes all storage functions
 
@@ -25,8 +22,6 @@ export const storage = {
 
 };
 
-
-
 // Create address storage using MongoDB collections
 
 export const addressStorage = {
@@ -35,17 +30,19 @@ export const addressStorage = {
 
     try {
 
+      await connectDB();
+
       const db = mongoose.connection.db;
 
       if (!db) {
 
-        console.log('❌ Database not connected for getAddresses, returning empty array');
+        console.error('❌ Database not connected for getAddresses');
 
         return [];
 
       }
 
-      const addresses = await db.collection("addresses").find({ userId }).toArray();
+      const addresses = await db.collection("addresses").find({ userId: String(userId) }).toArray();
 
       return addresses.map(address => ({
 
@@ -57,7 +54,7 @@ export const addressStorage = {
 
     } catch (error) {
 
-      console.error('Error fetching addresses:', error);
+      console.error('Error fetching addresses from database:', error);
 
       return [];
 
@@ -65,164 +62,86 @@ export const addressStorage = {
 
   },
 
-
-
   async createAddress(userId: string, addressData: any) {
 
-    try {
+    await connectDB();
 
-      const db = mongoose.connection.db;
+    const db = mongoose.connection.db;
 
-      if (!db) {
+    if (!db) {
 
-        console.log('❌ Database not connected for createAddress, returning mock address');
-
-        // Return mock address for testing
-
-        return {
-
-          _id: `addr${Date.now()}`,
-
-          userId: userId,
-
-          ...addressData,
-
-          isDefault: false,
-
-          createdAt: new Date().toISOString(),
-
-          updatedAt: new Date().toISOString()
-
-        };
-
-      }
-
-      const address = { ...addressData, userId, createdAt: new Date(), updatedAt: new Date() };
-
-      const result = await db.collection("addresses").insertOne(address);
-
-      return { ...address, id: result.insertedId.toString(), _id: result.insertedId.toString() };
-
-    } catch (error) {
-
-      console.error('Error creating address:', error);
-
-      // Return mock address even on error for testing
-
-      return {
-
-        _id: `addr${Date.now()}`,
-
-        userId: userId,
-
-        ...addressData,
-
-        isDefault: false,
-
-        createdAt: new Date().toISOString(),
-
-        updatedAt: new Date().toISOString()
-
-      };
+      throw new Error('Database connection is not available');
 
     }
 
+    const address = { 
+      ...addressData, 
+      userId: String(userId), 
+      createdAt: new Date(), 
+      updatedAt: new Date() 
+    };
+
+    const result = await db.collection("addresses").insertOne(address);
+
+    return { ...address, id: result.insertedId.toString(), _id: result.insertedId.toString() };
+
   },
-
-
 
   async updateAddress(userId: string, addressId: string, updateData: any) {
 
-    try {
+    await connectDB();
 
-      const db = mongoose.connection.db;
+    const db = mongoose.connection.db;
 
-      if (!db) {
+    if (!db) {
 
-        console.log('❌ Database not connected for updateAddress');
+      throw new Error('Database connection is not available');
 
-        return null;
+    }
 
-      }
+    const { ObjectId } = mongoose.Types;
 
-      const { ObjectId } = mongoose.Types;
+    const query = ObjectId.isValid(addressId)
 
-      
+      ? { _id: new ObjectId(addressId), userId: String(userId) }
 
-      const result = await db.collection("addresses").updateOne(
+      : { id: addressId, userId: String(userId) };
 
-        { _id: new ObjectId(addressId), userId },
+    const result = await db.collection("addresses").updateOne(
 
-        { $set: updateData }
+      query,
 
-      );
+      { $set: { ...updateData, updatedAt: new Date() } }
 
-      
+    );
 
-      if (result.matchedCount === 0) {
-
-        return null;
-
-      }
-
-      
-
-      const updatedAddress = await db.collection("addresses").findOne({ _id: new ObjectId(addressId) });
-
-      return updatedAddress ? { ...updatedAddress, id: updatedAddress._id.toString() } : null;
-
-    } catch (error) {
-
-      console.error('Error updating address:', error);
+    if (result.matchedCount === 0) {
 
       return null;
 
     }
 
+    const updatedAddress = await db.collection("addresses").findOne(query);
+
+    return updatedAddress ? { ...updatedAddress, id: updatedAddress._id.toString() } : null;
+
   },
 
-
-
   async deleteAddress(userId: string, addressId: string) {
-
-    try {
-
-      const db = mongoose.connection.db;
-
-      if (!db) {
-
-        console.log('❌ Database not connected for deleteAddress');
-
-        return false;
-
-      }
-
-      const { ObjectId } = mongoose.Types;
-
-      
-
-      const result = await db.collection("addresses").deleteOne({ 
-
-        _id: new ObjectId(addressId), 
-
-        userId 
-
-      });
-
-      
-
-      return result.deletedCount > 0;
-
-    } catch (error) {
-
-      console.error('Error deleting address:', error);
-
-      return false;
-
+    await connectDB();
+    const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection is not available');
     }
 
-  }
+    const { ObjectId } = mongoose.Types;
+    const query = ObjectId.isValid(addressId)
+      ? { _id: new ObjectId(addressId), userId: String(userId) }
+      : { id: addressId, userId: String(userId) };
 
+    const result = await db.collection("addresses").deleteOne(query);
+    return result.deletedCount > 0;
+  }
 };
 
 
