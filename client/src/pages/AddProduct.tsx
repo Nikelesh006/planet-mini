@@ -1573,19 +1573,16 @@ export default function AddProduct() {
 
     
 
+    const token = localStorage.getItem('jwtToken');
     const response = await fetch(url, {
-
       method,
-
       headers: {
-
         "Content-Type": "application/json",
-
+        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
       },
-
+      credentials: "include",
       body: JSON.stringify(productPayload),
-
-      });
+    });
 
 
 

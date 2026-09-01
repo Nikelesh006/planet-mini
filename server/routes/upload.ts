@@ -1,8 +1,11 @@
 import express, { Request, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import { cloudinary, uploadImage } from '../lib/cloudinary.js';
+import { requireAuth } from '../lib/authMiddleware.js';
 
 const router = express.Router();
+
+const ALLOWED_UPLOAD_FOLDERS = ['products', 'profiles', 'banners', 'categories'];
 
 // Configure multer for file uploads
 const storage = multer.memoryStorage();
@@ -23,9 +26,10 @@ const upload = multer({
 
 // Prefer this endpoint for production uploads: request a signature here,
 // then upload directly from the browser to Cloudinary.
-router.post('/signature', (req: Request, res: Response) => {
+router.post('/signature', requireAuth, (req: Request, res: Response) => {
   const timestamp = Math.round(Date.now() / 1000);
-  const folder = typeof req.body?.folder === 'string' ? req.body.folder : 'products';
+  const requestedFolder = typeof req.body?.folder === 'string' ? req.body.folder : 'products';
+  const folder = ALLOWED_UPLOAD_FOLDERS.includes(requestedFolder) ? requestedFolder : 'products';
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
   if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !apiSecret) {
@@ -47,7 +51,7 @@ router.post('/signature', (req: Request, res: Response) => {
 });
 
 // Upload single image
-router.post('/image', upload.single('image'), async (req: Request, res: Response) => {
+router.post('/image', requireAuth, upload.single('image'), async (req: Request, res: Response) => {
   try {
     const file = req.file as Express.Multer.File;
     if (!file) {
@@ -79,7 +83,7 @@ router.post('/image', upload.single('image'), async (req: Request, res: Response
 });
 
 // Upload multiple images
-router.post('/images', upload.array('images', 4), async (req: Request, res: Response) => {
+router.post('/images', requireAuth, upload.array('images', 4), async (req: Request, res: Response) => {
   try {
     const files = req.files as Express.Multer.File[];
     if (!files || files.length === 0) {

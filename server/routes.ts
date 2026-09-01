@@ -67,12 +67,13 @@ import { productsStorage } from "./db.js";
 import { getAvailableStock, isOutOfStock } from "./shared/stock.js";
 
 import { notifyOwnerOnWhatsApp } from "./utils/notifyOwner.js";
+import { requireAuth, requireAdmin } from "./lib/authMiddleware.js";
 
 import Razorpay from "razorpay";
 
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_SoPV94HPAl2TGh',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || '6B4unROD9vBq42OyL9pI4efA'
+  key_id: process.env.RAZORPAY_KEY_ID || '',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || ''
 });
 
 
@@ -363,1061 +364,7 @@ interface User {
 
 
 
-const authenticateToken = (req: any, res: any, next: any) => {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const authHeader = req.headers['authorization'];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN[1]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  console.log('🔐 Auth check:', { authHeader, hasToken: !!token, tokenValue: token });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // For development: Check if this is a Google auth session
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  if (!token || token === 'null' || token === 'undefined') {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Check if there's a session-based auth (Google OAuth)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    const sessionUserId = req.headers['x-user-id'] || req.query.userId;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    if (sessionUserId && sessionUserId !== 'test-user-123') {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      console.log('✅ Using Google session user ID:', sessionUserId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      req.user = { 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        sub: sessionUserId, 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        id: sessionUserId, 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        email: req.headers['x-user-email'] || 'user@gmail.com'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      return next();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Only use test user for explicit testing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    if (sessionUserId === 'test-user-123') {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      console.log('⚠️ TEMP: Using test user for testing');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      req.user = { 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        sub: 'test-user-123', 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        id: 'test-user-123', 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        email: 'test@example.com' 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      return next();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    console.log('❌ No authentication found');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    return res.status(401).json({ 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      error: 'No token provided',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      message: 'Authentication required'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  console.log('🔑 Using JWT secret:', jwtSecret ? 'Set' : 'Not set');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  jwt.verify(token, jwtSecret, (err: any, user: any) => {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    if (err) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      console.log('❌ Token verification failed:', {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        error: err.message,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        name: err.name,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        expired: err.expired,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        token: token.substring(0, 50) + '...'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      return res.status(403).json({ 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        error: 'Invalid token',
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        details: err.message,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        suggestion: 'Please login again to get a fresh token'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    console.log(' Token verified successfully:', { 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      userId: user?.sub || user?.id || user?.userId,
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      email: user?.email 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    req.user = user;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    next();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const authenticateToken = requireAuth;
 
 const REQUIRED_ACTIVE_FIELDS = [
 
@@ -2498,7 +1445,7 @@ export async function registerRoutes(
 
 
 
-  app.post(api.products.list.path, async (req, res) => {
+  app.post(api.products.list.path, requireAdmin, async (req, res) => {
 
 
 
@@ -4022,7 +2969,7 @@ export async function registerRoutes(
 
 
 
-  app.patch(api.products.get.path, async (req, res) => {
+  app.patch(api.products.get.path, requireAdmin, async (req, res) => {
 
 
 
@@ -4202,7 +3149,7 @@ export async function registerRoutes(
 
 
 
-      const existingProduct = await storage.getProductBySlug(productSlug);
+      const existingProduct = await storage.getProductBySlug(productSlug as string);
 
 
 
@@ -4522,7 +3469,7 @@ export async function registerRoutes(
 
 
 
-  app.put("/api/products/:id", async (req, res) => {
+  app.put("/api/products/:id", requireAdmin, async (req, res) => {
 
 
 
@@ -4702,7 +3649,7 @@ export async function registerRoutes(
 
 
 
-      const existingProduct = await storage.getProductById(productId);
+      const existingProduct = await storage.getProductById(productId as string);
 
 
 
@@ -4996,7 +3943,7 @@ export async function registerRoutes(
 
 
 
-      const updatedProduct = await storage.updateProduct(productId, updateDataWithImages);
+      const updatedProduct = await storage.updateProduct(productId as string, updateDataWithImages);
 
 
 
@@ -5220,7 +4167,7 @@ export async function registerRoutes(
 
 
 
-  app.delete("/api/products/:id", async (req, res) => {
+  app.delete("/api/products/:id", requireAdmin, async (req, res) => {
 
 
 
@@ -5348,7 +4295,7 @@ export async function registerRoutes(
 
 
 
-      const deleted = await storage.deleteProduct(productId);
+      const deleted = await storage.deleteProduct(productId as string);
 
 
 
@@ -5742,7 +4689,7 @@ export async function registerRoutes(
 
 
 
-  app.post('/api/debug-token', async (req: any, res: any) => {
+  app.post('/api/debug-token', requireAdmin, async (req: any, res: any) => {
 
 
 
@@ -12218,86 +11165,10 @@ export async function registerRoutes(
 
 
 
-      if (currentUserId === 'test-user-123') {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        console.log('⚠️ TEMP: Allowing test user to access orders');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      } else if (userId !== currentUserId) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            const isAdmin = req.user?.role === 'admin';
+      if (!isAdmin && userId !== currentUserId) {
         console.log('❌ Orders API - Forbidden: User IDs do not match');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         return res.status(403).json({ message: 'Forbidden' });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       }
 
 
@@ -12474,258 +11345,40 @@ export async function registerRoutes(
 
 
 
-  app.post('/api/orders', async (req: any, res: any) => {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  app.post('/api/orders', requireAuth, async (req: any, res: any) => {
     try {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      // For development: allow userId in request body for testing
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      let userId = req.user?.sub || req.user?.id;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      // If no authenticated user but userId in body (for testing)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      if (!userId && req.body.userId) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        console.log('⚠️ TEMP: Using userId from request body for testing');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        userId = req.body.userId;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      const userId = req.user?.id;
       if (!userId) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         return res.status(401).json({ message: 'Unauthorized' });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
       const orderData = req.body;
+
+      // Calculate real subtotal from database products to prevent client price tampering
+      const products = await productsStorage.getProducts();
+      let calculatedSubtotal = 0;
+      for (const item of orderData.items || orderData.products || []) {
+        const productId = (item.productId || item.id || item._id)?.toString();
+        const product = products.find((candidate: any) =>
+          candidate.id?.toString() === productId ||
+          candidate._id?.toString() === productId ||
+          candidate.slug === productId
+        );
+        const qty = Math.max(1, Number(item.quantity || 1));
+        const price = product ? Number(product.sellingPrice || 0) : 0;
+        calculatedSubtotal += price * qty;
+      }
 
       // Security: verify the payment signature or state with Razorpay
       if (orderData.paymentStatus === 'paid') {
         const paymentId = orderData.paymentId;
         const orderId = orderData.orderId;
-        
+
         if (!paymentId || !orderId) {
           console.error('❌ Missing paymentId or orderId for paid order creation request');
           return res.status(400).json({ message: 'Missing paymentId or orderId for paid order' });
         }
-        
+
         try {
           console.log(`[OrdersRoute] Verifying Razorpay payment ${paymentId} for order ${orderId}...`);
           const payment = await razorpay.payments.fetch(paymentId);
@@ -12733,11 +11386,11 @@ export async function registerRoutes(
             console.error(`❌ Razorpay verification failed: status is ${payment.status}, expected captured; order_id is ${payment.order_id}, expected ${orderId}`);
             return res.status(400).json({ message: 'Razorpay payment verification failed: payment is not captured or order ID mismatch' });
           }
-          
-          // Verify that the amount paid matches the order total
+
+          // Verify that the amount paid matches the order total (allowing 1 rupee tolerance for delivery fees)
           const razorpayAmount = Number(payment.amount) / 100;
-          const orderTotal = Number(orderData.total);
-          if (Math.abs(razorpayAmount - orderTotal) > 0.01) {
+          const orderTotal = calculatedSubtotal > 0 ? calculatedSubtotal : Number(orderData.total);
+          if (Math.abs(razorpayAmount - orderTotal) > 1.0) {
             console.error(`❌ Razorpay verification failed: amount mismatch: Razorpay paid amount (${razorpayAmount}) does not match order total (${orderTotal})`);
             return res.status(400).json({ message: `Amount mismatch: Razorpay paid amount (${razorpayAmount}) does not match order total (${orderTotal})` });
           }
@@ -12746,6 +11399,12 @@ export async function registerRoutes(
           console.error('❌ Error verifying Razorpay payment on backend:', verifError);
           return res.status(400).json({ message: 'Payment verification failed: ' + (verifError.message || verifError) });
         }
+      }
+
+      // Force authoritative userId and calculated total on the order data
+      orderData.userId = userId;
+      if (calculatedSubtotal > 0) {
+        orderData.total = calculatedSubtotal;
       }
 
       const newOrder = await ordersStorage.createOrder(userId, orderData);
@@ -12880,7 +11539,7 @@ export async function registerRoutes(
 
 
 
-  app.get('/api/admin/orders', async (req: any, res: any) => {
+  app.get('/api/admin/orders', requireAdmin, async (req: any, res: any) => {
 
 
 
@@ -12924,7 +11583,7 @@ export async function registerRoutes(
 
 
 
-  app.patch("/api/products/:id/boost", async (req, res) => {
+  app.patch("/api/products/:id/boost", requireAdmin, async (req, res) => {
 
     try {
 
@@ -12942,7 +11601,7 @@ export async function registerRoutes(
 
 
 
-      const existingProduct = await storage.getProductById(id);
+      const existingProduct = await storage.getProductById(id as string);
 
       if (!existingProduct) {
 
@@ -12952,7 +11611,7 @@ export async function registerRoutes(
 
 
 
-      const updatedProduct = await storage.updateProduct(id, {
+      const updatedProduct = await storage.updateProduct(id as string, {
 
         isBoosted: Boolean(isBoosted),
 
@@ -12982,7 +11641,7 @@ export async function registerRoutes(
 
   });
 
-  app.patch("/api/products/:id/boost-sections", async (req, res) => {
+  app.patch("/api/products/:id/boost-sections", requireAdmin, async (req, res) => {
     try {
       const { id } = req.params;
       const { boostSections } = req.body || {};
@@ -12995,7 +11654,7 @@ export async function registerRoutes(
         return res.status(400).json({ message: "boostSections must be an array" });
       }
 
-      const existingProduct = await storage.getProductById(id);
+      const existingProduct = await storage.getProductById(id as string);
       if (!existingProduct) {
         return res.status(404).json({ message: "Product not found" });
       }
@@ -13004,7 +11663,7 @@ export async function registerRoutes(
       const shouldShowInNewArrivals = boostSections.includes('new-arrivals');
       const shouldShowInTrendingProducts = boostSections.includes('trending-products');
 
-      const updatedProduct = await storage.updateProduct(id, {
+      const updatedProduct = await storage.updateProduct(id as string, {
         boostSections: boostSections,
         isBoosted: hasBoost,
         boostUpdatedAt: hasBoost ? new Date().toISOString() : null,
@@ -13033,7 +11692,7 @@ export async function registerRoutes(
 
 
 
-  app.get('/api/admin/dashboard', async (req: any, res: any) => {
+  app.get('/api/admin/dashboard', requireAdmin, async (req: any, res: any) => {
 
 
 
@@ -13259,7 +11918,7 @@ export async function registerRoutes(
 
 
 
-  app.patch('/api/orders/:orderId/status', authenticateToken, async (req: any, res: any) => {
+  app.patch('/api/orders/:orderId/status', requireAdmin, async (req: any, res: any) => {
 
 
 

@@ -3,6 +3,7 @@ import { connectDB } from '../db.js';
 import SpinWheelPrize from '../models/SpinWheelPrize.js';
 import SpinWheelUser from '../models/SpinWheelUser.js';
 import SpinWheelResult from '../models/SpinWheelResult.js';
+import { requireAdmin } from '../lib/authMiddleware.js';
 
 const router = Router();
 
@@ -124,22 +125,31 @@ router.post('/spin', async (req, res) => {
       });
     }
     
-    // Create spin result
+    // Check if prize exists and is active
+    const prize = await SpinWheelPrize.findById(prizeId);
+    if (!prize) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid or inactive prize selected'
+      });
+    }
+
+    // Create spin result using authoritative values from the database
     const result = new SpinWheelResult({
       userId,
-      prizeId,
-      prizeLabel,
-      prizeColor,
-      discountPercentage,
-      discountType,
-      discountValue,
-      isSpinAgain,
-      isNoLuck,
+      prizeId: prize._id,
+      prizeLabel: prize.label || prizeLabel,
+      prizeColor: prize.color || prizeColor,
+      discountPercentage: prize.discountPercentage,
+      discountType: prize.discountType,
+      discountValue: prize.discountValue,
+      isSpinAgain: Boolean(prize.isSpinAgain),
+      isNoLuck: Boolean(prize.isNoLuck),
       wheelPosition,
       rotationAngle,
       spinDuration
     });
-    
+
     await result.save();
     
     // Update user spin status
@@ -268,7 +278,7 @@ router.get('/user/:phone/:email', async (req, res) => {
 });
 
 // GET /api/spin-wheel/admin/results - Get all spin wheel results for admin
-router.get('/admin/results', async (req, res) => {
+router.get('/admin/results', requireAdmin, async (req, res) => {
   try {
     await connectDB();
     

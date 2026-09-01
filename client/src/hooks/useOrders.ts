@@ -6,11 +6,7 @@ async function fetchOrders(userId: string) {
   
   console.log(`🔍 Fetching orders for userId: ${userId}`);
   
-  const response = await apiFetch(`/api/orders/${userId}`, {
-    headers: {
-      'x-user-id': userId
-    }
-  });
+  const response = await apiFetch(`/api/orders/${userId}`);
   
   console.log(`📡 Orders API response status: ${response.status}`);
   

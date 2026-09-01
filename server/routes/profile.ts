@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import Profile from '../models/Profile.js';
 import { productsStorage } from '../db.js';
 import { getAvailableStock, isOutOfStock } from '../shared/stock.js';
+import { requireAuth } from '../lib/authMiddleware.js';
 
 const router = express.Router();
 
@@ -33,32 +34,6 @@ const validateStockOrRespond = async (res: any, productId: string | undefined, r
   }
 
   return product;
-};
-
-// ✅ MIDDLEWARE: Check both cookies and Authorization header
-const requireAuth = (req: any, res: any, next: any) => {
-  // Check cookie first, then Authorization header
-  let token = req.cookies?.jwt;
-
-  if (!token) {
-    const authHeader = req.headers['authorization'];
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      token = authHeader.substring(7);
-    }
-  }
-
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    res.clearCookie('jwt');
-    return res.status(401).json({ error: 'Invalid token' });
-  }
 };
 
 // 1. GET /api/profile/:userId  ← useProfile(userId)
@@ -187,66 +162,42 @@ router.post('/:userId', requireAuth, async (req: any, res: any) => {
 
 
 
-    // First try to find existing profile by userId or email to handle cross-auth merges
-    let existingProfile = await Profile.findOne({
-      $or: [
-        { userId },
-        { email: req.body.email || req.user.email }
-      ]
-    });
+    // Find profile strictly by the verified authenticated userId
+    let existingProfile = await Profile.findOne({ userId });
 
-    console.log('Existing profile:', existingProfile);
-
-    if (existingProfile && existingProfile.userId !== userId) {
-      console.log(`🔄 Merging profile in POST: Updating userId from ${existingProfile.userId} to ${userId}`);
-      existingProfile.userId = userId;
+    // Fallback: If no profile exists for userId yet, check if one exists with the verified authenticated email from req.user
+    if (!existingProfile && req.user.email) {
+      existingProfile = await Profile.findOne({ email: req.user.email });
+      if (existingProfile) {
+        console.log(`🔄 Associating profile ${existingProfile.email} with authenticated userId ${userId}`);
+        existingProfile.userId = userId;
+      }
     }
 
     if (!existingProfile) {
       // Create new profile if doesn't exist
       existingProfile = new Profile({
         userId,
-
-        firstName: req.body.firstName,
-
-        lastName: req.body.lastName,
-
-        email: req.body.email,
-
+        firstName: req.body.firstName || req.user.name?.split(' ')[0] || 'User',
+        lastName: req.body.lastName || req.user.name?.split(' ').slice(1).join(' ') || '',
+        email: req.user.email || req.body.email,
         phone: req.body.phone,
-
         address: req.body.address,
-
+        wishlist: [],
+        cartItems: [],
         updatedAt: new Date()
-
       });
-
       await existingProfile.save();
-
       console.log('Created new profile:', existingProfile);
-
     } else {
-
-      // Update existing profile
-
-      existingProfile.firstName = req.body.firstName;
-
-      existingProfile.lastName = req.body.lastName;
-
-      existingProfile.email = req.body.email;
-
-      existingProfile.phone = req.body.phone;
-
-      existingProfile.address = req.body.address;
-
+      // Update existing profile (do not allow overwriting email or userId)
+      if (req.body.firstName !== undefined) existingProfile.firstName = req.body.firstName;
+      if (req.body.lastName !== undefined) existingProfile.lastName = req.body.lastName;
+      if (req.body.phone !== undefined) existingProfile.phone = req.body.phone;
+      if (req.body.address !== undefined) existingProfile.address = req.body.address;
       existingProfile.updatedAt = new Date();
-
-
-
       await existingProfile.save();
-
       console.log('Updated existing profile:', existingProfile);
-
     }
 
 
@@ -906,24 +857,37 @@ router.post('/:userId/orders', requireAuth, async (req: any, res: any) => {
       return res.status(404).json({ error: 'Profile not found' });
     }
 
+    // Security: Calculate real total from database products to prevent price tampering
+    let calculatedTotal = 0;
+    const verifiedItems = [];
     for (const item of items || []) {
-      const productId = item.productId || item.id;
+      const productId = (item.productId || item.id)?.toString();
       const requestedQuantity = Math.max(1, Number(item.quantity || 1));
-      const stockProduct = await validateStockOrRespond(res, productId?.toString(), requestedQuantity);
+      const stockProduct = await validateStockOrRespond(res, productId, requestedQuantity);
       if (!stockProduct) return;
+      const price = Number(stockProduct.sellingPrice || 0);
+      calculatedTotal += price * requestedQuantity;
+      verifiedItems.push({
+        ...item,
+        productId,
+        sellingPrice: price,
+        price,
+        quantity: requestedQuantity,
+        name: stockProduct.name
+      });
     }
 
     // Generate order ID
     const orderId = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
 
-    // Add order to profile
+    // Add order to profile (never allow unverified 'paid' status)
     const newOrder = {
       orderId,
-      items,
-      total,
-      status,
-      paymentId,
-      paymentStatus,
+      items: verifiedItems,
+      total: calculatedTotal > 0 ? calculatedTotal : Number(total || 0),
+      status: 'pending',
+      paymentId: paymentId || null,
+      paymentStatus: paymentId ? 'pending_verification' : 'pending',
       shippingAddressId,
       createdAt: new Date()
     };

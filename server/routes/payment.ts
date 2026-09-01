@@ -1,43 +1,17 @@
 import express from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
 import { ordersStorage } from '../storage.js';
 import { notifyOwnerOnWhatsApp } from '../utils/notifyOwner.js';
+import { requireAuth } from '../lib/authMiddleware.js';
 
 const router = express.Router();
 
 // Initialize Razorpay instance
 const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID || 'rzp_test_SoPV94HPAl2TGh',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || '6B4unROD9vBq42OyL9pI4efA'
+  key_id: process.env.RAZORPAY_KEY_ID || '',
+  key_secret: process.env.RAZORPAY_KEY_SECRET || ''
 });
-
-// ✅ MIDDLEWARE: Check both cookies and Authorization header
-const requireAuth = (req: any, res: any, next: any) => {
-  // Check cookie first, then Authorization header
-  let token = req.cookies?.jwt;
-  
-  if (!token) {
-    const authHeader = req.headers['authorization'];
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      token = authHeader.substring(7);
-    }
-  }
-  
-  if (!token) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    res.clearCookie('jwt');
-    return res.status(401).json({ error: 'Invalid token' });
-  }
-};
 
 // 1. POST /api/payment/create-order  ← Create Razorpay order
 router.post('/create-order', requireAuth, async (req: any, res: any) => {
@@ -95,10 +69,16 @@ router.post('/verify', requireAuth, async (req: any, res: any) => {
       return res.status(400).json({ error: 'Missing payment verification parameters' });
     }
 
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!keySecret) {
+      console.error('❌ RAZORPAY_KEY_SECRET is not set in environment variables');
+      return res.status(500).json({ error: 'Payment gateway is misconfigured' });
+    }
+
     // Generate expected signature
     const body = razorpay_order_id + '|' + razorpay_payment_id;
     const expectedSignature = crypto
-      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET || '6B4unROD9vBq42OyL9pI4efA')
+      .createHmac('sha256', keySecret)
       .update(body.toString())
       .digest('hex');
 

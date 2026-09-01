@@ -1,89 +1,13 @@
 import { Router } from 'express';
-
 import { addressStorage } from '../storage.js';
-
 import { z } from 'zod';
-
-import jwt from 'jsonwebtoken';
-
-
-
-// Import Address interface from types
-
+import { requireAuth } from '../lib/authMiddleware.js';
 import type { Address } from '../types/Address.js';
-
-
 
 const router = Router();
 
-
-
-// Auth middleware for user isolation - Same logic as orders
-const authenticateToken = (req: any, res: any, next: any) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
-  
-  console.log('🔐 Address Auth check:', { authHeader, hasToken: !!token, tokenValue: token });
-  
-  // For development: Check if this is a Google auth session
-  if (!token || token === 'null' || token === 'undefined') {
-    // Check if there's a session-based auth (Google OAuth)
-    const sessionUserId = req.headers['x-user-id'] || req.query.userId;
-    if (sessionUserId && sessionUserId !== 'test-user-123') {
-      console.log('✅ Using Google session user ID for addresses:', sessionUserId);
-      req.user = { 
-        sub: sessionUserId, 
-        id: sessionUserId, 
-        email: req.headers['x-user-email'] || 'user@gmail.com'
-      };
-      return next();
-    }
-    
-    // Only use test user for explicit testing
-    if (sessionUserId === 'test-user-123') {
-      console.log('⚠️ TEMP: Using test user for addresses testing');
-      req.user = { 
-        sub: 'test-user-123', 
-        id: 'test-user-123', 
-        email: 'test@example.com' 
-      };
-      return next();
-    }
-    
-    console.log('❌ No authentication found for addresses');
-    return res.status(401).json({ 
-      error: 'No token provided',
-      message: 'Authentication required'
-    });
-  }
-
-  const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
-  console.log('🔑 Using JWT secret for addresses:', jwtSecret ? 'Set' : 'Not set');
-
-  jwt.verify(token, jwtSecret, (err: any, user: any) => {
-    if (err) {
-      console.log('❌ Address token verification failed:', {
-        error: err.message,
-        name: err.name,
-        expired: err.expired,
-        token: token.substring(0, 50) + '...'
-      });
-      return res.status(403).json({ 
-        error: 'Invalid token',
-        details: err.message,
-        suggestion: 'Please login again to get a fresh token'
-      });
-    }
-    
-    console.log('✅ Address token verified successfully:', { 
-      userId: user?.sub || user?.id || user?.userId,
-      email: user?.email 
-    });
-    
-    req.user = user;
-    next();
-  });
-};
+// Secure auth middleware for user isolation
+const authenticateToken = requireAuth;
 
 
 
@@ -293,7 +217,7 @@ router.put('/:addressId', authenticateToken, async (req, res) => {
     console.log(`🔍 Updating address ${addressId} for user: ${userId}`, validatedData);
     
     // Update address in database
-    const updatedAddress = await addressStorage.updateAddress(userId, addressId, validatedData);
+    const updatedAddress = await addressStorage.updateAddress(userId, addressId as string, validatedData);
     
     if (!updatedAddress) {
       return res.status(404).json({
@@ -343,7 +267,7 @@ router.delete('/:addressId', authenticateToken, async (req, res) => {
     console.log(`🔍 Deleting address ${addressId} for user: ${userId}`);
     
     // Delete address from database
-    const deleted = await addressStorage.deleteAddress(userId, addressId);
+    const deleted = await addressStorage.deleteAddress(userId, addressId as string);
     
     if (!deleted) {
       return res.status(404).json({
