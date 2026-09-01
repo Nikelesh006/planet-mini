@@ -4945,27 +4945,12 @@ export async function registerRoutes(
 
 
 
-      const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      const jwtSecret = process.env.JWT_SECRET;
+      if (!jwtSecret) {
+        return res.status(500).json({ error: 'JWT_SECRET is not configured' });
+      }
 
       const verified = jwt.verify(token, jwtSecret);
-
-
-
-
 
 
 
