@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { Link, useLocation } from "wouter";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { BabyCareCard } from "@/components/BabyCareCard";
 import { CustomBagBundleSummary } from "@/components/CustomBagBundleSummary";
 import { useCustomBagBundle } from "@/contexts/CustomBagBundleContext";
 import { useGiftBundle } from "@/contexts/GiftBundleContext";
-import { Sparkles, Filter, Search, X } from "lucide-react";
+import { Sparkles, Filter, Search, X, Heart, Star, Sprout, Gift, Check, ChevronDown } from "lucide-react";
 import { useProducts } from "@/hooks/useProducts";
 import { useQueryClient } from "@tanstack/react-query";
 import { Slider } from "@/components/ui/slider";
@@ -381,6 +381,82 @@ for (const [groupName, variants] of Object.entries(PRODUCT_CLASSIFICATION)) {
   };
 }
 
+// Combo Price Tiers matching the uploaded design
+interface ComboPriceCard {
+  id: string;
+  price: number;
+  label: string;
+  tagline: string;
+  image: string;
+  badgeColor: string;
+  hoverGlow: string;
+}
+
+const COMBO_PRICE_CARDS: ComboPriceCard[] = [
+  {
+    id: "under-499",
+    price: 499,
+    label: "Under ₹499",
+    tagline: "Little combos, big happiness",
+    image: "/under 499.png",
+    badgeColor: "#E05370",
+    hoverGlow: "hover:shadow-pink-200/80",
+  },
+  {
+    id: "under-999",
+    price: 999,
+    label: "Under ₹999",
+    tagline: "Everyday essentials, perfectly packed",
+    image: "/999.png",
+    badgeColor: "#C88E28",
+    hoverGlow: "hover:shadow-amber-200/80",
+  },
+  {
+    id: "under-1499",
+    price: 1499,
+    label: "Under ₹1,499",
+    tagline: "More care, more value",
+    image: "/1499.png",
+    badgeColor: "#468F5B",
+    hoverGlow: "hover:shadow-emerald-200/80",
+  },
+  {
+    id: "under-1999",
+    price: 1999,
+    label: "Under ₹1,999",
+    tagline: "Premium combos for extra comfort",
+    image: "/1999.png",
+    badgeColor: "#3F86C6",
+    hoverGlow: "hover:shadow-blue-200/80",
+  },
+  {
+    id: "under-2999",
+    price: 2999,
+    label: "Under ₹2,999",
+    tagline: "Everything you need, in one perfect combo",
+    image: "/2999.png",
+    badgeColor: "#845CA9",
+    hoverGlow: "hover:shadow-purple-200/80",
+  },
+  {
+    id: "under-3999",
+    price: 3999,
+    label: "Under ₹3,999",
+    tagline: "The ultimate combo for your little one",
+    image: "/3999.png",
+    badgeColor: "#D7752B",
+    hoverGlow: "hover:shadow-orange-200/80",
+  },
+];
+
+// Sort By Filter Options (excluding customer rating as requested)
+const SORT_OPTIONS = [
+  { id: "latest", label: "Latest" },
+  { id: "discount", label: "Discount" },
+  { id: "price-high-to-low", label: "Price : High to Low" },
+  { id: "price-low-to-high", label: "Price : Low to High" },
+];
+
 export default function ShopStyle() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
@@ -547,6 +623,19 @@ export default function ShopStyle() {
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number>(maxPriceParam ? parseInt(maxPriceParam) : 5000);
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
+  const [sortBy, setSortBy] = useState<string>("latest");
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+        setIsSortOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   
   // Dynamically build filter categories from PRODUCT_CLASSIFICATION with real product counts
   const filterCategories = Object.entries(PRODUCT_CLASSIFICATION).map(([groupName, variants]) => {
@@ -674,6 +763,44 @@ export default function ShopStyle() {
   const clearFilters = () => {
     setSelectedFilters([]);
     setMaxPrice(5000);
+  };
+
+  const handleComboPriceClick = (price: number) => {
+    if (maxPrice === price) {
+      setMaxPrice(5000);
+      toast({
+        duration: 5000,
+        icon: (
+          <div className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 flex items-center justify-center shadow-sm flex-shrink-0">
+            <X className="w-4 h-4 stroke-[2.5]" />
+          </div>
+        ),
+        title: "Price Filter Removed",
+        description: "Showing products across all price ranges",
+      });
+    } else {
+      setMaxPrice(price);
+      const card = COMBO_PRICE_CARDS.find(c => c.price === price);
+      const badgeColor = card?.badgeColor || "#B4C49A";
+
+      toast({
+        duration: 5000,
+        icon: (
+          <div 
+            className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0 text-white font-bold text-sm tracking-tight"
+            style={{ backgroundColor: badgeColor }}
+          >
+            ₹
+          </div>
+        ),
+        title: `Under ₹${price.toLocaleString('en-IN')}`,
+        description: `Filtered combos & products under ₹${price.toLocaleString('en-IN')}`,
+      });
+      const el = document.getElementById("shop-style-products");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
   };
 
   const matchesSearch = (product: any, keyword: string) => {
@@ -812,6 +939,32 @@ export default function ShopStyle() {
         })
         // 6. Price filtering
         .filter(product => Number(product.sellingPrice) <= maxPrice)
+        // 7. Sort By
+        .slice()
+        .sort((a: any, b: any) => {
+          if (sortBy === "price-low-to-high") {
+            return Number(a.sellingPrice || 0) - Number(b.sellingPrice || 0);
+          }
+          if (sortBy === "price-high-to-low") {
+            return Number(b.sellingPrice || 0) - Number(a.sellingPrice || 0);
+          }
+          if (sortBy === "discount") {
+            const getDiscount = (p: any) => {
+              const orig = Number(p.originalPrice || 0);
+              const sell = Number(p.sellingPrice || 0);
+              if (orig > 0 && orig > sell) {
+                return ((orig - sell) / orig) * 100;
+              }
+              return 0;
+            };
+            return getDiscount(b) - getDiscount(a);
+          }
+          // Default latest: sort by createdAt or id descending
+          if (b.createdAt && a.createdAt) {
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+          }
+          return (Number(b.id) || 0) - (Number(a.id) || 0);
+        })
     : [];
   return (
     <div className="min-h-screen bg-white">
@@ -846,6 +999,108 @@ export default function ShopStyle() {
           </div>
         </div>
       </section>
+
+      {/* Shop Our Combos Section */}
+      <section className="px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto mb-8">
+        <div className="bg-[#FAF8F5] border border-[#F0EAE1] rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-sm">
+          {/* Section Header with Cute Doodles */}
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-flex items-center justify-center gap-2 sm:gap-3">
+              {/* Hand-drawn style pink heart doodle */}
+              <svg className="w-5 h-5 sm:w-7 sm:h-7 -rotate-12 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 28s-9-6.5-12-12.5C1.5 10 4 4.5 9.5 4.5c3.2 0 5.2 2 6.5 3.5 1.3-1.5 3.3-3.5 6.5-3.5 5.5 0 8 5.5 5.5 11C25 21.5 16 28 16 28z" fill="#FCE4EC" stroke="#E26D82" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M5 4L3 2" stroke="#E26D82" strokeWidth="2" strokeLinecap="round" />
+                <path d="M7 2L6 0.5" stroke="#E26D82" strokeWidth="1.8" strokeLinecap="round" />
+              </svg>
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#192A47] tracking-tight">
+                Shop Our Combos
+              </h2>
+              {/* Hand-drawn style gold sparkle doodle */}
+              <svg className="w-5 h-5 sm:w-7 sm:h-7 rotate-6 flex-shrink-0" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M16 3L18.8 11.5L27 14.5L18.8 17.5L16 26L13.2 17.5L5 14.5L13.2 11.5L16 3Z" fill="#FEF3C7" stroke="#EAA12B" strokeWidth="2.2" strokeLinejoin="round" />
+                <path d="M22 25C20 28 15 28 13 25" stroke="#EAA12B" strokeWidth="1.8" strokeLinecap="round" strokeDasharray="2 3" />
+              </svg>
+            </div>
+            <p className="mt-2 text-xs sm:text-sm md:text-base text-gray-500 font-medium max-w-xl mx-auto">
+              Thoughtfully curated bundles for every need &amp; every budget
+            </p>
+          </div>
+
+          {/* Combos Cards Grid - 6 columns on desktop */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-4 lg:gap-5">
+            {COMBO_PRICE_CARDS.map((card) => {
+              const isSelected = maxPrice === card.price;
+              return (
+                <button
+                  key={card.id}
+                  type="button"
+                  onClick={() => handleComboPriceClick(card.price)}
+                  className={`group relative flex flex-col items-center rounded-xl sm:rounded-2xl transition-all duration-300 transform hover:-translate-y-2 focus:outline-none ${card.hoverGlow} ${
+                    isSelected
+                      ? 'ring-2 ring-offset-1 scale-[1.02] shadow-xl'
+                      : 'hover:shadow-lg'
+                  }`}
+                  style={{
+                    ['--tw-ring-color' as any]: card.badgeColor,
+                  }}
+                  title={`Click to filter combos ${card.label}`}
+                >
+                  <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-sm transition-all duration-300 group-hover:shadow-md border border-gray-100">
+                    <img
+                      src={card.image}
+                      alt={`${card.label} - ${card.tagline}`}
+                      className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-[1.03]"
+                      draggable={false}
+                    />
+                    {isSelected && (
+                      <div
+                        className="absolute top-2 right-2 text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-full shadow-md flex items-center gap-1"
+                        style={{ backgroundColor: card.badgeColor }}
+                      >
+                        <Check className="w-3 h-3 stroke-[3]" />
+                        <span>Active</span>
+                      </div>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Bottom Trust Features Row */}
+          <div className="flex flex-wrap items-center justify-center gap-y-2.5 gap-x-3 sm:gap-x-5 md:gap-x-8 mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-gray-200/70 text-gray-600">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+              <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D85874] fill-[#D85874]/20 flex-shrink-0" />
+              <span className="text-gray-700">Carefully Curated</span>
+            </div>
+            <div className="hidden sm:block w-px h-3.5 bg-gray-300" />
+
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C88E28] fill-[#C88E28]/20 flex-shrink-0" />
+              <span className="text-gray-700">Great Value</span>
+            </div>
+            <div className="hidden sm:block w-px h-3.5 bg-gray-300" />
+
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+              <Sprout className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#458F5B] fill-[#458F5B]/20 flex-shrink-0" />
+              <span className="text-gray-700">Premium Quality</span>
+            </div>
+            <div className="hidden sm:block w-px h-3.5 bg-gray-300" />
+
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+              <Gift className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#845CA9] fill-[#845CA9]/20 flex-shrink-0" />
+              <span className="text-gray-700">Perfect for Gifting</span>
+            </div>
+            <div className="hidden sm:block w-px h-3.5 bg-gray-300" />
+
+            <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-medium">
+              <Heart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#3E86C6] fill-[#3E86C6]/20 flex-shrink-0" />
+              <span className="text-gray-700">Loved by Parents</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Style Group & Variant Filter Section */}
       <section className="px-4 sm:px-6 lg:px-8 max-w-screen-2xl mx-auto mb-8 py-6">
         {/* Style Groups Row */}
@@ -925,14 +1180,14 @@ export default function ShopStyle() {
           );
         })()}
         {/* Clear filters button when any filter is active */}
-        {selectedFilters.length > 0 && (
+        {(selectedFilters.length > 0 || maxPrice < 5000) && (
           <div className="flex justify-center mt-4">
             <button
               onClick={clearFilters}
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
             >
               <X className="w-4 h-4" />
-              Clear Filters
+              Clear Filters {maxPrice < 5000 && `(Under ₹${maxPrice.toLocaleString('en-IN')})`}
             </button>
           </div>
         )}
@@ -967,6 +1222,47 @@ export default function ShopStyle() {
               Find the perfect style for your little one with our curated collection of adorable baby wear
             </p>
           </motion.div>
+        </div>
+
+        {/* Sort By Filter Row */}
+        <div className="mt-8 pt-4 border-t border-gray-200/80 flex items-center justify-between gap-4">
+          <div className="text-xs sm:text-sm text-gray-500 font-medium">
+            Showing <span className="font-semibold text-gray-800">{filteredProducts.length}</span> products
+          </div>
+
+          <div className="relative inline-block text-left" ref={sortRef}>
+            <button
+              type="button"
+              onClick={() => setIsSortOpen(prev => !prev)}
+              className="inline-flex items-center justify-between gap-2.5 px-3.5 py-1.5 sm:px-4 sm:py-2 bg-white border border-gray-300 rounded-lg text-xs sm:text-sm text-gray-800 font-medium hover:border-gray-400 hover:bg-gray-50/50 shadow-xs transition-colors focus:outline-none"
+            >
+              <span>Sort By : {SORT_OPTIONS.find(o => o.id === sortBy)?.label || 'Latest'}</span>
+              <ChevronDown className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600 transition-transform duration-200 ${isSortOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isSortOpen && (
+              <div className="absolute right-0 top-full mt-1.5 w-48 sm:w-52 bg-white border border-gray-200 rounded-lg shadow-xl py-1.5 z-50 animate-in fade-in-50 zoom-in-95 duration-100">
+                {SORT_OPTIONS.map(option => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => {
+                      setSortBy(option.id);
+                      setIsSortOpen(false);
+                    }}
+                    className={`w-full text-left px-4 py-2 text-xs sm:text-sm transition-colors flex items-center justify-between ${
+                      sortBy === option.id
+                        ? 'font-bold text-black bg-gray-50'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span>{option.label}</span>
+                    {sortBy === option.id && <Check className="w-3.5 h-3.5 text-primary" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
       {/* Customise Hospital Bags Button */}
@@ -1066,22 +1362,22 @@ export default function ShopStyle() {
         >
           <Filter className="w-4 h-4" />
           Filters
-          {selectedFilters.length > 0 && (
+          {(selectedFilters.length > 0 || maxPrice < 5000) && (
             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-              {selectedFilters.length}
+              {selectedFilters.length + (maxPrice < 5000 ? 1 : 0)}
             </span>
           )}
         </button>
       </div>
       {/* Products Section with Full Width Layout */}
-      <section className="w-full">
-        <div className="flex flex-col lg:flex-row">
-          {/* Filter Sidebar - Fixed to Left Corner */}
+      <section className="w-full" id="shop-style-products">
+        <div className="flex flex-col lg:flex-row items-start relative">
+          {/* Filter Sidebar - Sticky to Left Corner */}
           <aside className={`
-            ${isMobileFilterOpen ? 'block' : 'hidden'}
-            lg:block w-64 flex-shrink-0 fixed lg:relative left-0 top-16 lg:top-0 h-[calc(100vh-4rem)] lg:h-screen lg:h-auto z-50 lg:z-0
+            ${isMobileFilterOpen ? 'fixed inset-y-0 left-0 z-50 block' : 'hidden'}
+            lg:block lg:sticky lg:top-24 lg:self-start lg:z-30 w-64 flex-shrink-0 transition-all duration-300
           `}>
-            <div className="bg-white lg:rounded-xl lg:border-2 lg:border-white lg:shadow-2xl h-full lg:h-auto lg:sticky lg:top-4 flex flex-col ring-1 ring-gray-200/80 [box-shadow:0_-8px_20px_-8px_rgba(0,0,0,0.18),0_25px_50px_-12px_rgba(0,0,0,0.25)]">
+            <div className="bg-white lg:rounded-xl lg:border-2 lg:border-white lg:shadow-2xl max-h-[calc(100vh-7rem)] flex flex-col ring-1 ring-gray-200/80 [box-shadow:0_-8px_20px_-8px_rgba(0,0,0,0.18),0_25px_50px_-12px_rgba(0,0,0,0.25)] overflow-hidden">
               {/* Mobile Close Button - Sticky */}
               <div className="lg:hidden sticky top-0 z-50 mb-4 flex justify-between items-center p-3 sm:p-4 bg-white/95 backdrop-blur-sm border-b border-primary/20 shadow-sm">
                 <h2 className="text-base sm:text-lg font-bold text-black flex items-center gap-2">
@@ -1101,7 +1397,7 @@ export default function ShopStyle() {
                   <Filter className="w-5 h-5 text-red-500" />
                   Filters
                 </h2>
-                {selectedFilters.length > 0 && (
+                {(selectedFilters.length > 0 || maxPrice < 5000) && (
                   <button
                     onClick={clearFilters}
                     className="text-sm font-semibold bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
@@ -1235,36 +1531,13 @@ export default function ShopStyle() {
           {/* Mobile Overlay */}
           {isMobileFilterOpen && (
             <div 
-              className="lg:hidden fixed inset-0 bg-black/50 z-30"
+              className="lg:hidden fixed inset-0 bg-black/50 z-40"
               onClick={() => setIsMobileFilterOpen(false)}
             />
           )}
           {/* Products Content */}
           <div className="flex-1">
             <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto pt-4 pb-8 lg:pb-16">
-              {/* Active Filters Display */}
-              {selectedFilters.length > 0 && (
-                <div className="mb-6 flex flex-wrap gap-2">
-                  {selectedFilters.map(filterId => {
-                    const section = filterSections.find(sec => sec.id === filterId);
-                    const category = section?.items?.find(item => item.id === filterId);
-                    return (
-                      <span
-                        key={filterId}
-                        className="inline-flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm"
-                      >
-                        {category?.name}
-                        <button
-                          onClick={() => handleFilterToggle(filterId)}
-                          className="hover:text-red-800"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
               {/* Dynamic Products */}
               {!isLoading && filteredProducts && filteredProducts.length > 0 && (
                 <div className="w-full">
