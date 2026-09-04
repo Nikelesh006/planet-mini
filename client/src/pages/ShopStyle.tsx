@@ -212,6 +212,27 @@ const parseSubcategory = (subcategory: string | undefined | null) => {
   return { group: '', variant: '' };
 };
 
+// Helper function to check if a product is a combo product
+export const isComboProduct = (product: any): boolean => {
+  if (!product) return false;
+  const productType = normalizeValue(product.productType || '');
+  if (productType === 'combo' || productType === 'combo product' || productType.includes('combo')) {
+    return true;
+  }
+  const subcategory = normalizeValue(product.subcategory || '');
+  if (subcategory.includes('combo') || subcategory.includes('blockbuster')) {
+    return true;
+  }
+  const category = normalizeValue(product.category || '');
+  if (category === 'combo') {
+    return true;
+  }
+  if ((product as any).isCombo === true) {
+    return true;
+  }
+  return false;
+};
+
 // Helper function to check if product matches a style group
 const matchesStyleGroup = (product: any, groupId: string): boolean => {
   const groupName = filterIdToGroupName(groupId);
@@ -622,6 +643,18 @@ export default function ShopStyle() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number>(maxPriceParam ? parseInt(maxPriceParam) : 5000);
+  const [selectedComboPrice, setSelectedComboPrice] = useState<number | null>(() => {
+    if (maxPriceParam) {
+      const p = parseInt(maxPriceParam);
+      if (!isNaN(p) && COMBO_PRICE_CARDS.some(c => c.price === p)) {
+        return p;
+      }
+    }
+    if (isBlockbusterSection) {
+      return -1; // All combos
+    }
+    return null;
+  });
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
   const [sortBy, setSortBy] = useState<string>("latest");
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -763,28 +796,33 @@ export default function ShopStyle() {
   const clearFilters = () => {
     setSelectedFilters([]);
     setMaxPrice(5000);
+    setSelectedComboPrice(null);
   };
 
   const handleComboPriceClick = (price: number) => {
-    if (maxPrice === price) {
+    if (selectedComboPrice === price) {
+      // Deselect combo filter
+      setSelectedComboPrice(null);
       setMaxPrice(5000);
       toast({
-        duration: 5000,
+        duration: 4000,
         icon: (
           <div className="w-9 h-9 rounded-xl bg-gray-100 border border-gray-200 text-gray-500 flex items-center justify-center shadow-sm flex-shrink-0">
             <X className="w-4 h-4 stroke-[2.5]" />
           </div>
         ),
-        title: "Price Filter Removed",
-        description: "Showing products across all price ranges",
+        title: "Combo Filter Removed",
+        description: "Showing all products across all categories",
       });
     } else {
+      // Activate combo filter for this price tier
+      setSelectedComboPrice(price);
       setMaxPrice(price);
       const card = COMBO_PRICE_CARDS.find(c => c.price === price);
       const badgeColor = card?.badgeColor || "#B4C49A";
 
       toast({
-        duration: 5000,
+        duration: 4000,
         icon: (
           <div 
             className="w-10 h-10 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0 text-white font-bold text-sm tracking-tight"
@@ -793,8 +831,8 @@ export default function ShopStyle() {
             ₹
           </div>
         ),
-        title: `Under ₹${price.toLocaleString('en-IN')}`,
-        description: `Filtered combos & products under ₹${price.toLocaleString('en-IN')}`,
+        title: `Combos ${card?.label || `Under ₹${price.toLocaleString('en-IN')}`}`,
+        description: `Showing curated combos under ₹${price.toLocaleString('en-IN')}`,
       });
       const el = document.getElementById("shop-style-products");
       if (el) {
@@ -937,7 +975,16 @@ export default function ShopStyle() {
           
           return matches;
         })
-        // 6. Price filtering
+        // 6. Combo filter (from "Shop Our Combos" section)
+        .filter(product => {
+          if (selectedComboPrice === null) return true;
+          if (!isComboProduct(product)) return false;
+          if (selectedComboPrice > 0) {
+            return Number(product.sellingPrice || 0) <= selectedComboPrice;
+          }
+          return true; // selectedComboPrice === -1 means All Combos
+        })
+        // 7. Price filtering
         .filter(product => Number(product.sellingPrice) <= maxPrice)
         // 7. Sort By
         .slice()
@@ -1024,12 +1071,60 @@ export default function ShopStyle() {
             <p className="mt-2 text-xs sm:text-sm md:text-base text-gray-500 font-medium max-w-xl mx-auto">
               Thoughtfully curated bundles for every need &amp; every budget
             </p>
+            {/* Quick All Combos Toggle & Active Filter Actions */}
+            <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => {
+                  if (selectedComboPrice === -1) {
+                    setSelectedComboPrice(null);
+                    setMaxPrice(5000);
+                    toast({
+                      duration: 4000,
+                      title: "Combo Filter Removed",
+                      description: "Showing all products across all categories",
+                    });
+                  } else {
+                    setSelectedComboPrice(-1);
+                    setMaxPrice(5000);
+                    toast({
+                      duration: 4000,
+                      title: "All Combos",
+                      description: "Showing all curated combo packs",
+                    });
+                    const el = document.getElementById("shop-style-products");
+                    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                  }
+                }}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs sm:text-sm font-semibold transition-all shadow-xs ${
+                  selectedComboPrice === -1
+                    ? 'bg-[#192A47] text-white ring-2 ring-offset-1 ring-[#192A47]'
+                    : 'bg-white text-[#192A47] border border-[#192A47]/30 hover:bg-[#192A47]/5'
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-[#EAA12B]" />
+                <span>{selectedComboPrice === -1 ? '✓ Showing All Combos' : 'Show All Combos'}</span>
+              </button>
+              {selectedComboPrice !== null && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedComboPrice(null);
+                    setMaxPrice(5000);
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                  <span>Clear Combo Filter</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Combos Cards Grid - 6 columns on desktop */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 md:gap-4 lg:gap-5">
             {COMBO_PRICE_CARDS.map((card) => {
-              const isSelected = maxPrice === card.price;
+              const isSelected = selectedComboPrice === card.price;
               return (
                 <button
                   key={card.id}
@@ -1043,7 +1138,8 @@ export default function ShopStyle() {
                   style={{
                     ['--tw-ring-color' as any]: card.badgeColor,
                   }}
-                  title={`Click to filter combos ${card.label}`}
+                  aria-pressed={isSelected}
+                  title={isSelected ? `Click to remove filter for combos ${card.label}` : `Click to filter combos ${card.label}`}
                 >
                   <div className="relative w-full overflow-hidden rounded-xl sm:rounded-2xl bg-white shadow-sm transition-all duration-300 group-hover:shadow-md border border-gray-100">
                     <img
@@ -1180,14 +1276,14 @@ export default function ShopStyle() {
           );
         })()}
         {/* Clear filters button when any filter is active */}
-        {(selectedFilters.length > 0 || maxPrice < 5000) && (
+        {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null) && (
           <div className="flex justify-center mt-4">
             <button
               onClick={clearFilters}
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
             >
               <X className="w-4 h-4" />
-              Clear Filters {maxPrice < 5000 && `(Under ₹${maxPrice.toLocaleString('en-IN')})`}
+              Clear Filters {selectedComboPrice !== null ? (selectedComboPrice > 0 ? `(Combos Under ₹${selectedComboPrice.toLocaleString('en-IN')})` : '(All Combos)') : maxPrice < 5000 ? `(Under ₹${maxPrice.toLocaleString('en-IN')})` : ''}
             </button>
           </div>
         )}
@@ -1226,8 +1322,26 @@ export default function ShopStyle() {
 
         {/* Sort By Filter Row */}
         <div className="mt-8 pt-4 border-t border-gray-200/80 flex items-center justify-between gap-4">
-          <div className="text-xs sm:text-sm text-gray-500 font-medium">
-            Showing <span className="font-semibold text-gray-800">{filteredProducts.length}</span> products
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="text-xs sm:text-sm text-gray-500 font-medium">
+              Showing <span className="font-semibold text-gray-800">{filteredProducts.length}</span> {selectedComboPrice !== null ? 'combos' : 'products'}
+            </div>
+            {selectedComboPrice !== null && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-300 shadow-xs">
+                <span>{selectedComboPrice === -1 ? 'All Combos' : `Combos Under ₹${selectedComboPrice.toLocaleString('en-IN')}`}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedComboPrice(null);
+                    setMaxPrice(5000);
+                  }}
+                  className="hover:bg-amber-200 rounded-full p-0.5 transition-colors"
+                  title="Remove combo filter"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
           </div>
 
           <div className="relative inline-block text-left" ref={sortRef}>
@@ -1362,9 +1476,9 @@ export default function ShopStyle() {
         >
           <Filter className="w-4 h-4" />
           Filters
-          {(selectedFilters.length > 0 || maxPrice < 5000) && (
+          {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null) && (
             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-              {selectedFilters.length + (maxPrice < 5000 ? 1 : 0)}
+              {selectedFilters.length + (maxPrice < 5000 ? 1 : 0) + (selectedComboPrice !== null ? 1 : 0)}
             </span>
           )}
         </button>
@@ -1397,7 +1511,7 @@ export default function ShopStyle() {
                   <Filter className="w-5 h-5 text-red-500" />
                   Filters
                 </h2>
-                {(selectedFilters.length > 0 || maxPrice < 5000) && (
+                {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null) && (
                   <button
                     onClick={clearFilters}
                     className="text-sm font-semibold bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
