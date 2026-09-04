@@ -478,6 +478,63 @@ const SORT_OPTIONS = [
   { id: "price-low-to-high", label: "Price : Low to High" },
 ];
 
+// Price Range Filter Options
+export interface PriceRangePreset {
+  id: string;
+  label: string;
+  min: number;
+  max: number;
+}
+
+export const PRICE_RANGE_PRESETS: PriceRangePreset[] = [
+  { id: "under-499", label: "Under ₹499", min: 0, max: 499 },
+  { id: "500-999", label: "₹500 – ₹999", min: 500, max: 999 },
+  { id: "1000-1499", label: "₹1,000 – ₹1,499", min: 1000, max: 1499 },
+  { id: "1500-1999", label: "₹1,500 – ₹1,999", min: 1500, max: 1999 },
+  { id: "2000-2499", label: "₹2,000 – ₹2,499", min: 2000, max: 2499 },
+  { id: "2500-2999", label: "₹2,500 – ₹2,999", min: 2500, max: 2999 },
+  { id: "3000-3999", label: "₹3,000 – ₹3,999", min: 3000, max: 3999 },
+  { id: "4000-plus", label: "₹4,000+", min: 4000, max: Infinity },
+];
+
+// Combos Sidebar Filter Options
+export interface ComboSectionFilter {
+  id: string;
+  name: string;
+  matches: (product: any) => boolean;
+}
+
+export const COMBO_SECTION_FILTERS: ComboSectionFilter[] = [
+  {
+    id: "combo-hospital-bags",
+    name: "Hospital bags",
+    matches: (product: any) => {
+      const subcat = normalizeValue(product.subcategory || '');
+      const type = normalizeValue(product.productType || '');
+      return subcat.includes('hospital bag') || subcat.includes('hospital') || (type.includes('combo') && subcat.includes('hospital'));
+    }
+  },
+  {
+    id: "combo-blockbuster-combos",
+    name: "Blockbuster combos",
+    matches: (product: any) => {
+      const subcat = normalizeValue(product.subcategory || '');
+      return subcat.includes('blockbuster combo') || subcat.includes('blockbuster');
+    }
+  },
+  {
+    id: "combo-gifting-combos",
+    name: "Gifting combos",
+    matches: (product: any) => {
+      const subcat = normalizeValue(product.subcategory || '');
+      const cat = normalizeValue(product.category || '');
+      return subcat.includes('gifting') || subcat.includes('gift') || cat === 'gifting';
+    }
+  }
+];
+
+export const COMBO_SECTION_FILTER_IDS = COMBO_SECTION_FILTERS.map(f => f.id);
+
 export default function ShopStyle() {
   const [location, setLocation] = useLocation();
   const { toast } = useToast();
@@ -655,6 +712,7 @@ export default function ShopStyle() {
     }
     return null;
   });
+  const [selectedPriceRange, setSelectedPriceRange] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>(searchParam || "");
   const [sortBy, setSortBy] = useState<string>("latest");
   const [isSortOpen, setIsSortOpen] = useState(false);
@@ -702,6 +760,14 @@ export default function ShopStyle() {
       count: categoryCount
     };
   });
+
+  // Dynamically build combo filter items with real product counts
+  const comboFilterItems = COMBO_SECTION_FILTERS.map(def => ({
+    id: def.id,
+    name: def.name,
+    count: products.filter(p => def.matches(p)).length
+  }));
+
   // Filter sections with expandable categories
   const filterSections: FilterSection[] = [
     {
@@ -709,6 +775,12 @@ export default function ShopStyle() {
       title: 'Categories',
       icon: Filter,
       items: filterCategories
+    },
+    {
+      id: 'combos',
+      title: 'Combos',
+      icon: Sparkles,
+      items: comboFilterItems
     },
     {
       id: 'size',
@@ -797,6 +869,7 @@ export default function ShopStyle() {
     setSelectedFilters([]);
     setMaxPrice(5000);
     setSelectedComboPrice(null);
+    setSelectedPriceRange(null);
   };
 
   const handleComboPriceClick = (price: number) => {
@@ -912,8 +985,10 @@ export default function ShopStyle() {
         // 3. Shop by Style filtering
         .filter(product => {
           const styleFilters = selectedFilters.filter(id => 
-            !['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(id)
+            !['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(id) &&
+            !COMBO_SECTION_FILTER_IDS.includes(id)
           );
+          if (styleFilters.length === 0) return true;
           console.log('🎨 Style Filter - Before matching:', {
             productName: product.name,
             productSubcategory: product.subcategory,
@@ -927,6 +1002,17 @@ export default function ShopStyle() {
             result
           });
           return result;
+        })
+        // 3b. Combos sidebar filtering (Hospital bags, Blockbuster combos, Gifting combos)
+        .filter(product => {
+          const activeComboSectionFilters = selectedFilters.filter(id => 
+            COMBO_SECTION_FILTER_IDS.includes(id)
+          );
+          if (activeComboSectionFilters.length === 0) return true;
+          return activeComboSectionFilters.some(filterId => {
+            const def = COMBO_SECTION_FILTERS.find(f => f.id === filterId);
+            return def ? def.matches(product) : false;
+          });
         })
         // 4. Search filtering
         .filter(product => matchesSearch(product, searchQuery))
@@ -985,7 +1071,18 @@ export default function ShopStyle() {
           return true; // selectedComboPrice === -1 means All Combos
         })
         // 7. Price filtering
-        .filter(product => Number(product.sellingPrice) <= maxPrice)
+        .filter(product => {
+          const price = Number(product.sellingPrice || 0);
+          if (selectedPriceRange) {
+            const range = PRICE_RANGE_PRESETS.find(r => r.id === selectedPriceRange);
+            if (range) {
+              const minMatch = price >= range.min;
+              const maxMatch = range.max === Infinity ? true : price <= range.max;
+              return minMatch && maxMatch;
+            }
+          }
+          return price <= maxPrice;
+        })
         // 7. Sort By
         .slice()
         .sort((a: any, b: any) => {
@@ -1276,14 +1373,14 @@ export default function ShopStyle() {
           );
         })()}
         {/* Clear filters button when any filter is active */}
-        {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null) && (
+        {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null || selectedPriceRange !== null) && (
           <div className="flex justify-center mt-4">
             <button
               onClick={clearFilters}
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
             >
               <X className="w-4 h-4" />
-              Clear Filters {selectedComboPrice !== null ? (selectedComboPrice > 0 ? `(Combos Under ₹${selectedComboPrice.toLocaleString('en-IN')})` : '(All Combos)') : maxPrice < 5000 ? `(Under ₹${maxPrice.toLocaleString('en-IN')})` : ''}
+              Clear Filters {selectedPriceRange ? `(${PRICE_RANGE_PRESETS.find(r => r.id === selectedPriceRange)?.label})` : selectedComboPrice !== null ? (selectedComboPrice > 0 ? `(Combos Under ₹${selectedComboPrice.toLocaleString('en-IN')})` : '(All Combos)') : maxPrice < 5000 ? `(Under ₹${maxPrice.toLocaleString('en-IN')})` : ''}
             </button>
           </div>
         )}
@@ -1342,6 +1439,36 @@ export default function ShopStyle() {
                 </button>
               </span>
             )}
+            {selectedPriceRange !== null && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs">
+                <span>{PRICE_RANGE_PRESETS.find(r => r.id === selectedPriceRange)?.label}</span>
+                <button
+                  type="button"
+                  onClick={() => setSelectedPriceRange(null)}
+                  className="hover:bg-emerald-200 rounded-full p-0.5 transition-colors"
+                  title="Remove price range filter"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            )}
+            {selectedFilters.filter(id => COMBO_SECTION_FILTER_IDS.includes(id)).map(filterId => {
+              const def = COMBO_SECTION_FILTERS.find(f => f.id === filterId);
+              if (!def) return null;
+              return (
+                <span key={filterId} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-900 border border-purple-300 shadow-xs">
+                  <span>{def.name}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleFilterToggle(filterId)}
+                    className="hover:bg-purple-200 rounded-full p-0.5 transition-colors"
+                    title={`Remove ${def.name} filter`}
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              );
+            })}
           </div>
 
           <div className="relative inline-block text-left" ref={sortRef}>
@@ -1476,9 +1603,9 @@ export default function ShopStyle() {
         >
           <Filter className="w-4 h-4" />
           Filters
-          {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null) && (
+          {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null || selectedPriceRange !== null) && (
             <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-              {selectedFilters.length + (maxPrice < 5000 ? 1 : 0) + (selectedComboPrice !== null ? 1 : 0)}
+              {selectedFilters.length + (maxPrice < 5000 ? 1 : 0) + (selectedComboPrice !== null ? 1 : 0) + (selectedPriceRange !== null ? 1 : 0)}
             </span>
           )}
         </button>
@@ -1511,7 +1638,7 @@ export default function ShopStyle() {
                   <Filter className="w-5 h-5 text-red-500" />
                   Filters
                 </h2>
-                {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null) && (
+                {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null || selectedPriceRange !== null) && (
                   <button
                     onClick={clearFilters}
                     className="text-sm font-semibold bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors"
@@ -1576,7 +1703,10 @@ export default function ShopStyle() {
                             </div>
                             <Slider
                               value={[maxPrice]}
-                              onValueChange={(val) => setMaxPrice(val[0])}
+                              onValueChange={(val) => {
+                                setMaxPrice(val[0]);
+                                setSelectedPriceRange(null);
+                              }}
                               max={section.max || 5000}
                               min={section.min || 0}
                               step={section.step || 100}
@@ -1584,6 +1714,68 @@ export default function ShopStyle() {
                             />
                             <div className="text-xs text-gray-600 text-center">
                               Drag to adjust price range
+                            </div>
+
+                            {/* Preset Price Ranges below dragging slider */}
+                            <div className="pt-3 border-t border-gray-200">
+                              <div className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                                Price Tiers
+                              </div>
+                              <div className="space-y-1.5">
+                                {PRICE_RANGE_PRESETS.map((range) => {
+                                  const isSelected = selectedPriceRange === range.id;
+                                  const count = products.filter((p: any) => {
+                                    const price = Number(p.sellingPrice || 0);
+                                    return price >= range.min && (range.max === Infinity ? true : price <= range.max);
+                                  }).length;
+
+                                  return (
+                                    <button
+                                      key={range.id}
+                                      type="button"
+                                      onClick={() => {
+                                        if (isSelected) {
+                                          setSelectedPriceRange(null);
+                                        } else {
+                                          setSelectedPriceRange(range.id);
+                                          if (range.max !== Infinity) {
+                                            setMaxPrice(range.max);
+                                          }
+                                        }
+                                      }}
+                                      className={`
+                                        w-full flex items-center justify-between p-2 rounded-md cursor-pointer transition-all duration-200 border text-left
+                                        ${isSelected
+                                          ? 'bg-[#b4c49a] border-[#b4c49a] text-black shadow-sm font-semibold'
+                                          : 'bg-white border-gray-200 hover:bg-gray-50 text-gray-800'
+                                        }
+                                      `}
+                                    >
+                                      <div className="flex items-center gap-2 sm:gap-2.5">
+                                        <div className={`
+                                          w-3.5 h-3.5 rounded-full border-2 transition-all duration-200 flex items-center justify-center flex-shrink-0
+                                          ${isSelected
+                                            ? 'border-black bg-black'
+                                            : 'border-gray-400 bg-white'
+                                          }
+                                        `}>
+                                          {isSelected && (
+                                            <div className="w-1.5 h-1.5 rounded-full bg-white" />
+                                          )}
+                                        </div>
+                                        <span className="text-xs sm:text-sm select-none">
+                                          {range.label}
+                                        </span>
+                                      </div>
+                                      {count > 0 && (
+                                        <span className={`text-[11px] px-1.5 py-0.5 rounded-full ${isSelected ? 'bg-black/15 text-black' : 'text-gray-400'}`}>
+                                          {count}
+                                        </span>
+                                      )}
+                                    </button>
+                                  );
+                                })}
+                              </div>
                             </div>
                           </div>
                         ) : (
@@ -1632,6 +1824,11 @@ export default function ShopStyle() {
                                   {item.name}
                                 </span>
                               </div>
+                              {item.count !== undefined && item.count > 0 && (
+                                <span className="text-xs font-medium text-gray-500">
+                                  ({item.count})
+                                </span>
+                              )}
                             </label>
                           ))
                         )}
