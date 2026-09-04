@@ -1423,40 +1423,6 @@ export default function ShopStyle() {
             <div className="text-xs sm:text-sm text-gray-500 font-medium">
               Showing <span className="font-semibold text-gray-800">{filteredProducts.length}</span> {selectedComboPrice !== null ? 'combos' : 'products'}
             </div>
-            {selectedComboPrice !== null && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-300 shadow-xs">
-                <span>{selectedComboPrice === -1 ? 'All Combos' : `Combos Under ₹${selectedComboPrice.toLocaleString('en-IN')}`}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedComboPrice(null);
-                    setMaxPrice(5000);
-                  }}
-                  className="hover:bg-amber-200 rounded-full p-0.5 transition-colors"
-                  title="Remove combo filter"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
-            )}
-
-            {selectedFilters.filter(id => COMBO_SECTION_FILTER_IDS.includes(id)).map(filterId => {
-              const def = COMBO_SECTION_FILTERS.find(f => f.id === filterId);
-              if (!def) return null;
-              return (
-                <span key={filterId} className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-purple-50 text-purple-900 border border-purple-300 shadow-xs">
-                  <span>{def.name}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleFilterToggle(filterId)}
-                    className="hover:bg-purple-200 rounded-full p-0.5 transition-colors"
-                    title={`Remove ${def.name} filter`}
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              );
-            })}
           </div>
 
           <div className="relative inline-block text-left" ref={sortRef}>
