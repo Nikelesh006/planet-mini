@@ -4,6 +4,7 @@ import SpinWheelPrize from '../models/SpinWheelPrize.js';
 import SpinWheelUser from '../models/SpinWheelUser.js';
 import SpinWheelResult from '../models/SpinWheelResult.js';
 import { requireAdmin } from '../lib/authMiddleware.js';
+import { spinWheelLimiter } from '../lib/rateLimiters.js';
 
 const router = Router();
 
@@ -28,7 +29,7 @@ router.get('/prizes', async (req, res) => {
 });
 
 // POST /api/spin-wheel/user - Create or get user by phone/email
-router.post('/user', async (req, res) => {
+router.post('/user', spinWheelLimiter, async (req, res) => {
   try {
     await connectDB();
     
@@ -91,7 +92,7 @@ router.post('/user', async (req, res) => {
 });
 
 // POST /api/spin-wheel/spin - Record a spin result
-router.post('/spin', async (req, res) => {
+router.post('/spin', spinWheelLimiter, async (req, res) => {
   try {
     await connectDB();
     

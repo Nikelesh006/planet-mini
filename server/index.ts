@@ -16,13 +16,24 @@ import jwt from "jsonwebtoken";
 
 import passport from "passport";
 
+import helmet from "helmet";
+
+import { apiLimiter } from "./lib/rateLimiters.js";
+
 export const app = express();
 
 const httpServer = createServer(app);
 
 app.set("trust proxy", 1);
 
-
+// Standard HTTP Security Headers (Safe for SPAs and Cross-Origin APIs)
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    contentSecurityPolicy: false,
+  })
+);
 
 declare module "http" {
 
@@ -33,8 +44,6 @@ declare module "http" {
   }
 
 }
-
-
 
 app.use(
 
@@ -50,14 +59,9 @@ app.use(
 
 );
 
-
-
 app.use(express.urlencoded({ extended: false }));
 
-
-
-// CORS + cookies
-
+// CORS + cookies with support for current Vercel, localhost, and upcoming .in domains
 const configuredOrigins = [
   process.env.FRONTEND_URL,
   process.env.CLIENT_URL,
@@ -67,18 +71,29 @@ const configuredOrigins = [
   "https://planet-mini.vercel.app",
   "https://planet-mini-api.vercel.app",
   "https://planet-mini-e4oc.vercel.app",
-].filter(Boolean) as string[];
+  "https://planetmini.in",
+  "https://www.planetmini.in",
+  "https://planet-mini.in",
+  "https://www.planet-mini.in",
+]
+  .filter(Boolean)
+  .map((url) => (url as string).replace(/\/$/, "")); // Strip trailing slash
 
 const isAllowedOrigin = (origin: string) => {
-  if (configuredOrigins.includes(origin)) return true;
+  const cleanOrigin = origin.replace(/\/$/, "");
+  if (configuredOrigins.includes(cleanOrigin)) return true;
 
   try {
     const { hostname } = new URL(origin);
-    // Only allow official Planet Mini vercel deployments
+    // Allow official Planet Mini vercel deployments or custom .in domains
     return (
       hostname === "planet-mini.vercel.app" ||
       hostname === "planet-mini-api.vercel.app" ||
-      (hostname.startsWith("planet-mini-") && hostname.endsWith(".vercel.app"))
+      (hostname.startsWith("planet-mini-") && hostname.endsWith(".vercel.app")) ||
+      hostname === "planetmini.in" ||
+      hostname.endsWith(".planetmini.in") ||
+      hostname === "planet-mini.in" ||
+      hostname.endsWith(".planet-mini.in")
     );
   } catch {
     return false;
@@ -100,7 +115,8 @@ app.use(cors({
 
 app.use(cookieParser());
 
-
+// Apply global API rate limiter
+app.use('/api', apiLimiter);
 
 // Initialize passport
 

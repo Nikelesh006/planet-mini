@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import { cloudinary, uploadImage } from '../lib/cloudinary.js';
-import { requireAuth } from '../lib/authMiddleware.js';
+import { requireAuth, isEmailAdmin } from '../lib/authMiddleware.js';
 
 const router = express.Router();
 
@@ -28,8 +28,15 @@ const upload = multer({
 // then upload directly from the browser to Cloudinary.
 router.post('/signature', requireAuth, (req: Request, res: Response) => {
   const timestamp = Math.round(Date.now() / 1000);
-  const requestedFolder = typeof req.body?.folder === 'string' ? req.body.folder : 'products';
-  const folder = ALLOWED_UPLOAD_FOLDERS.includes(requestedFolder) ? requestedFolder : 'products';
+  const isAdmin = isEmailAdmin(req.user?.email);
+  const requestedFolder = typeof req.body?.folder === 'string' ? req.body.folder : (isAdmin ? 'products' : 'profiles');
+
+  // Non-admin users are strictly restricted to the 'profiles' folder
+  if (!isAdmin && requestedFolder !== 'profiles') {
+    return res.status(403).json({ error: 'Administrative privileges required to upload to product or store folders' });
+  }
+
+  const folder = ALLOWED_UPLOAD_FOLDERS.includes(requestedFolder) ? requestedFolder : (isAdmin ? 'products' : 'profiles');
   const apiSecret = process.env.CLOUDINARY_API_SECRET;
 
   if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !apiSecret) {
@@ -50,7 +57,7 @@ router.post('/signature', requireAuth, (req: Request, res: Response) => {
   });
 });
 
-// Upload single image
+// Upload single image (profiles for regular users, store folders for admin)
 router.post('/image', requireAuth, upload.single('image'), async (req: Request, res: Response) => {
   try {
     const file = req.file as Express.Multer.File;
@@ -58,8 +65,12 @@ router.post('/image', requireAuth, upload.single('image'), async (req: Request, 
       return res.status(400).json({ error: 'No image file provided' });
     }
 
+    const isAdmin = isEmailAdmin(req.user?.email);
+    const requestedFolder = typeof req.body?.folder === 'string' ? req.body.folder : (isAdmin ? 'products' : 'profiles');
+    const folder = (!isAdmin || !ALLOWED_UPLOAD_FOLDERS.includes(requestedFolder)) ? 'profiles' : requestedFolder;
+
     // Upload to Cloudinary
-    const result = await uploadImage(file.buffer);
+    const result = await uploadImage(file.buffer, folder);
     
     // Return the uploaded image information
     res.json({
@@ -82,15 +93,20 @@ router.post('/image', requireAuth, upload.single('image'), async (req: Request, 
   }
 });
 
-// Upload multiple images
+// Upload multiple images (restricted to admin users)
 router.post('/images', requireAuth, upload.array('images', 4), async (req: Request, res: Response) => {
   try {
+    const isAdmin = isEmailAdmin(req.user?.email);
+    if (!isAdmin) {
+      return res.status(403).json({ error: 'Administrative privileges required for bulk product image uploads' });
+    }
+
     const files = req.files as Express.Multer.File[];
     if (!files || files.length === 0) {
       return res.status(400).json({ error: 'No image files provided' });
     }
 
-    const uploadPromises = files.map((file: Express.Multer.File) => uploadImage(file.buffer));
+    const uploadPromises = files.map((file: Express.Multer.File) => uploadImage(file.buffer, 'products'));
     const results = await Promise.all(uploadPromises);
 
     // Return the uploaded images information

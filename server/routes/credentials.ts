@@ -6,9 +6,11 @@ import bcrypt from 'bcryptjs';
 
 import Profile from '../models/Profile.js';
 
+import { authLimiter } from '../lib/rateLimiters.js';
+
 const router = express.Router();
 
-router.post('/signup', async (req: express.Request, res: express.Response) => {
+router.post('/signup', authLimiter, async (req: express.Request, res: express.Response) => {
 
   try {
 
@@ -108,7 +110,7 @@ router.post('/signup', async (req: express.Request, res: express.Response) => {
 
 });
 
-router.post('/signin', async (req: express.Request, res: express.Response) => {
+router.post('/signin', authLimiter, async (req: express.Request, res: express.Response) => {
 
   try {
 

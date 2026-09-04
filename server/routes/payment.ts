@@ -2,8 +2,10 @@ import express from 'express';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { ordersStorage } from '../storage.js';
+import { productsStorage } from '../db.js';
 import { notifyOwnerOnWhatsApp } from '../utils/notifyOwner.js';
 import { requireAuth } from '../lib/authMiddleware.js';
+import { paymentLimiter } from '../lib/rateLimiters.js';
 
 const router = express.Router();
 
@@ -14,7 +16,7 @@ const razorpay = new Razorpay({
 });
 
 // 1. POST /api/payment/create-order  ← Create Razorpay order
-router.post('/create-order', requireAuth, async (req: any, res: any) => {
+router.post('/create-order', paymentLimiter, requireAuth, async (req: any, res: any) => {
   try {
     const { amount, currency = 'INR', receipt } = req.body;
 
@@ -56,7 +58,7 @@ router.post('/create-order', requireAuth, async (req: any, res: any) => {
 });
 
 // 2. POST /api/payment/verify  ← Verify payment signature
-router.post('/verify', requireAuth, async (req: any, res: any) => {
+router.post('/verify', paymentLimiter, requireAuth, async (req: any, res: any) => {
   try {
     const { 
       razorpay_order_id, 
@@ -90,32 +92,61 @@ router.post('/verify', requireAuth, async (req: any, res: any) => {
       return res.status(400).json({ error: 'Invalid payment signature' });
     }
 
-    console.log('✅ Payment verified successfully:', razorpay_payment_id);
+    console.log('✅ Payment signature verified successfully:', razorpay_payment_id);
 
+    // If orderData is supplied (e.g. BundleCheckout), validate payment status & real database prices
     if (orderData) {
-      console.log('[VerifyRoute] Creating order on signature verification success');
-      const finalOrderData = {
-        ...orderData,
-        paymentId: razorpay_payment_id,
-        orderId: razorpay_order_id,
-        paymentStatus: 'paid',
-        status: 'completed'
-      };
+      console.log('[VerifyRoute] Validating and creating order on signature verification success');
 
+      // Fetch payment from Razorpay to verify captured state and order ID match
       try {
+        const payment = await razorpay.payments.fetch(razorpay_payment_id);
+        if (payment.status !== 'captured' || payment.order_id !== razorpay_order_id) {
+          console.error(`❌ Razorpay payment verification failed: status is ${payment.status}, expected captured`);
+          return res.status(400).json({ error: 'Razorpay payment is not captured or order ID mismatch' });
+        }
+
+        // Calculate real subtotal from database products to prevent client price tampering
+        const products = await productsStorage.getProducts();
+        let calculatedSubtotal = 0;
+        for (const item of orderData.items || orderData.products || []) {
+          const productId = (item.productId || item.id || item._id)?.toString();
+          const product = products.find((candidate: any) =>
+            candidate.id?.toString() === productId ||
+            candidate._id?.toString() === productId ||
+            candidate.slug === productId
+          );
+          const qty = Math.max(1, Number(item.quantity || 1));
+          const price = product ? Number(product.sellingPrice || 0) : 0;
+          calculatedSubtotal += price * qty;
+        }
+
+        const razorpayAmount = Number(payment.amount) / 100;
+        const orderTotal = calculatedSubtotal > 0 ? calculatedSubtotal : Number(orderData.total || 0);
+        if (Math.abs(razorpayAmount - orderTotal) > 1.0) {
+          console.error(`❌ Razorpay verification failed: amount mismatch (${razorpayAmount} vs ${orderTotal})`);
+          return res.status(400).json({ error: `Amount mismatch: paid amount does not match order total` });
+        }
+
+        const finalOrderData = {
+          ...orderData,
+          userId: req.user.id,
+          total: calculatedSubtotal > 0 ? calculatedSubtotal : orderData.total,
+          paymentId: razorpay_payment_id,
+          orderId: razorpay_order_id,
+          paymentStatus: 'paid',
+          status: 'completed'
+        };
+
         const newOrder = await ordersStorage.createOrder(req.user.id, finalOrderData);
         
         console.log('>>> ORDER CREATED SUCCESSFULLY <<<');
-        console.log('Order data:', JSON.stringify(newOrder, null, 2));
         
         // Send WhatsApp notification to owner
         try {
-          console.log('>>> CALLING WHATSAPP NOTIFICATION <<<');
           notifyOwnerOnWhatsApp(newOrder);
-          console.log('>>> WHATSAPP NOTIFICATION FUNCTION CALLED <<<');
         } catch (waError: any) {
           console.error('WhatsApp Notification error:', waError);
-          // Don't let notification failure break the order creation
         }
 
         return res.json({
@@ -125,11 +156,11 @@ router.post('/verify', requireAuth, async (req: any, res: any) => {
           order: newOrder,
           message: 'Payment verified and order created successfully'
         });
-      } catch (orderError: any) {
-        console.error('❌ Failed to create order after payment verify:', orderError);
-        return res.status(500).json({
-          error: 'Payment verified, but order creation failed',
-          details: orderError.message
+      } catch (verifErr: any) {
+        console.error('❌ Failed to verify payment with Razorpay API:', verifErr);
+        return res.status(400).json({
+          error: 'Failed to verify payment with payment gateway',
+          details: verifErr.message
         });
       }
     }
