@@ -26,6 +26,7 @@ import { Baby, Shirt, Moon, Package, Heart, Star, ShoppingBag, Sparkles, Gift, C
 
 import { useState, useEffect, useRef } from "react";
 import { apiFetch } from "@/lib/api";
+import { getCookieOrStorage, setCookieAndStorage } from "@/lib/cookies";
 
 
 
@@ -69,13 +70,20 @@ export default function Home() {
 
   // Show spin wheel after 5 seconds delay if user hasn't seen it before
   useEffect(() => {
-    const spinWheelSeen = localStorage.getItem('spinWheelSeen');
+    const spinWheelSeen = getCookieOrStorage('spinWheelSeen');
+    const spinWheelHasSpun = getCookieOrStorage('spin_wheel_has_spun');
     
-    if (!spinWheelSeen) {
+    // Check if guest user already won a discount so we can restore the sticky card
+    const savedDiscount = getCookieOrStorage('spin_wheel_won_discount');
+    if (savedDiscount) {
+      setWonDiscount(savedDiscount);
+    }
+
+    if (!spinWheelSeen && !spinWheelHasSpun) {
       const timer = setTimeout(() => {
         setShowSpinWheel(true);
-        localStorage.setItem('spinWheelSeen', 'true');
-        localStorage.setItem('spinWheelSeenDate', new Date().toISOString());
+        setCookieAndStorage('spinWheelSeen', 'true', 30);
+        setCookieAndStorage('spinWheelSeenDate', new Date().toISOString(), 30);
       }, 5000); // 5 second delay
 
       return () => clearTimeout(timer);
@@ -84,10 +92,12 @@ export default function Home() {
 
   const handleSpinWheelClose = () => {
     setShowSpinWheel(false);
+    setCookieAndStorage('spinWheelSeen', 'true', 30);
   };
 
   const handleDiscountWon = (discount: string) => {
     setWonDiscount(discount);
+    setCookieAndStorage('spin_wheel_won_discount', discount, 30);
   };
 
   const handleDismissDiscount = () => {

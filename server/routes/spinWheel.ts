@@ -40,30 +40,39 @@ router.post('/user', async (req, res) => {
         error: 'Phone and email are required'
       });
     }
+
+    const cleanPhone = String(phone).trim();
+    const cleanEmail = String(email).trim().toLowerCase();
+    const clientIp = ipAddress || req.ip || req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    const clientUserAgent = userAgent || req.headers['user-agent'];
     
-    // Check if user already exists
-    let user = await SpinWheelUser.findOne({ phone, email });
+    // Check if user already exists with matching phone OR email
+    let user = await SpinWheelUser.findOne({
+      $or: [{ phone: cleanPhone }, { email: cleanEmail }]
+    });
     
     if (user) {
-      // Update existing user
+      // Update existing user details
       if (termsAccepted !== undefined) {
         user.termsAccepted = termsAccepted;
       }
-      if (ipAddress) {
-        user.ipAddress = ipAddress;
+      user.phone = cleanPhone;
+      user.email = cleanEmail;
+      if (clientIp) {
+        user.ipAddress = String(clientIp);
       }
-      if (userAgent) {
-        user.userAgent = userAgent;
+      if (clientUserAgent) {
+        user.userAgent = String(clientUserAgent);
       }
       await user.save();
     } else {
       // Create new user
       user = new SpinWheelUser({
-        phone,
-        email,
+        phone: cleanPhone,
+        email: cleanEmail,
         termsAccepted: termsAccepted || false,
-        ipAddress,
-        userAgent
+        ipAddress: clientIp ? String(clientIp) : null,
+        userAgent: clientUserAgent ? String(clientUserAgent) : null
       });
       await user.save();
     }
@@ -98,22 +107,33 @@ router.post('/spin', async (req, res) => {
       isNoLuck, 
       wheelPosition, 
       rotationAngle, 
-      spinDuration 
+      spinDuration,
+      phone,
+      email
     } = req.body;
     
-    if (!userId || !prizeId) {
-      return res.status(400).json({
-        success: false,
-        error: 'User ID and Prize ID are required'
+    // Find user by userId or phone/email fallback
+    let user = null;
+    if (userId) {
+      try {
+        user = await SpinWheelUser.findById(userId);
+      } catch (e) {
+        // userId may not be a valid ObjectId format
+      }
+    }
+    if (!user && (phone || email)) {
+      user = await SpinWheelUser.findOne({
+        $or: [
+          ...(phone ? [{ phone: String(phone).trim() }] : []),
+          ...(email ? [{ email: String(email).trim().toLowerCase() }] : [])
+        ]
       });
     }
     
-    // Check if user exists
-    const user = await SpinWheelUser.findById(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
-        error: 'User not found'
+        error: 'User not found. Please register first.'
       });
     }
     
@@ -125,8 +145,22 @@ router.post('/spin', async (req, res) => {
       });
     }
     
-    // Check if prize exists and is active
-    const prize = await SpinWheelPrize.findById(prizeId);
+    // Find prize by prizeId, wheelPosition, or prizeLabel fallback
+    let prize = null;
+    if (prizeId) {
+      try {
+        prize = await SpinWheelPrize.findById(prizeId);
+      } catch (e) {
+        // prizeId may not be a valid ObjectId format
+      }
+    }
+    if (!prize && wheelPosition !== undefined && wheelPosition !== null) {
+      prize = await SpinWheelPrize.findOne({ position: Number(wheelPosition), isActive: true });
+    }
+    if (!prize && prizeLabel) {
+      prize = await SpinWheelPrize.findOne({ label: prizeLabel, isActive: true });
+    }
+
     if (!prize) {
       return res.status(400).json({
         success: false,
@@ -134,32 +168,35 @@ router.post('/spin', async (req, res) => {
       });
     }
 
+    const finalIsSpinAgain = Boolean(prize.isSpinAgain ?? isSpinAgain);
+    const finalIsNoLuck = Boolean(prize.isNoLuck ?? isNoLuck);
+
     // Create spin result using authoritative values from the database
     const result = new SpinWheelResult({
-      userId,
+      userId: user._id,
       prizeId: prize._id,
       prizeLabel: prize.label || prizeLabel,
       prizeColor: prize.color || prizeColor,
-      discountPercentage: prize.discountPercentage,
-      discountType: prize.discountType,
-      discountValue: prize.discountValue,
-      isSpinAgain: Boolean(prize.isSpinAgain),
-      isNoLuck: Boolean(prize.isNoLuck),
-      wheelPosition,
-      rotationAngle,
-      spinDuration
+      discountPercentage: prize.discountPercentage ?? discountPercentage ?? null,
+      discountType: prize.discountType ?? discountType ?? 'none',
+      discountValue: prize.discountValue ?? discountValue ?? null,
+      isSpinAgain: finalIsSpinAgain,
+      isNoLuck: finalIsNoLuck,
+      wheelPosition: wheelPosition !== undefined && wheelPosition !== null ? Number(wheelPosition) : prize.position,
+      rotationAngle: rotationAngle ?? 0,
+      spinDuration: spinDuration ?? 6000
     });
 
     await result.save();
     
     // Update user spin status
-    if (!isSpinAgain) {
+    if (!finalIsSpinAgain) {
       user.hasSpun = true;
-      user.totalSpins += 1;
+      user.totalSpins = (user.totalSpins || 0) + 1;
       user.lastSpinAt = new Date();
       await user.save();
     } else {
-      user.totalSpins += 1;
+      user.totalSpins = (user.totalSpins || 0) + 1;
       await user.save();
     }
     

@@ -1372,15 +1372,15 @@ export default function ShopStyle() {
             </div>
           );
         })()}
-        {/* Clear filters button when any filter is active */}
-        {(selectedFilters.length > 0 || maxPrice < 5000 || selectedComboPrice !== null || selectedPriceRange !== null) && (
+        {/* Clear filters button when any category or combo filter is active */}
+        {(selectedFilters.length > 0 || selectedComboPrice !== null) && (
           <div className="flex justify-center mt-4">
             <button
               onClick={clearFilters}
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
             >
               <X className="w-4 h-4" />
-              Clear Filters {selectedPriceRange ? `(${PRICE_RANGE_PRESETS.find(r => r.id === selectedPriceRange)?.label})` : selectedComboPrice !== null ? (selectedComboPrice > 0 ? `(Combos Under ₹${selectedComboPrice.toLocaleString('en-IN')})` : '(All Combos)') : maxPrice < 5000 ? `(Under ₹${maxPrice.toLocaleString('en-IN')})` : ''}
+              Clear Filters {selectedComboPrice !== null ? (selectedComboPrice > 0 ? `(Combos Under ₹${selectedComboPrice.toLocaleString('en-IN')})` : '(All Combos)') : ''}
             </button>
           </div>
         )}
@@ -1439,19 +1439,7 @@ export default function ShopStyle() {
                 </button>
               </span>
             )}
-            {selectedPriceRange !== null && (
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-xs">
-                <span>{PRICE_RANGE_PRESETS.find(r => r.id === selectedPriceRange)?.label}</span>
-                <button
-                  type="button"
-                  onClick={() => setSelectedPriceRange(null)}
-                  className="hover:bg-emerald-200 rounded-full p-0.5 transition-colors"
-                  title="Remove price range filter"
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
-            )}
+
             {selectedFilters.filter(id => COMBO_SECTION_FILTER_IDS.includes(id)).map(filterId => {
               const def = COMBO_SECTION_FILTERS.find(f => f.id === filterId);
               if (!def) return null;
