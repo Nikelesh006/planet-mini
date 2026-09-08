@@ -1,0 +1,989 @@
+{
+  "info": {
+    "_postman_id": "b6a82d2f-410a-4fb7-873b-932fcfc3194a",
+    "name": "Planet Mini API - Test Suite",
+    "description": "Comprehensive Postman collection for testing all Planet Mini backend endpoints (Auth, Products, Cart, Wishlist, Addresses, Orders, Razorpay, Spin Wheel, Uploads).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5002",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "sample-product-slug-or-id",
+      "type": "string"
+    },
+    {
+      "key": "addressId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. System Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "health"]
+            },
+            "description": "Checks database connection and server status."
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Sign Up (Local Account)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    const data = pm.response.json();",
+                  "    if (data.token) {",
+                  "        pm.collectionVariables.set('token', data.token);",
+                  "        console.log('Saved token to collection variable');",
+                  "    }",
+                  "    if (data.user && data.user.id) {",
+                  "        pm.collectionVariables.set('userId', data.user.id);",
+                  "        console.log('Saved userId to collection variable:', data.user.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signup",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signup"]
+            },
+            "description": "Register a new local user with email & password. Automatically stores `token` and `userId`."
+          }
+        },
+        {
+          "name": "Sign In (Local Account)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const data = pm.response.json();",
+                  "    if (data.token) {",
+                  "        pm.collectionVariables.set('token', data.token);",
+                  "        console.log('Saved token to collection variable');",
+                  "    }",
+                  "    if (data.user && data.user.id) {",
+                  "        pm.collectionVariables.set('userId', data.user.id);",
+                  "        console.log('Saved userId to collection variable:', data.user.id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/signin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "signin"]
+            },
+            "description": "Authenticate user and get JWT token."
+          }
+        },
+        {
+          "name": "Get Current Session",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/session",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "session"]
+            },
+            "description": "Verifies JWT token and returns current user details."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Clears auth cookies."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Fetch list of active catalog products."
+          }
+        },
+        {
+          "name": "Shop By Style (Filtered)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/shop-by-style?styleGroup=Rompers&minPrice=100&maxPrice=5000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "shop-by-style"],
+              "query": [
+                {
+                  "key": "styleGroup",
+                  "value": "Rompers"
+                },
+                {
+                  "key": "styleVariant",
+                  "value": "Sleeveless",
+                  "disabled": true
+                },
+                {
+                  "key": "minPrice",
+                  "value": "100"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "5000"
+                }
+              ]
+            },
+            "description": "Filtered products for Shop By Style cascading picker."
+          }
+        },
+        {
+          "name": "Get Product by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/cotton-romper-blue",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "cotton-romper-blue"]
+            },
+            "description": "Retrieve product details by product slug."
+          }
+        },
+        {
+          "name": "Get Product by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/id/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "id", "{{productId}}"]
+            },
+            "description": "Retrieve product details by exact product ID."
+          }
+        },
+        {
+          "name": "Create Product (Admin Only)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Baby Organic Cotton Onesie\",\n  \"slug\": \"baby-organic-cotton-onesie\",\n  \"description\": \"100% breathable organic cotton for baby comfort\",\n  \"category\": \"Clothing\",\n  \"sellingPrice\": 499,\n  \"mrp\": 799,\n  \"stockQuantity\": 50,\n  \"inStock\": true,\n  \"image\": \"https://res.cloudinary.com/demo/image/upload/sample.jpg\",\n  \"sizes\": \"0-3M, 3-6M, 6-12M\",\n  \"colors\": \"Blue, White\",\n  \"status\": \"Active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products"]
+            },
+            "description": "Admin endpoint to insert a new product."
+          }
+        },
+        {
+          "name": "Update Product (Admin Only)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sellingPrice\": 449,\n  \"stockQuantity\": 45,\n  \"inStock\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{productId}}"]
+            },
+            "description": "Admin endpoint to update product properties."
+          }
+        },
+        {
+          "name": "Boost Product (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isBoosted\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}/boost",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{productId}}", "boost"]
+            },
+            "description": "Boosts product ranking to the top of listings."
+          }
+        },
+        {
+          "name": "Delete Product (Admin Only)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/products/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "products", "{{productId}}"]
+            },
+            "description": "Admin endpoint to delete a product."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Cart",
+      "item": [
+        {
+          "name": "Get User Cart",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart"]
+            },
+            "description": "Fetches current cart items for authenticated user."
+          }
+        },
+        {
+          "name": "Add Item to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\",\n  \"quantity\": 1,\n  \"size\": \"3-6M\",\n  \"color\": \"Blue\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart"]
+            },
+            "description": "Adds an item with quantity, size, and color to the user's cart."
+          }
+        },
+        {
+          "name": "Update Cart Item Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/cart/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart", "{{productId}}"]
+            },
+            "description": "Updates quantity for an existing cart item."
+          }
+        },
+        {
+          "name": "Remove Item from Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart", "{{productId}}"]
+            },
+            "description": "Removes a specific item from the cart."
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/cart",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "cart"]
+            },
+            "description": "Empties the authenticated user's cart."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Wishlist",
+      "item": [
+        {
+          "name": "Get User Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wishlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "wishlist"]
+            },
+            "description": "Fetch wishlist products for authenticated user."
+          }
+        },
+        {
+          "name": "Add Item to Wishlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/wishlist",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "wishlist"]
+            },
+            "description": "Add a product to wishlist."
+          }
+        },
+        {
+          "name": "Check If Product in Wishlist",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wishlist/check/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "wishlist", "check", "{{productId}}"]
+            },
+            "description": "Check if a specific product is already wishlisted."
+          }
+        },
+        {
+          "name": "Remove Item from Wishlist",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/wishlist/{{productId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "wishlist", "{{productId}}"]
+            },
+            "description": "Removes a product from user's wishlist."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Addresses",
+      "item": [
+        {
+          "name": "Get User Addresses",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses"]
+            },
+            "description": "Fetch saved delivery addresses for authenticated user."
+          }
+        },
+        {
+          "name": "Create Address",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const data = pm.response.json();",
+                  "    if (data.address && (data.address.id || data.address._id)) {",
+                  "        pm.collectionVariables.set('addressId', data.address.id || data.address._id);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Rahul Sharma\",\n  \"phone\": \"9876543210\",\n  \"pincode\": \"600001\",\n  \"street\": \"123 Park Avenue, Anna Nagar\",\n  \"city\": \"Chennai\",\n  \"state\": \"Tamil Nadu\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses"]
+            },
+            "description": "Save a new delivery address."
+          }
+        },
+        {
+          "name": "Update Address",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fullName\": \"Rahul Sharma\",\n  \"phone\": \"9876543210\",\n  \"pincode\": \"600001\",\n  \"street\": \"Flat 4B, Emerald Towers, Anna Nagar\",\n  \"city\": \"Chennai\",\n  \"state\": \"Tamil Nadu\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/{{addressId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses", "{{addressId}}"]
+            },
+            "description": "Updates an existing delivery address."
+          }
+        },
+        {
+          "name": "Delete Address",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/addresses/{{addressId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "addresses", "{{addressId}}"]
+            },
+            "description": "Deletes a delivery address."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Razorpay Payment",
+      "item": [
+        {
+          "name": "Create Razorpay Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": 499,\n  \"currency\": \"INR\",\n  \"receipt\": \"rcpt_test_001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payment/create-order",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payment", "create-order"]
+            },
+            "description": "Creates an order ID with Razorpay gateway."
+          }
+        },
+        {
+          "name": "Verify Payment Signature",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"razorpay_order_id\": \"order_test_123\",\n  \"razorpay_payment_id\": \"pay_test_456\",\n  \"razorpay_signature\": \"test_signature_hex\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/payment/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payment", "verify"]
+            },
+            "description": "Verifies HMAC SHA256 payment signature."
+          }
+        },
+        {
+          "name": "Get Razorpay Order Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/payment/orders/order_test_123",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "payment", "orders", "order_test_123"]
+            },
+            "description": "Fetches order status from Razorpay."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Orders & Admin",
+      "item": [
+        {
+          "name": "Create Order (COD / Post-Verification)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"name\": \"Baby Cotton Onesie\",\n      \"quantity\": 1,\n      \"price\": 499,\n      \"size\": \"3-6M\",\n      \"color\": \"Blue\"\n    }\n  ],\n  \"total\": 499,\n  \"paymentMethod\": \"cod\",\n  \"paymentStatus\": \"pending\",\n  \"shippingAddress\": {\n    \"fullName\": \"Rahul Sharma\",\n    \"phone\": \"9876543210\",\n    \"street\": \"123 Park Avenue\",\n    \"city\": \"Chennai\",\n    \"state\": \"Tamil Nadu\",\n    \"pincode\": \"600001\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders"]
+            },
+            "description": "Creates an order record in database. Triggers WhatsApp notification if paid."
+          }
+        },
+        {
+          "name": "Get User Orders",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "{{userId}}"]
+            },
+            "description": "Fetch orders belonging to the authenticated user."
+          }
+        },
+        {
+          "name": "Get All Orders (Admin Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "orders"]
+            },
+            "description": "Admin endpoint to retrieve all customer orders."
+          }
+        },
+        {
+          "name": "Update Order Status (Admin Only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shipped\",\n  \"trackingNumber\": \"AWB123456789\",\n  \"carrier\": \"Delhivery\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/orders/{{orderId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orders", "{{orderId}}", "status"]
+            },
+            "description": "Admin endpoint to update fulfillment status of an order."
+          }
+        },
+        {
+          "name": "Admin Dashboard Analytics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "dashboard"]
+            },
+            "description": "Admin sales, revenue, order count metrics."
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Spin Wheel",
+      "item": [
+        {
+          "name": "Get Active Prizes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/spin-wheel/prizes",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "spin-wheel", "prizes"]
+            },
+            "description": "Fetch active segments/prizes for the spin wheel."
+          }
+        },
+        {
+          "name": "Register / Get Spin Wheel User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"email\": \"testuser@example.com\",\n  \"termsAccepted\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/spin-wheel/user",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "spin-wheel", "user"]
+            },
+            "description": "Registers phone and email for spin eligibility."
+          }
+        },
+        {
+          "name": "Record Spin Result",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"9876543210\",\n  \"email\": \"testuser@example.com\",\n  \"wheelPosition\": 0,\n  \"prizeLabel\": \"10% OFF\",\n  \"discountPercentage\": 10,\n  \"discountType\": \"percentage\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/spin-wheel/spin",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "spin-wheel", "spin"]
+            },
+            "description": "Submits the spin angle and records the prize."
+          }
+        },
+        {
+          "name": "Get User Spin Results",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/spin-wheel/results/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "spin-wheel", "results", "{{userId}}"]
+            },
+            "description": "Lists spin prizes won by this user."
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Cloudinary Uploads",
+      "item": [
+        {
+          "name": "Get Upload Signature (Direct to Cloudinary)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"folder\": \"profiles\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload/signature",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload", "signature"]
+            },
+            "description": "Generates signature for frontend direct-to-Cloudinary image upload."
+          }
+        },
+        {
+          "name": "Upload Image via Server (form-data)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "image",
+                  "type": "file",
+                  "description": "Select an image file (PNG/JPEG under 4MB)"
+                },
+                {
+                  "key": "folder",
+                  "value": "profiles",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/upload/image",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "upload", "image"]
+            },
+            "description": "Server-side image upload route using Multer & Cloudinary."
+          }
+        }
+      ]
+    }
+  ]
+}
