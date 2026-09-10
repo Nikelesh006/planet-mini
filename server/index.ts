@@ -111,13 +111,77 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id']
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id', 'x-planet-mini-client']
 }));
 
 app.use(cookieParser());
 
 // Apply global API rate limiter
 app.use('/api', apiLimiter);
+
+// Block direct browser document navigation and unauthorized scraping on API data endpoints
+app.use('/api', (req: Request, res: Response, next: NextFunction) => {
+  // Allow health check, OAuth callbacks, and webhook endpoints
+  if (
+    req.path === '/health' ||
+    req.path.startsWith('/auth/google') ||
+    req.path.startsWith('/webhook')
+  ) {
+    return next();
+  }
+
+  const secFetchDest = req.headers['sec-fetch-dest'];
+  const secFetchMode = req.headers['sec-fetch-mode'];
+  const acceptHeader = req.headers['accept'] || '';
+  const clientHeader = req.headers['x-planet-mini-client'];
+  const origin = req.headers['origin'];
+  const referer = req.headers['referer'];
+  const authHeader = req.headers['authorization'];
+  const token = req.cookies?.jwt || req.cookies?.auth_token;
+
+  // 1. Detect direct browser document navigation (typing or pasting the API URL directly into browser address bar)
+  const isDirectBrowserDocumentNavigation =
+    secFetchDest === 'document' ||
+    secFetchMode === 'navigate' ||
+    (typeof acceptHeader === 'string' && acceptHeader.includes('text/html') && !clientHeader);
+
+  if (isDirectBrowserDocumentNavigation) {
+    return res.status(403).json({
+      error: 'Access Denied',
+      message: 'Direct browser access to API endpoints is prohibited. Please access the store via the official website.',
+    });
+  }
+
+  // 2. Validate authorized client requests
+  let hasValidOrigin = false;
+  if (origin) {
+    hasValidOrigin = isAllowedOrigin(origin);
+  }
+  let hasValidReferer = false;
+  if (referer) {
+    try {
+      hasValidReferer = isAllowedOrigin(new URL(referer).origin);
+    } catch {
+      hasValidReferer = false;
+    }
+  }
+
+  const isAuthorizedClient =
+    clientHeader === 'web' ||
+    hasValidOrigin ||
+    hasValidReferer ||
+    Boolean(authHeader) ||
+    Boolean(token);
+
+  if (!isAuthorizedClient) {
+    return res.status(403).json({
+      error: 'Access Denied',
+      message: 'Direct or unauthorized API access is prohibited. Please access via the official application.',
+    });
+  }
+
+  next();
+});
 
 // Initialize passport
 

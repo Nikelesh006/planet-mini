@@ -8,6 +8,8 @@ async function throwIfResNotOk(res: Response) {
   }
 }
 
+
+
 export async function apiRequest(
   method: string,
   url: string,
@@ -15,7 +17,10 @@ export async function apiRequest(
 ): Promise<Response> {
   const res = await fetch(buildApiUrl(url), {
     method,
-    headers: data ? { "Content-Type": "application/json" } : {},
+    headers: {
+      "Content-Type": "application/json",
+      "x-planet-mini-client": "web",
+    },
     body: data ? JSON.stringify(data) : undefined,
     credentials: "include",
   });
@@ -33,12 +38,10 @@ export const getQueryFn: <T>(options: {
     const url = queryKey.join("/") as string;
     const res = await fetch(url.startsWith("/api/") ? buildApiUrl(url) : url, {
       credentials: "include",
+      headers: {
+        "x-planet-mini-client": "web",
+      },
     });
-
-    if (unauthorizedBehavior === "returnNull" && res.status === 401) {
-      return null;
-    }
-
     await throwIfResNotOk(res);
     return await res.json();
   };

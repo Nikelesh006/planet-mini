@@ -17,6 +17,7 @@ export async function apiFetch(endpoint: string, options?: RequestInit) {
   const token = localStorage.getItem('jwtToken');
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'x-planet-mini-client': 'web',
     ...(options?.headers as Record<string, string>),
   };
 

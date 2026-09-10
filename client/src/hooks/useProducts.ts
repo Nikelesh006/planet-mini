@@ -262,7 +262,9 @@ const fetchProducts = async (params?: ProductQueryParams): Promise<ProductRespon
 
 
 
-  const url = `/api/products${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+  const url = params?.includeDrafts
+    ? `/api/admin/products${queryParams.toString() ? `?${queryParams.toString()}` : ''}`
+    : `/api/products${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
 
 
 

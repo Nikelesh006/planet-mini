@@ -1369,7 +1369,6 @@ export async function registerRoutes(
 
 
 
-      res.json(filtered);
 
 
 
@@ -1381,34 +1380,20 @@ export async function registerRoutes(
 
 
 
+      // Sanitize products for public consumption: remove internal warehouse inventory data
+      const sanitized = canIncludeDrafts ? filtered : filtered.map(p => {
+        const doc = typeof (p as any).toObject === 'function' ? (p as any).toObject() : { ...p };
+        delete doc.stockQuantity;
+        delete doc.lowStockAlert;
+        delete doc.costPrice;
+        delete doc.supplier;
+        delete doc.notes;
+        return doc;
+      });
 
-
-
-
+      res.json(sanitized);
     } catch (err) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       res.status(400).json({ message: "Invalid query parameters" });
-
-
-
-
-
-
-
 
 
 
@@ -1433,6 +1418,17 @@ export async function registerRoutes(
 
 
 
+  });
+
+  // GET /api/admin/products - Full product management for authorized administrators only
+  app.get('/api/admin/products', requireAdmin, async (req: any, res: any) => {
+    try {
+      const products = await productsStorage.getProducts();
+      res.json(products);
+    } catch (error) {
+      console.error('Error fetching admin products:', error);
+      res.status(500).json({ error: 'Failed to fetch admin products' });
+    }
   });
 
 
