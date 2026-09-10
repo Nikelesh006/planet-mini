@@ -1,0 +1,5 @@
+$kind: http-request
+description: Retrieve product details by exact product ID.
+url: "{{baseUrl}}/api/products/id/{{productId}}"
+method: GET
+order: 4000

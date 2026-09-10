@@ -1,0 +1,16 @@
+$kind: http-request
+description: Creates an order ID with Razorpay gateway.
+url: "{{baseUrl}}/api/payment/create-order"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+body:
+  type: text
+  content: |-
+    {
+      "amount": 499,
+      "currency": "INR",
+      "receipt": "rcpt_test_001"
+    }
+order: 1000

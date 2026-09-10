@@ -1,0 +1,7 @@
+$kind: http-request
+description: Fetches order status from Razorpay.
+url: "{{baseUrl}}/api/payment/orders/order_test_123"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+order: 3000

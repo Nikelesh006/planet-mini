@@ -1,0 +1,7 @@
+$kind: http-request
+description: Admin endpoint to delete a product.
+url: "{{baseUrl}}/api/products/{{productId}}"
+method: DELETE
+headers:
+  Authorization: Bearer {{token}}
+order: 8000

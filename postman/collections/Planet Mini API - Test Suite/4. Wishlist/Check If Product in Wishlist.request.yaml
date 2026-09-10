@@ -1,0 +1,7 @@
+$kind: http-request
+description: Check if a specific product is already wishlisted.
+url: "{{baseUrl}}/api/wishlist/check/{{productId}}"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+order: 3000

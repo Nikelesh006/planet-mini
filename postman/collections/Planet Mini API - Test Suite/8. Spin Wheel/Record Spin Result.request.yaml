@@ -1,0 +1,18 @@
+$kind: http-request
+description: Submits the spin angle and records the prize.
+url: "{{baseUrl}}/api/spin-wheel/spin"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "phone": "9876543210",
+      "email": "testuser@example.com",
+      "wheelPosition": 0,
+      "prizeLabel": "10% OFF",
+      "discountPercentage": 10,
+      "discountType": "percentage"
+    }
+order: 3000

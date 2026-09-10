@@ -1,0 +1,7 @@
+$kind: http-request
+description: Clears auth cookies.
+url: "{{baseUrl}}/api/auth/logout"
+method: POST
+headers:
+  Authorization: Bearer {{token}}
+order: 4000

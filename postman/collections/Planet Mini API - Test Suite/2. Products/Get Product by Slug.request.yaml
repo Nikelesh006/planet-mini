@@ -1,0 +1,5 @@
+$kind: http-request
+description: Retrieve product details by product slug.
+url: "{{baseUrl}}/api/products/cotton-romper-blue"
+method: GET
+order: 3000

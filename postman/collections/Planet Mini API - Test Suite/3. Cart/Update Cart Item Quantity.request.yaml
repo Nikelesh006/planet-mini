@@ -1,0 +1,14 @@
+$kind: http-request
+description: Updates quantity for an existing cart item.
+url: "{{baseUrl}}/api/cart/{{productId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+body:
+  type: text
+  content: |-
+    {
+      "quantity": 2
+    }
+order: 3000

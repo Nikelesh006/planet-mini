@@ -1,0 +1,16 @@
+$kind: http-request
+description: Admin endpoint to update product properties.
+url: "{{baseUrl}}/api/products/{{productId}}"
+method: PUT
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+body:
+  type: text
+  content: |-
+    {
+      "sellingPrice": 449,
+      "stockQuantity": 45,
+      "inStock": true
+    }
+order: 6000

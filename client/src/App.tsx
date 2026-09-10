@@ -154,6 +154,8 @@ import LoadingScreen from "@/components/LoadingScreen";
 
 
 
+import AdminGuard from "./components/auth/AdminGuard";
+
 function Router() {
   const [location] = useLocation();
 
@@ -164,11 +166,31 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/faq" component={FAQ} />
-        <Route path="/admin" component={AdminDashboard} />
-        <Route path="/admin/add-product" component={AddProduct} />
-        <Route path="/admin/product-list" component={ProductList} />
-        <Route path="/admin/orders" component={AdminOrders} />
-        <Route path="/admin/spin-wheel" component={AdminSpinWheel} />
+        <Route path="/admin">
+          <AdminGuard>
+            <AdminDashboard />
+          </AdminGuard>
+        </Route>
+        <Route path="/admin/add-product">
+          <AdminGuard>
+            <AddProduct />
+          </AdminGuard>
+        </Route>
+        <Route path="/admin/product-list">
+          <AdminGuard>
+            <ProductList />
+          </AdminGuard>
+        </Route>
+        <Route path="/admin/orders">
+          <AdminGuard>
+            <AdminOrders />
+          </AdminGuard>
+        </Route>
+        <Route path="/admin/spin-wheel">
+          <AdminGuard>
+            <AdminSpinWheel />
+          </AdminGuard>
+        </Route>
         <Route path="/account" component={Profile} />
         <Route path="/profile" component={Profile} />
         <Route path="/orders" component={Orders} />

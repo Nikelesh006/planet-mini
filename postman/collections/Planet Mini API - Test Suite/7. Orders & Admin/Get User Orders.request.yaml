@@ -1,0 +1,7 @@
+$kind: http-request
+description: Fetch orders belonging to the authenticated user.
+url: "{{baseUrl}}/api/orders/{{userId}}"
+method: GET
+headers:
+  Authorization: Bearer {{token}}
+order: 2000

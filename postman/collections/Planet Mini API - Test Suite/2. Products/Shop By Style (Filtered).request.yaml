@@ -1,0 +1,15 @@
+$kind: http-request
+description: Filtered products for Shop By Style cascading picker.
+url: "{{baseUrl}}/api/products/shop-by-style?styleGroup=Rompers&minPrice=100&maxPrice=5000"
+method: GET
+queryParams:
+  - key: styleGroup
+    value: Rompers
+  - key: styleVariant
+    value: Sleeveless
+    disabled: true
+  - key: minPrice
+    value: "100"
+  - key: maxPrice
+    value: "5000"
+order: 2000
