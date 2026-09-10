@@ -108,8 +108,9 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const verifyAdmin = () => {
     const userEmail = req.user?.email;
+    const isAuthorizedAdmin = isEmailAdmin(userEmail) || req.user?.role === 'admin';
 
-    if (!userEmail || !isEmailAdmin(userEmail)) {
+    if (!isAuthorizedAdmin) {
       return res.status(403).json({
         error: 'Forbidden',
         message: 'Administrative privileges required for this resource.',

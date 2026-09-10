@@ -27,12 +27,17 @@ export function isAdminAuthorized(email?: string): boolean {
 
 /**
  * Check if a user object is authorized for admin access
- * @param user - User object with email property
+ * @param user - User object with email, role, and optional isAdmin property
  * @returns boolean - True if authorized, false otherwise
  */
-export function isUserAdminAuthorized(user?: { email?: string }): boolean {
+export function isUserAdminAuthorized(user?: { email?: string; role?: string; isAdmin?: boolean }): boolean {
   if (!user?.email) return false;
-  return isAdminAuthorized(user.email);
+  
+  const isAuthorizedEmail = isAdminAuthorized(user.email);
+  const hasAdminRole = user.isAdmin === true || user.role === 'admin';
+
+  // Ensure authorized email check passes, and if server returned isAdmin, verify alignment
+  return isAuthorizedEmail && (user.isAdmin !== undefined ? hasAdminRole : true);
 }
 
 /**

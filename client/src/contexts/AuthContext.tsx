@@ -8,6 +8,8 @@ type User = {
   name?: string;
   image?: string;
   picture?: string;
+  role?: string;
+  isAdmin?: boolean;
 };
 
 type AuthContextType = {

@@ -67,7 +67,7 @@ import { productsStorage } from "./db.js";
 import { getAvailableStock, isOutOfStock } from "./shared/stock.js";
 
 import { notifyOwnerOnWhatsApp } from "./utils/notifyOwner.js";
-import { requireAuth, requireAdmin } from "./lib/authMiddleware.js";
+import { requireAuth, requireAdmin, isEmailAdmin } from "./lib/authMiddleware.js";
 
 import Razorpay from "razorpay";
 
@@ -1009,7 +1009,27 @@ export async function registerRoutes(
 
 
 
-      filtered = filtered.filter(p => req.query?.includeDrafts === 'true' ? true : p.inStock === true && (p.status || "Active").toLowerCase() === "active");
+      // Only allow verified admins to see draft products via includeDrafts=true
+      let canIncludeDrafts = false;
+      if (req.query?.includeDrafts === 'true') {
+        try {
+          let token = (req as any).cookies?.jwt || (req as any).cookies?.auth_token;
+          const authHeader = req.headers['authorization'];
+          if (!token && authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7).trim();
+          }
+          if (token && process.env.JWT_SECRET) {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+            if (decoded?.email && (isEmailAdmin(decoded.email) || decoded.role === 'admin')) {
+              canIncludeDrafts = true;
+            }
+          }
+        } catch {
+          canIncludeDrafts = false;
+        }
+      }
+
+      filtered = filtered.filter(p => canIncludeDrafts ? true : p.inStock === true && (p.status || "Active").toLowerCase() === "active");
 
 
 

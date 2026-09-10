@@ -154,6 +154,8 @@ import LoadingScreen from "@/components/LoadingScreen";
 
 
 
+import { ProtectedAdminRoute } from "./components/auth/AdminGuard";
+
 function Router() {
   const [location] = useLocation();
 
@@ -164,11 +166,37 @@ function Router() {
         <Route path="/about" component={About} />
         <Route path="/contact" component={Contact} />
         <Route path="/faq" component={FAQ} />
-        <Route path="/admin" component={AdminDashboard} />
-        <Route path="/admin/add-product" component={AddProduct} />
-        <Route path="/admin/product-list" component={ProductList} />
-        <Route path="/admin/orders" component={AdminOrders} />
-        <Route path="/admin/spin-wheel" component={AdminSpinWheel} />
+        {/* Protected Admin Routes */}
+        <Route path="/admin">
+          <ProtectedAdminRoute component={AdminDashboard} />
+        </Route>
+        <Route path="/admin/dashboard">
+          <ProtectedAdminRoute component={AdminDashboard} />
+        </Route>
+        <Route path="/admin/add-product">
+          <ProtectedAdminRoute component={AddProduct} />
+        </Route>
+        <Route path="/admin/products/create">
+          <ProtectedAdminRoute component={AddProduct} />
+        </Route>
+        <Route path="/admin/products/edit/:id">
+          <ProtectedAdminRoute component={AddProduct} />
+        </Route>
+        <Route path="/admin/product-list">
+          <ProtectedAdminRoute component={ProductList} />
+        </Route>
+        <Route path="/admin/products">
+          <ProtectedAdminRoute component={ProductList} />
+        </Route>
+        <Route path="/admin/orders">
+          <ProtectedAdminRoute component={AdminOrders} />
+        </Route>
+        <Route path="/admin/spin-wheel">
+          <ProtectedAdminRoute component={AdminSpinWheel} />
+        </Route>
+        <Route path="/admin/:rest*">
+          <ProtectedAdminRoute component={AdminDashboard} />
+        </Route>
         <Route path="/account" component={Profile} />
         <Route path="/profile" component={Profile} />
         <Route path="/orders" component={Orders} />

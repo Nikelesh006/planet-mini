@@ -19,6 +19,7 @@ import passport from "passport";
 import helmet from "helmet";
 
 import { apiLimiter } from "./lib/rateLimiters.js";
+import { isEmailAdmin } from "./lib/authMiddleware.js";
 
 export const app = express();
 
@@ -373,12 +374,16 @@ app.get("/api/auth/session", (req: Request, res: Response) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
+    const email = decoded.email ? String(decoded.email).toLowerCase() : undefined;
+    const isAdmin = isEmailAdmin(email) || decoded.role === 'admin';
     return res.json({
       user: {
         id: decoded.id,
-        email: decoded.email,
+        email: email,
         name: decoded.name,
         image: decoded.avatar,
+        role: isAdmin ? 'admin' : (decoded.role || 'user'),
+        isAdmin: isAdmin,
       },
     });
   } catch (err) {
