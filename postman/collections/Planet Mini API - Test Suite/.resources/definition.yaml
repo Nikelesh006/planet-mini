@@ -1,9 +1,0 @@
-$kind: collection
-description: Comprehensive Postman collection for testing all Planet Mini backend endpoints (Auth, Products, Cart, Wishlist, Addresses, Orders, Razorpay, Spin Wheel, Uploads).
-variables:
-  baseUrl: http://localhost:5002
-  token: ""
-  userId: ""
-  productId: sample-product-slug-or-id
-  addressId: ""
-  orderId: ""

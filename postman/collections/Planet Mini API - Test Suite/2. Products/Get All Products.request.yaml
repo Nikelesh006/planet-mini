@@ -1,5 +1,0 @@
-$kind: http-request
-description: Fetch list of active catalog products.
-url: "{{baseUrl}}/api/products"
-method: GET
-order: 1000

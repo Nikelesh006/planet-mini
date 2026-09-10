@@ -1,7 +1,0 @@
-$kind: http-request
-description: Admin sales, revenue, order count metrics.
-url: "{{baseUrl}}/api/admin/dashboard"
-method: GET
-headers:
-  Authorization: Bearer {{token}}
-order: 5000

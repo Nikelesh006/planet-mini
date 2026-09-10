@@ -1,7 +1,0 @@
-$kind: http-request
-description: Empties the authenticated user's cart.
-url: "{{baseUrl}}/api/cart"
-method: DELETE
-headers:
-  Authorization: Bearer {{token}}
-order: 5000

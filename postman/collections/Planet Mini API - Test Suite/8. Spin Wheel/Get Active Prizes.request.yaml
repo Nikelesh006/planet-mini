@@ -1,5 +1,0 @@
-$kind: http-request
-description: Fetch active segments/prizes for the spin wheel.
-url: "{{baseUrl}}/api/spin-wheel/prizes"
-method: GET
-order: 1000

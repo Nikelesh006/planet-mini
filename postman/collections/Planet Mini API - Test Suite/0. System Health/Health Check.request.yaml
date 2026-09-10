@@ -1,5 +1,0 @@
-$kind: http-request
-description: Checks database connection and server status.
-url: "{{baseUrl}}/api/health"
-method: GET
-order: 1000

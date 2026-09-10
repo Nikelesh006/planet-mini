@@ -1,5 +1,0 @@
-$kind: http-request
-description: Lists spin prizes won by this user.
-url: "{{baseUrl}}/api/spin-wheel/results/{{userId}}"
-method: GET
-order: 4000

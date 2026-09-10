@@ -1,7 +1,0 @@
-$kind: http-request
-description: Verifies JWT token and returns current user details.
-url: "{{baseUrl}}/api/auth/session"
-method: GET
-headers:
-  Authorization: Bearer {{token}}
-order: 3000
