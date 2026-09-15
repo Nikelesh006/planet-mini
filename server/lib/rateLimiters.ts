@@ -59,3 +59,33 @@ export const spinWheelLimiter = rateLimit({
     error: 'Too many spin wheel requests. Please try again later.',
   },
 });
+
+/**
+ * Strict Admin PIN verification rate limiter (IP layer).
+ * 10 attempts / 15 mins per IP to prevent network-level brute-force.
+ */
+export const adminPinLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: 'Too many Admin PIN verification requests from this IP. Please try again after 15 minutes.',
+  },
+});
+
+/**
+ * Admin PIN change rate limiter.
+ * 5 attempts / 15 mins per IP.
+ */
+export const adminPinChangeLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: 'Too many Admin PIN change requests. Please wait before trying again.',
+  },
+});

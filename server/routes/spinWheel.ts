@@ -3,7 +3,7 @@ import { connectDB } from '../db.js';
 import SpinWheelPrize from '../models/SpinWheelPrize.js';
 import SpinWheelUser from '../models/SpinWheelUser.js';
 import SpinWheelResult from '../models/SpinWheelResult.js';
-import { requireAdmin } from '../lib/authMiddleware.js';
+import { requireAdminPinVerification } from '../lib/authMiddleware.js';
 import { spinWheelLimiter } from '../lib/rateLimiters.js';
 
 const router = Router();
@@ -316,7 +316,7 @@ router.get('/user/:phone/:email', async (req, res) => {
 });
 
 // GET /api/spin-wheel/admin/results - Get all spin wheel results for admin
-router.get('/admin/results', requireAdmin, async (req, res) => {
+router.get('/admin/results', requireAdminPinVerification, async (req, res) => {
   try {
     await connectDB();
     

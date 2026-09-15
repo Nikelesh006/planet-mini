@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { apiFetch } from '../lib/api';
+import { isUserAdminAuthorized } from '../lib/admin-auth';
 
 type User = {
   id: string;
@@ -19,6 +20,17 @@ type AuthContextType = {
   logout: () => void;
   showWelcomeMessage: boolean;
   dismissWelcomeMessage: () => void;
+  isAdminPinVerified: boolean;
+  adminPinRemainingSeconds: number;
+  isPinModalOpen: boolean;
+  setIsPinModalOpen: (open: boolean) => void;
+  verifyAdminPin: (pin: string) => Promise<{
+    success: boolean;
+    error?: string;
+    remainingAttempts?: number;
+    lockedOut?: boolean;
+  }>;
+  checkAdminPinStatus: () => Promise<boolean>;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -28,6 +40,12 @@ const AuthContext = createContext<AuthContextType>({
   logout: () => {},
   showWelcomeMessage: false,
   dismissWelcomeMessage: () => {},
+  isAdminPinVerified: false,
+  adminPinRemainingSeconds: 0,
+  isPinModalOpen: false,
+  setIsPinModalOpen: () => {},
+  verifyAdminPin: async () => ({ success: false }),
+  checkAdminPinStatus: async () => false,
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -35,6 +53,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   const [previousUser, setPreviousUser] = useState<User | null>(null);
+  const [isAdminPinVerified, setIsAdminPinVerified] = useState(false);
+  const [adminPinRemainingSeconds, setAdminPinRemainingSeconds] = useState(0);
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
 
   const fetchSession = async () => {
     try {
@@ -87,13 +108,72 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         
         setUser(currentUser);
         setPreviousUser(currentUser);
+
+        // If user is an authorized admin, synchronize PIN verification status
+        if (currentUser && (currentUser.isAdmin || currentUser.role === 'admin' || isUserAdminAuthorized(currentUser))) {
+          checkAdminPinStatus();
+        } else {
+          setIsAdminPinVerified(false);
+          setAdminPinRemainingSeconds(0);
+        }
       }
     } catch (error) {
       console.error('❌ AuthContext - Session fetch error:', error);
       setUser(null);
       setPreviousUser(null);
+      setIsAdminPinVerified(false);
+      setAdminPinRemainingSeconds(0);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const checkAdminPinStatus = async (): Promise<boolean> => {
+    try {
+      const res = await apiFetch('/api/admin/security/status');
+      if (!res.ok) {
+        setIsAdminPinVerified(false);
+        setAdminPinRemainingSeconds(0);
+        return false;
+      }
+      const data = await res.json();
+      const verified = Boolean(data.isPinVerified);
+      setIsAdminPinVerified(verified);
+      setAdminPinRemainingSeconds(data.remainingSeconds || 0);
+      return verified;
+    } catch {
+      setIsAdminPinVerified(false);
+      setAdminPinRemainingSeconds(0);
+      return false;
+    }
+  };
+
+  const verifyAdminPin = async (pin: string) => {
+    try {
+      const res = await apiFetch('/api/admin/security/verify-pin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ pin }),
+      });
+      const data = await res.json();
+      if (res.ok && data.verified) {
+        setIsAdminPinVerified(true);
+        setAdminPinRemainingSeconds((data.expiresInMinutes || 15) * 60);
+        return { success: true };
+      }
+      return {
+        success: false,
+        error: data.error || 'Incorrect Admin PIN.',
+        remainingAttempts: data.remainingAttempts,
+        lockedOut: data.lockedOut,
+      };
+    } catch (err: any) {
+      return {
+        success: false,
+        error: err.message || 'Network error during PIN verification.',
+      };
     }
   };
 
@@ -109,6 +189,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
       setUser(null);
       setPreviousUser(null);
+      setIsAdminPinVerified(false);
+      setAdminPinRemainingSeconds(0);
+      setIsPinModalOpen(false);
       // Clear welcome flags and token on logout
       localStorage.removeItem('hasSeenWelcome');
       localStorage.removeItem('lastSeenUserId');
@@ -117,6 +200,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.error("Logout error:", error);
       setUser(null);
       setPreviousUser(null);
+      setIsAdminPinVerified(false);
+      setAdminPinRemainingSeconds(0);
+      setIsPinModalOpen(false);
       localStorage.removeItem('hasSeenWelcome');
       localStorage.removeItem('lastSeenUserId');
       localStorage.removeItem('jwtToken');
@@ -132,7 +218,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, refetch, logout, showWelcomeMessage, dismissWelcomeMessage }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isLoading,
+        refetch,
+        logout,
+        showWelcomeMessage,
+        dismissWelcomeMessage,
+        isAdminPinVerified,
+        adminPinRemainingSeconds,
+        isPinModalOpen,
+        setIsPinModalOpen,
+        verifyAdminPin,
+        checkAdminPinStatus,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

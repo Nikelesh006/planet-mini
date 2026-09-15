@@ -5,13 +5,17 @@
  * to ensure maximum security for admin-only features.
  */
 
-// Authorized admin emails - ONLY these users can access admin features
-export const AUTHORIZED_ADMIN_EMAILS = [
+// Authorized admin emails - loaded from .env (VITE_ADMIN_EMAILS)
+const envAdminEmails = import.meta.env.VITE_ADMIN_EMAILS
+  ? (import.meta.env.VITE_ADMIN_EMAILS as string).split(',').map((e: string) => e.trim().toLowerCase())
+  : null;
+
+export const AUTHORIZED_ADMIN_EMAILS: readonly string[] = envAdminEmails || [
   "nikelesh2006@gmail.com",
   "codecraft2k@gmail.com", 
   "planetmini.care@gmail.com",
   "vimaljai1994@gmail.com"
-] as const;
+];
 
 /**
  * Check if a user email is authorized for admin access

@@ -155,6 +155,41 @@ import LoadingScreen from "@/components/LoadingScreen";
 
 
 import { ProtectedAdminRoute } from "./components/auth/AdminGuard";
+import { useAuth } from "@/contexts/AuthContext";
+import { isUserAdminAuthorized } from "@/lib/admin-auth";
+import AdminPinModal from "@/components/auth/AdminPinModal";
+
+function AdminShortcutListener() {
+  const { user, isPinModalOpen, setIsPinModalOpen } = useAuth();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Admin key combination handler
+      const isModifierActive = e.ctrlKey || e.metaKey;
+      const isShiftActive = e.shiftKey;
+      const isKeyA = e.key === 'A' || e.key === 'a' || e.code === 'KeyA';
+
+      if (isModifierActive && isShiftActive && isKeyA) {
+        // Strict Authorization requirement:
+        // Only process for authenticated users who are authorized admins!
+        // Unauthenticated or non-admin users cannot open the PIN modal.
+        if (user && isUserAdminAuthorized(user)) {
+          e.preventDefault();
+          if (!isPinModalOpen) {
+            setIsPinModalOpen(true);
+          }
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [user, isPinModalOpen, setIsPinModalOpen]);
+
+  return <AdminPinModal />;
+}
 
 function Router() {
   const [location] = useLocation();
@@ -327,6 +362,7 @@ function App() {
 
 
         <AuthProvider>
+          <AdminShortcutListener />
 
 
 
@@ -335,7 +371,6 @@ function App() {
 
 
             <LikeProvider>
-
               <CustomBagBundleProvider>
 
                 <GiftBundleProvider>

@@ -29,7 +29,6 @@ export function Header() {
     { label: "FAQ", href: "/faq" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
-    { label: "Admin", href: "/admin" },
   ];
 
   return (

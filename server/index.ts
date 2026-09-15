@@ -20,6 +20,7 @@ import helmet from "helmet";
 
 import { apiLimiter } from "./lib/rateLimiters.js";
 import { isEmailAdmin } from "./lib/authMiddleware.js";
+import { logAdminSecurityEvent } from "./models/AdminAuditLog.js";
 
 export const app = express();
 
@@ -460,20 +461,45 @@ app.get("/api/auth/session", (req: Request, res: Response) => {
 
 // POST /api/auth/logout → clear cookie
 
-app.post("/api/auth/logout", (req: Request, res: Response) => {
+app.post("/api/auth/logout", async (req: Request, res: Response) => {
   const isProduction = process.env.NODE_ENV === "production";
-
-  console.log(
-    `Clearing JWT cookie with secure: ${isProduction}, sameSite: ${isProduction ? "none" : "lax"}`,
-  );
-  res.clearCookie("jwt", {
+  const cookieOpts = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? "none" : "lax",
-  });
+    sameSite: (isProduction ? "none" : "lax") as "none" | "lax",
+    path: "/",
+  };
+
+  // Inspect caller email for audit logging
+  let callerEmail: string | undefined;
+  let callerUserId: string | undefined;
+  const token = req.cookies?.jwt || req.cookies?.auth_token;
+  if (token && process.env.JWT_SECRET) {
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+      callerEmail = decoded.email;
+      callerUserId = decoded.id || decoded.sub;
+    } catch {
+      // ignore
+    }
+  }
+
+  res.clearCookie("jwt", cookieOpts);
+  res.clearCookie("auth_token", cookieOpts);
+  res.clearCookie("admin_pin_token", cookieOpts);
+
+  if (callerEmail && isEmailAdmin(callerEmail)) {
+    await logAdminSecurityEvent({
+      adminEmail: callerEmail,
+      adminUserId: callerUserId,
+      event: 'ADMIN_LOGOUT',
+      result: 'SUCCESS',
+      ipAddress: req.ip || req.socket.remoteAddress,
+      userAgent: req.headers['user-agent'],
+    });
+  }
 
   return res.json({ success: true });
-
 });
 
 

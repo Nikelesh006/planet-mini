@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import { cloudinary, uploadImage } from '../lib/cloudinary.js';
-import { requireAuth, isEmailAdmin } from '../lib/authMiddleware.js';
+import { requireAuth, isEmailAdmin, verifyAdminPinToken } from '../lib/authMiddleware.js';
 
 const router = express.Router();
 
@@ -31,9 +31,15 @@ router.post('/signature', requireAuth, (req: Request, res: Response) => {
   const isAdmin = isEmailAdmin(req.user?.email);
   const requestedFolder = typeof req.body?.folder === 'string' ? req.body.folder : (isAdmin ? 'products' : 'profiles');
 
-  // Non-admin users are strictly restricted to the 'profiles' folder
-  if (!isAdmin && requestedFolder !== 'profiles') {
-    return res.status(403).json({ error: 'Administrative privileges required to upload to product or store folders' });
+  // Non-admin or non-PIN-verified users are strictly restricted to the 'profiles' folder
+  if (requestedFolder !== 'profiles') {
+    const pinToken = (req as any).cookies?.admin_pin_token || req.headers['x-admin-pin-token'];
+    const pinVerification = verifyAdminPinToken(pinToken, req.user?.email);
+    if (!isAdmin || !pinVerification.valid) {
+      return res.status(403).json({
+        error: 'Secondary Admin PIN verification required to upload to product or store folders.',
+      });
+    }
   }
 
   const folder = ALLOWED_UPLOAD_FOLDERS.includes(requestedFolder) ? requestedFolder : (isAdmin ? 'products' : 'profiles');
@@ -67,6 +73,17 @@ router.post('/image', requireAuth, upload.single('image'), async (req: Request, 
 
     const isAdmin = isEmailAdmin(req.user?.email);
     const requestedFolder = typeof req.body?.folder === 'string' ? req.body.folder : (isAdmin ? 'products' : 'profiles');
+
+    if (requestedFolder !== 'profiles') {
+      const pinToken = (req as any).cookies?.admin_pin_token || req.headers['x-admin-pin-token'];
+      const pinVerification = verifyAdminPinToken(pinToken, req.user?.email);
+      if (!isAdmin || !pinVerification.valid) {
+        return res.status(403).json({
+          error: 'Secondary Admin PIN verification required to upload to product or store folders.',
+        });
+      }
+    }
+
     const folder = (!isAdmin || !ALLOWED_UPLOAD_FOLDERS.includes(requestedFolder)) ? 'profiles' : requestedFolder;
 
     // Upload to Cloudinary

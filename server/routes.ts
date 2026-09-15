@@ -62,12 +62,14 @@ import jwt from "jsonwebtoken";
 
 import { storage, addressStorage, userStorage, ordersStorage } from "./storage.js";
 
-import { productsStorage } from "./db.js";
+import mongoose from "mongoose";
+import { productsStorage, connectDB } from "./db.js";
+import Profile from "./models/Profile.js";
 
 import { getAvailableStock, isOutOfStock } from "./shared/stock.js";
 
 import { notifyOwnerOnWhatsApp } from "./utils/notifyOwner.js";
-import { requireAuth, requireAdmin, isEmailAdmin } from "./lib/authMiddleware.js";
+import { requireAuth, requireAdmin, requireAdminPinVerification, verifyAdminPinToken, isEmailAdmin } from "./lib/authMiddleware.js";
 
 import Razorpay from "razorpay";
 
@@ -155,6 +157,7 @@ import credentialsRoutes from "./routes/credentials.js";
 
 
 import uploadRoutes from "./routes/upload.js";
+import adminSecurityRoutes from "./routes/adminSecurity.js";
 
 
 
@@ -1009,7 +1012,7 @@ export async function registerRoutes(
 
 
 
-      // Only allow verified admins to see draft products via includeDrafts=true
+      // Only allow verified admins with valid PIN verification to see draft products via includeDrafts=true
       let canIncludeDrafts = false;
       if (req.query?.includeDrafts === 'true') {
         try {
@@ -1021,7 +1024,11 @@ export async function registerRoutes(
           if (token && process.env.JWT_SECRET) {
             const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
             if (decoded?.email && (isEmailAdmin(decoded.email) || decoded.role === 'admin')) {
-              canIncludeDrafts = true;
+              let pinToken = (req as any).cookies?.admin_pin_token || req.headers['x-admin-pin-token'];
+              const pinVerification = verifyAdminPinToken(pinToken, decoded.email);
+              if (pinVerification.valid) {
+                canIncludeDrafts = true;
+              }
             }
           }
         } catch {
@@ -1421,7 +1428,7 @@ export async function registerRoutes(
   });
 
   // GET /api/admin/products - Full product management for authorized administrators only
-  app.get('/api/admin/products', requireAdmin, async (req: any, res: any) => {
+  app.get('/api/admin/products', requireAdminPinVerification, async (req: any, res: any) => {
     try {
       const products = await productsStorage.getProducts();
       res.json(products);
@@ -1461,7 +1468,7 @@ export async function registerRoutes(
 
 
 
-  app.post(api.products.list.path, requireAdmin, async (req, res) => {
+  app.post(api.products.list.path, requireAdminPinVerification, async (req, res) => {
 
 
 
@@ -2985,7 +2992,7 @@ export async function registerRoutes(
 
 
 
-  app.patch(api.products.get.path, requireAdmin, async (req, res) => {
+  app.patch(api.products.get.path, requireAdminPinVerification, async (req, res) => {
 
 
 
@@ -3485,7 +3492,7 @@ export async function registerRoutes(
 
 
 
-  app.put("/api/products/:id", requireAdmin, async (req, res) => {
+  app.put("/api/products/:id", requireAdminPinVerification, async (req, res) => {
 
 
 
@@ -4183,7 +4190,7 @@ export async function registerRoutes(
 
 
 
-  app.delete("/api/products/:id", requireAdmin, async (req, res) => {
+  app.delete("/api/products/:id", requireAdminPinVerification, async (req, res) => {
 
 
 
@@ -4594,6 +4601,7 @@ export async function registerRoutes(
 
 
   app.use('/api/auth', authRoutes);
+  app.use('/api/admin/security', adminSecurityRoutes);
 
 
 
@@ -4705,7 +4713,7 @@ export async function registerRoutes(
 
 
 
-  app.post('/api/debug-token', requireAdmin, async (req: any, res: any) => {
+  app.post('/api/debug-token', requireAdminPinVerification, async (req: any, res: any) => {
 
 
 
@@ -4961,7 +4969,10 @@ export async function registerRoutes(
 
 
 
-      const jwtSecret = process.env.JWT_SECRET || 'fallback-secret-key';
+      const jwtSecret = process.env.JWT_SECRET;
+      if (!jwtSecret) {
+        return res.status(500).json({ error: 'JWT_SECRET is not configured in .env' });
+      }
 
 
 
@@ -11555,7 +11566,7 @@ export async function registerRoutes(
 
 
 
-  app.get('/api/admin/orders', requireAdmin, async (req: any, res: any) => {
+  app.get('/api/admin/orders', requireAdminPinVerification, async (req: any, res: any) => {
 
 
 
@@ -11599,7 +11610,7 @@ export async function registerRoutes(
 
 
 
-  app.patch("/api/products/:id/boost", requireAdmin, async (req, res) => {
+  app.patch("/api/products/:id/boost", requireAdminPinVerification, async (req, res) => {
 
     try {
 
@@ -11657,7 +11668,7 @@ export async function registerRoutes(
 
   });
 
-  app.patch("/api/products/:id/boost-sections", requireAdmin, async (req, res) => {
+  app.patch("/api/products/:id/boost-sections", requireAdminPinVerification, async (req, res) => {
     try {
       const { id } = req.params;
       const { boostSections } = req.body || {};
@@ -11708,7 +11719,7 @@ export async function registerRoutes(
 
 
 
-  app.get('/api/admin/dashboard', requireAdmin, async (req: any, res: any) => {
+  app.get('/api/admin/dashboard', requireAdminPinVerification, async (req: any, res: any) => {
 
 
 
@@ -11740,33 +11751,39 @@ export async function registerRoutes(
 
 
 
-      // Calculate total revenue only from orders with completed payment status
-
-
-
+      // Calculate total revenue from orders (support both total and totalAmount fields)
       const revenue = allOrders
-
         .filter((order: any) => {
-
           const pStatus = (order.paymentStatus || '').toLowerCase();
-
-          return pStatus === 'completed' || pStatus === 'paid' || pStatus === 'paid successfully' || pStatus === 'success';
-
+          const oStatus = (order.status || '').toLowerCase();
+          return (
+            pStatus === 'completed' ||
+            pStatus === 'paid' ||
+            pStatus === 'paid successfully' ||
+            pStatus === 'success' ||
+            oStatus === 'completed' ||
+            oStatus === 'delivered'
+          );
         })
-
-        .reduce((sum: number, order: any) => sum + (order.totalAmount || 0), 0);
-
+        .reduce((sum: number, order: any) => sum + (Number(order.totalAmount || order.total) || 0), 0);
 
 
 
 
 
 
-      // Get unique customers
 
-
-
-      const uniqueCustomers = new Set(allOrders.map((o: any) => o.userId).filter(Boolean)).size;
+      // Get customer count from profiles collection and orders
+      await connectDB();
+      const db = mongoose.connection.db;
+      let totalCustomers = 0;
+      if (db) {
+        const profileCount = await db.collection("profiles").countDocuments();
+        const orderCustomerCount = new Set(allOrders.map((o: any) => o.userId).filter(Boolean)).size;
+        totalCustomers = Math.max(profileCount, orderCustomerCount);
+      } else {
+        totalCustomers = new Set(allOrders.map((o: any) => o.userId).filter(Boolean)).size;
+      }
 
 
 
@@ -11818,7 +11835,7 @@ export async function registerRoutes(
 
 
 
-          totalAmount: order.totalAmount || 0,
+          totalAmount: Number(order.totalAmount || order.total) || 0,
 
 
 
@@ -11870,7 +11887,7 @@ export async function registerRoutes(
 
 
 
-          totalCustomers: uniqueCustomers,
+          totalCustomers: totalCustomers,
 
 
 
@@ -11934,7 +11951,7 @@ export async function registerRoutes(
 
 
 
-  app.patch('/api/orders/:orderId/status', requireAdmin, async (req: any, res: any) => {
+  app.patch('/api/orders/:orderId/status', requireAdminPinVerification, async (req: any, res: any) => {
 
 
 

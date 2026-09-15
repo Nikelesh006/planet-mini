@@ -18,7 +18,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import { isUserAdminAuthorized, logUnauthorizedAccess } from "@/lib/admin-auth";
-import { API_BASE_URL } from "@/lib/api";
+import { apiFetch } from "@/lib/api";
 
 // Format helpers
 const formatCurrency = (amount: number): string => {
@@ -67,15 +67,12 @@ export default function AdminDashboard() {
     const fetchDashboard = async () => {
       try {
         setDataLoading(true);
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch(`${API_BASE_URL}/api/admin/dashboard`, {
-          headers: {
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-          },
-        });
+        const response = await apiFetch('/api/admin/dashboard');
         if (response.ok) {
           const data = await response.json();
           setDashboardData(data);
+        } else {
+          console.error('Error response fetching dashboard:', response.status);
         }
       } catch (error) {
         console.error('Error fetching dashboard:', error);

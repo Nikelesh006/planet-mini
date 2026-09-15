@@ -24,7 +24,7 @@ export async function sendAdminOrderNotification(order: any): Promise<WhatsAppNo
     // 2. Load and validate WhatsApp configuration from environment variables
     const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
     const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-    const adminPhone = process.env.WHATSAPP_ADMIN_PHONE_NUMBER || '9597755722';
+    const adminPhone = process.env.WHATSAPP_ADMIN_PHONE_NUMBER || process.env.OWNER_WHATSAPP_NUMBER || '';
     const apiVersion = process.env.WHATSAPP_API_VERSION || 'v20.0';
     const templateName = process.env.WHATSAPP_TEMPLATE_NAME || 'new_order_admin_notification';
 

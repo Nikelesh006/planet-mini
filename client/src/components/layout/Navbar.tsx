@@ -30,7 +30,7 @@ export default function Navbar() {
   const searchDropdownRef = useRef<HTMLDivElement>(null);
   const lastScrollY = useRef(0);
   const { state } = useCart();
-  const { user, isLoading, logout } = useAuth();
+  const { user, isLoading, logout, isAdminPinVerified } = useAuth();
   const { isAuthModalOpen, authMode, openSignInModal, openSignUpModal, closeAuthModal } = useAuthModal();
   const { likedProducts, toggleLike, isLiked } = useLikes();
   const { data: profile } = useProfile(user?.id || '');
@@ -176,16 +176,19 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Highly secure admin access - only authorized emails can see admin link
-  const isAdminUser = isUserAdminAuthorized(user || undefined);
+  // Highly secure admin access:
+  // When an authorized admin logs in, the Admin link in the navbar remains HIDDEN.
+  // Only after secondary admin authorization and verifying the Admin PIN / password
+  // does the Admin panel link become visible in the navbar.
+  const showAdminLink = isUserAdminAuthorized(user || undefined) && isAdminPinVerified;
 
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Shop by Style", href: "/shop/style" },
     { label: "About", href: "/about" },
     { label: "Contact", href: "/contact" },
-    // Only show Admin link to authorized users
-    ...(isAdminUser ? [{ label: "Admin", href: "/admin" }] : [])
+    // Admin panel link in navbar is hidden until verified
+    ...(showAdminLink ? [{ label: "Admin", href: "/admin" }] : [])
   ];
 
   return (

@@ -1,9 +1,8 @@
-import { ReactNode, useState, useEffect } from "react";
-import { Link, Route, useLocation } from "wouter";
+import { ReactNode, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useAuth } from "@/contexts/AuthContext";
 import { isUserAdminAuthorized, logUnauthorizedAccess } from "@/lib/admin-auth";
-import GoogleAuthModal from "@/components/auth/GoogleAuthModal";
-import { ShieldAlert, Lock, LogIn, Home, Loader2, ArrowLeft } from "lucide-react";
+import { ShieldAlert, Lock, Loader2, KeyRound } from "lucide-react";
 
 interface AdminGuardProps {
   children: ReactNode;
@@ -11,15 +10,15 @@ interface AdminGuardProps {
 
 /**
  * AdminGuard component to protect administrative pages.
- * Enforces 4 distinct states:
+ * Enforces 5 distinct states:
  * 1. Loading: Displays verified session check indicator
- * 2. Unauthenticated: Renders Admin Login Required with direct sign-in actions
+ * 2. Unauthenticated: Renders Admin Login Required warning card (no action buttons)
  * 3. Unauthorized: Renders 403 Access Denied for authenticated non-admin users
- * 4. Authorized Admin: Renders the protected admin component
+ * 4. Locked: Renders Admin PIN Verification Required for authorized admins who have not verified PIN
+ * 5. Authorized & Verified Admin: Renders the protected admin component
  */
 export default function AdminGuard({ children }: AdminGuardProps) {
-  const { user, isLoading, logout } = useAuth();
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { user, isLoading, isAdminPinVerified, setIsPinModalOpen } = useAuth();
   const [location] = useLocation();
 
   const isAuthorized = isUserAdminAuthorized(user || undefined);
@@ -56,33 +55,9 @@ export default function AdminGuard({ children }: AdminGuardProps) {
           </div>
 
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Login Required</h1>
-          <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+          <p className="text-sm text-gray-600 leading-relaxed">
             This area is restricted to authorized administrators. Please sign in with your admin credentials to access the admin portal.
           </p>
-
-          <div className="space-y-3">
-            <button
-              onClick={() => setIsAuthModalOpen(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B4C49A] hover:bg-[#a3b587] text-gray-900 font-semibold rounded-xl transition-all shadow-sm hover:shadow active:scale-[0.98]"
-            >
-              <LogIn className="w-4 h-4" />
-              Log In as Admin
-            </button>
-
-            <Link
-              href="/"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all"
-            >
-              <Home className="w-4 h-4" />
-              Return to Storefront
-            </Link>
-          </div>
-
-          <GoogleAuthModal
-            isOpen={isAuthModalOpen}
-            onClose={() => setIsAuthModalOpen(false)}
-            initialMode="signin"
-          />
         </div>
       </div>
     );
@@ -106,42 +81,43 @@ export default function AdminGuard({ children }: AdminGuardProps) {
           <div className="bg-gray-50 border border-gray-200 rounded-lg py-2 px-3 mb-4 text-xs font-mono text-gray-700 break-all">
             {user.email || user.name || "Customer Account"}
           </div>
-          <p className="text-xs text-red-600 font-medium mb-6">
+          <p className="text-xs text-red-600 font-medium mb-2">
             This account does not have administrator privileges. Please log in with an authorized administrator account.
           </p>
-
-          <div className="space-y-3">
-            <button
-              onClick={async () => {
-                await logout();
-                setIsAuthModalOpen(true);
-              }}
-              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B4C49A] hover:bg-[#a3b587] text-gray-900 font-semibold rounded-xl transition-all shadow-sm hover:shadow active:scale-[0.98]"
-            >
-              <LogIn className="w-4 h-4" />
-              Switch to Admin Account
-            </button>
-
-            <Link
-              href="/"
-              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Return to Storefront
-            </Link>
-          </div>
-
-          <GoogleAuthModal
-            isOpen={isAuthModalOpen}
-            onClose={() => setIsAuthModalOpen(false)}
-            initialMode="signin"
-          />
         </div>
       </div>
     );
   }
 
-  // 4. Authorized admin - render protected component
+  // 4. Authorized admin, but secondary Admin PIN NOT yet verified
+  if (!isAdminPinVerified) {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center p-4">
+        <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-amber-200/70 p-6 sm:p-8 text-center relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-amber-400 via-[#B4C49A] to-amber-500" />
+
+          <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-200 shadow-inner">
+            <KeyRound className="w-8 h-8 text-amber-600" />
+          </div>
+
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Admin Verification Required</h1>
+          <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+            This area is restricted to authorized administrators. Secondary admin verification is required to access the admin panel.
+          </p>
+
+          <button
+            onClick={() => setIsPinModalOpen(true)}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#B4C49A] hover:bg-[#a3b587] text-gray-900 font-semibold rounded-xl transition-all shadow-sm hover:shadow active:scale-[0.98]"
+          >
+            <KeyRound className="w-4 h-4" />
+            Enter Admin Password / PIN
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // 5. Authorized admin AND PIN verified - render protected component
   return <>{children}</>;
 }
 

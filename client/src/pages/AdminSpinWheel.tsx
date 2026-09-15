@@ -12,7 +12,7 @@ import {
   RotateCcw
 } from "lucide-react";
 import { isUserAdminAuthorized, logUnauthorizedAccess } from "@/lib/admin-auth";
-import { API_BASE_URL } from "@/lib/api";
+import { API_BASE_URL, apiFetch } from "@/lib/api";
 
 interface SpinResult {
   _id: string;
@@ -74,12 +74,7 @@ export default function AdminSpinWheel() {
     const fetchResults = async () => {
       try {
         setDataLoading(true);
-        const token = localStorage.getItem('jwtToken');
-        const response = await fetch(`${API_BASE_URL}/api/spin-wheel/admin/results`, {
-          headers: {
-            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-          },
-        });
+        const response = await apiFetch('/api/spin-wheel/admin/results');
         if (response.ok) {
           const data = await response.json();
           setResults(data.data || []);
