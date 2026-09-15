@@ -1104,24 +1104,16 @@ export const ordersStorage = {
 
       delete (order as any).shippingAddressId;
 
-      
-
       console.log('🔧 Order data being saved:', JSON.stringify(order, null, 2));
-
-      
 
       const result = await db.collection("orders").insertOne(order);
 
       return { ...order, id: result.insertedId.toString() };
 
     } catch (error) {
-
       console.error('Error creating order:', error);
-
       throw error;
-
     }
-
   },
 
 
@@ -1149,78 +1141,61 @@ export const ordersStorage = {
       
 
       return result.modifiedCount > 0;
-
     } catch (error) {
-
       console.error('Error updating order status:', error);
-
       throw error;
-
     }
-
   },
 
-
-
-  async updateOrderWhatsAppStatus(orderId: string, sent: boolean, errorMsg?: string | null) {
-
+  async updateOrderWhatsAppNotificationStatus(
+    orderId: string,
+    type: 'admin' | 'customer',
+    sent: boolean,
+    errorMsg?: string | null
+  ) {
     try {
-
       const db = mongoose.connection.db;
-
       if (!db) throw new Error("Database not connected");
-
       const { ObjectId } = mongoose.Types;
 
-      
-
       const updateDoc: any = {
-
-        whatsappAdminNotificationSent: sent,
-
         updatedAt: new Date()
-
       };
 
-      
-
-      if (sent) {
-
-        updateDoc.whatsappAdminNotificationSentAt = new Date();
-
-        updateDoc.whatsappAdminNotificationError = null;
-
+      if (type === 'admin') {
+        updateDoc.whatsappAdminNotificationSent = sent;
+        if (sent) {
+          updateDoc.whatsappAdminNotificationSentAt = new Date();
+          updateDoc.whatsappAdminNotificationError = null;
+        } else {
+          updateDoc.whatsappAdminNotificationError = errorMsg || 'Unknown error';
+        }
       } else {
-
-        updateDoc.whatsappAdminNotificationError = errorMsg || 'Unknown error';
-
+        updateDoc.whatsappCustomerNotificationSent = sent;
+        if (sent) {
+          updateDoc.whatsappCustomerNotificationSentAt = new Date();
+          updateDoc.whatsappCustomerNotificationError = null;
+        } else {
+          updateDoc.whatsappCustomerNotificationError = errorMsg || 'Unknown error';
+        }
       }
 
-      
+      let query: any = {};
+      if (ObjectId.isValid(orderId)) {
+        query = { $or: [{ _id: new ObjectId(orderId) }, { id: orderId }, { orderNumber: orderId }] };
+      } else {
+        query = { $or: [{ id: orderId }, { orderNumber: orderId }] };
+      }
 
-      const result = await db.collection("orders").updateOne(
-
-        { _id: new ObjectId(orderId) },
-
-        { $set: updateDoc }
-
-      );
-
-      
-
+      const result = await db.collection("orders").updateOne(query, { $set: updateDoc });
       return result.modifiedCount > 0;
-
     } catch (error) {
-
-      console.error('Error updating order WhatsApp status:', error);
-
-      throw error;
-
+      console.error(`Error updating order WhatsApp ${type} status:`, error);
+      return false;
     }
+  },
 
+  async updateOrderWhatsAppStatus(orderId: string, sent: boolean, errorMsg?: string | null) {
+    return this.updateOrderWhatsAppNotificationStatus(orderId, 'admin', sent, errorMsg);
   }
-
 };
-
-
-

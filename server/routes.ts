@@ -68,6 +68,7 @@ import Profile from "./models/Profile.js";
 
 import { getAvailableStock, isOutOfStock } from "./shared/stock.js";
 
+import { sendOrderWhatsAppNotifications } from "./services/metaWhatsAppService.js";
 import { notifyOwnerOnWhatsApp } from "./utils/notifyOwner.js";
 import { requireAuth, requireAdmin, requireAdminPinVerification, verifyAdminPinToken, isEmailAdmin } from "./lib/authMiddleware.js";
 
@@ -11438,13 +11439,12 @@ export async function registerRoutes(
 
       if (newOrder.paymentStatus === 'paid') {
         try {
-          console.log('>>> CALLING WHATSAPP NOTIFICATION FROM /api/orders <<<');
-          await notifyOwnerOnWhatsApp(newOrder);
-          console.log('>>> WHATSAPP NOTIFICATION CALLED FROM /api/orders <<<');
-          await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, true);
+          console.log('>>> DISPATCHING META WHATSAPP NOTIFICATIONS FOR ORDER <<<', newOrder.id);
+          sendOrderWhatsAppNotifications(newOrder).catch((waError: any) => {
+            console.error('WhatsApp Notification background error from /api/orders:', waError);
+          });
         } catch (waError: any) {
           console.error('WhatsApp Notification error from /api/orders:', waError);
-          await ordersStorage.updateOrderWhatsAppStatus(newOrder.id, false, waError.message || 'Unknown request error');
         }
       }
 

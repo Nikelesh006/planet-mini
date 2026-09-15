@@ -1,6 +1,6 @@
-import { productsStorage } from '../db.js';
+import { sendAdminOrderNotification, sendCustomerOrderNotification, sendOrderWhatsAppNotifications } from '../services/metaWhatsAppService.js';
 
-interface Order {
+export interface OrderNotificationPayload {
   orderId?: string;
   orderNumber?: string;
   items?: Array<{
@@ -23,6 +23,7 @@ interface Order {
     city?: string;
     state?: string;
     pincode?: string;
+    landmark?: string;
   };
   customerName?: string;
   customerPhone?: string;
@@ -31,100 +32,41 @@ interface Order {
   [key: string]: any;
 }
 
-export async function notifyOwnerOnWhatsApp(order: Order): Promise<void> {
-  // Skip WhatsApp notifications on Vercel (serverless environment)
-  if (process.env.VERCEL) {
-    console.log('⚠️ WhatsApp notification skipped - running on Vercel (requires long-running process)');
-    return;
-  }
-
-  if (!process.env.OWNER_WHATSAPP_NUMBER) {
-    console.warn('OWNER_WHATSAPP_NUMBER not set in environment variables. Skipping WhatsApp notification.');
-    return;
-  }
-
+/**
+ * Dispatches Meta WhatsApp Cloud notification to the store Admin/Owner.
+ */
+export async function notifyOwnerOnWhatsApp(order: OrderNotificationPayload): Promise<void> {
   try {
-    // Dynamically import whatsappClient only when not on Vercel
-    const { sendWhatsAppMessage } = await import('../services/whatsappClient.js');
-    
-    const orderId = order.orderId || order.orderNumber || 'N/A';
-    const items = order.items || [];
-    
-    // Fetch products to get additional details
-    let dbProducts: any[] = [];
-    try {
-      dbProducts = await productsStorage.getProducts();
-    } catch (error) {
-      console.error('Error fetching products:', error);
+    const result = await sendAdminOrderNotification(order);
+    if (!result.success) {
+      console.warn('[notifyOwnerOnWhatsApp] Admin notification issue:', result.error);
     }
-
-    // Build items list with Product ID, Size, and Link
-    const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_URL || 'https://planet-mini-client.vercel.app';
-    const itemsList = items
-      .map((item, index) => {
-        const name = item.name || item.productName || 'Unknown Product';
-        const qty = item.quantity || 1;
-        const price = item.sellingPrice || item.price || 0;
-        
-        // Get product details
-        const dbProduct = dbProducts.find((p: any) => 
-          p.id?.toString() === item.productId?.toString() || 
-          p._id?.toString() === item.productId?.toString()
-        );
-        
-        const productId = item.sku || dbProduct?.sku || item.productId || 'N/A';
-        const size = item.size || dbProduct?.size || 'Not specified';
-        const slug = item.slug || dbProduct?.slug || '';
-        const productUrl = slug ? `${frontendUrl}/products/${slug}` : '';
-
-        let itemText = `${index + 1}. ${name}\n`;
-        itemText += `   Product ID: ${productId}\n`;
-        itemText += `   Size: ${size}\n`;
-        itemText += `   Quantity: ${qty}\n`;
-        itemText += `   Price: ₹${price}\n`;
-        if (productUrl) {
-          itemText += `   🔗 ${productUrl}\n`;
-        }
-        
-        return itemText;
-      })
-      .join('\n');
-
-    // Build shipping address
-    const address = order.shippingAddress || {};
-    const shippingAddress = [
-      address.fullName,
-      address.street,
-      `${address.city}, ${address.state}`,
-      address.pincode
-    ].filter(Boolean).join('\n');
-
-    // Build message
-    const message = `🛒 *NEW ORDER RECEIVED*
-
-📋 *Order ID:* ${orderId}
-💰 *Total Amount:* ₹${order.total || 0}
-💳 *Payment Status:* ${order.paymentStatus || 'N/A'}
-📅 *Order Date:* ${order.createdAt ? new Date(order.createdAt).toLocaleString() : 'N/A'}
-
-📦 *Items:*
-${itemsList || 'No items'}
-
-📍 *Shipping Address:*
-${shippingAddress || 'No address provided'}
-
-👤 *Customer Details:*
-Name: ${order.customerName || address.fullName || 'N/A'}
-Phone: ${order.customerPhone || address.phone || 'N/A'}
-
----
-*Powered by Planet Mini*`;
-
-    // Send message
-    await sendWhatsAppMessage(process.env.OWNER_WHATSAPP_NUMBER, message);
-    console.log(`WhatsApp notification sent for order ${orderId}`);
   } catch (error) {
-    console.error('Failed to send WhatsApp notification:', error);
-    // Don't throw - we don't want notification failures to break the application
+    console.error('[notifyOwnerOnWhatsApp] Failed to send WhatsApp notification:', error);
+  }
+}
+
+/**
+ * Dispatches Meta WhatsApp Cloud notification to the Customer.
+ */
+export async function notifyCustomerOnWhatsApp(order: OrderNotificationPayload): Promise<void> {
+  try {
+    const result = await sendCustomerOrderNotification(order);
+    if (!result.success) {
+      console.warn('[notifyCustomerOnWhatsApp] Customer notification issue:', result.error);
+    }
+  } catch (error) {
+    console.error('[notifyCustomerOnWhatsApp] Failed to send customer WhatsApp notification:', error);
+  }
+}
+
+/**
+ * Dispatches Meta WhatsApp Cloud notifications to BOTH Admin and Customer.
+ */
+export async function notifyOrderWhatsApp(order: OrderNotificationPayload): Promise<void> {
+  try {
+    await sendOrderWhatsAppNotifications(order);
+  } catch (error) {
+    console.error('[notifyOrderWhatsApp] Failed to send order WhatsApp notifications:', error);
   }
 }

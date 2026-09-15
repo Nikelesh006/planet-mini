@@ -3,6 +3,7 @@ import Razorpay from 'razorpay';
 import crypto from 'crypto';
 import { ordersStorage } from '../storage.js';
 import { productsStorage } from '../db.js';
+import { sendOrderWhatsAppNotifications } from '../services/metaWhatsAppService.js';
 import { notifyOwnerOnWhatsApp } from '../utils/notifyOwner.js';
 import { requireAuth } from '../lib/authMiddleware.js';
 import { paymentLimiter } from '../lib/rateLimiters.js';
@@ -142,12 +143,10 @@ router.post('/verify', paymentLimiter, requireAuth, async (req: any, res: any) =
         
         console.log('>>> ORDER CREATED SUCCESSFULLY <<<');
         
-        // Send WhatsApp notification to owner
-        try {
-          notifyOwnerOnWhatsApp(newOrder);
-        } catch (waError: any) {
-          console.error('WhatsApp Notification error:', waError);
-        }
+        // Send WhatsApp notifications to both Admin and Customer via Meta Cloud API
+        sendOrderWhatsAppNotifications(newOrder).catch((waError: any) => {
+          console.error('[PaymentVerify] WhatsApp Notification error:', waError);
+        });
 
         return res.json({
           success: true,

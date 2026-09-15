@@ -515,21 +515,11 @@ async function bootstrap() {
 
   await connectDB();
 
-  // Initialize WhatsApp client for order notifications (only on non-Vercel platforms)
-  // whatsapp-web.js requires a long-running process and won't work on Vercel serverless
-  if (!process.env.VERCEL && process.env.OWNER_WHATSAPP_NUMBER) {
-    console.log('📱 Initializing WhatsApp client for order notifications...');
-    try {
-      const { initializeWhatsAppClient } = await import('./services/whatsappClient.js');
-      initializeWhatsAppClient();
-    } catch (error) {
-      console.error('Failed to initialize WhatsApp client:', error);
-      console.log('WhatsApp notifications will be disabled. Server will continue running.');
-    }
-  } else if (process.env.VERCEL) {
-    console.log('⚠️ Running on Vercel - WhatsApp notifications disabled (requires long-running process)');
+  // Meta WhatsApp Cloud API status check
+  if (process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID) {
+    console.log('📱 Meta WhatsApp Cloud API configured for order notifications.');
   } else {
-    console.log('⚠️ OWNER_WHATSAPP_NUMBER not set. WhatsApp notifications disabled.');
+    console.log('ℹ️ Meta WhatsApp Cloud API: WHATSAPP_ACCESS_TOKEN or WHATSAPP_PHONE_NUMBER_ID not set in .env.');
   }
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
