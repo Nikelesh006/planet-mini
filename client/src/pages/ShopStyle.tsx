@@ -687,6 +687,44 @@ export default function ShopStyle() {
 
     return true;
   };
+
+  // Validate that all 3 steps have at least one product before proceeding to hospital bag bundle review
+  const validateCustomCheckout = (): boolean => {
+    const hasStep1Item = bundleItems.some((item: any) => isProductInStep(item.product, 1));
+    if (!hasStep1Item) {
+      toast({
+        title: "Action Required",
+        description: "Please add at least one product from Baby Clothing (Step 1) to your bundle.",
+        variant: "destructive"
+      });
+      setCurrentStep(1);
+      return false;
+    }
+
+    const hasStep2Item = bundleItems.some((item: any) => isProductInStep(item.product, 2));
+    if (!hasStep2Item) {
+      toast({
+        title: "Action Required",
+        description: "Please add at least one product from Other Essentials (Step 2) to your bundle.",
+        variant: "destructive"
+      });
+      setCurrentStep(2);
+      return false;
+    }
+
+    const hasStep3Item = bundleItems.some((item: any) => isProductInStep(item.product, 3));
+    if (!hasStep3Item) {
+      toast({
+        title: "Action Required",
+        description: "Please add at least one product from Nursing and Bedding (Step 3) to your bundle.",
+        variant: "destructive"
+      });
+      setCurrentStep(3);
+      return false;
+    }
+
+    return true;
+  };
   // Set Step 1 as default when in custom mode
   useEffect(() => {
     if (customMode) {
@@ -1878,6 +1916,7 @@ export default function ShopStyle() {
             onRemoveItem={removeFromBundle}
             onUpdateQuantity={updateQuantity}
             reviewPageUrl="/bundle-review"
+            onCheckout={validateCustomCheckout}
           />
         </>
       )}
