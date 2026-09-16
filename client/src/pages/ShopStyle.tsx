@@ -1464,15 +1464,17 @@ export default function ShopStyle() {
       {(homeFilter === 'hospital-bags' || isHospitalBagsSection || customMode || giftMode) && (
         <section className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mb-8">
           <div className="text-center">
-            <button
-              onClick={() => window.location.href = '/shop/style?custom=true'}
-              className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-colors shadow-lg hover:shadow-xl bg-black text-white hover:bg-gray-800"
-            >
-              Customise Your Own Hospital Bags
-            </button>
+            {!giftMode && (
+              <button
+                onClick={() => window.location.href = '/shop/style?custom=true'}
+                className="inline-flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 rounded-full font-semibold text-sm sm:text-base transition-colors shadow-lg hover:shadow-xl bg-black text-white hover:bg-gray-800"
+              >
+                Customise Your Own Hospital Bags
+              </button>
+            )}
             {/* Step Filters - Only in custom mode or gift mode */}
             {(customMode || giftMode) && (
-              <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <div className={`${!giftMode ? 'mt-6' : ''} flex flex-wrap justify-center gap-3`}>
                 <button
                   onClick={() => handleStepClick(1)}
                   className={`inline-flex items-center gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-medium text-xs sm:text-sm transition-colors shadow-lg ${
