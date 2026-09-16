@@ -733,17 +733,22 @@ export default function ShopStyle() {
       setCurrentStep(0);
     }
 
-    if (giftMode) {
-      setCurrentGiftStep(1);
-    } else {
-      setCurrentGiftStep(0);
+    if (customMode || giftMode) {
+      // Clear any active category/style filters so none remain active on custom or gifting mode
+      setSelectedFilters(prev => 
+        prev.filter(id => 
+          ['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(id) ||
+          COMBO_SECTION_FILTER_IDS.includes(id) ||
+          ['white', 'pink', 'blue', 'yellow', 'green', 'gray'].includes(id)
+        )
+      );
     }
 
   }, [customMode, giftMode]);
 
-  // Apply filter from URL parameter on page load
+  // Apply filter from URL parameter on page load (only when not in custom or gift mode)
   useEffect(() => {
-    if (homeFilter) {
+    if (homeFilter && !customMode && !giftMode) {
       // Map home filter IDs to actual filter IDs (based on PRODUCT_CLASSIFICATION)
       const filterMapping: Record<string, string> = {
         'wipes': 'new-born-accessories',
@@ -759,7 +764,7 @@ export default function ShopStyle() {
         setSelectedFilters([mappedFilter]);
       }
     }
-  }, [homeFilter]);
+  }, [homeFilter, customMode, giftMode]);
   // Fetch all products for the master catalog
   const { data: allProducts, isLoading: allProductsLoading } = useProducts();
   const products = (allProducts || []).filter((product: any) => {
@@ -898,6 +903,18 @@ export default function ShopStyle() {
   ];
   const handleFilterToggle = (filterId: string) => {
     console.log('🔄 Filter Toggle:', { filterId, isSizeFilter: ['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(filterId) });
+    
+    // In hospital bags custom mode and gifting page, the above filter and left side category filter should not work
+    if (customMode || giftMode) {
+      const isSizeFilter = ['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(filterId);
+      const isComboFilter = COMBO_SECTION_FILTER_IDS.includes(filterId);
+      const isColorFilter = ['white', 'pink', 'blue', 'yellow', 'green', 'gray'].includes(filterId);
+      if (!isSizeFilter && !isComboFilter && !isColorFilter) {
+        // Category / Style filter should not toggle on customMode or giftMode
+        return;
+      }
+    }
+
     const isGroup = !!STYLE_MAPPING[filterId];
     setSelectedFilters(prev => {
       console.log('🔄 Previous filters:', prev);
@@ -1060,6 +1077,9 @@ export default function ShopStyle() {
         })
         // 3. Shop by Style filtering
         .filter(product => {
+          // On hospital bags custom mode and gifting page, the above filter and left side category filter should not work
+          if (customMode || giftMode) return true;
+
           const styleFilters = selectedFilters.filter(id => 
             !['newborn', '0-3-months', '3-6-months', '6-9-months', '9-12-months', '12-18-months', '18-24-months'].includes(id) &&
             !COMBO_SECTION_FILTER_IDS.includes(id)
@@ -1379,7 +1399,7 @@ export default function ShopStyle() {
               <button
                 key={groupId}
                 onClick={() => handleFilterToggle(groupId)}
-                className="group flex flex-col items-center flex-shrink-0"
+                className={`group flex flex-col items-center flex-shrink-0 ${(customMode || giftMode) ? 'cursor-default' : 'cursor-pointer'}`}
               >
                 <div className={`
                   bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20
@@ -1420,7 +1440,7 @@ export default function ShopStyle() {
                   <button
                     key={variant.id}
                     onClick={() => handleFilterToggle(variant.id)}
-                    className="group flex flex-col items-center flex-shrink-0"
+                    className={`group flex flex-col items-center flex-shrink-0 ${(customMode || giftMode) ? 'cursor-default' : 'cursor-pointer'}`}
                   >
                     <div className={`
                       bg-white rounded-full border-2 transition-all duration-300 hover:shadow-3xl hover:-translate-y-3 cursor-pointer overflow-hidden shadow-xl shadow-gray-300/60 hover:shadow-black/20
@@ -1816,7 +1836,8 @@ export default function ShopStyle() {
                             <label
                               key={item.id}
                               className={`
-                                flex items-center justify-between p-2 sm:p-2 rounded-md cursor-pointer transition-all duration-200 border
+                                flex items-center justify-between p-2 sm:p-2 rounded-md transition-all duration-200 border
+                                ${(customMode || giftMode) && section.id === 'categories' ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'}
                                 ${selectedFilters.includes(item.id)
                                   ? index % 2 === 0
                                     ? 'bg-[#b4c49a] border-[#b4c49a] shadow-sm'
@@ -1833,6 +1854,7 @@ export default function ShopStyle() {
                                     type="checkbox"
                                     checked={selectedFilters.includes(item.id)}
                                     onChange={() => handleFilterToggle(item.id)}
+                                    disabled={(customMode || giftMode) && section.id === 'categories'}
                                     className="sr-only"
                                   />
                                   <div className={`
