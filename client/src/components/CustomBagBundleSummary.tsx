@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ShoppingBag, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import type { BundleItem } from "@/contexts/CustomBagBundleContext";
 
 const getCloudinaryImageUrl = (url: string, transformation: string) => {
@@ -19,6 +19,7 @@ interface CustomBagBundleSummaryProps {
   onRemoveItem: (itemId: string) => void;
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   reviewPageUrl?: string;
+  onCheckout?: () => boolean | void;
 }
 
 export function CustomBagBundleSummary({
@@ -27,9 +28,22 @@ export function CustomBagBundleSummary({
   totalItems,
   onRemoveItem,
   onUpdateQuantity,
-  reviewPageUrl = '/bundle-review'
+  reviewPageUrl = '/bundle-review',
+  onCheckout
 }: CustomBagBundleSummaryProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [, setLocation] = useLocation();
+
+  const handleCheckoutClick = (e: React.MouseEvent) => {
+    if (onCheckout) {
+      const allowed = onCheckout();
+      if (allowed === false) {
+        e.preventDefault();
+        return;
+      }
+    }
+    setLocation(reviewPageUrl);
+  };
 
   // Lock body scroll when expanded
   useEffect(() => {
@@ -83,11 +97,13 @@ export function CustomBagBundleSummary({
             </div>
 
             <div className="flex items-center gap-2">
-              <Link href={reviewPageUrl} className="flex-1 sm:flex-none">
-                <button className="w-full bg-black text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold hover:bg-gray-800 transition-all active:scale-95 text-xs sm:text-sm">
-                  Checkout
-                </button>
-              </Link>
+              <button
+                type="button"
+                onClick={handleCheckoutClick}
+                className="flex-1 sm:flex-none w-full bg-black text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold hover:bg-gray-800 transition-all active:scale-95 text-xs sm:text-sm"
+              >
+                Checkout
+              </button>
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 sm:px-3 sm:py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all active:scale-95 text-xs sm:text-sm font-medium"

@@ -649,6 +649,44 @@ export default function ShopStyle() {
   const isGiftingSection = sectionParam === "gifting";
   const { bundleItems, addToBundle, removeFromBundle, updateQuantity, bundleTotal, totalItems } = useCustomBagBundle();
   const { giftBundleItems, addToGiftBundle, removeFromGiftBundle, updateGiftQuantity, giftBundleTotal, giftTotalItems } = useGiftBundle();
+
+  // Validate that all 3 steps have at least one product before proceeding to gift bundle review
+  const validateGiftCheckout = (): boolean => {
+    const hasStep1Item = giftBundleItems.some((item: any) => isGiftProductInStep(item.product, 1));
+    if (!hasStep1Item) {
+      toast({
+        title: "Action Required",
+        description: "Please add at least one product from Baby Clothing (Step 1) to your gift bundle.",
+        variant: "destructive"
+      });
+      setCurrentGiftStep(1);
+      return false;
+    }
+
+    const hasStep2Item = giftBundleItems.some((item: any) => isGiftProductInStep(item.product, 2));
+    if (!hasStep2Item) {
+      toast({
+        title: "Action Required",
+        description: "Please add at least one product from Essentials (Step 2) to your gift bundle.",
+        variant: "destructive"
+      });
+      setCurrentGiftStep(2);
+      return false;
+    }
+
+    const hasStep3Item = giftBundleItems.some((item: any) => isGiftProductInStep(item.product, 3));
+    if (!hasStep3Item) {
+      toast({
+        title: "Action Required",
+        description: "Please add at least one product from Bedding & Comfort (Step 3) to your gift bundle.",
+        variant: "destructive"
+      });
+      setCurrentGiftStep(3);
+      return false;
+    }
+
+    return true;
+  };
   // Set Step 1 as default when in custom mode
   useEffect(() => {
     if (customMode) {
@@ -1854,6 +1892,7 @@ export default function ShopStyle() {
             onRemoveItem={removeFromGiftBundle}
             onUpdateQuantity={updateGiftQuantity}
             reviewPageUrl="/gift-bundle-review"
+            onCheckout={validateGiftCheckout}
           />
         </>
       )}
