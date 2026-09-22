@@ -1,9 +1,18 @@
 // API Configuration
-// Set VITE_API_URL to your backend origin.
-// Production backend: https://planet-mini-e4oc.vercel.app
-const DEFAULT_API_BASE_URL = 'https://planet-mini-e4oc.vercel.app';
+// In production (planetmini.in / Vercel), use relative paths ("") so Vercel rewrites proxy all /api requests.
+// This completely hides the backend host URL (planet-mini-e4oc.vercel.app) in DevTools F12!
+const isLocalhost =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' ||
+   window.location.hostname === '127.0.0.1' ||
+   window.location.hostname === '0.0.0.0');
 
-export const API_BASE_URL = (import.meta.env.VITE_API_URL || DEFAULT_API_BASE_URL).replace(/\/$/, '');
+const DEFAULT_API_BASE_URL = isLocalhost ? 'http://localhost:5001' : '';
+
+export const API_BASE_URL = (import.meta.env.VITE_API_URL !== undefined && import.meta.env.VITE_API_URL !== ''
+  ? import.meta.env.VITE_API_URL
+  : DEFAULT_API_BASE_URL
+).replace(/\/$/, '');
 
 export function buildApiUrl(endpoint: string) {
   if (endpoint.startsWith('http')) return endpoint;

@@ -433,8 +433,7 @@ app.get("/api/auth/session", (req: Request, res: Response) => {
   }
 
   if (!token) {
-    console.log("❌ /api/auth/session - No JWT token found in cookies or headers");
-    return res.status(401).json({ user: null });
+    return res.status(200).json({ user: null });
   }
 
   try {
@@ -453,7 +452,7 @@ app.get("/api/auth/session", (req: Request, res: Response) => {
     });
   } catch (err) {
     res.clearCookie("jwt");
-    return res.status(401).json({ user: null });
+    return res.status(200).json({ user: null });
   }
 });
 
