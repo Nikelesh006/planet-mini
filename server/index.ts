@@ -502,6 +502,11 @@ app.post("/api/auth/logout", async (req: Request, res: Response) => {
   return res.json({ success: true });
 });
 
+// GET /api/banners → return banners list (empty fallback for production storefront)
+app.get("/api/banners", (_req: Request, res: Response) => {
+  return res.json({ success: true, data: [] });
+});
+
 
 
 // ---------- EXISTING BOOTSTRAP FLOW ----------

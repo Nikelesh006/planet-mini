@@ -14,8 +14,8 @@ export function setupConsoleSilencer(): void {
     window.location.hostname.endsWith(".local");
 
   const isProd =
-    import.meta.env.PROD ||
-    process.env.NODE_ENV === "production" ||
+    Boolean(import.meta.env.PROD) ||
+    (typeof process !== "undefined" && process.env?.NODE_ENV === "production") ||
     !isLocalhost;
 
   if (isProd) {

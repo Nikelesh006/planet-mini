@@ -69,39 +69,31 @@ export const LikeProvider = ({ children }: { children: ReactNode }) => {
 
       if (response.ok) {
         const wishlistIds = await response.json();
-        
-        // Fetch full product details for each wishlist item
-        const productPromises = wishlistIds.map(async (productId: string) => {
-          const productResponse = await fetch(`${API_BASE_URL}/api/products/id/${productId}`);
-          if (productResponse.ok) {
-            return await productResponse.json();
-          }
-          return null;
-        });
-
-        const products = await Promise.all(productPromises);
-        
-        // ✅ CORRECT - Graceful handling (KEEP invalid IDs in database)
-        const validProductsMap = new Map();
-        products.forEach(product => {
-          if (product && product.id) {
-            validProductsMap.set(product.id, product);
-          }
-        });
-        
-        // Only show valid products in UI, but keep all IDs in database
-        const validLikedProducts = wishlistIds
-          .map((id: string) => validProductsMap.get(id))
-          .filter(Boolean); // Only show valid products
-        
-        // LOG invalid products but DON'T delete from database
-        const invalidIds = wishlistIds.filter((id: string) => !validProductsMap.has(id));
-        if (invalidIds.length > 0) {
-          console.warn('⚠️ Invalid wishlist products (kept in DB):', invalidIds);
+        if (!Array.isArray(wishlistIds) || wishlistIds.length === 0) {
+          setLikedProducts([]);
+          return;
         }
-        
-        setLikedProducts(validLikedProducts);
-        console.log('✅ loadWishlist: Showing', validLikedProducts.length, 'valid products from', wishlistIds.length, 'total in database');
+
+        // Fetch products list to populate wishlist items efficiently without triggering individual 404s
+        const productsResponse = await fetch(`${API_BASE_URL}/api/products`);
+        if (productsResponse.ok) {
+          const allProducts = await productsResponse.json();
+          const validProductsMap = new Map();
+          if (Array.isArray(allProducts)) {
+            allProducts.forEach((product: any) => {
+              if (product) {
+                if (product.id) validProductsMap.set(String(product.id), product);
+                if (product._id) validProductsMap.set(String(product._id), product);
+              }
+            });
+          }
+
+          const validLikedProducts = wishlistIds
+            .map((id: string) => validProductsMap.get(String(id)))
+            .filter(Boolean);
+
+          setLikedProducts(validLikedProducts);
+        }
       }
     } catch (error) {
       console.error('Error loading wishlist:', error);
