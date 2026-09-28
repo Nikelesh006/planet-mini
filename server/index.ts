@@ -47,21 +47,23 @@ declare module "http" {
 
 }
 
-app.use(
-
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith('/api/webhooks/razorpay') || req.path.startsWith('/api/webhooks/razorpay')) {
+    return next();
+  }
   express.json({
-
     verify: (req, _res, buf) => {
-
       req.rawBody = buf;
-
     },
+  })(req, res, next);
+});
 
-  }),
-
-);
-
-app.use(express.urlencoded({ extended: false }));
+app.use((req, res, next) => {
+  if (req.originalUrl.startsWith('/api/webhooks/razorpay') || req.path.startsWith('/api/webhooks/razorpay')) {
+    return next();
+  }
+  express.urlencoded({ extended: false })(req, res, next);
+});
 
 // CORS + cookies with support for current Vercel, localhost, and upcoming .in domains
 const configuredOrigins = [
@@ -126,7 +128,8 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
   if (
     req.path === '/health' ||
     req.path.startsWith('/auth/google') ||
-    req.path.startsWith('/webhook')
+    req.path.startsWith('/webhook') ||
+    req.path.startsWith('/webhooks')
   ) {
     return next();
   }
@@ -519,12 +522,6 @@ async function bootstrap() {
 
   await connectDB();
 
-  // Meta WhatsApp Cloud API status check
-  if (process.env.WHATSAPP_ACCESS_TOKEN && process.env.WHATSAPP_PHONE_NUMBER_ID) {
-    console.log('📱 Meta WhatsApp Cloud API configured for order notifications.');
-  } else {
-    console.log('ℹ️ Meta WhatsApp Cloud API: WHATSAPP_ACCESS_TOKEN or WHATSAPP_PHONE_NUMBER_ID not set in .env.');
-  }
 
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
 

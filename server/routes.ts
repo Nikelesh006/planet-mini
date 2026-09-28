@@ -68,8 +68,6 @@ import Profile from "./models/Profile.js";
 
 import { getAvailableStock, isOutOfStock } from "./shared/stock.js";
 
-import { sendOrderWhatsAppNotifications } from "./services/metaWhatsAppService.js";
-import { notifyOwnerOnWhatsApp } from "./utils/notifyOwner.js";
 import { requireAuth, requireAdmin, requireAdminPinVerification, verifyAdminPinToken, isEmailAdmin } from "./lib/authMiddleware.js";
 
 import Razorpay from "razorpay";
@@ -183,6 +181,8 @@ import paymentRoutes from "./routes/payment.js";
 
 
 import spinWheelRoutes from "./routes/spinWheel.js";
+import webhookRoutes from "./routes/webhooks.js";
+import { sendAdminOrderAlert, sendCustomerConfirmation, processOrderWhatsAppNotifications } from "./services/whatsapp.service.js";
 
 
 
@@ -4546,6 +4546,7 @@ export async function registerRoutes(
   app.use('/api/profile', profileRoutes);
 
   app.use('/api/payment', paymentRoutes);
+  app.use('/api/webhooks', webhookRoutes);
 
 
 
@@ -11438,14 +11439,9 @@ export async function registerRoutes(
       const newOrder = await ordersStorage.createOrder(userId, orderData);
 
       if (newOrder.paymentStatus === 'paid') {
-        try {
-          console.log('>>> DISPATCHING META WHATSAPP NOTIFICATIONS FOR ORDER <<<', newOrder.id);
-          sendOrderWhatsAppNotifications(newOrder).catch((waError: any) => {
-            console.error('WhatsApp Notification background error from /api/orders:', waError);
-          });
-        } catch (waError: any) {
-          console.error('WhatsApp Notification error from /api/orders:', waError);
-        }
+        processOrderWhatsAppNotifications(newOrder).catch((err: any) => {
+          console.error('[OrdersApi] WhatsApp notification error:', err?.message || err);
+        });
       }
 
       res.status(201).json(newOrder);
@@ -12017,11 +12013,55 @@ export async function registerRoutes(
 
   });
 
+  // POST /api/admin/orders/:id/resend-whatsapp - Protected admin route to manually resend WhatsApp notifications
+  app.post("/api/admin/orders/:id/resend-whatsapp", requireAuth, requireAdmin, async (req: any, res: any) => {
+    try {
+      const { id } = req.params;
+      const { type } = req.body || {}; // 'admin' | 'customer' | 'both'
+      const order = await ordersStorage.getOrderById(id);
 
+      if (!order) {
+        return res.status(404).json({ error: "Order not found" });
+      }
 
+      const results: { adminResult?: any; customerResult?: any } = {};
 
+      if (!type || type === 'admin' || type === 'both') {
+        // Force resend by ignoring existing flag
+        const adminRes = await sendAdminOrderAlert({ ...order, whatsappAdminSent: false });
+        results.adminResult = adminRes;
+        if (adminRes.success) {
+          await ordersStorage.updateOrderWhatsAppStatus(order.id, { adminSent: true });
+        } else {
+          await ordersStorage.updateOrderWhatsAppStatus(order.id, {
+            error: `Manual admin resend failed: ${adminRes.error}`
+          });
+        }
+      }
 
+      if (!type || type === 'customer' || type === 'both') {
+        // Force resend by ignoring existing flag
+        const customerRes = await sendCustomerConfirmation({ ...order, whatsappCustomerSent: false });
+        results.customerResult = customerRes;
+        if (customerRes.success) {
+          await ordersStorage.updateOrderWhatsAppStatus(order.id, { customerSent: true });
+        } else {
+          await ordersStorage.updateOrderWhatsAppStatus(order.id, {
+            error: `Manual customer resend failed: ${customerRes.error}`
+          });
+        }
+      }
 
+      return res.json({
+        success: true,
+        message: "WhatsApp notification dispatched",
+        results
+      });
+    } catch (err: any) {
+      console.error("Error resending WhatsApp notification:", err);
+      return res.status(500).json({ error: "Failed to resend WhatsApp notification", details: err?.message });
+    }
+  });
 
   return httpServer;
 

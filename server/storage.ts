@@ -1090,11 +1090,10 @@ export const ordersStorage = {
 
         shippingAddress: shippingAddress || orderData.address || null,
 
-        whatsappAdminNotificationSent: false,
-
-        whatsappAdminNotificationSentAt: null,
-
-        whatsappAdminNotificationError: null,
+        whatsappAdminSent: false,
+        whatsappCustomerSent: false,
+        whatsappAttempts: 0,
+        whatsappLastError: null,
 
         createdAt: new Date(),
 
@@ -1147,37 +1146,72 @@ export const ordersStorage = {
     }
   },
 
-  async updateOrderWhatsAppNotificationStatus(
-    orderId: string,
-    type: 'admin' | 'customer',
-    sent: boolean,
-    errorMsg?: string | null
-  ) {
+  async getOrderById(orderId: string): Promise<any> {
     try {
       const db = mongoose.connection.db;
-      if (!db) throw new Error("Database not connected");
+      if (!db) return null;
+      const { ObjectId } = mongoose.Types;
+
+      let query: any = {};
+      if (ObjectId.isValid(orderId)) {
+        query = { $or: [{ _id: new ObjectId(orderId) }, { id: orderId }, { orderNumber: orderId }] };
+      } else {
+        query = { $or: [{ id: orderId }, { orderNumber: orderId }] };
+      }
+
+      const order = await db.collection("orders").findOne(query);
+      if (!order) return null;
+      return { ...order, id: order._id.toString() };
+    } catch (error) {
+      console.error('Error fetching order by ID:', error);
+      return null;
+    }
+  },
+
+  async findOrderByRazorpayIds(razorpayOrderId?: string, razorpayPaymentId?: string): Promise<any> {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) return null;
+
+      const orConditions: any[] = [];
+      if (razorpayOrderId) {
+        orConditions.push(
+          { orderId: razorpayOrderId },
+          { razorpayOrderId: razorpayOrderId },
+          { razorpay_order_id: razorpayOrderId }
+        );
+      }
+      if (razorpayPaymentId) {
+        orConditions.push(
+          { paymentId: razorpayPaymentId },
+          { razorpayPaymentId: razorpayPaymentId },
+          { razorpay_payment_id: razorpayPaymentId }
+        );
+      }
+
+      if (orConditions.length === 0) return null;
+
+      const order = await db.collection("orders").findOne({ $or: orConditions });
+      if (!order) return null;
+      return { ...order, id: order._id.toString() };
+    } catch (error) {
+      console.error('Error finding order by Razorpay IDs:', error);
+      return null;
+    }
+  },
+
+  async markOrderAsPaid(orderId: string, paymentId?: string) {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) return false;
       const { ObjectId } = mongoose.Types;
 
       const updateDoc: any = {
+        paymentStatus: 'paid',
         updatedAt: new Date()
       };
-
-      if (type === 'admin') {
-        updateDoc.whatsappAdminNotificationSent = sent;
-        if (sent) {
-          updateDoc.whatsappAdminNotificationSentAt = new Date();
-          updateDoc.whatsappAdminNotificationError = null;
-        } else {
-          updateDoc.whatsappAdminNotificationError = errorMsg || 'Unknown error';
-        }
-      } else {
-        updateDoc.whatsappCustomerNotificationSent = sent;
-        if (sent) {
-          updateDoc.whatsappCustomerNotificationSentAt = new Date();
-          updateDoc.whatsappCustomerNotificationError = null;
-        } else {
-          updateDoc.whatsappCustomerNotificationError = errorMsg || 'Unknown error';
-        }
+      if (paymentId) {
+        updateDoc.paymentId = paymentId;
       }
 
       let query: any = {};
@@ -1190,12 +1224,53 @@ export const ordersStorage = {
       const result = await db.collection("orders").updateOne(query, { $set: updateDoc });
       return result.modifiedCount > 0;
     } catch (error) {
-      console.error(`Error updating order WhatsApp ${type} status:`, error);
+      console.error('Error marking order as paid:', error);
       return false;
     }
   },
 
-  async updateOrderWhatsAppStatus(orderId: string, sent: boolean, errorMsg?: string | null) {
-    return this.updateOrderWhatsAppNotificationStatus(orderId, 'admin', sent, errorMsg);
+  async updateOrderWhatsAppStatus(
+    orderId: string,
+    updates: {
+      adminSent?: boolean;
+      customerSent?: boolean;
+      error?: string | null;
+    }
+  ) {
+    try {
+      const db = mongoose.connection.db;
+      if (!db) return false;
+      const { ObjectId } = mongoose.Types;
+
+      const updateDoc: any = {
+        updatedAt: new Date()
+      };
+
+      if (updates.adminSent !== undefined) {
+        updateDoc.whatsappAdminSent = updates.adminSent;
+      }
+      if (updates.customerSent !== undefined) {
+        updateDoc.whatsappCustomerSent = updates.customerSent;
+      }
+      if (updates.error !== undefined) {
+        updateDoc.whatsappLastError = updates.error;
+      }
+
+      let query: any = {};
+      if (ObjectId.isValid(orderId)) {
+        query = { $or: [{ _id: new ObjectId(orderId) }, { id: orderId }, { orderNumber: orderId }] };
+      } else {
+        query = { $or: [{ id: orderId }, { orderNumber: orderId }] };
+      }
+
+      const result = await db.collection("orders").updateOne(query, {
+        $set: updateDoc,
+        $inc: { whatsappAttempts: 1 }
+      });
+      return result.modifiedCount > 0;
+    } catch (error) {
+      console.error('Error updating order WhatsApp status:', error);
+      return false;
+    }
   }
 };
