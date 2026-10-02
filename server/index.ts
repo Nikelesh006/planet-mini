@@ -106,15 +106,29 @@ const isAllowedOrigin = (origin: string) => {
 
 app.use(cors({
   origin(origin, callback) {
-    if (!origin || isAllowedOrigin(origin)) {
+    // 1. Allow server-to-server requests, mobile apps, Razorpay/WhatsApp webhooks (no origin)
+    if (!origin) {
       return callback(null, true);
     }
 
-    return callback(new Error(`CORS blocked for origin: ${origin}`));
+    // 2. Allow whitelisted frontends
+    if (isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
+
+    // 3. Cleanly reject unauthorized origins without crashing the server or throwing 500 stack traces
+    return callback(null, false);
   },
-  credentials: true,
+  credentials: true, // Allows secure session cookies and JWT
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-user-id', 'x-planet-mini-client']
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'x-user-id',
+    'x-planet-mini-client'
+  ],
+  maxAge: 86400, // Caches preflight OPTIONS requests for 24h to speed up store browsing
+  optionsSuccessStatus: 200 // Ensures compatibility with legacy browsers and proxy networks
 }));
 
 app.use(cookieParser());
@@ -424,10 +438,10 @@ app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
 app.get("/api/auth/session", (req: Request, res: Response) => {
   console.log("🔍 /api/auth/session - Cookies:", req.cookies);
   console.log("🔍 /api/auth/session - Headers:", req.headers.cookie);
-  
+
   // Accept token from cookie or Authorization header
   let token = req.cookies?.jwt;
-  
+
   if (!token) {
     const authHeader = req.headers['authorization'];
     if (authHeader && authHeader.startsWith('Bearer ')) {
