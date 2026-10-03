@@ -2,7 +2,7 @@ import 'dotenv/config';
 import axios from 'axios';
 
 async function listTemplates() {
-  const wabaId = process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '1768045731101614';
+  const wabaId = '1413437806861887';
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
 
   if (!token) {

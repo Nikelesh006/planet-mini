@@ -386,14 +386,29 @@ export async function sendAdminOrderAlert(order: any): Promise<WhatsAppNotificat
 
     const fullAddressParam = addressParts.length > 0 ? addressParts.join(', ') : 'Address on file';
 
-    // 4. Variables exactly in order {{1}} to {{5}}
-    const bodyParams = [
-      orderId, // {{1}}
-      orderDetailsParam, // {{2}}
-      paymentStatusParam, // {{3}}
-      fullAddressParam, // {{4}}
-      firstItemProductLink // {{5}}
-    ];
+    // 4. Variables for Admin Template
+    let bodyParams: string[];
+    const customerPhone = sa.phone || sa.mobile || order.customerPhone || 'N/A';
+
+    if (templateName === 'admin_alert') {
+      // Approved admin_alert schema: {{1}} Order ID, {{2}} Contact, {{3}} Payment Status, {{4}} Delivery Address, {{5}} Link
+      bodyParams = [
+        orderId,
+        customerPhone,
+        paymentStatusParam,
+        fullAddressParam,
+        firstItemProductLink
+      ];
+    } else {
+      // Standard admin_order_alert schema: {{1}} Order ID, {{2}} Order details, {{3}} Payment Status, {{4}} Delivery Address, {{5}} Link
+      bodyParams = [
+        orderId,
+        orderDetailsParam,
+        paymentStatusParam,
+        fullAddressParam,
+        firstItemProductLink
+      ];
+    }
 
     return await sendTemplate(adminPhone, templateName, 'en', bodyParams);
   } catch (err: any) {
@@ -407,10 +422,7 @@ export async function sendAdminOrderAlert(order: any): Promise<WhatsAppNotificat
 // ==========================================
 
 /**
- * Sends TEMPLATE 2: order_confirmation_customer (language "en")
- * Body variables:
- * {{1}} Customer name (from address record)
- * {{2}} Order ID
+ * Sends TEMPLATE 2: customer_order_confirmation or order_confirmation_customer (language "en")
  */
 export async function sendCustomerConfirmation(order: any): Promise<WhatsAppNotificationResult> {
   const sa = order.shippingAddress || order.address || {};
@@ -431,14 +443,46 @@ export async function sendCustomerConfirmation(order: any): Promise<WhatsAppNoti
   }
 
   try {
-    const templateName = process.env.WHATSAPP_CUSTOMER_TEMPLATE || 'order_confirmation_customer';
+    const templateName = process.env.WHATSAPP_CUSTOMER_TEMPLATE || 'customer_order_confirmation';
     const customerName = sa.fullName || order.customerName || 'Valued Customer';
     const orderId = order.orderNumber || order.id || order._id?.toString() || 'N/A';
 
-    const bodyParams = [
-      customerName, // {{1}}
-      orderId // {{2}}
-    ];
+    let bodyParams: string[];
+
+    if (templateName === 'customer_order_confirmation') {
+      // Approved customer_order_confirmation schema: {{1}} Name, {{2}} Order ID, {{3}} Items, {{4}} Total, {{5}} Contact, {{6}} Address
+      const items = order.items || order.products || [];
+      const itemSummaries = items.map((it: any) => {
+        const name = it.name || it.productName || 'Item';
+        const qty = it.quantity || 1;
+        return `${name} (Qty: ${qty})`;
+      });
+      const itemsSummary = itemSummaries.length > 0 ? itemSummaries.join(', ') : 'Order items';
+      const totalAmount = order.total || order.totalAmount || '0';
+
+      const addressParts = [
+        sa.street || sa.addressLine1 || '',
+        sa.city || '',
+        sa.state || '',
+        sa.pincode || sa.zipCode || ''
+      ].filter((part) => Boolean(part && String(part).trim() !== ''));
+      const fullAddress = addressParts.length > 0 ? addressParts.join(', ') : 'Address on file';
+
+      bodyParams = [
+        customerName,       // {{1}}
+        orderId,            // {{2}}
+        itemsSummary,       // {{3}}
+        String(totalAmount),// {{4}}
+        customerPhone,      // {{5}}
+        fullAddress         // {{6}}
+      ];
+    } else {
+      // Standard order_confirmation_customer schema: {{1}} Customer name, {{2}} Order ID
+      bodyParams = [
+        customerName, // {{1}}
+        orderId       // {{2}}
+      ];
+    }
 
     return await sendTemplate(customerPhone, templateName, 'en', bodyParams);
   } catch (err: any) {
