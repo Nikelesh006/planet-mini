@@ -3,8 +3,8 @@ import axios from 'axios';
 
 async function testSendAdmin() {
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
-  const phoneId = '1313164441886346'; // Test number (+1 555-140-3536)
-  const recipient = '918124411259';
+  const phoneId = '1304438766094033'; // Real number (+91 81244 11259)
+  const recipient = '918220294678';
 
   console.log(`Testing dispatch to ${recipient} from sender ID ${phoneId}...`);
 
@@ -16,8 +16,20 @@ async function testSendAdmin() {
         to: recipient,
         type: 'template',
         template: {
-          name: 'hello_world',
-          language: { code: 'en_US' }
+          name: 'admin_alert',
+          language: { code: 'en' },
+          components: [
+            {
+              type: 'body',
+              parameters: [
+                { type: 'text', text: 'ORD-TEST-8220' },
+                { type: 'text', text: '9597755722' },
+                { type: 'text', text: 'Paid INR 1499 via Razorpay' },
+                { type: 'text', text: '14 Gandhi Road, Chennai, 600040' },
+                { type: 'text', text: 'https://planetmini.in/shop' }
+              ]
+            }
+          ]
         }
       },
       {

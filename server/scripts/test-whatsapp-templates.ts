@@ -1,6 +1,5 @@
 import 'dotenv/config';
 import {
-  sendTemplate,
   sendAdminOrderAlert,
   sendCustomerConfirmation,
   formatWhatsAppPhone
@@ -23,8 +22,7 @@ async function main() {
   const adminPhone =
     process.env.ADMIN_WHATSAPP_NUMBER ||
     process.env.WHATSAPP_ADMIN_NUMBER ||
-    process.env.WHATSAPP_ADMIN_PHONE_NUMBER ||
-    process.env.OWNER_WHATSAPP_NUMBER;
+    process.env.WHATSAPP_ADMIN_PHONE_NUMBER;
 
   console.log('Configuration check:');
   console.log(`- Phone Number ID: ${phoneNumberId || '❌ MISSING'}`);
@@ -34,8 +32,8 @@ async function main() {
   console.log(`- Cust Template:   ${process.env.WHATSAPP_CUSTOMER_TEMPLATE || 'order_confirmation_customer'}`);
   console.log('-----------------------------------------------------\n');
 
-  if (!phoneNumberId || !accessToken || !adminPhone) {
-    console.error('❌ Cannot proceed: WHATSAPP_PHONE_NUMBER_ID, WHATSAPP_ACCESS_TOKEN, or ADMIN_WHATSAPP_NUMBER is missing in .env');
+  if (!phoneNumberId || !accessToken) {
+    console.error('❌ Cannot proceed: WHATSAPP_PHONE_NUMBER_ID or WHATSAPP_ACCESS_TOKEN is missing in .env');
     process.exit(1);
   }
 
@@ -77,20 +75,6 @@ async function main() {
     whatsappAdminSent: false,
     whatsappCustomerSent: false
   };
-
-  // 0. Live Connection & Delivery Check using Meta's pre-approved 'hello_world'
-  console.log('0️⃣ Verifying live delivery to ' + adminPhone + ' with pre-approved "hello_world" template...');
-  try {
-    const hwRes = await sendTemplate(adminPhone, 'hello_world', 'en_US', []);
-    if (hwRes.success) {
-      console.log(`🎉 LIVE DELIVERY SUCCESSFUL! Message ID: ${hwRes.messageId}`);
-      console.log('   Check WhatsApp on your phone ' + adminPhone + '! The message just arrived!\n');
-    } else {
-      console.log(`⚠️ Hello World delivery result: ${hwRes.error}\n`);
-    }
-  } catch (hwErr: any) {
-    console.error('Hello world error:', hwErr?.message || hwErr);
-  }
 
   // 1. Test Admin Order Alert
   console.log('1️⃣ Sending TEMPLATE 1: admin_order_alert to Admin...');

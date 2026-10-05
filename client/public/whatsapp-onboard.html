@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planet Mini - WhatsApp Coexistence Onboarding</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 90vh;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      max-width: 580px;
+      width: 100%;
+      padding: 36px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: #dcfce7;
+      color: #15803d;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 24px;
+      margin: 0 0 10px 0;
+      color: #0f172a;
+    }
+    p {
+      color: #64748b;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 28px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #25D366;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(37, 211, 102, 0.35);
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .btn:hover {
+      background: #1eb857;
+      transform: translateY(-1px);
+    }
+    .btn:disabled {
+      background: #94a3b8;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .status-box {
+      margin-top: 24px;
+      padding: 16px;
+      background: #f1f5f9;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 14px;
+      font-family: monospace;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: none;
+    }
+    .step-list {
+      text-align: left;
+      background: #f8fafc;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #334155;
+    }
+    .step-list ol {
+      margin: 0;
+      padding-left: 20px;
+    }
+    .step-list li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">WhatsApp Cloud API &bull; Coexistence</div>
+    <h1>Connect Planet Mini WhatsApp</h1>
+    <p>Link your existing WhatsApp Business mobile number to Cloud API so you can chat from your phone while your server sends automated order updates.</p>
+
+    <div class="step-list">
+      <strong>During the popup:</strong>
+      <ol>
+        <li>Select your <strong>Planet Mini</strong> Meta Business Account.</li>
+        <li>Enter your WhatsApp Business mobile number.</li>
+        <li>Select <strong>"Use with WhatsApp Business App and Cloud API" (Coexistence)</strong>.</li>
+        <li>Enter the 6-digit OTP code to verify.</li>
+      </ol>
+    </div>
+
+    <button id="launch-btn" class="btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.592 2.654-.697c.97.531 1.848.817 2.806.817 3.181 0 5.767-2.587 5.768-5.766.001-3.182-2.585-5.769-5.768-5.769zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.053-1.119-.083-.71-.23-1.62-.801-2.486-1.666-.864-.866-1.436-1.776-1.666-2.486-.136-.421-.128-.808-.083-1.119.05-.333.419-1.026.824-1.17.135-.048.271-.026.377.065.138.118.473.864.551 1.026.046.096.042.188-.016.273-.075.11-.157.199-.239.288-.089.097-.184.202-.079.383.187.322.613 1.025 1.258 1.602.83.742 1.503.978 1.825 1.115.18.077.286-.013.383-.102.112-.104.254-.282.383-.438.096-.117.188-.13.29-.085.163.071.908.413 1.026.551.091.106.113.242.065.377z"/>
+      </svg>
+      Start WhatsApp Embedded Signup
+    </button>
+
+    <div id="status" class="status-box"></div>
+  </div>
+
+  <script>
+    const APP_ID = '1640886047680153';
+    const CONFIG_ID = '2068837263742525';
+
+    const statusBox = document.getElementById('status');
+    const launchBtn = document.getElementById('launch-btn');
+
+    function log(msg) {
+      statusBox.style.display = 'block';
+      statusBox.textContent += msg + '\n';
+      console.log(msg);
+    }
+
+    // 1. Initialize Meta JS SDK
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId: APP_ID,
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v21.0'
+      });
+      log('✅ Facebook SDK initialized successfully.');
+    };
+
+    (function(d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) return;
+      js = d.createElement(s); js.id = id;
+      js.src = "https://connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+
+    // 2. Listen for Session events from Meta popup
+    window.addEventListener('message', (event) => {
+      if (event.origin !== 'https://www.facebook.com' && event.origin !== 'https://web.facebook.com') return;
+
+      try {
+        const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+        if (data.type === 'WA_EMBEDDED_SIGNUP') {
+          log(`\n📢 Event: ${data.event}`);
+          if (data.data) {
+            if (data.data.phone_number_id) {
+              log(`\n🎉 PHONE NUMBER ID: ${data.data.phone_number_id}`);
+            }
+            if (data.data.waba_id) {
+              log(`🏢 WABA ID: ${data.data.waba_id}`);
+            }
+          }
+          if (data.event === 'FINISH') {
+            log('\n✅ Embedded Signup completed on Meta!');
+          }
+        }
+      } catch (e) {}
+    });
+
+    // 3. Launch Flow with Coexistence enabled
+    launchBtn.addEventListener('click', () => {
+      log('\n🚀 Opening Meta WhatsApp Signup popup with Coexistence...');
+      
+      FB.login((response) => {
+        log('\n📥 FB.login response received: ' + JSON.stringify(response));
+        if (response.authResponse && response.authResponse.code) {
+          const code = response.authResponse.code;
+          log(`\n🔑 AUTH CODE: ${code}`);
+          log('\n👉 Next: Exchange this code for permanent access token.');
+        } else {
+          log('\n⚠️ Login not completed or dismissed.');
+        }
+      }, {
+        config_id: CONFIG_ID,
+        response_type: 'code',
+        override_default_response_type: true,
+        extras: {
+          feature: {
+            coexistence: {
+              enabled: true
+            }
+          },
+          setup: {},
+          sessionInfoVersion: '3'
+        }
+      });
+    });
+  </script>
+</body>
+</html>
