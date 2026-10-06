@@ -193,10 +193,16 @@
       
       FB.login((response) => {
         log('\n📥 FB.login response received: ' + JSON.stringify(response));
-        if (response.authResponse && response.authResponse.code) {
-          const code = response.authResponse.code;
-          log(`\n🔑 AUTH CODE: ${code}`);
-          log('\n👉 Next: Exchange this code for permanent access token.');
+        if (response.authResponse) {
+          const auth = response.authResponse;
+          log('\n🎉 AUTH SUCCESSFUL!');
+          if (auth.accessToken) {
+            log('\n🔑 ACCESS TOKEN:\n' + auth.accessToken);
+          }
+          if (auth.code) {
+            log('\n🔑 AUTH CODE:\n' + auth.code);
+          }
+          log('\n👉 Keep this open while Meta finishes session logging.');
         } else {
           log('\n⚠️ Login not completed or dismissed.');
         }
@@ -205,7 +211,8 @@
         response_type: 'code',
         override_default_response_type: true,
         extras: {
-          sessionInfoVersion: '3'
+          "version": "v4",
+          "sessionInfoVersion": "3"
         }
       });
     });
