@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WhatsApp Embedded Signup</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 40px; text-align: center;">
+
+  <h2>WhatsApp Business Setup</h2>
+  <p>Connect your WhatsApp Business Account to start sending admin alerts and customer messages.</p>
+
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId            : '1640886047680153',
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v26.0'
+      });
+    };
+  </script>
+  <script async defer crossorigin="anonymous"
+    src="https://connect.facebook.net/en_US/sdk.js">
+  </script>
+  <script>
+    let sessionInfo = {};
+
+    // Session logging message event listener
+    window.addEventListener('message', (event) => {
+      if (!event.origin.endsWith('facebook.com')) return;
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'WA_EMBEDDED_SIGNUP') {
+          console.log('message event: ', data); 
+          if (data.event === 'FINISH') {
+             // Save the asset IDs
+             sessionInfo = data.data || {};
+             console.log("Captured Session Info:", sessionInfo);
+          }
+        }
+      } catch {
+        console.log('message event error: ', event.data);
+      }
+    });
+
+    // Response callback
+    const fbLoginCallback = (response) => {
+      if (response.authResponse) {
+        const code = response.authResponse.code;
+        console.log('response code: ', code); 
+        
+        // Exchange code with backend
+        fetch('/api/whatsapp/exchange-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ 
+            code: code,
+            sessionInfo: sessionInfo
+          })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if(data.success) {
+            alert('WhatsApp setup completed successfully!');
+            console.log('Backend response:', data);
+          } else {
+            alert('Error exchanging token: ' + data.error);
+          }
+        })
+        .catch(err => {
+          console.error('Error:', err);
+          alert('Failed to connect to backend.');
+        });
+
+      } else {
+        console.log('response: ', response);
+        alert('Login was cancelled or not authorized.');
+      }
+    }
+
+    // Launch method and callback registration
+    const launchWhatsAppSignup = () => {
+      FB.login(fbLoginCallback, {
+        config_id: '1131025299377723', // Replace with your actual Configuration ID
+        response_type: 'code',
+        override_default_response_type: true,
+        extras: {
+          setup: {},
+        }
+      });
+    }
+  </script>
+
+  <!-- Launch button  -->
+  <button onclick="launchWhatsAppSignup()" style="background-color: #1877f2; border: 0; border-radius: 4px; color: #fff; cursor: pointer; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; height: 40px; padding: 0 24px;">Login with Facebook</button>
+
+</body>
+</html>
