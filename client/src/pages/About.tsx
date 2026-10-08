@@ -22,7 +22,7 @@ export default function About() {
               transition={{ delay: 0.1 }}
               className="text-sm sm:text-lg md:text-xl lg:text-2xl text-gray-700 max-w-3xl mx-auto"
             >
-              We're dedicated to providing the softest, safest, and most adorable baby wear for your little ones.
+              We're dedicated to providing the softest, safest, and most adorable baby wear for your little ones .
             </motion.p>
           </div>
         </div>
