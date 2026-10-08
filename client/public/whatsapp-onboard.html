@@ -2,71 +2,121 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>WhatsApp Embedded Signup</title>
+  <title>WhatsApp Coexistence Embedded Signup - Planet Mini</title>
 </head>
-<body style="font-family: Helvetica, Arial, sans-serif; padding: 40px; text-align: center;">
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 40px; text-align: center; background-color: #f9fafb; color: #111827;">
 
-  <!-- SDK loading -->
-  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+  <div style="max-width: 650px; margin: 0 auto; background: #ffffff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);">
+    <h2 style="margin-top: 0; color: #1f2937;">WhatsApp Coexistence Onboarding</h2>
+    <p style="color: #4b5563; font-size: 14px; margin-bottom: 24px;">
+      Connect your WhatsApp Business App number with Cloud API coexistence.
+    </p>
 
-  <script>
-    // SDK initialization
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId: '1640886047680153', // your app ID goes here
-        autoLogAppEvents: true,
-        xfbml: true,
-        version: 'v21.0' // Graph API version goes here
-      });
-    };
+    <div style="margin-bottom: 20px; text-align: left;">
+      <label for="configId" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #374151;">
+        Coexistence Configuration ID:
+      </label>
+      <input
+        type="text"
+        id="configId"
+        value="1147136831313018"
+        placeholder="Enter your new COEXISTENCE_CONFIG_ID"
+        style="width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 14px; border: 1px solid #d1d5db; border-radius: 6px; font-family: monospace;"
+      />
+      <small style="color: #6b7280; font-size: 12px; display: block; margin-top: 4px;">
+        Paste the Config ID created from Meta Business Suite (Onboard WhatsApp Business App users - Coexistence).
+      </small>
+    </div>
 
-    // Session logging message event listener
-    window.addEventListener('message', (event) => {
-      if (!event.origin.endsWith('facebook.com')) return;
-      try {
-        const data = JSON.parse(event.data);
-        if (data.type === 'WA_EMBEDDED_SIGNUP') {
-          console.log('message event: ', data); // remove after testing
-          document.getElementById('output').textContent += '\nEvent: ' + JSON.stringify(data, null, 2);
-        }
-      } catch {
-        console.log('message event: ', event.data); // remove after testing
-        document.getElementById('output').textContent += '\nEvent (raw): ' + event.data;
-      }
-    });
+    <!-- SDK loading -->
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 
-    // Response callback
-    const fbLoginCallback = (response) => {
-      if (response.authResponse) {
-        const code = response.authResponse.code;
-        console.log('response: ', code); // remove after testing
-        document.getElementById('output').textContent += '\n\nAuth Code: ' + code;
-        if (response.authResponse.accessToken) {
-          document.getElementById('output').textContent += '\nAccess Token: ' + response.authResponse.accessToken;
-        }
-      } else {
-        console.log('response: ', response); // remove after testing
-        document.getElementById('output').textContent += '\nResponse: ' + JSON.stringify(response, null, 2);
-      }
-    };
+    <script>
+      // SDK initialization
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId: '1640886047680153',
+          autoLogAppEvents: true,
+          xfbml: true,
+          version: 'v25.0'
+        });
+      };
 
-    // Launch method and callback registration
-    const launchWhatsAppSignup = () => {
-      FB.login(fbLoginCallback, {
-        config_id: '1147136831313018', // your configuration ID goes here
-        response_type: 'code',
-        override_default_response_type: true,
-        extras: {
-          setup: {},
+      // Session logging message event listener
+      window.addEventListener('message', (event) => {
+        if (!event.origin.endsWith('facebook.com')) return;
+        try {
+          const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+          if (data.type === 'WA_EMBEDDED_SIGNUP') {
+            console.log('WA_EMBEDDED_SIGNUP Event:', data);
+            document.getElementById('output').textContent += '\n\n📩 Message Event:\n' + JSON.stringify(data, null, 2);
+          }
+        } catch {
+          console.log('Message Event (raw):', event.data);
+          document.getElementById('output').textContent += '\n\n📩 Message Event (raw):\n' + event.data;
         }
       });
-    };
-  </script>
 
-  <!-- Launch button -->
-  <button onclick="launchWhatsAppSignup()" style="background-color: #1877f2; border: 0; border-radius: 4px; color: #fff; cursor: pointer; font-family: Helvetica, Arial, sans-serif; font-size: 16px; font-weight: bold; height: 40px; padding: 0 24px;">Login with Facebook</button>
+      // Response callback
+      const fbLoginCallback = (response) => {
+        console.log('FB.login full response:', response);
+        const out = document.getElementById('output');
 
-  <pre id="output" style="margin-top: 30px; text-align: left; background: #f4f4f4; padding: 15px; border-radius: 4px; font-size: 13px; white-space: pre-wrap; word-break: break-all; max-width: 700px; margin-left: auto; margin-right: auto;"></pre>
+        if (response.authResponse) {
+          const code = response.authResponse.code;
+          out.textContent += '\n\n✅ Authorization Code: ' + (code || 'undefined');
+
+          if (response.authResponse.accessToken) {
+            out.textContent += '\n🔑 Access Token: ' + response.authResponse.accessToken;
+          }
+
+          if (code) {
+            out.textContent += '\n\n🔄 Exchanging authorization code on backend...';
+            fetch('/exchange-token?code=' + encodeURIComponent(code))
+              .then((res) => res.json())
+              .then((result) => {
+                console.log('Backend Exchange Result:', result);
+                out.textContent += '\n\n🎉 Backend Exchange Result:\n' + JSON.stringify(result, null, 2);
+              })
+              .catch((err) => {
+                console.error('Backend exchange error:', err);
+                out.textContent += '\n\n⚠️ Exchange Error: ' + err.message;
+              });
+          }
+        } else {
+          out.textContent += '\n\n❌ User cancelled login or flow incomplete:\n' + JSON.stringify(response, null, 2);
+        }
+      };
+
+      // Launch method with exact Coexistence payload
+      const launchWhatsAppSignup = () => {
+        const configId = document.getElementById('configId').value.trim() || 'COEXISTENCE_CONFIG_ID';
+        document.getElementById('output').textContent = '🚀 Opening Meta WhatsApp Coexistence Signup with Config ID: ' + configId + '...';
+
+        FB.login(fbLoginCallback, {
+          config_id: configId,
+          response_type: 'code',
+          override_default_response_type: true,
+          extras: {
+            featureType: 'whatsapp_business_app_onboarding',
+            sessionInfoVersion: '3'
+          }
+        });
+      };
+    </script>
+
+    <!-- Launch button -->
+    <button
+      onclick="launchWhatsAppSignup()"
+      style="background-color: #1877f2; border: 0; border-radius: 6px; color: #fff; cursor: pointer; font-family: inherit; font-size: 16px; font-weight: 600; height: 44px; padding: 0 28px; width: 100%; transition: background-color 0.2s;"
+      onmouseover="this.style.backgroundColor='#166fe5'"
+      onmouseout="this.style.backgroundColor='#1877f2'"
+    >
+      Login with Facebook (Coexistence)
+    </button>
+
+    <pre id="output" style="margin-top: 24px; text-align: left; background: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 6px; font-size: 13px; white-space: pre-wrap; word-break: break-all; min-height: 80px; border: 1px solid #e5e7eb; font-family: monospace;"></pre>
+  </div>
 
 </body>
 </html>

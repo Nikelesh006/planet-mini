@@ -21,6 +21,7 @@ import helmet from "helmet";
 import { apiLimiter } from "./lib/rateLimiters.js";
 import { isEmailAdmin } from "./lib/authMiddleware.js";
 import { logAdminSecurityEvent } from "./models/AdminAuditLog.js";
+import whatsappAuthRouter from "./routes/whatsappAuth.js";
 
 export const app = express();
 
@@ -143,7 +144,9 @@ app.use('/api', (req: Request, res: Response, next: NextFunction) => {
     req.path === '/health' ||
     req.path.startsWith('/auth/google') ||
     req.path.startsWith('/webhook') ||
-    req.path.startsWith('/webhooks')
+    req.path.startsWith('/webhooks') ||
+    req.path === '/exchange-token' ||
+    req.path.startsWith('/api/whatsapp/exchange-token')
   ) {
     return next();
   }
@@ -522,6 +525,9 @@ app.post("/api/auth/logout", async (req: Request, res: Response) => {
 app.get("/api/banners", (_req: Request, res: Response) => {
   return res.json({ success: true, data: [] });
 });
+
+// WhatsApp Embedded Signup Token Exchange
+app.use(whatsappAuthRouter);
 
 
 
