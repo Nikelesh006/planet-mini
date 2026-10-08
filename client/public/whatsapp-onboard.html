@@ -20,11 +20,11 @@
         type="text"
         id="configId"
         value="1147136831313018"
-        placeholder="Enter your new COEXISTENCE_CONFIG_ID"
+        placeholder="Enter your COEXISTENCE_CONFIG_ID"
         style="width: 100%; box-sizing: border-box; padding: 10px 12px; font-size: 14px; border: 1px solid #d1d5db; border-radius: 6px; font-family: monospace;"
       />
       <small style="color: #6b7280; font-size: 12px; display: block; margin-top: 4px;">
-        Paste the Config ID created from Meta Business Suite (Onboard WhatsApp Business App users - Coexistence).
+        Must be a WhatsApp Embedded Signup login configuration with Coexistence enabled.
       </small>
     </div>
 
@@ -32,17 +32,18 @@
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 
     <script>
-      // SDK initialization
+      // SDK initialization per Meta recommendation
       window.fbAsyncInit = function() {
         FB.init({
           appId: '1640886047680153',
-          autoLogAppEvents: true,
+          cookie: true,
           xfbml: true,
-          version: 'v25.0'
+          version: 'v21.0'
         });
+        console.log('✅ FB SDK Initialized with v21.0 & cookie: true');
       };
 
-      // Session logging message event listener
+      // Session logging message event listener (FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING)
       window.addEventListener('message', (event) => {
         if (!event.origin.endsWith('facebook.com')) return;
         try {
@@ -82,6 +83,8 @@
                 console.error('Backend exchange error:', err);
                 out.textContent += '\n\n⚠️ Exchange Error: ' + err.message;
               });
+          } else {
+            out.textContent += '\n\n⚠️ Notice: Meta returned a cached user token instead of a code.\nIf the popup closed instantly without showing the Coexistence steps, click "Clear Facebook Cache" below and retry.';
           }
         } else {
           out.textContent += '\n\n❌ User cancelled login or flow incomplete:\n' + JSON.stringify(response, null, 2);
@@ -90,18 +93,34 @@
 
       // Launch method with exact Coexistence payload
       const launchWhatsAppSignup = () => {
-        const configId = document.getElementById('configId').value.trim() || 'COEXISTENCE_CONFIG_ID';
+        const configId = document.getElementById('configId').value.trim() || '1147136831313018';
         document.getElementById('output').textContent = '🚀 Opening Meta WhatsApp Coexistence Signup with Config ID: ' + configId + '...';
 
-        FB.login(fbLoginCallback, {
-          config_id: configId,
-          response_type: 'code',
-          override_default_response_type: true,
-          extras: {
-            featureType: 'whatsapp_business_app_onboarding',
-            sessionInfoVersion: '3'
+        FB.login(
+          fbLoginCallback,
+          {
+            config_id: configId,
+            response_type: 'code',
+            override_default_response_type: true,
+            auth_type: 'rerequest',
+            extras: {
+              setup: {},
+              featureType: 'whatsapp_business_app_onboarding',
+              sessionInfoVersion: '3'
+            }
           }
-        });
+        );
+      };
+
+      const clearFBSession = () => {
+        try {
+          FB.logout((res) => {
+            console.log('FB.logout:', res);
+            document.getElementById('output').textContent = '🧹 Facebook session cleared. Now click "Login with Facebook (Coexistence)" to re-trigger the dialog.';
+          });
+        } catch (e) {
+          document.getElementById('output').textContent = 'Cleared local state. Ready to retry.';
+        }
       };
     </script>
 
@@ -114,6 +133,15 @@
     >
       Login with Facebook (Coexistence)
     </button>
+
+    <div style="margin-top: 12px;">
+      <button
+        onclick="clearFBSession()"
+        style="background: transparent; border: 1px solid #d1d5db; color: #6b7280; border-radius: 6px; cursor: pointer; font-size: 13px; padding: 8px 16px;"
+      >
+        🧹 Clear Facebook Cache / Re-authenticate
+      </button>
+    </div>
 
     <pre id="output" style="margin-top: 24px; text-align: left; background: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 6px; font-size: 13px; white-space: pre-wrap; word-break: break-all; min-height: 80px; border: 1px solid #e5e7eb; font-family: monospace;"></pre>
   </div>
