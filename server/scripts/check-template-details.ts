@@ -3,7 +3,7 @@ import axios from 'axios';
 
 async function checkTemplateDetails() {
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
-  const wabaId = '1413437806861887';
+  const wabaId = process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '2545263782581454';
 
   try {
     const res = await axios.get(
