@@ -1,0 +1,49 @@
+.planetmini-wa-wrap {
+    max-width: 900px;
+    margin-top: 20px;
+}
+
+.planetmini-wa-card {
+    background: #ffffff;
+    border: 1px solid #c3c4c7;
+    border-radius: 8px;
+    padding: 24px;
+    margin-top: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.planetmini-wa-card h2 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: 18px;
+    border-bottom: 1px solid #f0f0f1;
+    padding-bottom: 10px;
+}
+
+.planetmini-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.status-connected {
+    background: #e6f9ed;
+    color: #1e7e34;
+    border: 1px solid #b7ecd0;
+}
+
+.status-disconnected {
+    background: #fff8e5;
+    color: #946c00;
+    border: 1px solid #f0dc99;
+}
+
+.planetmini-status-badge .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
