@@ -35,7 +35,7 @@ const handleTokenExchange = async (req: Request, res: Response) => {
   }
 
   try {
-    const apiVersion = process.env.WHATSAPP_API_VERSION || 'v25.0';
+    const apiVersion = process.env.WHATSAPP_API_VERSION || 'v22.0';
     const tokenUrl = `https://graph.facebook.com/${apiVersion}/oauth/access_token`;
 
     console.log(`[WhatsAppOAuth] Exchanging authorization code via ${tokenUrl}...`);
