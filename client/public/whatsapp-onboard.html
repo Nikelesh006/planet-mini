@@ -15,7 +15,7 @@
         appId            : '1640886047680153',
         autoLogAppEvents : true,
         xfbml            : true,
-        version          : 'v22.0'
+        version          : 'v26.0'
       });
     };
   </script>
@@ -32,7 +32,7 @@
         const data = JSON.parse(event.data);
         if (data.type === 'WA_EMBEDDED_SIGNUP') {
           console.log('message event: ', data); 
-          if (data.event === 'FINISH') {
+          if (data.event === 'FINISH' || data.event === 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING') {
              // Save the asset IDs
              sessionInfo = data.data || {};
              console.log("Captured Session Info:", sessionInfo);
@@ -87,6 +87,7 @@
         response_type: 'code',
         override_default_response_type: true,
         extras: {
+          featureType: 'whatsapp_business_app_onboarding',
           setup: {},
         }
       });

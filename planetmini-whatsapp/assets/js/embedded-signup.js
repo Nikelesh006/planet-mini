@@ -21,7 +21,7 @@
         try {
             const data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
             if (data && data.type === 'WA_EMBEDDED_SIGNUP') {
-                if (data.event === 'FINISH' && data.data) {
+                if ((data.event === 'FINISH' || data.event === 'FINISH_WHATSAPP_BUSINESS_APP_ONBOARDING') && data.data) {
                     sessionInfo = data.data;
                     updateStatus('Account linked on Facebook! Exchanging credentials with your store...', 'loading');
                 } else if (data.event === 'CANCEL') {
@@ -85,6 +85,7 @@
             response_type: 'code',
             override_default_response_type: true,
             extras: {
+                featureType: 'whatsapp_business_app_onboarding',
                 setup: {}
             }
         });
