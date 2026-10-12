@@ -21,7 +21,6 @@ import helmet from "helmet";
 import { apiLimiter } from "./lib/rateLimiters.js";
 import { isEmailAdmin } from "./lib/authMiddleware.js";
 import { logAdminSecurityEvent } from "./models/AdminAuditLog.js";
-import whatsappAuthRouter from "./routes/whatsappAuth.js";
 
 export const app = express();
 
@@ -525,9 +524,6 @@ app.post("/api/auth/logout", async (req: Request, res: Response) => {
 app.get("/api/banners", (_req: Request, res: Response) => {
   return res.json({ success: true, data: [] });
 });
-
-// WhatsApp Embedded Signup Token Exchange
-app.use(whatsappAuthRouter);
 
 
 
