@@ -3,8 +3,8 @@ import axios from 'axios';
 
 async function testSendAdmin() {
   const token = process.env.WHATSAPP_ACCESS_TOKEN;
-  const phoneId = '1304438766094033'; // Real number (+91 81244 11259)
-  const recipient = '918220294678';
+  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID || '1409761505549181';
+  const recipient = process.env.ADMIN_WHATSAPP_NUMBER || '918124411259';
 
   console.log(`Testing dispatch to ${recipient} from sender ID ${phoneId}...`);
 
