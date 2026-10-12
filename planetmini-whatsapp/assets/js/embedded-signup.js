@@ -81,7 +81,7 @@
         }
 
         FB.login(window.fbLoginCallback, {
-            config_id: config.configId || '1131025299377723',
+            config_id: config.configId || '1121546823949510',
             response_type: 'code',
             override_default_response_type: true,
             extras: {
