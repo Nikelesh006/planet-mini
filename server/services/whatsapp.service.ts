@@ -570,3 +570,84 @@ export async function processOrderWhatsAppNotifications(
 
 // Backward-compatible alias
 export const sendOrderWhatsAppNotifications = processOrderWhatsAppNotifications;
+
+// ==========================================
+// TEMPLATE 3: ABANDONED CART ALERT
+// ==========================================
+
+/**
+ * Calculates a friendly default offer end date string (e.g. "17th Oct" or "27th Sep")
+ * matching the approved Meta template format: "Complete your order before our offers end on {{3}}"
+ */
+export function getDefaultOfferEndDate(): string {
+  if (process.env.WHATSAPP_CART_ALERT_OFFER_END) {
+    return process.env.WHATSAPP_CART_ALERT_OFFER_END;
+  }
+  // Default to 2 days ahead
+  const date = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000);
+  const day = date.getDate();
+  const month = date.toLocaleString('en-US', { month: 'short' });
+  const suffix = (d: number) => {
+    if (d > 3 && d < 21) return 'th';
+    switch (d % 10) {
+      case 1: return 'st';
+      case 2: return 'nd';
+      case 3: return 'rd';
+      default: return 'th';
+    }
+  };
+  return `${day}${suffix(day)} ${month}`;
+}
+
+/**
+ * Sends TEMPLATE 3: cart_alert (language "en")
+ * Template body:
+ * Hey {{1}}! 💕👶🏻
+ * 
+ * Forgot something lovely for your little one? 🛍️
+ * 
+ * Your favourite picks are waiting in your Planet Mini cart!
+ * 
+ * 🎁 Complete your order before our offers end on {{3}} and enjoy the savings.
+ * 
+ * 👉 Continue shopping: {{2}}
+ * 
+ * With love,
+ * Team Planet Mini 🌎💛
+ * 
+ * Meta parameters array:
+ * bodyParams[0] -> {{1}} (Customer Name)
+ * bodyParams[1] -> {{2}} (Shopping Link)
+ * bodyParams[2] -> {{3}} (Offer End Date)
+ */
+export async function sendCartAlertMessage(
+  phone: string,
+  customerName: string,
+  shoppingUrl?: string,
+  offerEndDate?: string
+): Promise<WhatsAppNotificationResult> {
+  const templateName = process.env.WHATSAPP_CART_ALERT_TEMPLATE || 'cart_alert';
+  const languageCode = process.env.WHATSAPP_CART_ALERT_LANG || 'en';
+
+  const cleanName = sanitizeParam(customerName || 'there');
+
+  const frontendUrl = (
+    process.env.FRONTEND_URL ||
+    process.env.CLIENT_URL ||
+    'https://www.planetmini.in'
+  ).replace(/\/$/, '');
+
+  const cleanUrl = sanitizeParam(shoppingUrl || `${frontendUrl}/cart`);
+  const cleanDate = sanitizeParam(offerEndDate || getDefaultOfferEndDate());
+
+  const bodyParams = [cleanName, cleanUrl, cleanDate];
+
+  console.log(`[WhatsAppService] Dispatching cart alert template '${templateName}' to ${phone}...`, {
+    name: cleanName,
+    url: cleanUrl,
+    offerEndDate: cleanDate
+  });
+
+  return await sendTemplate(phone, templateName, languageCode, bodyParams);
+}
+

@@ -6,6 +6,10 @@ import Profile from '../models/Profile.js';
 import { productsStorage } from '../db.js';
 import { getAvailableStock, isOutOfStock } from '../shared/stock.js';
 import { requireAuth } from '../lib/authMiddleware.js';
+import {
+  recordCartActivity,
+  cancelCartAlertOnCartCleared
+} from '../services/cartAlert.service.js';
 
 const router = express.Router();
 
@@ -389,6 +393,11 @@ router.post('/:userId/cart', requireAuth, async (req: any, res: any) => {
 
     const updatedProfile = await profile.save();
 
+    // Trigger abandoned cart check & scheduling if address exists
+    recordCartActivity(userId).catch((cartAlertErr) => {
+      console.error('[ProfileRoute] Cart alert scheduling error:', cartAlertErr);
+    });
+
     res.json({ success: true, cartItems: updatedProfile.cartItems });
 
   } catch (error) {
@@ -508,6 +517,11 @@ router.delete('/:userId/cart', requireAuth, async (req: any, res: any) => {
     profile.cartItems = [];
     await profile.save();
 
+    // Cancel pending abandoned cart alert since cart was emptied
+    cancelCartAlertOnCartCleared(userId).catch((cartAlertErr) => {
+      console.error('[ProfileRoute] Cart alert cancel error:', cartAlertErr);
+    });
+
     console.log('🗑️ Cleared entire cart for user:', userId, `(${clearedCount} items removed)`);
     res.json({ success: true, cartItems: [], clearedCount });
   } catch (error) {
@@ -546,6 +560,11 @@ router.delete('/:userId/cart/:itemId', requireAuth, async (req: any, res: any) =
     // Remove item from cartItems array
     profile.cartItems = profile.cartItems.filter((item: any) => item.id !== itemId);
     const updatedProfile = await profile.save();
+
+    // Update cart activity or cancel if now empty
+    recordCartActivity(userId).catch((cartAlertErr) => {
+      console.error('[ProfileRoute] Cart alert update error on item remove:', cartAlertErr);
+    });
 
     console.log('🗑️ Removed from cart:', itemId, 'Updated cart:', updatedProfile.cartItems);
 
@@ -593,6 +612,11 @@ router.patch('/:userId/cart/:itemId/increase', requireAuth, async (req: any, res
     cartItem.stockQuantity = getAvailableStock(stockProduct);
     await profile.save();
 
+    // Update cart activity schedule
+    recordCartActivity(userId).catch((cartAlertErr) => {
+      console.error('[ProfileRoute] Cart alert update error on increase:', cartAlertErr);
+    });
+
     console.log('✅ Increased quantity:', itemId, 'from', oldQty, 'to', cartItem.quantity);
     res.json({ success: true, cartItems: profile.cartItems });
   } catch (error) {
@@ -639,6 +663,11 @@ router.patch('/:userId/cart/:itemId/decrease', requireAuth, async (req: any, res
     }
 
     await profile.save();
+
+    // Update cart activity schedule
+    recordCartActivity(userId).catch((cartAlertErr) => {
+      console.error('[ProfileRoute] Cart alert update error on decrease:', cartAlertErr);
+    });
 
     res.json({ success: true, cartItems: profile.cartItems });
   } catch (error) {

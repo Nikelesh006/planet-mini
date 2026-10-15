@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { productsStorage, connectDB } from './db.js';
 import { getAvailableStock, isOutOfStock } from './shared/stock.js';
+import { cancelCartAlertOnOrder } from './services/cartAlert.service.js';
 
 // Create a unified storage object that includes all storage functions
 
@@ -1106,6 +1107,11 @@ export const ordersStorage = {
       console.log('🔧 Order data being saved:', JSON.stringify(order, null, 2));
 
       const result = await db.collection("orders").insertOne(order);
+
+      // Cancel any pending abandoned cart alerts since order has been placed
+      cancelCartAlertOnOrder(finalUserId, result.insertedId.toString()).catch((cartAlertErr) => {
+        console.error('[Storage] Error cancelling cart alert on order creation:', cartAlertErr);
+      });
 
       return { ...order, id: result.insertedId.toString() };
 

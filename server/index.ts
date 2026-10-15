@@ -21,6 +21,10 @@ import helmet from "helmet";
 import { apiLimiter } from "./lib/rateLimiters.js";
 import { isEmailAdmin } from "./lib/authMiddleware.js";
 import { logAdminSecurityEvent } from "./models/AdminAuditLog.js";
+import {
+  startCartAlertScheduler,
+  checkAndSendPendingCartAlerts
+} from "./services/cartAlert.service.js";
 
 export const app = express();
 
@@ -525,6 +529,17 @@ app.get("/api/banners", (_req: Request, res: Response) => {
   return res.json({ success: true, data: [] });
 });
 
+// Cron / manual trigger endpoint for checking pending abandoned cart alerts
+app.all("/api/cart-alerts/check", async (_req: Request, res: Response) => {
+  try {
+    const summary = await checkAndSendPendingCartAlerts();
+    return res.json({ success: true, summary });
+  } catch (err: any) {
+    console.error("[CartAlertsRoute] Error checking alerts:", err);
+    return res.status(500).json({ success: false, error: err?.message });
+  }
+});
+
 
 
 // ---------- EXISTING BOOTSTRAP FLOW ----------
@@ -576,6 +591,9 @@ async function bootstrap() {
   // (You already call connectDB above; this second call is redundant, but left as-is per your code)
 
   await connectDB();
+
+  // Start abandoned cart alert worker loop (runs every 60s)
+  startCartAlertScheduler();
 
 
 

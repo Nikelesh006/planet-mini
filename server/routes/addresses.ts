@@ -3,6 +3,7 @@ import { addressStorage } from '../storage.js';
 import { z } from 'zod';
 import { requireAuth } from '../lib/authMiddleware.js';
 import type { Address } from '../types/Address.js';
+import { recordAddressAdded } from '../services/cartAlert.service.js';
 
 const router = Router();
 
@@ -130,7 +131,10 @@ router.post('/', authenticateToken, async (req, res) => {
     // Save to database storage
     const savedAddress = await addressStorage.createAddress(userId, validatedData);
 
-    
+    // If user already has items in their cart, schedule the 1-hour cart alert
+    recordAddressAdded(userId).catch((addrAlertErr) => {
+      console.error('[AddressesRoute] Cart alert trigger error:', addrAlertErr);
+    });
 
     console.log('✅ Address saved to database:', savedAddress);
 
@@ -204,7 +208,12 @@ router.put('/:addressId', authenticateToken, async (req, res) => {
         message: 'Address not found'
       });
     }
-    
+
+    // Refresh contact info for cart alert if cart active
+    recordAddressAdded(userId).catch((addrAlertErr) => {
+      console.error('[AddressesRoute] Cart alert trigger error on update:', addrAlertErr);
+    });
+
     console.log('✅ Address updated in database:', updatedAddress);
     
     res.json({
